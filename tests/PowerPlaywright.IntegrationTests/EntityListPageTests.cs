@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.IntegrationTests
 {
     using System.Text.RegularExpressions;
+    using PowerPlaywright.Model.Controls.Pcf.Classes;
     using PowerPlaywright.Pages;
 
     /// <summary>

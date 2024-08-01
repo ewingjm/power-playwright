@@ -1,13 +1,13 @@
-﻿namespace PowerPlaywright.Pages
+﻿namespace PowerPlaywright
 {
     using System;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using System.Web;
     using Microsoft.Playwright;
-    using PowerPlaywright;
-    using PowerPlaywright.Controls;
-    using PowerPlaywright.Model.Controls;
+    using PowerPlaywright.Model;
+    using PowerPlaywright.Pages;
+    using PowerPlaywright.Pages.Enums;
 
     /// <summary>
     /// Instantiates <see cref="IPage"/> objects.

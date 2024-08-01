@@ -3,8 +3,10 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
+    using PowerPlaywright.Model;
     using PowerPlaywright.Model.Controls;
     using PowerPlaywright.Model.Controls.External;
+    using PowerPlaywright.Model.Controls.External.Attributes;
     using PowerPlaywright.Pages;
 
     /// <summary>
@@ -56,6 +58,12 @@
             await this.Page.WaitForURLAsync("**/main.aspx*");
 
             return await this.pageFactory.CreateInstanceAsync(this.Page);
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetContainer()
+        {
+            return this.Page.Locator("div[id='lightbox']");
         }
     }
 }

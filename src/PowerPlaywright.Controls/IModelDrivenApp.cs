@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright
+﻿namespace PowerPlaywright.Model
 {
     using System;
     using System.Threading.Tasks;
@@ -7,7 +7,7 @@
     /// <summary>
     /// An interface representing a model-driven app.
     /// </summary>
-    public interface IModelDrivenApp : IAsyncDisposable
+    public interface IModelDrivenApp
     {
         /// <summary>
         /// Logs in to the model-driven app.

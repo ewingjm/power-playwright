@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.Model.Controls.Pcf
+﻿namespace PowerPlaywright.Model.Controls.Pcf.Attributes
 {
     using System;
 

@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Model.Controls.Pcf
 {
+    using PowerPlaywright.Model.Controls.Pcf.Attributes;
     using PowerPlaywright.Model.Controls.Pcf.Classes;
 
     /// <summary>

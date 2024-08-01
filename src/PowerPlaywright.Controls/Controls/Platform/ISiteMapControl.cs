@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using PowerPlaywright.Model.Controls;
+    using PowerPlaywright.Model.Controls.Platform.Attributes;
 
     /// <summary>
     /// An interface representing a sitemap.

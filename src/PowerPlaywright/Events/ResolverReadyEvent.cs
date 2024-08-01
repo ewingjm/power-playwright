@@ -1,6 +1,6 @@
 ﻿namespace PowerPlaywright.Notifications
 {
-    using PowerPlaywright.Model.Controls;
+    using PowerPlaywright.Resolvers;
 
     /// <summary>
     /// A notification that is published when a control strategy resolver is ready.

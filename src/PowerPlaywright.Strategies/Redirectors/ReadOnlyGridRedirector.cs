@@ -10,7 +10,7 @@
     /// <summary>
     /// Redirects requests for an <see cref="IReadOnlyGrid"/> control.
     /// </summary>
-    public class ReadOnlyGridRedirector : ControlRedirector<IReadOnlyGrid>
+    public class ReadOnlyGridRedirector : IControlRedirector<ControlRedirectionInfo, IReadOnlyGrid>
     {
         private readonly ILogger<ReadOnlyGridRedirector> logger;
 
@@ -24,7 +24,7 @@
         }
 
         /// <inheritdoc/>
-        public override Type Redirect(ControlRedirectionInfo redirectionInfo, IEnumerable<Type> controlTypes)
+        public Type Redirect(ControlRedirectionInfo redirectionInfo, IEnumerable<Type> controlTypes)
         {
             this.logger.LogTrace("Getting redirected control for control class {class}.", nameof(IReadOnlyGrid));
 

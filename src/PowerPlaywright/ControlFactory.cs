@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.Controls
+﻿namespace PowerPlaywright
 {
     using System;
     using System.Collections.Generic;
@@ -10,12 +10,14 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
-    using PowerPlaywright;
+    using PowerPlaywright.Assemblies;
     using PowerPlaywright.Events;
     using PowerPlaywright.Model;
     using PowerPlaywright.Model.Controls;
+    using PowerPlaywright.Model.Events;
     using PowerPlaywright.Model.Redirectors;
     using PowerPlaywright.Notifications;
+    using PowerPlaywright.Resolvers;
 
     /// <summary>
     /// A control factory that dynamically discovers controls at runtime from a remote source.
@@ -33,7 +35,7 @@
 
         private IEnumerable<Type> assemblyTypes;
         private IEnumerable<Type> controlTypes;
-        private IDictionary<Type, IControlRedirector<IControl>> redirectorsMap;
+        private IDictionary<Type, IControlRedirector<ControlRedirectionInfo, IControl>> redirectorsMap;
         private IDictionary<Type, Type> strategyMap;
         private ControlRedirectionInfo redirectionInfo;
 
@@ -89,7 +91,7 @@
             }
         }
 
-        private IDictionary<Type, IControlRedirector<IControl>> RedirectorsMap
+        private IDictionary<Type, IControlRedirector<ControlRedirectionInfo, IControl>> RedirectorsMap
         {
             get
             {
@@ -97,28 +99,28 @@
                 {
                     this.logger?.LogInformation("Getting control redirectors.");
 
-                    var redirectorTypes = this.AssemblyTypes.Where(t => typeof(IControlRedirector<IControl>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract);
+                    var redirectorTypes = this.AssemblyTypes.Where(t => typeof(IControlRedirector<ControlRedirectionInfo, IControl>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract);
                     this.logger?.LogTrace("Found {count} redirector types.", redirectorTypes.Count());
 
                     this.logger?.LogTrace("Instantiating redirectors.");
 
-                    var map = new Dictionary<Type, IControlRedirector<IControl>>();
+                    var map = new Dictionary<Type, IControlRedirector<ControlRedirectionInfo, IControl>>();
 
                     foreach (var redirectorType in redirectorTypes)
                     {
                         var typeRedirected = redirectorType
                             .GetInterfaces()
-                            .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IControlRedirector<>))
+                            .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IControlRedirector<,>))
                             .GetGenericArguments()
-                            .First();
+                            .Last();
 
-                        if (map.TryGetValue(typeRedirected, out IControlRedirector<IControl> value))
+                        if (map.TryGetValue(typeRedirected, out IControlRedirector<ControlRedirectionInfo, IControl> value))
                         {
                             this.logger.LogWarning("Redirector of type {redirector} will not be used as {existingRedirector} is already registered for type {type}.", redirectorType.Name, value.GetType().Name, typeRedirected.Name);
                             continue;
                         }
 
-                        map.Add(typeRedirected, (IControlRedirector<IControl>)ActivatorUtilities.CreateInstance(this.serviceProvider, redirectorType));
+                        map.Add(typeRedirected, (IControlRedirector<ControlRedirectionInfo, IControl>)ActivatorUtilities.CreateInstance(this.serviceProvider, redirectorType));
                     }
 
                     this.redirectorsMap = map;
@@ -147,7 +149,7 @@
         }
 
         /// <inheritdoc/>
-        public TControl CreateInstance<TControl>(IPage page, string name = null)
+        public TControl CreateInstance<TControl>(IPage page, string name = null, IControl parent = null)
             where TControl : IControl
         {
             var type = typeof(TControl);
@@ -169,6 +171,11 @@
             if (name != null)
             {
                 parameters.Add(name);
+            }
+
+            if (parent != null)
+            {
+                parameters.Add(parent);
             }
 
             return (TControl)ActivatorUtilities.CreateInstance(this.serviceProvider, strategyType, parameters.ToArray());

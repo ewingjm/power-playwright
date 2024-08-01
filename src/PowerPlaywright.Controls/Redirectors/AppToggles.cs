@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.Model
+﻿namespace PowerPlaywright.Model.Redirectors
 {
     using System.Text.Json.Serialization;
 

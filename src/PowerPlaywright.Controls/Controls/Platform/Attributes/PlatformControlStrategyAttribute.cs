@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.Model.Controls.Platform
+﻿namespace PowerPlaywright.Model.Controls.Platform.Attributes
 {
     using System;
 
@@ -17,12 +17,12 @@
         /// <param name="revision">The revision component of the environment version that introduced this control strategy.</param>
         public PlatformControlStrategyAttribute(uint major, uint minor, uint build, uint revision)
         {
-            this.AppliesFrom = new Version((int)major, (int)minor, (int)build, (int)revision);
+            this.Version = new Version((int)major, (int)minor, (int)build, (int)revision);
         }
 
         /// <summary>
         /// Gets the environment version that this control strategy is applied from.
         /// </summary>
-        public Version AppliesFrom { get; }
+        public Version Version { get; }
     }
 }

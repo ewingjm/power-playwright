@@ -1,6 +1,7 @@
-﻿namespace PowerPlaywright.Model.Controls.Pcf
+﻿namespace PowerPlaywright.Model.Controls.Pcf.Attributes
 {
     using System;
+    using PowerPlaywright.Model.Controls.Pcf.Enums;
 
     /// <summary>
     /// Denotes an interface as describing the interactions available for a specific PCF control class.

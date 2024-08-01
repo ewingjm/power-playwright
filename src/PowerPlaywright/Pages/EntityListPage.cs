@@ -1,7 +1,7 @@
 ﻿namespace PowerPlaywright.Pages
 {
     using Microsoft.Playwright;
-    using PowerPlaywright.Model.Controls;
+    using PowerPlaywright.Model;
     using PowerPlaywright.Model.Controls.Pcf.Classes;
 
     /// <summary>

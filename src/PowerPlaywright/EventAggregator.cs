@@ -1,9 +1,10 @@
-﻿namespace PowerPlaywright.Events
+﻿namespace PowerPlaywright
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using PowerPlaywright.Model.Events;
 
     /// <summary>
     /// An event aggregator which allows for the publishing and subscription of events.

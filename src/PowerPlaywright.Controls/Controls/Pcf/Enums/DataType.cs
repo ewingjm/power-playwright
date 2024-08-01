@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.Model.Controls.Pcf
+﻿namespace PowerPlaywright.Model.Controls.Pcf.Enums
 {
     /// <summary>
     /// The data type associated with a control class.

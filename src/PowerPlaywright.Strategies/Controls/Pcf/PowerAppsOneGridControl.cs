@@ -3,8 +3,10 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
+    using PowerPlaywright.Model;
     using PowerPlaywright.Model.Controls;
     using PowerPlaywright.Model.Controls.Pcf;
+    using PowerPlaywright.Model.Controls.Pcf.Attributes;
     using PowerPlaywright.Pages;
 
     /// <summary>
@@ -24,17 +26,17 @@
         /// Initializes a new instance of the <see cref="PowerAppsOneGridControl"/> class.
         /// </summary>
         /// <param name="page">The page.</param>
+        /// <param name="parent">The parent control.</param>
         /// <param name="name">The name given to the control.</param>
         /// <param name="pageFactory">The page factory.</param>
         /// <param name="logger">The logger.</param>
-        public PowerAppsOneGridControl(IPage page, string name, IPageFactory pageFactory, ILogger<PcfGridControl> logger = null)
-            : base(page)
+        public PowerAppsOneGridControl(IPage page, string name, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
+            : base(page, parent)
         {
             this.name = name;
             this.pageFactory = pageFactory;
             this.logger = logger;
 
-            this.container = page.Locator($"div[data-lp-id*='Microsoft.PowerApps.PowerAppsOneGrid|{this.name}']");
             this.rowsContainer = this.container.Locator("div.ag-center-cols-viewport");
         }
 
@@ -44,6 +46,17 @@
             await this.GetRow(index).DblClickAsync();
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetContainer()
+        {
+            return this.Parent?.Container?.Locator(this.GetContainerSelector()) ?? this.Page.Locator(this.GetContainerSelector());
+        }
+
+        private string GetContainerSelector()
+        {
+            return $"div[data-lp-id*='Microsoft.PowerApps.PowerAppsOneGrid|{this.name}']";
         }
 
         private ILocator GetRow(int index)

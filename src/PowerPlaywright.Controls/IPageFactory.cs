@@ -1,7 +1,8 @@
-﻿namespace PowerPlaywright.Pages
+﻿namespace PowerPlaywright.Model
 {
     using System.Threading.Tasks;
     using Microsoft.Playwright;
+    using PowerPlaywright.Pages;
 
     /// <summary>
     /// A page factory.

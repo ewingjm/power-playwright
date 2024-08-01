@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.Events
+﻿namespace PowerPlaywright.Model.Events
 {
     using System;
     using System.Threading.Tasks;
@@ -6,7 +6,7 @@
     /// <summary>
     /// An event aggregator which allows for the publishing and subscription of events.
     /// </summary>
-    internal interface IEventAggregator
+    public interface IEventAggregator
     {
         /// <summary>
         /// Subscribe to an event.

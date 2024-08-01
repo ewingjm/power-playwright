@@ -1,8 +1,7 @@
-﻿namespace PowerPlaywright.Controls
+﻿namespace PowerPlaywright.Assemblies
 {
     using System.IO;
     using System.Reflection;
-    using PowerPlaywright.Model.Controls;
 
     /// <summary>
     /// Resolves a control assembly locally on disk.

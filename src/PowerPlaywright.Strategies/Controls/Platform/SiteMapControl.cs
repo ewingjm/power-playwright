@@ -4,6 +4,7 @@
     using Microsoft.Playwright;
     using PowerPlaywright.Model.Controls;
     using PowerPlaywright.Model.Controls.Platform;
+    using PowerPlaywright.Model.Controls.Platform.Attributes;
 
     /// <summary>
     /// A sitemap control.
@@ -29,6 +30,12 @@
         public Task OpenPageAsync(string area, string page)
         {
             return this.GetPageLocator(area, page).ClickAsync();
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetContainer()
+        {
+            return this.Page.Locator(ContainerSelector);
         }
 
         private ILocator GetAreaLocator(string area)

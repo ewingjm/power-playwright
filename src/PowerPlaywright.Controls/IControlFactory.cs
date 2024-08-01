@@ -1,6 +1,7 @@
-﻿namespace PowerPlaywright.Model.Controls
+﻿namespace PowerPlaywright.Model
 {
     using Microsoft.Playwright;
+    using PowerPlaywright.Model.Controls;
 
     /// <summary>
     /// Instantiates a concrete implementation of a given control.
@@ -12,9 +13,10 @@
         /// </summary>
         /// <typeparam name="TControl">The control interface.</typeparam>
         /// <param name="page">The page.</param>
-        /// <param name="name">The control name.</param>
+        /// <param name="name">An optional control name.</param>
+        /// <param name="parent">An optional parent control.</param>
         /// <returns>The concrete implementation.</returns>
-        TControl CreateInstance<TControl>(IPage page, string name = null)
+        TControl CreateInstance<TControl>(IPage page, string name = null, IControl parent = null)
             where TControl : IControl;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.Model.Controls.External
+﻿namespace PowerPlaywright.Model.Controls.External.Attributes
 {
     using System;
 

@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.Controls
+﻿namespace PowerPlaywright.Pages.Enums
 {
     /// <summary>
     /// A type of model-driven app page.

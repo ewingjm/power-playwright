@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.Controls
+﻿namespace PowerPlaywright.Resolvers
 {
     using System;
     using System.Collections.Generic;
@@ -7,8 +7,10 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
+    using PowerPlaywright;
     using PowerPlaywright.Events;
-    using PowerPlaywright.Model.Controls.Pcf;
+    using PowerPlaywright.Model.Controls.Pcf.Attributes;
+    using PowerPlaywright.Model.Events;
 
     /// <summary>
     /// A strategy resolver for PCF controls.

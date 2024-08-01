@@ -1,11 +1,11 @@
-﻿namespace PowerPlaywright.Controls
+﻿namespace PowerPlaywright.Resolvers
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using PowerPlaywright.Events;
-    using PowerPlaywright.Model.Controls;
+    using PowerPlaywright.Model.Events;
     using PowerPlaywright.Notifications;
 
     /// <summary>
@@ -20,11 +20,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AppControlStrategyResolver"/> class.
         /// </summary>
-        /// <param name="mediator">The mediator.</param>
+        /// <param name="eventAggregator">The event aggregator.</param>
         /// <param name="logger">The logger.</param>
-        public AppControlStrategyResolver(IEventAggregator mediator, ILogger logger)
+        public AppControlStrategyResolver(IEventAggregator eventAggregator, ILogger logger)
         {
-            this.eventAggregator = mediator;
+            this.eventAggregator = eventAggregator;
             this.Logger = logger;
 
             this.eventAggregator.Subscribe<AppInitializedEvent>(this.InitialiseInternal);

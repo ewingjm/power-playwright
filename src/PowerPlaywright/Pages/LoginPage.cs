@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
     using Microsoft.Playwright;
-    using PowerPlaywright.Model.Controls;
+    using PowerPlaywright.Model;
     using PowerPlaywright.Model.Controls.External;
 
     /// <summary>

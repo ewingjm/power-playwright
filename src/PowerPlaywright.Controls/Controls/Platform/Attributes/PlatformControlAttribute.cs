@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.Model.Controls.Platform
+﻿namespace PowerPlaywright.Model.Controls.Platform.Attributes
 {
     using System;
 

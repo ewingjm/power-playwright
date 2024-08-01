@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.Model.Controls
+﻿namespace PowerPlaywright.Resolvers
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     /// <summary>
     /// Resolves a control interface to a strategy.
     /// </summary>
-    public interface IControlStrategyResolver
+    internal interface IControlStrategyResolver
     {
         /// <summary>
         /// Gets a value indicating whether whether or not the strategy resolver is ready to resolve controls.

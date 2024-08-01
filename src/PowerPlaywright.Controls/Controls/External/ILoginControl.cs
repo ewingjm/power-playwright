@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using PowerPlaywright.Model.Controls;
+    using PowerPlaywright.Model.Controls.External.Attributes;
     using PowerPlaywright.Pages;
 
     /// <summary>

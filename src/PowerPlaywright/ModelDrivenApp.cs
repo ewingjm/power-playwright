@@ -5,15 +5,17 @@ namespace PowerPlaywright
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
-    using PowerPlaywright.Controls;
+    using PowerPlaywright.Assemblies;
     using PowerPlaywright.Events;
-    using PowerPlaywright.Model.Controls;
+    using PowerPlaywright.Model;
+    using PowerPlaywright.Model.Events;
     using PowerPlaywright.Pages;
+    using PowerPlaywright.Resolvers;
 
     /// <summary>
     /// Represents a model-driven app.
     /// </summary>
-    public class ModelDrivenApp : IModelDrivenApp
+    public class ModelDrivenApp : IModelDrivenApp, IAsyncDisposable
     {
         private readonly IBrowserContext browserContext;
         private readonly IPageFactory pageFactory;
@@ -146,6 +148,7 @@ namespace PowerPlaywright
                 .AddSingleton<IControlStrategyAssemblyProvider, LocalControlAssemblyProviders>()
                 .AddSingleton<IControlStrategyResolver, PcfControlStrategyResolver>()
                 .AddSingleton<IControlStrategyResolver, ExternalControlStrategyResolver>()
+                .AddSingleton<IControlStrategyResolver, PlatformControlStrategyResolver>()
                 .AddSingleton<IControlFactory, ControlFactory>()
                 .AddSingleton<IPageFactory, PageFactory>()
                 .BuildServiceProvider();
