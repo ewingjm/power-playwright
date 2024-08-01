@@ -6,13 +6,12 @@
     using System.Reflection;
     using System.Text.Json;
     using System.Text.Json.Nodes;
-    using System.Threading;
     using System.Threading.Tasks;
-    using MediatR;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
     using PowerPlaywright;
+    using PowerPlaywright.Events;
     using PowerPlaywright.Model;
     using PowerPlaywright.Model.Controls;
     using PowerPlaywright.Model.Redirectors;
@@ -21,7 +20,7 @@
     /// <summary>
     /// A control factory that dynamically discovers controls at runtime from a remote source.
     /// </summary>
-    internal class ControlFactory : IControlFactory, INotificationHandler<ControlStrategyResolverReadyNotification>, INotificationHandler<AppInitializedNotification>
+    internal class ControlFactory : IControlFactory
     {
         private static readonly Type ControlInterfaceType = typeof(IControl);
 
@@ -29,6 +28,7 @@
         private readonly IList<IControlStrategyResolver> strategyResolvers;
         private readonly ISet<IControlStrategyResolver> processedStrategyResolvers;
         private readonly IServiceProvider serviceProvider;
+        private readonly IEventAggregator eventAggregator;
         private readonly ILogger<ControlFactory> logger;
 
         private IEnumerable<Type> assemblyTypes;
@@ -43,15 +43,20 @@
         /// <param name="assemblyProviders">The control assembly provider(s).</param>
         /// <param name="strategyResolvers">The control strategy resolver(s).</param>
         /// <param name="serviceProvider">The service provider.</param>
-        /// <param name="mediator">The mediator.</param>
+        /// <param name="eventAggregator">The event aggregator.</param>
         /// <param name="logger">The logger.</param>
-        public ControlFactory(IEnumerable<IControlStrategyAssemblyProvider> assemblyProviders, IEnumerable<IControlStrategyResolver> strategyResolvers, IServiceProvider serviceProvider, ILogger<ControlFactory> logger = null)
+        public ControlFactory(IEnumerable<IControlStrategyAssemblyProvider> assemblyProviders, IEnumerable<IControlStrategyResolver> strategyResolvers, IServiceProvider serviceProvider, IEventAggregator eventAggregator, ILogger<ControlFactory> logger = null)
         {
             this.assemblyProviders = assemblyProviders?.ToList() ?? throw new ArgumentNullException(nameof(assemblyProviders));
             this.strategyResolvers = strategyResolvers?.ToList() ?? throw new ArgumentNullException(nameof(strategyResolvers));
             this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            this.eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
             this.logger = logger;
+
             this.processedStrategyResolvers = new HashSet<IControlStrategyResolver>();
+
+            this.eventAggregator.Subscribe<AppInitializedEvent>(this.OnAppInitialize);
+            this.eventAggregator.Subscribe<ResolverReadyEvent>(this.OnResolverReady);
         }
 
         private IEnumerable<Type> AssemblyTypes
@@ -169,18 +174,16 @@
             return (TControl)ActivatorUtilities.CreateInstance(this.serviceProvider, strategyType, parameters.ToArray());
         }
 
-        /// <inheritdoc/>
-        public async Task Handle(AppInitializedNotification notification, CancellationToken cancellationToken)
+        private Task OnResolverReady(ResolverReadyEvent notification)
         {
-            this.redirectionInfo = await this.GetControlRedirectionInfoAsync(notification.HomePage.Page);
-        }
-
-        /// <inheritdoc/>
-        public Task Handle(ControlStrategyResolverReadyNotification notification, CancellationToken cancellationToken)
-        {
-            this.ProcessControlStrategyResolver(notification.ControlStrategyResolver);
+            this.ProcessControlStrategyResolver(notification.Resolver);
 
             return Task.CompletedTask;
+        }
+
+        private async Task OnAppInitialize(AppInitializedEvent @event)
+        {
+            this.redirectionInfo = await this.GetControlRedirectionInfoAsync(@event.HomePage.Page);
         }
 
         private void ProcessControlStrategyResolver(IControlStrategyResolver resolver)

@@ -13,6 +13,6 @@
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task LoginAsync(string username, string password);
+        Task<IModelDrivenAppPage> LoginAsync(string username, string password);
     }
 }

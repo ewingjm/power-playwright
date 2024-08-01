@@ -9,11 +9,6 @@
     public interface IControlStrategyResolver
     {
         /// <summary>
-        /// An event that is fired when the ready state of the control strategy resolver is changed.
-        /// </summary>
-        event EventHandler ReadyStateChanged;
-
-        /// <summary>
         /// Gets a value indicating whether whether or not the strategy resolver is ready to resolve controls.
         /// </summary>
         bool IsReady { get; }

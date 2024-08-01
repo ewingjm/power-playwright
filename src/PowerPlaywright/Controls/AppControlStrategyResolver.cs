@@ -2,19 +2,18 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading;
     using System.Threading.Tasks;
-    using MediatR;
     using Microsoft.Extensions.Logging;
+    using PowerPlaywright.Events;
     using PowerPlaywright.Model.Controls;
     using PowerPlaywright.Notifications;
 
     /// <summary>
     /// A base class for control strategy resolvers that initialise on app load.
     /// </summary>
-    internal abstract class AppControlStrategyResolver : IControlStrategyResolver, INotificationHandler<AppInitializedNotification>
+    internal abstract class AppControlStrategyResolver : IControlStrategyResolver
     {
-        private readonly IMediator mediator;
+        private readonly IEventAggregator eventAggregator;
 
         private bool isReady;
 
@@ -23,14 +22,13 @@
         /// </summary>
         /// <param name="mediator">The mediator.</param>
         /// <param name="logger">The logger.</param>
-        public AppControlStrategyResolver(IMediator mediator, ILogger logger)
+        public AppControlStrategyResolver(IEventAggregator mediator, ILogger logger)
         {
-            this.mediator = mediator;
+            this.eventAggregator = mediator;
             this.Logger = logger;
-        }
 
-        /// <inheritdoc/>
-        public event EventHandler ReadyStateChanged;
+            this.eventAggregator.Subscribe<AppInitializedEvent>(this.InitialiseInternal);
+        }
 
         /// <inheritdoc/>
         public bool IsReady => this.isReady;
@@ -41,17 +39,6 @@
         protected ILogger Logger { get; }
 
         /// <inheritdoc/>
-        public async Task Handle(AppInitializedNotification notification, CancellationToken cancellationToken)
-        {
-            await this.Initialise(notification);
-            this.isReady = true;
-
-            this.ReadyStateChanged.Invoke(this, new EventArgs());
-
-            await this.mediator.Publish(new ControlStrategyResolverReadyNotification(this), cancellationToken);
-        }
-
-        /// <inheritdoc/>
         public abstract bool IsResolvable(Type controlType);
 
         /// <inheritdoc/>
@@ -60,8 +47,16 @@
         /// <summary>
         /// Initialise the control strategy resolver.
         /// </summary>
-        /// <param name="notification">The event.</param>
+        /// <param name="event">The event.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected abstract Task Initialise(AppInitializedNotification notification);
+        protected abstract Task Initialise(AppInitializedEvent @event);
+
+        private async Task InitialiseInternal(AppInitializedEvent @event)
+        {
+            await this.Initialise(@event);
+            this.isReady = true;
+
+            await this.eventAggregator.PublishAsync(new ResolverReadyEvent(this));
+        }
     }
 }

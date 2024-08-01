@@ -1,18 +1,17 @@
-﻿namespace PowerPlaywright.Notifications
+﻿namespace PowerPlaywright.Events
 {
-    using MediatR;
     using PowerPlaywright.Pages;
 
     /// <summary>
     /// A notification that is published when the app is first initialised.
     /// </summary>
-    public class AppInitializedNotification : INotification
+    internal class AppInitializedEvent
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AppInitializedNotification"/> class.
+        /// Initializes a new instance of the <see cref="AppInitializedEvent"/> class.
         /// </summary>
         /// <param name="homePage">The home page.</param>
-        public AppInitializedNotification(IModelDrivenAppPage homePage)
+        public AppInitializedEvent(IModelDrivenAppPage homePage)
         {
             this.HomePage = homePage;
         }

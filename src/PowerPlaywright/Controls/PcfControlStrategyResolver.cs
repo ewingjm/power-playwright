@@ -5,11 +5,10 @@
     using System.Linq;
     using System.Reflection;
     using System.Threading.Tasks;
-    using MediatR;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
+    using PowerPlaywright.Events;
     using PowerPlaywright.Model.Controls.Pcf;
-    using PowerPlaywright.Notifications;
 
     /// <summary>
     /// A strategy resolver for PCF controls.
@@ -21,10 +20,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="PcfControlStrategyResolver"/> class.
         /// </summary>
-        /// <param name="mediator">The mediator.</param>
+        /// <param name="eventAggregator">The event aggregator.</param>
         /// <param name="logger">The logger.</param>
-        public PcfControlStrategyResolver(IMediator mediator, ILogger<PcfControlStrategyResolver> logger = null)
-            : base(mediator, logger)
+        public PcfControlStrategyResolver(IEventAggregator eventAggregator, ILogger<PcfControlStrategyResolver> logger = null)
+            : base(eventAggregator, logger)
         {
         }
 
@@ -61,9 +60,9 @@
         }
 
         /// <inheritdoc/>
-        protected override async Task Initialise(AppInitializedNotification notification)
+        protected override async Task Initialise(AppInitializedEvent @event)
         {
-            this.controlVersions = await this.GetControlVesions(notification.HomePage.Page);
+            this.controlVersions = await this.GetControlVesions(@event.HomePage.Page);
         }
 
         private async Task<IDictionary<string, Version>> GetControlVesions(IPage page)

@@ -25,9 +25,9 @@
         private ILoginControl LoginControl => this.loginControl ?? (this.loginControl = this.ControlFactory.CreateInstance<ILoginControl>(this.Page));
 
         /// <inheritdoc/>
-        public async Task LoginAsync(string username, string password)
+        public Task<IModelDrivenAppPage> LoginAsync(string username, string password)
         {
-            await this.LoginControl.LoginAsync(username, password);
+            return this.LoginControl.LoginAsync(username, password);
         }
     }
 }

@@ -13,9 +13,6 @@
     internal class ExternalControlStrategyResolver : IControlStrategyResolver
     {
         /// <inheritdoc/>
-        public event EventHandler ReadyStateChanged;
-
-        /// <inheritdoc/>
         public bool IsReady => true;
 
         /// <inheritdoc/>

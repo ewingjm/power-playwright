@@ -1,9 +1,11 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.External
 {
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
     using PowerPlaywright.Model.Controls;
     using PowerPlaywright.Model.Controls.External;
+    using PowerPlaywright.Pages;
 
     /// <summary>
     /// Login control strategy.
@@ -11,6 +13,9 @@
     [ExternalControlStrategy(1)]
     public class LoginControl : Control, ILoginControl
     {
+        private readonly IPageFactory pageFactory;
+        private readonly ILogger<LoginControl> logger;
+
         private readonly ILocator usernameInput;
         private readonly ILocator nextButton;
         private readonly ILocator passwordInput;
@@ -20,10 +25,14 @@
         /// Initializes a new instance of the <see cref="LoginControl"/> class.
         /// </summary>
         /// <param name="page">The page.</param>
+        /// <param name="pageFactory">The page factory.</param>
         /// <param name="logger">The logger.</param>
-        public LoginControl(IPage page)
+        public LoginControl(IPage page, IPageFactory pageFactory, ILogger<LoginControl> logger = null)
             : base(page)
         {
+            this.pageFactory = pageFactory ?? throw new System.ArgumentNullException(nameof(pageFactory));
+            this.logger = logger;
+
             this.usernameInput = this.Page.Locator("input[type=email]");
             this.nextButton = this.Page.Locator("input[type=submit]");
             this.passwordInput = this.Page.Locator("input[type=password]");
@@ -31,7 +40,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task LoginAsync(string username, string password)
+        public async Task<IModelDrivenAppPage> LoginAsync(string username, string password)
         {
             await this.usernameInput.FillAsync(username);
             await this.nextButton.ClickAsync();
@@ -43,6 +52,10 @@
             {
                 await this.staySignedInButton.ClickAsync();
             }
+
+            await this.Page.WaitForURLAsync("**/main.aspx*");
+
+            return await this.pageFactory.CreateInstanceAsync(this.Page);
         }
     }
 }

@@ -2,13 +2,12 @@ namespace PowerPlaywright
 {
     using System;
     using System.Threading.Tasks;
-    using MediatR;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
     using PowerPlaywright.Controls;
+    using PowerPlaywright.Events;
     using PowerPlaywright.Model.Controls;
-    using PowerPlaywright.Notifications;
     using PowerPlaywright.Pages;
 
     /// <summary>
@@ -18,7 +17,7 @@ namespace PowerPlaywright
     {
         private readonly IBrowserContext browserContext;
         private readonly IPageFactory pageFactory;
-        private readonly IMediator mediator;
+        private readonly IEventAggregator eventAggregator;
         private readonly ILogger<ModelDrivenApp> logger;
 
         private bool loggedIn;
@@ -30,11 +29,11 @@ namespace PowerPlaywright
         /// <param name="pageFactory">The page factory.</param>
         /// <param name="mediator">The event aggregator.</param>
         /// <param name="logger">The logger.</param>
-        internal ModelDrivenApp(IBrowserContext browserContext, IPageFactory pageFactory, IMediator mediator, ILogger<ModelDrivenApp> logger = null)
+        internal ModelDrivenApp(IBrowserContext browserContext, IPageFactory pageFactory, IEventAggregator mediator, ILogger<ModelDrivenApp> logger = null)
         {
             this.browserContext = browserContext ?? throw new ArgumentNullException(nameof(browserContext));
             this.pageFactory = pageFactory ?? throw new ArgumentNullException(nameof(pageFactory));
-            this.mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.eventAggregator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             this.logger = logger;
         }
 
@@ -120,29 +119,30 @@ namespace PowerPlaywright
             var currentPage = await this.pageFactory
                 .CreateInstanceAsync(page);
 
+            IModelDrivenAppPage homePage;
+
             if (currentPage is LoginPage loginPage)
             {
-                await loginPage.LoginAsync(username, password);
+                homePage = await loginPage.LoginAsync(username, password);
+            }
+            else
+            {
+                homePage = await this.pageFactory.CreateInstanceAsync(page);
             }
 
             this.loggedIn = true;
 
-            var appPage = await this.pageFactory.CreateInstanceAsync(page);
+            await this.eventAggregator.PublishAsync(new AppInitializedEvent(homePage));
 
-            await this.mediator.Publish(new AppInitializedNotification(appPage));
-
-            return appPage;
+            return homePage;
         }
 
         private static ServiceProvider ConfigureServices(IBrowserContext browserContext)
         {
             return new ServiceCollection()
                 .AddLogging()
-                .AddMediatR(cfg =>
-                {
-                    cfg.RegisterServicesFromAssembly(typeof(ModelDrivenApp).Assembly);
-                })
-                .AddSingleton<ModelDrivenApp, ModelDrivenApp>(sp => new ModelDrivenApp(browserContext, sp.GetRequiredService<IPageFactory>(), sp.GetRequiredService<IMediator>(), sp.GetService<ILogger<ModelDrivenApp>>()))
+                .AddSingleton<ModelDrivenApp, ModelDrivenApp>(sp => new ModelDrivenApp(browserContext, sp.GetRequiredService<IPageFactory>(), sp.GetRequiredService<IEventAggregator>(), sp.GetService<ILogger<ModelDrivenApp>>()))
+                .AddSingleton<IEventAggregator, EventAggregator>()
                 .AddSingleton<IControlStrategyAssemblyProvider, LocalControlAssemblyProviders>()
                 .AddSingleton<IControlStrategyResolver, PcfControlStrategyResolver>()
                 .AddSingleton<IControlStrategyResolver, ExternalControlStrategyResolver>()

@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using PowerPlaywright.Model.Controls;
+    using PowerPlaywright.Pages;
 
     /// <summary>
     /// A login control.
@@ -15,6 +16,6 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>
-        Task LoginAsync(string username, string password);
+        Task<IModelDrivenAppPage> LoginAsync(string username, string password);
     }
 }
