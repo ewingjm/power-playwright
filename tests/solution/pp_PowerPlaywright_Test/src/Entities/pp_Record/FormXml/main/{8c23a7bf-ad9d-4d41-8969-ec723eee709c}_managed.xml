@@ -1,0 +1,950 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{8c23a7bf-ad9d-4d41-8969-ec723eee709c}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form headerdensity="HighWithControls">
+      <tabs>
+        <tab verticallayout="true" id="{c2326075-2497-46e5-bc35-07e4c9cc221b}" IsUserDefined="1" name="tab_A">
+          <labels>
+            <label description="Tab A" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showlabel="false" showbar="false" IsUserDefined="0" id="{1c3fde00-f417-45bf-a8f9-ff86f47c27f7}" name="tab_A_section_A">
+                  <labels>
+                    <label description="Section A" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{e4b2581b-478f-47ee-b231-8d6b91a5915d}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c0861b86-7da2-4b21-9f8e-a80484d67e91}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_choice" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="pp_choice" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{ea3c36d4-ca4f-49e4-aaf4-32b1d4cc5f6b}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Custom (CC_OptionSet_Name)" languagecode="1033" />
+                        </labels>
+                        <control id="pp_choice" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" datafieldname="pp_choice" uniqueid="{0e0eceb4-770f-4101-9797-b3c4a5184edb}" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{0ab48bc2-bc2b-4b6d-9bdf-f3a4de8b0e32}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_wholenumbernone" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" datafieldname="pp_wholenumbernone" uniqueid="{176e4fe5-5c6f-4a19-83a4-f95af4aa55aa}" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{7bf65a4b-9b4b-4fb1-9326-4d65546e4c65}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_choices" classid="{4AA28AB7-9C13-4F57-A73D-AD894D048B5F}" datafieldname="pp_choices" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{af272254-f468-4ef6-a12e-75cead2685c2}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_singlelineoftexttext" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="pp_singlelineoftexttext" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{a1d2dc1d-cc8f-4f43-b27a-8f3a369dc126}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_currency" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="pp_currency" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{8b78708d-764c-4efa-96ce-827e4d14f0ff}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_dateandtimedateandtime" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="pp_dateandtimedateandtime" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{1cfd54e7-5905-4a8a-82f4-16e978c7b67a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_dateandtimedateonly" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="pp_dateandtimedateonly" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{6ea58aec-12a6-4791-87fb-bd6a90ec59d1}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_decimal" classid="{C3EFE0C3-0EC6-42BE-8349-CBD9079DFD8E}" datafieldname="pp_decimal" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{73a6f3b7-9da8-4249-9945-01fe4ed31521}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_file" classid="{0A7FF475-B016-4687-9CE5-042BFDBD6519}" datafieldname="pp_file" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{3db307db-0fd5-495d-8f84-eab021b16413}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_float" classid="{0D2C745A-E5A8-4C8F-BA63-C6D3BB604660}" datafieldname="pp_float" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{b8b4b842-4b27-446b-a28a-e72796f0e185}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_image" classid="{7E548B0D-209C-477B-9DCD-F0F44472381D}" datafieldname="pp_image" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{c90234b7-5632-4fba-8508-9ddf4e74fb79}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_multiplelinesoftexttext" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="pp_multiplelinesoftexttext" disabled="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="tab_A_section_B" id="2fda7ffe-d5b9-442e-893c-9abcde07623b" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="11" labelwidth="115">
+                  <labels>
+                    <label description="Section B" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{626c0209-d2db-4455-a5ae-7e6eaea9474c}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_wholenumberduration" classid="{AA987274-CE4E-4271-A803-66164311A958}" datafieldname="pp_wholenumberduration" disabled="false" />
+                      </cell>
+                      <cell id="{b61d0165-e01b-4a9b-a8eb-b820ae1e8a62}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_singlelineoftexttickersymbol" classid="{1E1FC551-F7A8-43AF-AC34-A8DC35C7B6D4}" datafieldname="pp_singlelineoftexttickersymbol" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{bc2d4370-56c2-4b25-b3fd-0374c07fae87}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_wholenumberlanguagecode" classid="{671A9387-CA5A-4D1E-8AB7-06E39DDCF6B5}" datafieldname="pp_wholenumberlanguagecode" disabled="false" />
+                      </cell>
+                      <cell id="{008a82ae-8b4a-447e-9740-4102982fb9b9}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_singlelineoftextemail" classid="{ADA2203E-B4CD-49BE-9DDF-234642B43B52}" datafieldname="pp_singlelineoftextemail" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{62190de7-d0a9-4a4a-ada0-bc542fd53cef}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_wholenumbernone" classid="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}" datafieldname="pp_wholenumbernone" disabled="false" />
+                      </cell>
+                      <cell id="{606662f8-f42b-493c-8171-f085326ccae7}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_singlelineoftextphonenumber" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="pp_singlelineoftextphonenumber" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{4f1691fc-2629-4319-ad8c-0439c86a9801}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Custom (Number Input)" languagecode="1033" />
+                        </labels>
+                        <control id="pp_wholenumbernone" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" datafieldname="pp_wholenumbernone" uniqueid="{21aa9021-dd4b-4338-a01b-a77dc2979de2}" />
+                      </cell>
+                      <cell id="{3a9a3382-f6d9-4f1d-9f47-e52e76db023a}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_singlelineoftexttextarea" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="pp_singlelineoftexttextarea" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{1957287f-d4b7-4fdf-af1a-4bacff5b2e85}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Custom (Star Rating)" languagecode="1033" />
+                        </labels>
+                        <control id="pp_wholenumbernone" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" datafieldname="pp_wholenumbernone" uniqueid="{efdd7704-e832-4ccf-a377-0674a96ba01f}" />
+                      </cell>
+                      <cell id="{e41a1996-39bb-498f-abce-11178c2442fc}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_singlelineoftexturl" classid="{71716B6C-711E-476C-8AB8-5D11542BFB47}" datafieldname="pp_singlelineoftexturl" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{35f43984-b399-4fb3-9d80-54f1ae40cd61}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_wholenumbertimezone" classid="{7C624A0B-F59E-493D-9583-638D34759266}" datafieldname="pp_wholenumbertimezone" disabled="false" />
+                      </cell>
+                      <cell locklevel="0" id="{5edce3db-6d55-42e9-8bad-0d72a2e339cf}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell id="{aa39595c-77ee-482f-b889-d0a832c8b1e4}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_yesno" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="pp_yesno" disabled="false" />
+                      </cell>
+                      <cell locklevel="0" id="{170a9930-82c7-4d1c-bd6d-a8159d4943bd}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{89bc6fef-1edd-4c8e-b591-fbf212196454}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Custom (Toggle)" languagecode="1033" />
+                        </labels>
+                        <control id="pp_yesno" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" datafieldname="pp_yesno" uniqueid="{dda30681-9be0-435a-a958-c9161060ebf7}" />
+                      </cell>
+                      <cell locklevel="0" id="{0737b1ec-9c38-4a73-8943-4eec7222efe7}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{f5ca67ed-f9e7-41d9-b29b-c3fe79dedafa}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Custom (Checkbox)" languagecode="1033" />
+                        </labels>
+                        <control id="pp_yesno" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" datafieldname="pp_yesno" uniqueid="{cf48af8f-bb4b-4505-94f9-bf7460717062}" />
+                      </cell>
+                      <cell locklevel="0" id="{4f9fe477-74cf-40d8-9341-997dfd6e13af}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+                <section name="tab_A_section_C" id="0954aded-57cc-46e4-a2cd-0f980c0cc7cd" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="Section C" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell id="{e1b67ee9-b8aa-4044-9083-1e171f644639}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_relatedrecord" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pp_relatedrecord" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{fc372fde-681d-4008-a342-73d3f60cf364}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control id="pp_relatedrecord" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" datafieldname="pp_relatedrecord" uniqueid="{ecc48bba-99e1-4f2b-b82e-8b32c9125165}">
+                          <parameters>
+                            <DefaultViewId>{10F2FEDD-F2FA-495D-BFCF-982755FA01A6}</DefaultViewId>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{171ee88b-836b-4add-84f1-e75b408f7cce}" rowspan="4" colspan="1" auto="false" showlabel="true">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="subgrid_relatedrecords" classid="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>true</EnableQuickFind>
+                            <EnableViewPicker>true</EnableViewPicker>
+                            <EnableChartPicker>true</EnableChartPicker>
+                            <ChartGridMode>All</ChartGridMode>
+                            <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                            <ViewId>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewId>
+                            <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{a3c05b14-dc95-4a85-b512-6297b28e3a58}" colspan="1" rowspan="6" showlabel="true">
+                        <labels>
+                          <label description="Editable Grid" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="editablegrid_RelatedRecords" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" uniqueid="{5f0f64ed-f686-452d-b5e9-1498ea580925}">
+                          <parameters>
+                            <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                            <ViewId>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewId>
+                            <EnableViewPicker>true</EnableViewPicker>
+                            <IsUserView>false</IsUserView>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
+                            <ViewIds>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewIds>
+                            <ChartGridMode>Grid</ChartGridMode>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab name="tab_B" id="2606ccfa-c6c4-488a-bb8c-15b9b25a9b40" IsUserDefined="0" locklevel="0" showlabel="true">
+          <labels>
+            <label description="Tab B" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="50%">
+              <sections>
+                <section name="tab_B_section_A" id="27100a0d-f6b1-4665-a2f6-95a25332f3d8" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="Section A" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{abd8c989-0707-4fdf-bd82-bac41253ff63}" rowspan="15" colspan="1">
+                        <labels>
+                          <label description="Note Text" languagecode="1033" />
+                        </labels>
+                        <control id="notescontrol" classid="{06375649-C143-495E-A496-C962E5B4488E}" disabled="false" />
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+            <column width="50%">
+              <sections>
+                <section name="tab_B_section_B" id="9ba8e8fb-fe46-47f7-8d63-a08970222291" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="1" labelwidth="115">
+                  <labels>
+                    <label description="Section B" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{c4bb991d-bfbd-47d0-a8f8-eeacdef6da1f}" showlabel="true" rowspan="6" colspan="1">
+                        <labels>
+                          <label description="IFrame Control" languagecode="1033" />
+                        </labels>
+                        <control id="IFRAME_pp_google" classid="{FD2A7985-3187-444E-908D-6624B21F69C0}">
+                          <parameters>
+                            <PassParameters>false</PassParameters>
+                            <Security>false</Security>
+                            <Scrolling>auto</Scrolling>
+                            <Border>true</Border>
+                            <Url>https://www.google.com</Url>
+                          </parameters>
+                        </control>
+                        <events>
+                          <event name="onload" application="false" active="false" />
+                        </events>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+      <header id="{2e68cafa-0d64-449c-bec5-832c9fb81137}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{ee936c08-77f2-47ab-bfbf-ac289b0b8afa}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{e1fb3633-6681-4259-911b-b2c10239d306}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{d437ec2a-02bc-4f19-992a-bcedcc4fed8b}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{c6dfd34e-2285-4bef-ba60-c6e04710b00d}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_statecode" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="statecode" disabled="false" />
+            </cell>
+            <cell id="{cd91322a-3877-4fbe-a46a-8a36260e46ad}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_statuscode" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="statuscode" disabled="false" />
+            </cell>
+            <cell id="{46dbaa19-1756-457b-8c22-43492de3a9ac}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_choice" classid="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}" datafieldname="pp_choice" disabled="false" />
+            </cell>
+            <cell id="{5b0cba64-f682-453e-86e5-6798ceddad54}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_currency" classid="{533B9E00-756B-4312-95A0-DC888637AC78}" datafieldname="pp_currency" disabled="false" />
+            </cell>
+            <cell id="{f9029a31-6c8c-4e6f-a7d5-9b27a9093df8}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_dateandtimedateandtime" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="pp_dateandtimedateandtime" disabled="false" />
+            </cell>
+            <cell id="{83ad4631-c7ab-4f09-9841-fa527094a32f}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_dateandtimedateonly" classid="{5B773807-9FB2-42DB-97C3-7A91EFF8ADFF}" datafieldname="pp_dateandtimedateonly" disabled="false" />
+            </cell>
+            <cell id="{aee00f3e-4a25-414d-b72b-e2436dfb887c}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_decimal" classid="{C3EFE0C3-0EC6-42BE-8349-CBD9079DFD8E}" datafieldname="pp_decimal" disabled="false" />
+            </cell>
+            <cell id="{aeeedcc3-9e0a-4ab3-98f3-9fba8294fc73}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_file" classid="{0A7FF475-B016-4687-9CE5-042BFDBD6519}" datafieldname="pp_file" disabled="false" />
+            </cell>
+            <cell id="{a35fe64e-298f-48f8-9bce-dae8e0524c68}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_float" classid="{0D2C745A-E5A8-4C8F-BA63-C6D3BB604660}" datafieldname="pp_float" disabled="false" />
+            </cell>
+            <cell id="{9d5a1019-86cc-4d39-bf48-d36f339903e6}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_image" classid="{7E548B0D-209C-477B-9DCD-F0F44472381D}" datafieldname="pp_image" disabled="false" />
+            </cell>
+            <cell id="{fec209d7-6997-4592-acce-83994c8b71d8}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_multiplelinesoftexttext" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="pp_multiplelinesoftexttext" disabled="false" />
+            </cell>
+            <cell id="{c51bd60b-fc5f-4ae1-a99b-ebf16bb27d88}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_singlelineoftexttickersymbol" classid="{1E1FC551-F7A8-43AF-AC34-A8DC35C7B6D4}" datafieldname="pp_singlelineoftexttickersymbol" disabled="false" />
+            </cell>
+            <cell id="{f01037c2-d30b-4814-a979-5888dc190fc4}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_singlelineoftextemail" classid="{ADA2203E-B4CD-49BE-9DDF-234642B43B52}" datafieldname="pp_singlelineoftextemail" disabled="false" />
+            </cell>
+            <cell id="{e62d5bc3-ebe0-400a-a2b7-b11bb6db9ba1}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_singlelineoftextphonenumber" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="pp_singlelineoftextphonenumber" disabled="false" />
+            </cell>
+            <cell id="{2ec98b5c-cf99-4ea2-a5d4-5d5e889222c3}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_singlelineoftexttext" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="pp_singlelineoftexttext" disabled="false" />
+            </cell>
+            <cell id="{b008015a-d10e-472a-a2f0-fc6746bffd73}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_singlelineoftexttextarea" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="pp_singlelineoftexttextarea" disabled="false" />
+            </cell>
+            <cell id="{d2e9bd7e-a238-4341-9c9d-5ae61801d8e7}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_singlelineoftexturl" classid="{71716B6C-711E-476C-8AB8-5D11542BFB47}" datafieldname="pp_singlelineoftexturl" disabled="false" />
+            </cell>
+            <cell id="{09a91ac3-324d-4996-bde6-d222148067a9}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_wholenumberduration" classid="{AA987274-CE4E-4271-A803-66164311A958}" datafieldname="pp_wholenumberduration" disabled="false" />
+            </cell>
+            <cell id="{276fe844-a4ef-48a1-8b40-17c6a2674597}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_wholenumberlanguagecode" classid="{671A9387-CA5A-4D1E-8AB7-06E39DDCF6B5}" datafieldname="pp_wholenumberlanguagecode" disabled="false" />
+            </cell>
+            <cell id="{545fc964-166c-4275-9947-5b678aa916a0}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_wholenumbernone" classid="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}" datafieldname="pp_wholenumbernone" disabled="false" />
+            </cell>
+            <cell id="{59d86395-821b-414c-974b-eb6f46a55545}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_wholenumbertimezone" classid="{7C624A0B-F59E-493D-9583-638D34759266}" datafieldname="pp_wholenumbertimezone" disabled="false" />
+            </cell>
+            <cell id="{569e465b-d151-40cb-a1a0-eee5eb0b282d}" locklevel="0" colspan="1" rowspan="1">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+              <control id="header_pp_yesno" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="pp_yesno" disabled="false" />
+            </cell>
+          </row>
+        </rows>
+      </header>
+      <footer id="{47466c6a-a280-41dc-a432-51fc2a10c38c}" celllabelposition="Top" columns="111" labelwidth="115" celllabelalignment="Left">
+        <rows>
+          <row>
+            <cell id="{15c53d1f-54af-4130-81c6-437c0c92b903}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{2b69d657-6a9e-432b-b705-cef398f1b525}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+            <cell id="{bc9a05d3-7468-41c8-b553-c751b3019373}" showlabel="false">
+              <labels>
+                <label description="" languagecode="1033" />
+              </labels>
+            </cell>
+          </row>
+        </rows>
+      </footer>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
+      <controlDescriptions>
+        <controlDescription forControl="{0e0eceb4-770f-4101-9797-b3c4a5184edb}">
+          <customControl id="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}">
+            <parameters>
+              <datafieldname>pp_choice</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl id="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}">
+            <parameters>
+              <datafieldname>pp_choice</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl formFactor="2" name="MscrmControls.OptionSet.OptionSetControl">
+            <parameters>
+              <value type="OptionSet">pp_choice</value>
+            </parameters>
+          </customControl>
+          <customControl formFactor="0" name="MscrmControls.OptionSet.OptionSetControl">
+            <parameters>
+              <value type="OptionSet">pp_choice</value>
+            </parameters>
+          </customControl>
+          <customControl formFactor="1" name="MscrmControls.OptionSet.OptionSetControl">
+            <parameters>
+              <value type="OptionSet">pp_choice</value>
+            </parameters>
+          </customControl>
+        </controlDescription>
+        <controlDescription forControl="{cf48af8f-bb4b-4505-94f9-bf7460717062}">
+          <customControl id="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}">
+            <parameters>
+              <datafieldname>pp_yesno</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl id="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}">
+            <parameters>
+              <datafieldname>pp_yesno</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl formFactor="0" name="MscrmControls.FieldControls.CheckboxControl">
+            <parameters>
+              <value type="TwoOptions">pp_yesno</value>
+            </parameters>
+          </customControl>
+          <customControl formFactor="2" name="MscrmControls.FieldControls.CheckboxControl">
+            <parameters>
+              <value type="TwoOptions">pp_yesno</value>
+            </parameters>
+          </customControl>
+          <customControl formFactor="1" name="MscrmControls.FieldControls.CheckboxControl">
+            <parameters>
+              <value type="TwoOptions">pp_yesno</value>
+            </parameters>
+          </customControl>
+        </controlDescription>
+        <controlDescription forControl="{21aa9021-dd4b-4338-a01b-a77dc2979de2}">
+          <customControl id="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}">
+            <parameters>
+              <datafieldname>pp_wholenumbernone</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl id="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}">
+            <parameters>
+              <datafieldname>pp_wholenumbernone</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl formFactor="0" name="MscrmControls.NumberInput.NumberInputControl">
+            <parameters>
+              <value type="Currency">pp_wholenumbernone</value>
+              <step type="Whole.None" static="true">1</step>
+            </parameters>
+          </customControl>
+          <customControl formFactor="2" name="MscrmControls.NumberInput.NumberInputControl">
+            <parameters>
+              <value type="Currency">pp_wholenumbernone</value>
+              <step type="Whole.None" static="true">1</step>
+            </parameters>
+          </customControl>
+          <customControl formFactor="1" name="MscrmControls.NumberInput.NumberInputControl">
+            <parameters>
+              <value type="Currency">pp_wholenumbernone</value>
+              <step type="Whole.None" static="true">1</step>
+            </parameters>
+          </customControl>
+        </controlDescription>
+        <controlDescription forControl="{176e4fe5-5c6f-4a19-83a4-f95af4aa55aa}">
+          <customControl id="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}">
+            <parameters>
+              <datafieldname>pp_wholenumbernone</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl id="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}">
+            <parameters>
+              <datafieldname>pp_wholenumbernone</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl formFactor="0" name="MscrmControls.Rating.StarRatingControl">
+            <parameters>
+              <value type="Whole.None">pp_wholenumbernone</value>
+              <max type="Enum" static="true">5</max>
+            </parameters>
+          </customControl>
+          <customControl formFactor="2" name="MscrmControls.Rating.StarRatingControl">
+            <parameters>
+              <value type="Whole.None">pp_wholenumbernone</value>
+              <max type="Enum" static="true">5</max>
+            </parameters>
+          </customControl>
+          <customControl formFactor="1" name="MscrmControls.Rating.StarRatingControl">
+            <parameters>
+              <value type="Whole.None">pp_wholenumbernone</value>
+              <max type="Enum" static="true">5</max>
+            </parameters>
+          </customControl>
+        </controlDescription>
+        <controlDescription forControl="{efdd7704-e832-4ccf-a377-0674a96ba01f}">
+          <customControl id="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}">
+            <parameters>
+              <datafieldname>pp_wholenumbernone</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl id="{C6D124CA-7EDA-4A60-AEA9-7FB8D318B68F}">
+            <parameters>
+              <datafieldname>pp_wholenumbernone</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl formFactor="0" name="MscrmControls.Rating.StarRatingControl">
+            <parameters>
+              <value type="Whole.None">pp_wholenumbernone</value>
+              <max type="Enum" static="true">5</max>
+            </parameters>
+          </customControl>
+          <customControl formFactor="2" name="MscrmControls.Rating.StarRatingControl">
+            <parameters>
+              <value type="Whole.None">pp_wholenumbernone</value>
+              <max type="Enum" static="true">5</max>
+            </parameters>
+          </customControl>
+          <customControl formFactor="1" name="MscrmControls.Rating.StarRatingControl">
+            <parameters>
+              <value type="Whole.None">pp_wholenumbernone</value>
+              <max type="Enum" static="true">5</max>
+            </parameters>
+          </customControl>
+        </controlDescription>
+        <controlDescription forControl="{dda30681-9be0-435a-a958-c9161060ebf7}">
+          <customControl id="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}">
+            <parameters>
+              <datafieldname>pp_yesno</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl id="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}">
+            <parameters>
+              <datafieldname>pp_yesno</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl formFactor="0" name="MscrmControls.FieldControls.ToggleControl">
+            <parameters>
+              <value type="TwoOptions">pp_yesno</value>
+            </parameters>
+          </customControl>
+          <customControl formFactor="2" name="MscrmControls.FieldControls.ToggleControl">
+            <parameters>
+              <value type="TwoOptions">pp_yesno</value>
+            </parameters>
+          </customControl>
+          <customControl formFactor="1" name="MscrmControls.FieldControls.ToggleControl">
+            <parameters>
+              <value type="TwoOptions">pp_yesno</value>
+            </parameters>
+          </customControl>
+        </controlDescription>
+        <controlDescription forControl="{5f0f64ed-f686-452d-b5e9-1498ea580925}">
+          <customControl id="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+            <parameters>
+              <TargetEntityType>pp_relatedrecord</TargetEntityType>
+              <ViewId>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewId>
+              <EnableViewPicker>true</EnableViewPicker>
+              <IsUserView>false</IsUserView>
+              <RecordsPerPage>4</RecordsPerPage>
+            </parameters>
+          </customControl>
+          <customControl id="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+            <parameters>
+              <TargetEntityType>pp_relatedrecord</TargetEntityType>
+              <ViewId>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewId>
+              <EnableViewPicker>true</EnableViewPicker>
+              <IsUserView>false</IsUserView>
+              <RecordsPerPage>4</RecordsPerPage>
+            </parameters>
+          </customControl>
+          <customControl formFactor="0" name="MscrmControls.Grid.GridControl">
+            <parameters>
+              <data-set name="Grid">
+                <ViewId>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewId>
+                <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                <IsUserView>false</IsUserView>
+                <EnableViewPicker>true</EnableViewPicker>
+                <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
+                <FilteredViewIds />
+              </data-set>
+              <data-set name="SubGrid">
+                <ViewId>{59772644-c5f9-4449-ba9b-0a1347bffd25}</ViewId>
+                <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                <IsUserView>false</IsUserView>
+              </data-set>
+              <EnableGroupBy type="Enum" static="true">yes</EnableGroupBy>
+              <EnableEditing type="Enum" static="true">yes</EnableEditing>
+              <ReflowBehavior type="Enum" static="true">GridOnly</ReflowBehavior>
+              <ListLayoutDirection type="Enum" static="true">Vertical</ListLayoutDirection>
+              <EnableSubGridAutoCollapse type="Enum" static="true">false</EnableSubGridAutoCollapse>
+              <EnableFiltering type="Enum" static="true">yes</EnableFiltering>
+              <HideNestedGridColumnHeader type="Enum" static="true">no</HideNestedGridColumnHeader>
+              <EnableJumpBar type="Enum" static="true">yes</EnableJumpBar>
+            </parameters>
+          </customControl>
+          <customControl formFactor="2" name="MscrmControls.Grid.GridControl">
+            <parameters>
+              <data-set name="Grid">
+                <ViewId>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewId>
+                <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                <IsUserView>false</IsUserView>
+                <EnableViewPicker>true</EnableViewPicker>
+                <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
+                <FilteredViewIds />
+              </data-set>
+              <data-set name="SubGrid">
+                <ViewId>{59772644-c5f9-4449-ba9b-0a1347bffd25}</ViewId>
+                <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                <IsUserView>false</IsUserView>
+              </data-set>
+              <EnableGroupBy type="Enum" static="true">yes</EnableGroupBy>
+              <EnableEditing type="Enum" static="true">yes</EnableEditing>
+              <ReflowBehavior type="Enum" static="true">GridOnly</ReflowBehavior>
+              <ListLayoutDirection type="Enum" static="true">Vertical</ListLayoutDirection>
+              <EnableSubGridAutoCollapse type="Enum" static="true">false</EnableSubGridAutoCollapse>
+              <EnableFiltering type="Enum" static="true">yes</EnableFiltering>
+              <HideNestedGridColumnHeader type="Enum" static="true">no</HideNestedGridColumnHeader>
+              <EnableJumpBar type="Enum" static="true">yes</EnableJumpBar>
+            </parameters>
+          </customControl>
+          <customControl formFactor="1" name="MscrmControls.Grid.GridControl">
+            <parameters>
+              <data-set name="Grid">
+                <ViewId>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewId>
+                <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                <IsUserView>false</IsUserView>
+                <EnableViewPicker>true</EnableViewPicker>
+                <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
+                <FilteredViewIds />
+              </data-set>
+              <data-set name="SubGrid">
+                <ViewId>{59772644-c5f9-4449-ba9b-0a1347bffd25}</ViewId>
+                <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                <IsUserView>false</IsUserView>
+              </data-set>
+              <EnableGroupBy type="Enum" static="true">yes</EnableGroupBy>
+              <EnableEditing type="Enum" static="true">yes</EnableEditing>
+              <ReflowBehavior type="Enum" static="true">GridOnly</ReflowBehavior>
+              <ListLayoutDirection type="Enum" static="true">Vertical</ListLayoutDirection>
+              <EnableSubGridAutoCollapse type="Enum" static="true">false</EnableSubGridAutoCollapse>
+              <EnableFiltering type="Enum" static="true">yes</EnableFiltering>
+              <HideNestedGridColumnHeader type="Enum" static="true">no</HideNestedGridColumnHeader>
+              <EnableJumpBar type="Enum" static="true">yes</EnableJumpBar>
+            </parameters>
+          </customControl>
+        </controlDescription>
+        <controlDescription forControl="{ecc48bba-99e1-4f2b-b82e-8b32c9125165}">
+          <customControl id="{270BD3DB-D9AF-4782-9025-509E298DEC0A}">
+            <parameters>
+              <datafieldname>pp_relatedrecord</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl id="{270BD3DB-D9AF-4782-9025-509E298DEC0A}">
+            <parameters>
+              <datafieldname>pp_relatedrecord</datafieldname>
+            </parameters>
+          </customControl>
+          <customControl formFactor="0" name="MscrmControls.ModelForm.ModelFormControl">
+            <parameters>
+              <value>
+                <BindAttribute>pp_relatedrecord</BindAttribute>
+                <DefaultViewId>{10F2FEDD-F2FA-495D-BFCF-982755FA01A6}</DefaultViewId>
+                <FilterRelationshipName></FilterRelationshipName>
+                <DependentAttributeName></DependentAttributeName>
+                <DependentAttributeType></DependentAttributeType>
+                <AvailableViewIds></AvailableViewIds>
+                <AllowFilterOff>false</AllowFilterOff>
+                <DisableQuickFind>false</DisableQuickFind>
+                <DisableViewPicker>false</DisableViewPicker>
+              </value>
+              <QuickForms type="SingleLine.Text" static="true">&lt;QuickForms&gt;&lt;QuickFormIds&gt;&lt;QuickFormId entityname="pp_relatedrecord"&gt;5f106b5e-208c-476b-a097-24eaf30bad44&lt;/QuickFormId&gt;&lt;/QuickFormIds&gt;&lt;/QuickForms&gt;</QuickForms>
+              <SaveMode type="Enum" static="true">0</SaveMode>
+              <EnableHighDensityPageHeader type="Enum" static="true">false</EnableHighDensityPageHeader>
+              <DisplayFormSelector type="Enum" static="true">false</DisplayFormSelector>
+              <AddToRecentItems type="Enum" static="true">false</AddToRecentItems>
+            </parameters>
+          </customControl>
+          <customControl formFactor="2" name="MscrmControls.ModelForm.ModelFormControl">
+            <parameters>
+              <value>
+                <BindAttribute>pp_relatedrecord</BindAttribute>
+                <DefaultViewId>{10F2FEDD-F2FA-495D-BFCF-982755FA01A6}</DefaultViewId>
+                <FilterRelationshipName></FilterRelationshipName>
+                <DependentAttributeName></DependentAttributeName>
+                <DependentAttributeType></DependentAttributeType>
+                <AvailableViewIds></AvailableViewIds>
+                <AllowFilterOff>false</AllowFilterOff>
+                <DisableQuickFind>false</DisableQuickFind>
+                <DisableViewPicker>false</DisableViewPicker>
+              </value>
+              <QuickForms type="SingleLine.Text" static="true">&lt;QuickForms&gt;&lt;QuickFormIds&gt;&lt;QuickFormId entityname="pp_relatedrecord"&gt;5f106b5e-208c-476b-a097-24eaf30bad44&lt;/QuickFormId&gt;&lt;/QuickFormIds&gt;&lt;/QuickForms&gt;</QuickForms>
+              <SaveMode type="Enum" static="true">0</SaveMode>
+              <EnableHighDensityPageHeader type="Enum" static="true">false</EnableHighDensityPageHeader>
+              <DisplayFormSelector type="Enum" static="true">false</DisplayFormSelector>
+              <AddToRecentItems type="Enum" static="true">false</AddToRecentItems>
+            </parameters>
+          </customControl>
+          <customControl formFactor="1" name="MscrmControls.ModelForm.ModelFormControl">
+            <parameters>
+              <value>
+                <BindAttribute>pp_relatedrecord</BindAttribute>
+                <DefaultViewId>{10F2FEDD-F2FA-495D-BFCF-982755FA01A6}</DefaultViewId>
+                <FilterRelationshipName></FilterRelationshipName>
+                <DependentAttributeName></DependentAttributeName>
+                <DependentAttributeType></DependentAttributeType>
+                <AvailableViewIds></AvailableViewIds>
+                <AllowFilterOff>false</AllowFilterOff>
+                <DisableQuickFind>false</DisableQuickFind>
+                <DisableViewPicker>false</DisableViewPicker>
+              </value>
+              <QuickForms type="SingleLine.Text" static="true">&lt;QuickForms&gt;&lt;QuickFormIds&gt;&lt;QuickFormId entityname="pp_relatedrecord"&gt;5f106b5e-208c-476b-a097-24eaf30bad44&lt;/QuickFormId&gt;&lt;/QuickFormIds&gt;&lt;/QuickForms&gt;</QuickForms>
+              <SaveMode type="Enum" static="true">0</SaveMode>
+              <EnableHighDensityPageHeader type="Enum" static="true">false</EnableHighDensityPageHeader>
+              <DisplayFormSelector type="Enum" static="true">false</DisplayFormSelector>
+              <AddToRecentItems type="Enum" static="true">false</AddToRecentItems>
+            </parameters>
+          </customControl>
+        </controlDescription>
+      </controlDescriptions>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>
