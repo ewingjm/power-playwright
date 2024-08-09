@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.Integration
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.Strategies", "src\PowerPlaywright.Strategies\PowerPlaywright.Strategies.csproj", "{5E5E55EB-C7EA-4BFD-A149-C4EBD515606E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.TestApp.Model", "tests\solution\PowerPlaywright.TestApp.Model\PowerPlaywright.TestApp.Model.csproj", "{A3405D67-22D2-4E58-97E7-9686250CD254}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{5E5E55EB-C7EA-4BFD-A149-C4EBD515606E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E5E55EB-C7EA-4BFD-A149-C4EBD515606E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E5E55EB-C7EA-4BFD-A149-C4EBD515606E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3405D67-22D2-4E58-97E7-9686250CD254}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3405D67-22D2-4E58-97E7-9686250CD254}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3405D67-22D2-4E58-97E7-9686250CD254}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3405D67-22D2-4E58-97E7-9686250CD254}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{E36C1F70-834C-4F73-9F04-C4C432DC1D12} = {1A52EE88-8A18-4CBE-8B25-5AD2A34BBD43}
 		{4DC8043D-A725-46C0-8D76-11353B8D3FBE} = {1BFB836D-12D1-4998-BD4A-074F25A29D87}
 		{5E5E55EB-C7EA-4BFD-A149-C4EBD515606E} = {1A52EE88-8A18-4CBE-8B25-5AD2A34BBD43}
+		{A3405D67-22D2-4E58-97E7-9686250CD254} = {1BFB836D-12D1-4998-BD4A-074F25A29D87}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5E7A79E6-9AB7-409B-9A17-2418FFE16E05}
