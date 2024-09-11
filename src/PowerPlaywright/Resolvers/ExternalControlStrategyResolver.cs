@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using PowerPlaywright.Model.Controls.External.Attributes;
+    using PowerPlaywright.Framework.Controls.External.Attributes;
 
     /// <summary>
     /// Resolves control strategies for external controls (<see cref="ExternalControlAttribute"/>).

@@ -7,8 +7,9 @@ namespace PowerPlaywright
     using Microsoft.Playwright;
     using PowerPlaywright.Assemblies;
     using PowerPlaywright.Events;
-    using PowerPlaywright.Model;
-    using PowerPlaywright.Model.Events;
+    using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Events;
+    using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Pages;
     using PowerPlaywright.Resolvers;
 
@@ -129,10 +130,13 @@ namespace PowerPlaywright
             }
             else
             {
-                homePage = await this.pageFactory.CreateInstanceAsync(page);
+                homePage = (IModelDrivenAppPage)currentPage;
             }
 
             this.loggedIn = true;
+
+            await homePage.Page.GotoAsync(homePage.Page.Url + "&flags=easyreproautomation%3Dtrue%2Ctestmode%3Dtrue");
+            await homePage.WaitForAppIdleAsync();
 
             await this.eventAggregator.PublishAsync(new AppInitializedEvent(homePage));
 

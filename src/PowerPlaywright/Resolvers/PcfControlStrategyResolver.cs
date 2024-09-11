@@ -9,8 +9,8 @@
     using Microsoft.Playwright;
     using PowerPlaywright;
     using PowerPlaywright.Events;
-    using PowerPlaywright.Model.Controls.Pcf.Attributes;
-    using PowerPlaywright.Model.Events;
+    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Events;
 
     /// <summary>
     /// A strategy resolver for PCF controls.

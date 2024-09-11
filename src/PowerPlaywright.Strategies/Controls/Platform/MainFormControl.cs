@@ -1,12 +1,14 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.Playwright;
-    using PowerPlaywright.Model;
-    using PowerPlaywright.Model.Controls;
-    using PowerPlaywright.Model.Controls.Pcf;
-    using PowerPlaywright.Model.Controls.Platform;
-    using PowerPlaywright.Model.Controls.Platform.Attributes;
+    using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls;
+    using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Controls.Platform;
+    using PowerPlaywright.Framework.Controls.Platform.Attributes;
+    using PowerPlaywright.Framework.Extensions;
 
     /// <summary>
     /// A main form.
@@ -16,15 +18,37 @@
     {
         private readonly IControlFactory controlFactory;
 
+        private readonly ILocator root;
+        private readonly ILocator tabList;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MainFormControl"/> class.
         /// </summary>
         /// <param name="page">The page.</param>
         /// <param name="controlFactory">The control factory.</param>
         public MainFormControl(IPage page, IControlFactory controlFactory)
-            : base(page, null)
+            : base(page)
         {
-            this.controlFactory = controlFactory ?? throw new System.ArgumentNullException(nameof(controlFactory));
+            this.controlFactory = controlFactory ?? throw new ArgumentNullException(nameof(controlFactory));
+
+            this.root = this.Container.Locator("div[data-id='editFormRoot']");
+            this.tabList = this.Container.GetByRole(AriaRole.Tablist);
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator Root => this.root;
+
+        /// <inheritdoc/>
+        public Task<string> GetActiveTabAsync()
+        {
+            return this.tabList.GetByRole(AriaRole.Tab, new LocatorGetByRoleOptions { Selected = true }).InnerTextAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task OpenTabAsync(string label)
+        {
+            await this.tabList.GetByRole(AriaRole.Tab, new LocatorGetByRoleOptions { Name = label }).ClickAsync();
+            await this.Page.WaitForAppIdleAsync();
         }
 
         /// <inheritdoc/>
@@ -32,18 +56,6 @@
             where TControl : IPcfControl
         {
             return this.controlFactory.CreateInstance<TControl>(this.Page, name, this);
-        }
-
-        /// <inheritdoc/>
-        public Task OpenTabAsync(string name)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        /// <inheritdoc/>
-        protected override ILocator GetContainer()
-        {
-            return this.Page.Locator("div[data-id='editFormRoot'");
         }
     }
 }

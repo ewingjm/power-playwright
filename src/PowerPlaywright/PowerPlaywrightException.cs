@@ -9,7 +9,6 @@
     [Serializable]
     public class PowerPlaywrightException : Exception
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PowerPlaywrightException"/> class.
         /// </summary>

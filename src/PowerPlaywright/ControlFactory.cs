@@ -12,10 +12,10 @@
     using Microsoft.Playwright;
     using PowerPlaywright.Assemblies;
     using PowerPlaywright.Events;
-    using PowerPlaywright.Model;
-    using PowerPlaywright.Model.Controls;
-    using PowerPlaywright.Model.Events;
-    using PowerPlaywright.Model.Redirectors;
+    using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls;
+    using PowerPlaywright.Framework.Events;
+    using PowerPlaywright.Framework.Redirectors;
     using PowerPlaywright.Notifications;
     using PowerPlaywright.Resolvers;
 
@@ -158,7 +158,7 @@
 
             if (this.RedirectorsMap.TryGetValue(type, out var redirectors))
             {
-                type = redirectors.Redirect(this.redirectionInfo, this.ControlTypes);
+                type = redirectors.Redirect(this.redirectionInfo);
             }
 
             if (!this.StrategyMap.TryGetValue(type, out var strategyType) || strategyType == null)

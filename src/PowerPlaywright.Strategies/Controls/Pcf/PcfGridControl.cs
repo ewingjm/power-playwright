@@ -1,13 +1,15 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
-    using PowerPlaywright.Model;
-    using PowerPlaywright.Model.Controls;
-    using PowerPlaywright.Model.Controls.Pcf;
-    using PowerPlaywright.Model.Controls.Pcf.Attributes;
-    using PowerPlaywright.Pages;
+    using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls;
+    using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// A control strategy for the <see cref="IPcfGridControl"/>.
@@ -19,6 +21,7 @@
         private readonly IPageFactory pageFactory;
         private readonly ILogger<PcfGridControl> logger;
 
+        private readonly ILocator root;
         private readonly ILocator rowsContainer;
 
         /// <summary>
@@ -29,33 +32,34 @@
         /// <param name="pageFactory">The page factory.</param>
         /// <param name="parent">The parent control.</param>
         /// <param name="logger">The logger.</param>
-        public PcfGridControl(IPage page, string name, IControl parent, IPageFactory pageFactory, ILogger<PcfGridControl> logger = null)
+        public PcfGridControl(IPage page, string name, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
             : base(page, parent)
         {
             this.name = name;
             this.pageFactory = pageFactory;
             this.logger = logger;
 
+            this.root = this.Container.Locator($"div[data-lp-id*='MscrmControls.Grid.PCFGridControl|{this.name}']");
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
         }
 
         /// <inheritdoc/>
-        public async Task<IEntityRecordPage> OpenRecordAsync(int index)
-        {
-            await this.GetRow(index).DblClickAsync();
-
-            return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
-        }
+        protected override ILocator Root => this.root;
 
         /// <inheritdoc/>
-        protected override ILocator GetContainer()
+        public async Task<IEntityRecordPage> OpenRecordAsync(int index)
         {
-            return this.Parent?.Container.Locator(this.GetContainerSelector()) ?? this.Page.Locator(this.GetContainerSelector());
-        }
+            await this.Page.WaitForAppIdleAsync();
 
-        private string GetContainerSelector()
-        {
-            return $"div[data-lp-id*='MscrmControls.Grid.PCFGridControl|{this.name}']";
+            var row = this.GetRow(index);
+            if (!await row.IsVisibleAsync())
+            {
+                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.name}");
+            }
+
+            await row.DblClickAsync();
+
+            return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }
 
         private ILocator GetRow(int index)

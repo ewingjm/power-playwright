@@ -8,8 +8,8 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
     using PowerPlaywright.Events;
-    using PowerPlaywright.Model.Controls.Platform.Attributes;
-    using PowerPlaywright.Model.Events;
+    using PowerPlaywright.Framework.Controls.Platform.Attributes;
+    using PowerPlaywright.Framework.Events;
 
     /// <summary>
     /// A strategy resolver for platform controls.
@@ -58,7 +58,6 @@
             }
 
             throw new NotSupportedException($"No supported attributes were found for control type {controlType.Name}. {nameof(PlatformControlStrategyResolver)} resolver is unable to resolve the control strategy.");
-
         }
 
         /// <inheritdoc/>

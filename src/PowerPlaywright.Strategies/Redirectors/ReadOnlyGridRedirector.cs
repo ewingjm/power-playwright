@@ -1,34 +1,29 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
     using System;
-    using System.Collections.Generic;
     using Microsoft.Extensions.Logging;
-    using PowerPlaywright.Model.Controls.Pcf;
-    using PowerPlaywright.Model.Controls.Pcf.Classes;
-    using PowerPlaywright.Model.Redirectors;
+    using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Controls.Pcf.Classes;
+    using PowerPlaywright.Framework.Redirectors;
 
     /// <summary>
     /// Redirects requests for an <see cref="IReadOnlyGrid"/> control.
     /// </summary>
-    public class ReadOnlyGridRedirector : IControlRedirector<ControlRedirectionInfo, IReadOnlyGrid>
+    public class ReadOnlyGridRedirector : ControlRedirector<IReadOnlyGrid>
     {
-        private readonly ILogger<ReadOnlyGridRedirector> logger;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadOnlyGridRedirector"/> class.
         /// </summary>
         /// <param name="logger">The logger.</param>
         public ReadOnlyGridRedirector(ILogger<ReadOnlyGridRedirector> logger = null)
+            : base(logger)
         {
-            this.logger = logger;
         }
 
         /// <inheritdoc/>
-        public Type Redirect(ControlRedirectionInfo redirectionInfo, IEnumerable<Type> controlTypes)
+        protected override Type GetTargetControlType(ControlRedirectionInfo redirectionInfo)
         {
-            this.logger.LogTrace("Getting redirected control for control class {class}.", nameof(IReadOnlyGrid));
-
-            if (redirectionInfo.AppToggles.ModernizationOptOut)
+            if (redirectionInfo.AppToggles is null || redirectionInfo.AppToggles.ModernizationOptOut.GetValueOrDefault(true))
             {
                 return typeof(IPowerAppsOneGridControl);
             }

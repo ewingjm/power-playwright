@@ -1,6 +1,6 @@
 ﻿namespace PowerPlaywright.Events
 {
-    using PowerPlaywright.Pages;
+    using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// A notification that is published when the app is first initialised.

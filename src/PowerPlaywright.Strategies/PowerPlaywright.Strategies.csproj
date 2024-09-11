@@ -6,10 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PowerPlaywright.Controls\PowerPlaywright.Model.csproj">
+    <ProjectReference Include="..\PowerPlaywright.Controls\PowerPlaywright.Framework.csproj">
       <Private>false</Private>
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
+    <ProjectReference Include="..\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj" />
   </ItemGroup>
 
   <ItemGroup>

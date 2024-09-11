@@ -7,19 +7,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{1BFB836D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.UnitTests", "tests\PowerPlaywright.UnitTests\PowerPlaywright.UnitTests.csproj", "{2568CC99-0420-41C7-9EF2-D36DD452FF26}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.Specs", "tests\PowerPlaywright.Specs\PowerPlaywright.Specs.csproj", "{100AF205-1AC3-4797-BD5F-94CF1264434F}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1A52EE88-8A18-4CBE-8B25-5AD2A34BBD43}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright", "src\PowerPlaywright\PowerPlaywright.csproj", "{A3AFE966-938E-4E7F-BD2F-797025A3418E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.Model", "src\PowerPlaywright.Controls\PowerPlaywright.Model.csproj", "{E36C1F70-834C-4F73-9F04-C4C432DC1D12}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.IntegrationTests", "tests\PowerPlaywright.IntegrationTests\PowerPlaywright.IntegrationTests.csproj", "{4DC8043D-A725-46C0-8D76-11353B8D3FBE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.Strategies", "src\PowerPlaywright.Strategies\PowerPlaywright.Strategies.csproj", "{5E5E55EB-C7EA-4BFD-A149-C4EBD515606E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.TestApp.Model", "tests\solution\PowerPlaywright.TestApp.Model\PowerPlaywright.TestApp.Model.csproj", "{A3405D67-22D2-4E58-97E7-9686250CD254}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.Framework", "src\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj", "{31DB4EF5-446B-4D2B-A722-4995179F1711}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,18 +29,10 @@ Global
 		{2568CC99-0420-41C7-9EF2-D36DD452FF26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2568CC99-0420-41C7-9EF2-D36DD452FF26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2568CC99-0420-41C7-9EF2-D36DD452FF26}.Release|Any CPU.Build.0 = Release|Any CPU
-		{100AF205-1AC3-4797-BD5F-94CF1264434F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{100AF205-1AC3-4797-BD5F-94CF1264434F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{100AF205-1AC3-4797-BD5F-94CF1264434F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{100AF205-1AC3-4797-BD5F-94CF1264434F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A3AFE966-938E-4E7F-BD2F-797025A3418E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A3AFE966-938E-4E7F-BD2F-797025A3418E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3AFE966-938E-4E7F-BD2F-797025A3418E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3AFE966-938E-4E7F-BD2F-797025A3418E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E36C1F70-834C-4F73-9F04-C4C432DC1D12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E36C1F70-834C-4F73-9F04-C4C432DC1D12}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E36C1F70-834C-4F73-9F04-C4C432DC1D12}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E36C1F70-834C-4F73-9F04-C4C432DC1D12}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DC8043D-A725-46C0-8D76-11353B8D3FBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DC8043D-A725-46C0-8D76-11353B8D3FBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DC8043D-A725-46C0-8D76-11353B8D3FBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -55,18 +45,21 @@ Global
 		{A3405D67-22D2-4E58-97E7-9686250CD254}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3405D67-22D2-4E58-97E7-9686250CD254}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3405D67-22D2-4E58-97E7-9686250CD254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31DB4EF5-446B-4D2B-A722-4995179F1711}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31DB4EF5-446B-4D2B-A722-4995179F1711}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31DB4EF5-446B-4D2B-A722-4995179F1711}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31DB4EF5-446B-4D2B-A722-4995179F1711}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2568CC99-0420-41C7-9EF2-D36DD452FF26} = {1BFB836D-12D1-4998-BD4A-074F25A29D87}
-		{100AF205-1AC3-4797-BD5F-94CF1264434F} = {1BFB836D-12D1-4998-BD4A-074F25A29D87}
 		{A3AFE966-938E-4E7F-BD2F-797025A3418E} = {1A52EE88-8A18-4CBE-8B25-5AD2A34BBD43}
-		{E36C1F70-834C-4F73-9F04-C4C432DC1D12} = {1A52EE88-8A18-4CBE-8B25-5AD2A34BBD43}
 		{4DC8043D-A725-46C0-8D76-11353B8D3FBE} = {1BFB836D-12D1-4998-BD4A-074F25A29D87}
 		{5E5E55EB-C7EA-4BFD-A149-C4EBD515606E} = {1A52EE88-8A18-4CBE-8B25-5AD2A34BBD43}
 		{A3405D67-22D2-4E58-97E7-9686250CD254} = {1BFB836D-12D1-4998-BD4A-074F25A29D87}
+		{31DB4EF5-446B-4D2B-A722-4995179F1711} = {1A52EE88-8A18-4CBE-8B25-5AD2A34BBD43}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5E7A79E6-9AB7-409B-9A17-2418FFE16E05}

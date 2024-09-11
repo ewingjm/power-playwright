@@ -1,49 +1,49 @@
 namespace PowerPlaywright.Pages
 {
+    using System;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
-    using PowerPlaywright.Model;
-    using PowerPlaywright.Model.Controls.Platform;
+    using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls.Platform;
+    using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// A model-driven app page.
     /// </summary>
-    public abstract class ModelDrivenAppPage : IModelDrivenAppPage
+    public abstract class ModelDrivenAppPage : BasePage, IModelDrivenAppPage
     {
+        private readonly IPageFactory pageFactory;
+
         private ISiteMapControl siteMap;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelDrivenAppPage"/> class.
         /// </summary>
         /// <param name="page">The page.</param>
+        /// <param name="pageFactory">The page factory.</param>
         /// <param name="controlFactory">The control factory.</param>
-        public ModelDrivenAppPage(IPage page, IControlFactory controlFactory)
+        public ModelDrivenAppPage(IPage page, IPageFactory pageFactory, IControlFactory controlFactory)
+            : base(page, controlFactory)
         {
-            this.Page = page;
-            this.ControlFactory = controlFactory;
+            this.pageFactory = pageFactory;
         }
-
-        /// <summary>
-        /// Gets the page.
-        /// </summary>
-        public IPage Page { get; }
 
         /// <inheritdoc/>
-        public ISiteMapControl SiteMap
-        {
-            get
-            {
-                if (this.siteMap is null)
-                {
-                    this.siteMap = this.ControlFactory.CreateInstance<ISiteMapControl>(this.Page);
-                }
+        public ISiteMapControl SiteMap => this.siteMap ?? (this.siteMap = this.ControlFactory.CreateInstance<ISiteMapControl>(this.Page));
 
-                return this.siteMap;
-            }
+        /// <inheritdoc/>
+        public async Task<IEntityRecordPage> NavigateToRecordAsync(string entityName, Guid entityId)
+        {
+            await this.Page.EvaluateAsync("async ({ entityName, entityId } ) => { await Xrm.Navigation.navigateTo({ pageType: 'entityrecord', entityName: entityName, entityId: entityId }) } ", new { entityName, entityId });
+
+            return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }
 
-        /// <summary>
-        /// Gets the control factory.
-        /// </summary>
-        protected IControlFactory ControlFactory { get; }
+        /// <inheritdoc/>
+        public async Task WaitForAppIdleAsync(TimeSpan timeout = default)
+        {
+            await this.Page.WaitForAppIdleAsync(timeout);
+        }
     }
 }

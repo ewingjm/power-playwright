@@ -1,14 +1,16 @@
 ﻿namespace PowerPlaywright.Pages
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.Playwright;
-    using PowerPlaywright.Model;
-    using PowerPlaywright.Model.Controls.External;
+    using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls.External;
+    using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// A login page.
     /// </summary>
-    internal class LoginPage : ModelDrivenAppPage, ILoginPage
+    internal class LoginPage : BasePage, ILoginPage
     {
         private ILoginControl loginControl;
 
@@ -25,9 +27,11 @@
         private ILoginControl LoginControl => this.loginControl ?? (this.loginControl = this.ControlFactory.CreateInstance<ILoginControl>(this.Page));
 
         /// <inheritdoc/>
-        public Task<IModelDrivenAppPage> LoginAsync(string username, string password)
+        public async Task<IModelDrivenAppPage> LoginAsync(string username, string password)
         {
-            return this.LoginControl.LoginAsync(username, password);
+            var homePage = await this.LoginControl.LoginAsync(username, password);
+
+            return homePage;
         }
     }
 }

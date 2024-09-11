@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using PowerPlaywright.Events;
-    using PowerPlaywright.Model.Events;
+    using PowerPlaywright.Framework.Events;
     using PowerPlaywright.Notifications;
 
     /// <summary>

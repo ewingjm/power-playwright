@@ -1,13 +1,15 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
-    using PowerPlaywright.Model;
-    using PowerPlaywright.Model.Controls;
-    using PowerPlaywright.Model.Controls.Pcf;
-    using PowerPlaywright.Model.Controls.Pcf.Attributes;
-    using PowerPlaywright.Pages;
+    using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls;
+    using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// A control strategy for the <see cref="IPowerAppsOneGridControl"/>.
@@ -19,7 +21,7 @@
         private readonly IPageFactory pageFactory;
         private readonly ILogger<PcfGridControl> logger;
 
-        private readonly ILocator container;
+        private readonly ILocator root;
         private readonly ILocator rowsContainer;
 
         /// <summary>
@@ -37,26 +39,27 @@
             this.pageFactory = pageFactory;
             this.logger = logger;
 
-            this.rowsContainer = this.container.Locator("div.ag-center-cols-viewport");
+            this.root = this.Container.Locator($"div[data-lp-id*='Microsoft.PowerApps.PowerAppsOneGrid|{this.name}']");
+            this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
         }
+
+        /// <inheritdoc/>
+        protected override ILocator Root => this.root;
 
         /// <inheritdoc/>
         public async Task<IEntityRecordPage> OpenRecordAsync(int index)
         {
-            await this.GetRow(index).DblClickAsync();
+            await this.Page.WaitForAppIdleAsync();
+
+            var row = this.GetRow(index);
+            if (!await row.IsVisibleAsync())
+            {
+                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.name}");
+            }
+
+            await row.DblClickAsync();
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
-        }
-
-        /// <inheritdoc/>
-        protected override ILocator GetContainer()
-        {
-            return this.Parent?.Container?.Locator(this.GetContainerSelector()) ?? this.Page.Locator(this.GetContainerSelector());
-        }
-
-        private string GetContainerSelector()
-        {
-            return $"div[data-lp-id*='Microsoft.PowerApps.PowerAppsOneGrid|{this.name}']";
         }
 
         private ILocator GetRow(int index)
