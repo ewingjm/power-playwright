@@ -4,7 +4,7 @@
     using Microsoft.Xrm.Sdk;
 
     /// <summary>
-    /// A faker for the pp_Record table.
+    /// A faker for the <see cref="pp_Record"/> class.
     /// </summary>
     public class RecordFaker : Faker<pp_Record>
     {
