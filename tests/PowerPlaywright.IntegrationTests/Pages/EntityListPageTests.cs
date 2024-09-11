@@ -1,7 +1,7 @@
-﻿namespace PowerPlaywright.IntegrationTests
+﻿namespace PowerPlaywright.IntegrationTests.Pages
 {
     using System.Text.RegularExpressions;
-    using PowerPlaywright.Model.Controls.Pcf.Classes;
+    using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Pages;
 
     /// <summary>
@@ -18,8 +18,7 @@
         [SetUp]
         public async Task Setup()
         {
-            this.listPage = await this.ModelDrivenApp
-                .LoginAsync<IEntityListPage>(Configuration.Url, "pp_UserInterfaceDemo", Configuration.Users.First().Username, Configuration.Users.First().Password);
+            this.listPage = (IEntityListPage)await this.LoginAsync();
         }
 
         /// <summary>
@@ -29,9 +28,9 @@
         [Test]
         public async Task Grid_OpenRecordAsync_OpensRecordInGrid()
         {
-            var entityFormPage = await this.listPage.Grid.OpenRecordAsync(0);
+            var recordFormPage = await this.listPage.Grid.OpenRecordAsync(0);
 
-            await this.Expect(entityFormPage.Page).ToHaveURLAsync(EntityFormPageRegex());
+            await this.Expect(recordFormPage.Page).ToHaveURLAsync(EntityFormPageRegex());
         }
 
         [GeneratedRegex(@".*pagetype=entityrecord.*")]

@@ -15,7 +15,7 @@ public partial class ModelDrivenAppTests : IntegrationTests
     public async Task LoginAsync_ValidParameters_LogsInToApp()
     {
         var appPage = await this.ModelDrivenApp
-            .LoginAsync(Configuration.Url, "pp_UserInterfaceDemo", Configuration.Users.First().Username, Configuration.Users.First().Password);
+            .LoginAsync(Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password);
 
         await this.Expect(appPage.Page).ToHaveURLAsync(MainPageRegex());
     }

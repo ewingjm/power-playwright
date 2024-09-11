@@ -1,6 +1,9 @@
 ﻿namespace PowerPlaywright.IntegrationTests
 {
     using Microsoft.Extensions.Configuration;
+    using Microsoft.PowerPlatform.Dataverse.Client;
+    using Microsoft.Xrm.Sdk;
+    using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.IntegrationTests.Config;
 
     /// <summary>
@@ -8,6 +11,14 @@
     /// </summary>
     public abstract class IntegrationTests : ContextTest
     {
+        /// <summary>
+        /// The unique name of the app used for testing.
+        /// </summary>
+        protected const string TestAppUniqueName = "pp_UserInterfaceDemo";
+
+        private static IEnumerator<UserConfiguration> userEnumerator;
+
+        private UserConfiguration? user;
         private ModelDrivenApp? modelDrivenApp;
 
         static IntegrationTests()
@@ -17,6 +28,8 @@
                 .AddEnvironmentVariables()
                 .Build()
                 .Get<TestSuiteConfiguration>() ?? throw new PowerPlaywrightException("The integration test suite has missing configuration values.");
+
+            userEnumerator = Configuration.Users.GetEnumerator();
         }
 
         /// <summary>
@@ -31,9 +44,18 @@
         {
             get
             {
-                this.modelDrivenApp ??= ModelDrivenApp.Launch(this.Context);
+                return this.modelDrivenApp ??= ModelDrivenApp.Launch(this.Context);
+            }
+        }
 
-                return this.modelDrivenApp;
+        /// <summary>
+        /// Gets a user for the current test.
+        /// </summary>
+        protected UserConfiguration User
+        {
+            get
+            {
+                return this.user ??= GetUser();
             }
         }
 
@@ -52,5 +74,54 @@
             await this.modelDrivenApp.DisposeAsync();
         }
 
+        /// <summary>
+        /// Logs a test user into the test app.
+        /// </summary>
+        /// <returns>The home page.</returns>
+        protected Task<IModelDrivenAppPage> LoginAsync()
+        {
+            return this.ModelDrivenApp.LoginAsync(Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password);
+        }
+
+        /// <summary>
+        /// Creates a record and then logs into the app and navigates to it.
+        /// </summary>
+        /// <param name="record">The record to create.</param>
+        /// <returns>The form.</returns>
+        protected async Task<IEntityRecordPage> LoginAndNavigateToRecordAsync(Entity record)
+        {
+            using (var client = this.GetServiceClient())
+            {
+                await client.CreateAsync(record);
+            }
+
+            var page = await this.LoginAsync();
+
+            return await page.NavigateToRecordAsync(record.LogicalName, record.Id);
+        }
+
+        /// <summary>
+        /// Gets a service client instance authenticated as the application user.
+        /// </summary>
+        /// <returns>A service client instance.</returns>
+        protected ServiceClient GetServiceClient()
+        {
+            return new ServiceClient(Configuration.Url, Configuration.ClientId, Configuration.ClientSecret, false);
+        }
+
+        /// <summary>
+        /// Gets a user configuration. Iterates through all configured users for load-balancing purposes.
+        /// </summary>
+        /// <returns>The user configuration.</returns>
+        private static UserConfiguration GetUser()
+        {
+            if (!userEnumerator.MoveNext())
+            {
+                userEnumerator.Reset();
+                userEnumerator.MoveNext();
+            }
+
+            return userEnumerator.Current;
+        }
     }
 }

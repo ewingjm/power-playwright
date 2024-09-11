@@ -20,6 +20,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Microsoft.Playwright" Version="1.44.0" />
     <PackageReference Include="Microsoft.Playwright.NUnit" Version="1.44.0" />
+    <PackageReference Include="Microsoft.PowerPlatform.Dataverse.Client" Version="1.1.27" />
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="NUnit.Analyzers" Version="3.9.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
@@ -28,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\PowerPlaywright.Strategies\PowerPlaywright.Strategies.csproj" />
     <ProjectReference Include="..\..\src\PowerPlaywright\PowerPlaywright.csproj" />
+    <ProjectReference Include="..\solution\PowerPlaywright.TestApp.Model\PowerPlaywright.TestApp.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>
