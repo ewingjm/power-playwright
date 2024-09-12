@@ -80,6 +80,7 @@
     <RootComponents>
       <RootComponent type="1" schemaName="pp_record" behavior="0" />
       <RootComponent type="1" schemaName="pp_relatedrecord" behavior="0" />
+      <RootComponent type="20" id="{afbf7937-fe70-ef11-a671-000d3a7ecf6a}" behavior="0" />
       <RootComponent type="300" schemaName="pp_records_bf5a4" behavior="0" />
       <RootComponent type="62" schemaName="pp_UserInterfaceDemo" behavior="0" />
       <RootComponent type="80" schemaName="pp_UserInterfaceDemo" behavior="0" />
