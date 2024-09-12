@@ -11,6 +11,7 @@
   <NavigationType>0</NavigationType>
   <AppModuleComponents>
     <AppModuleComponent type="1" schemaName="pp_record" />
+    <AppModuleComponent type="1" schemaName="pp_relatedrecord" />
     <AppModuleComponent type="62" schemaName="pp_UserInterfaceDemo" />
   </AppModuleComponents>
   <AppModuleRoleMaps>
@@ -20,6 +21,15 @@
   <LocalizedNames>
     <LocalizedName description="User Interface Demo" languagecode="1033" />
   </LocalizedNames>
+  <appelements>
+    <appelement uniquename="pp_pp_UserInterfaceDemo_canvasappid_pp_records_bf5a4">
+      <canvasappid>
+        <name>pp_records_bf5a4</name>
+      </canvasappid>
+      <iscustomizable>1</iscustomizable>
+      <name>pp_pp_UserInterfaceDemo_canvasappid_pp_records_bf5a4</name>
+    </appelement>
+  </appelements>
   <appsettings>
     <appsetting settingdefinitionid.uniquename="AppChannel">
       <iscustomizable>1</iscustomizable>

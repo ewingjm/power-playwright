@@ -20,7 +20,7 @@
                   </labels>
                   <rows>
                     <row>
-                      <cell id="{e4b2581b-478f-47ee-b231-8d6b91a5915d}">
+                      <cell id="{e4b2581b-478f-47ee-b231-8d6b91a5915d}" visible="false" locklevel="0">
                         <labels>
                           <label description="Owner" languagecode="1033" />
                         </labels>
@@ -315,7 +315,7 @@
                     <row>
                       <cell locklevel="0" id="{a3c05b14-dc95-4a85-b512-6297b28e3a58}" colspan="1" rowspan="6" showlabel="true">
                         <labels>
-                          <label description="Editable Grid" languagecode="1033" />
+                          <label description="Related Records" languagecode="1033" />
                         </labels>
                         <control indicationOfSubgrid="true" id="editablegrid_RelatedRecords" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" uniqueid="{5f0f64ed-f686-452d-b5e9-1498ea580925}">
                           <parameters>
@@ -880,10 +880,10 @@
               <value>
                 <BindAttribute>pp_relatedrecord</BindAttribute>
                 <DefaultViewId>{10F2FEDD-F2FA-495D-BFCF-982755FA01A6}</DefaultViewId>
-                <FilterRelationshipName></FilterRelationshipName>
-                <DependentAttributeName></DependentAttributeName>
-                <DependentAttributeType></DependentAttributeType>
-                <AvailableViewIds></AvailableViewIds>
+                <FilterRelationshipName />
+                <DependentAttributeName />
+                <DependentAttributeType />
+                <AvailableViewIds />
                 <AllowFilterOff>false</AllowFilterOff>
                 <DisableQuickFind>false</DisableQuickFind>
                 <DisableViewPicker>false</DisableViewPicker>
@@ -900,10 +900,10 @@
               <value>
                 <BindAttribute>pp_relatedrecord</BindAttribute>
                 <DefaultViewId>{10F2FEDD-F2FA-495D-BFCF-982755FA01A6}</DefaultViewId>
-                <FilterRelationshipName></FilterRelationshipName>
-                <DependentAttributeName></DependentAttributeName>
-                <DependentAttributeType></DependentAttributeType>
-                <AvailableViewIds></AvailableViewIds>
+                <FilterRelationshipName />
+                <DependentAttributeName />
+                <DependentAttributeType />
+                <AvailableViewIds />
                 <AllowFilterOff>false</AllowFilterOff>
                 <DisableQuickFind>false</DisableQuickFind>
                 <DisableViewPicker>false</DisableViewPicker>
@@ -920,10 +920,10 @@
               <value>
                 <BindAttribute>pp_relatedrecord</BindAttribute>
                 <DefaultViewId>{10F2FEDD-F2FA-495D-BFCF-982755FA01A6}</DefaultViewId>
-                <FilterRelationshipName></FilterRelationshipName>
-                <DependentAttributeName></DependentAttributeName>
-                <DependentAttributeType></DependentAttributeType>
-                <AvailableViewIds></AvailableViewIds>
+                <FilterRelationshipName />
+                <DependentAttributeName />
+                <DependentAttributeType />
+                <AvailableViewIds />
                 <AllowFilterOff>false</AllowFilterOff>
                 <DisableQuickFind>false</DisableQuickFind>
                 <DisableViewPicker>false</DisableViewPicker>

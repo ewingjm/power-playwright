@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ImportExportXml version="9.2.24072.182" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<ImportExportXml version="9.2.24083.180" SolutionPackageVersion="9.2" languagecode="1033" generatedBy="CrmLive" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.24083.180" OrganizationSchemaType="Standard" OrganizationType="Developer" TenantId="b829106b-b11f-4f75-8993-6410e659ba9b" CRMServerServiceabilityVersion="9.2.24083.00188">
   <SolutionManifest>
     <UniqueName>pp_PowerPlaywright_Test</UniqueName>
     <LocalizedNames>
@@ -80,6 +80,7 @@
     <RootComponents>
       <RootComponent type="1" schemaName="pp_record" behavior="0" />
       <RootComponent type="1" schemaName="pp_relatedrecord" behavior="0" />
+      <RootComponent type="300" schemaName="pp_records_bf5a4" behavior="0" />
       <RootComponent type="62" schemaName="pp_UserInterfaceDemo" behavior="0" />
       <RootComponent type="80" schemaName="pp_UserInterfaceDemo" behavior="0" />
     </RootComponents>
@@ -89,35 +90,35 @@
         <Dependent type="80" schemaName="pp_UserInterfaceDemo" displayName="User Interface Demo" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="66" schemaName="MscrmControls.FieldControls.CheckboxControl" displayName="MscrmControls.FieldControls.CheckboxControl" solution="BaseCustomControlsCore (9.0.2407.2020)" />
+        <Required type="66" schemaName="MscrmControls.FieldControls.CheckboxControl" displayName="MscrmControls.FieldControls.CheckboxControl" solution="BaseCustomControlsCore (9.0.2408.3015)" />
         <Dependent type="60" displayName="Information" parentDisplayName="Record" id="{8c23a7bf-ad9d-4d41-8969-ec723eee709c}" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="66" schemaName="MscrmControls.FieldControls.ToggleControl" displayName="MscrmControls.FieldControls.ToggleControl" solution="BaseCustomControlsCore (9.0.2407.2020)" />
+        <Required type="66" schemaName="MscrmControls.FieldControls.ToggleControl" displayName="MscrmControls.FieldControls.ToggleControl" solution="BaseCustomControlsCore (9.0.2408.3015)" />
         <Dependent type="60" displayName="Information" parentDisplayName="Record" id="{8c23a7bf-ad9d-4d41-8969-ec723eee709c}" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="66" schemaName="MscrmControls.Grid.GridControl" displayName="MscrmControls.Grid.GridControl" solution="BaseCustomControlsCore (9.0.2407.2020)" />
+        <Required type="66" schemaName="MscrmControls.Grid.GridControl" displayName="MscrmControls.Grid.GridControl" solution="BaseCustomControlsCore (9.0.2408.3015)" />
         <Dependent type="60" displayName="Information" parentDisplayName="Record" id="{8c23a7bf-ad9d-4d41-8969-ec723eee709c}" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="66" schemaName="MscrmControls.ModelForm.ModelFormControl" displayName="MscrmControls.ModelForm.ModelFormControl" solution="BaseCustomControlsCore (9.0.2407.2020)" />
+        <Required type="66" schemaName="MscrmControls.ModelForm.ModelFormControl" displayName="MscrmControls.ModelForm.ModelFormControl" solution="BaseCustomControlsCore (9.0.2408.3015)" />
         <Dependent type="60" displayName="Information" parentDisplayName="Record" id="{8c23a7bf-ad9d-4d41-8969-ec723eee709c}" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="66" schemaName="MscrmControls.NumberInput.NumberInputControl" displayName="MscrmControls.NumberInput.NumberInputControl" solution="BaseCustomControlsCore (9.0.2407.2020)" />
+        <Required type="66" schemaName="MscrmControls.NumberInput.NumberInputControl" displayName="MscrmControls.NumberInput.NumberInputControl" solution="BaseCustomControlsCore (9.0.2408.3015)" />
         <Dependent type="60" displayName="Information" parentDisplayName="Record" id="{8c23a7bf-ad9d-4d41-8969-ec723eee709c}" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="66" schemaName="MscrmControls.OptionSet.OptionSetControl" displayName="MscrmControls.OptionSet.OptionSetControl" solution="CustomControlsCore (9.2.24072.00182)" />
+        <Required type="66" schemaName="MscrmControls.OptionSet.OptionSetControl" displayName="MscrmControls.OptionSet.OptionSetControl" solution="CustomControlsCore (9.2.24083.00180)" />
         <Dependent type="60" displayName="Information" parentDisplayName="Record" id="{8c23a7bf-ad9d-4d41-8969-ec723eee709c}" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="66" schemaName="MscrmControls.Rating.StarRatingControl" displayName="MscrmControls.Rating.StarRatingControl" solution="CustomControlsCore (9.2.24072.00182)" />
+        <Required type="66" schemaName="MscrmControls.Rating.StarRatingControl" displayName="MscrmControls.Rating.StarRatingControl" solution="CustomControlsCore (9.2.24083.00180)" />
         <Dependent type="60" displayName="Information" parentDisplayName="Record" id="{8c23a7bf-ad9d-4d41-8969-ec723eee709c}" />
       </MissingDependency>
       <MissingDependency>
-        <Required type="SettingDefinition" displayName="AppChannel" solution="msdyn_AppFrameworkInfraExtensions (1.0.0.11)" id.uniquename="AppChannel" />
+        <Required type="SettingDefinition" displayName="AppChannel" solution="msdyn_AppFrameworkInfraExtensions (1.0.0.12)" id.uniquename="AppChannel" />
         <Dependent type="AppSetting" displayName="parentappmoduleid.uniquename=pp_UserInterfaceDemo,settingdefinitionid.uniquename=AppChannel" id.parentappmoduleid.uniquename="pp_UserInterfaceDemo" id.settingdefinitionid.uniquename="AppChannel" />
       </MissingDependency>
     </MissingDependencies>

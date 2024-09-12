@@ -22,7 +22,7 @@
                     <row>
                       <cell id="{2cc0de9d-b7c9-4c0c-aab2-c669a131a9dd}">
                         <labels>
-                          <label description="" languagecode="1033" />
+                          <label description="Single line of text (text)" languagecode="1033" />
                         </labels>
                         <control id="pp_singlelineoftexttext" classid="{4273EDBD-AC1D-40d3-9FB2-095C621B552D}" datafieldname="pp_singlelineoftexttext" />
                       </cell>
@@ -30,7 +30,7 @@
                     <row>
                       <cell id="{b509ca5c-dac1-48ac-822b-2d685fa73a6b}">
                         <labels>
-                          <label description="" languagecode="1033" />
+                          <label description="Owner" languagecode="1033" />
                         </labels>
                         <control id="ownerid" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="ownerid" />
                       </cell>

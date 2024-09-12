@@ -14,7 +14,20 @@
         <Titles>
           <Title LCID="1033" Title="Group A" />
         </Titles>
-        <SubArea Id="subarea_e1df0426" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="pp_record" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
+        <SubArea Id="subarea_e1df0426" Entity="pp_record" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
+        <SubArea Id="subarea_4fc6d660" Entity="pp_relatedrecord" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
+      </Group>
+    </Area>
+    <Area Id="area_B" ResourceId="SitemapDesigner.NewArea" ShowGroups="true">
+      <Titles>
+        <Title LCID="1033" Title="Area B" />
+      </Titles>
+      <Group Id="group_e739d28b" ResourceId="SitemapDesigner.NewGroup" DescriptionResourceId="SitemapDesigner.NewGroup" IntroducedVersion="7.0.0.0" IsProfile="false" ToolTipResourseId="SitemapDesigner.Unknown">
+        <SubArea Id="subarea_531a24bd" Icon="/_imgs/imagestrips/transparent_spacer.gif" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" Page="pp_records_bf5a4">
+          <Titles>
+            <Title LCID="1033" Title="Records" />
+          </Titles>
+        </SubArea>
       </Group>
     </Area>
   </SiteMap>
