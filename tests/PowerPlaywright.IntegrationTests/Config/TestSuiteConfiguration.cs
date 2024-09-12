@@ -11,6 +11,11 @@
         public required Uri Url { get; set; }
 
         /// <summary>
+        /// Gets or sets the Key Vault configuration.
+        /// </summary>
+        public KeyVaultConfiguration? KeyVault { get; set; }
+
+        /// <summary>
         /// Gets or sets e or sets the test users.
         /// </summary>
         public required IEnumerable<UserConfiguration> Users { get; set; }

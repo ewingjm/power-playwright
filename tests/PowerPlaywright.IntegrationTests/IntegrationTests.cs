@@ -1,5 +1,9 @@
 ﻿namespace PowerPlaywright.IntegrationTests
 {
+    using System;
+    using Azure.Core;
+    using Azure.Extensions.AspNetCore.Configuration.Secrets;
+    using Azure.Identity;
     using Microsoft.Extensions.Configuration;
     using Microsoft.PowerPlatform.Dataverse.Client;
     using Microsoft.Xrm.Sdk;
@@ -23,11 +27,7 @@
 
         static IntegrationTests()
         {
-            Configuration = new ConfigurationBuilder()
-                .AddUserSecrets<ModelDrivenAppTests>()
-                .AddEnvironmentVariables()
-                .Build()
-                .Get<TestSuiteConfiguration>() ?? throw new PowerPlaywrightException("The integration test suite has missing configuration values.");
+            Configuration = GetConfiguration();
 
             userEnumerator = Configuration.Users.GetEnumerator();
         }
@@ -122,6 +122,73 @@
             }
 
             return userEnumerator.Current;
+        }
+
+        private static TestSuiteConfiguration GetConfiguration()
+        {
+            var config = new ConfigurationBuilder()
+                .AddUserSecrets<ModelDrivenAppTests>()
+                .AddEnvironmentVariables();
+
+            var configurationRoot = config
+                .Build();
+
+            var keyVaultConfiguration = configurationRoot
+                .GetSection("keyVault")
+                .Get<KeyVaultConfiguration>();
+
+            if (keyVaultConfiguration != null)
+            {
+                TokenCredential tokenCredential;
+
+                if (!string.IsNullOrEmpty(keyVaultConfiguration.ClientSecret))
+                {
+                    tokenCredential = new ClientSecretCredential(
+                        keyVaultConfiguration.TenantId,
+                        keyVaultConfiguration.ClientId,
+                        keyVaultConfiguration.ClientSecret);
+                }
+                else
+                {
+                    tokenCredential = new InteractiveBrowserCredential(
+                        new InteractiveBrowserCredentialOptions
+                        {
+                            TenantId = keyVaultConfiguration.TenantId,
+                            TokenCachePersistenceOptions = new TokenCachePersistenceOptions(),
+                        });
+                }
+
+                config.AddAzureKeyVault(
+                    keyVaultConfiguration.Url,
+                    tokenCredential,
+                    new AzureKeyVaultConfigurationOptions { ReloadInterval = null });
+
+                configurationRoot = config.Build();
+            }
+
+            return configurationRoot.Get<TestSuiteConfiguration>() ??
+                throw new PowerPlaywrightException("The integration test suite has missing configuration values.");
+        }
+
+        private static void ValidateConfiguration(TestSuiteConfiguration configuration)
+        {
+            ArgumentNullException.ThrowIfNull(configuration);
+
+            if (!configuration.Users.Any())
+            {
+                throw new Exception("You have not configured any users for the tests.");
+            }
+
+            var testUsersMissingPasswords = configuration.Users.Where(u => string.IsNullOrEmpty(u.Password));
+            if (testUsersMissingPasswords.Any())
+            {
+                throw new Exception($"Test users are missing passwords: {string.Join(", ", testUsersMissingPasswords.Select(u => u.Username))}.");
+            }
+
+            if (string.IsNullOrEmpty(configuration.ClientSecret))
+            {
+                throw new Exception("A client secret has not been configured.");
+            }
         }
     }
 }
