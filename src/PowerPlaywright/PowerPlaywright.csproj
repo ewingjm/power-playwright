@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PowerPlaywright.Controls\PowerPlaywright.Framework.csproj" />
+    <ProjectReference Include="..\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj" />
     <ProjectReference Include="..\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj" />
   </ItemGroup>
 
