@@ -228,7 +228,7 @@
             var userSettings = await page.EvaluateAsync("async (userId) => Xrm.WebApi.online.retrieveRecord('usersettings', userId, '?$select=trytogglesets')", userId);
             var toggleSetsString = userSettings.Value.GetProperty("trytogglesets").GetString();
 
-            if (JsonNode.Parse(toggleSetsString).AsObject().TryGetPropertyValue(appId.ToString(), out var appTogglesJson))
+            if (!string.IsNullOrEmpty(toggleSetsString) && JsonNode.Parse(toggleSetsString).AsObject().TryGetPropertyValue(appId.ToString(), out var appTogglesJson))
             {
                 return new ControlRedirectionInfo(appTogglesJson.Deserialize<AppToggles>());
             }
