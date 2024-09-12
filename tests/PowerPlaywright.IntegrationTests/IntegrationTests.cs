@@ -166,29 +166,15 @@
                 configurationRoot = config.Build();
             }
 
-            return configurationRoot.Get<TestSuiteConfiguration>() ??
+            var configuration = configurationRoot.Get<TestSuiteConfiguration>() ??
                 throw new PowerPlaywrightException("The integration test suite has missing configuration values.");
-        }
-
-        private static void ValidateConfiguration(TestSuiteConfiguration configuration)
-        {
-            ArgumentNullException.ThrowIfNull(configuration);
 
             if (!configuration.Users.Any())
             {
                 throw new Exception("You have not configured any users for the tests.");
             }
 
-            var testUsersMissingPasswords = configuration.Users.Where(u => string.IsNullOrEmpty(u.Password));
-            if (testUsersMissingPasswords.Any())
-            {
-                throw new Exception($"Test users are missing passwords: {string.Join(", ", testUsersMissingPasswords.Select(u => u.Username))}.");
-            }
-
-            if (string.IsNullOrEmpty(configuration.ClientSecret))
-            {
-                throw new Exception("A client secret has not been configured.");
-            }
+            return configuration;
         }
     }
 }
