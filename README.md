@@ -72,7 +72,7 @@ Control interfaces are accessible via properties on the pages. For example, an `
 var recordPage = await listPage.Grid.OpenRecordAsync(0);
 ```
 
-All page interfacesa also extend `IModelDrivenAppPage` which provides access to controls common on every page. For example, the site map:
+All page interfaces also extend `IModelDrivenAppPage` which provides access to controls common on every page. For example, the site map:
 
 ```csharp
 var listPage = await homePage.SiteMap.OpenPageAsync<IEntityListPage>("Area", "Group", "Page");
