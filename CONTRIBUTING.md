@@ -14,7 +14,6 @@ This document details how to contribute to the PowerPlaywright project. Please e
   - [Branching strategy](#branching-strategy)
   - [Versioning](#versioning)
   - [Testing](#testing)
-    - [User Interface Demo app](#user-interface-demo-app)
   - [Pull requests](#pull-requests)
 
 ## Issues
@@ -61,12 +60,6 @@ GitVersion has been configured to version by commit messages based on the [Conve
 All changes should be covered by automated unit and integration tests. Please ensure that you either update existing tests or write additional tests if required.
 
 Refer to the [README.md](./tests/PowerPlaywright.IntegrationTests/README.md) within the integration test project for information on how to run these tests.
-
-### User Interface Demo app
-
-An app has been created to support the execution of automated tests. This can be found in the [pp_PowerPlaywright_Test](./tests/solution/pp_PowerPlaywright_Test) solution.
-
-If you you need to make changes to this app, please import the solution into your environment and extract any changes back into source control.
 
 ## Pull requests
 
