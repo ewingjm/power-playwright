@@ -38,6 +38,8 @@ This library is dependent on the interfaces described in **PowerPlaywright.Frame
 
 Anything that might be impacted by platform updates (e.g., controls and redirectors) will be implemented here. This ensures that tests can be kept in sync with changes in the platform.
 
+It is important that this library maintains backwards compatibility for consumers on older versions of PowerPlaywright.
+
 ## Branching strategy
 
 We are using a [GitHub Flow](https://githubflow.github.io/) workflow. In short:
