@@ -87,9 +87,9 @@ var listPage = await homePage.SiteMap.OpenPageAsync<IEntityListPage>("Area", "Gr
 
 #### Control classes
 
-Controls are generally added to a form as a control _class_ rather than a as a specific PCF control. This is true in most cases other than where the control type is explicitly chosen. This means that the controls on your forms may be rendered as different PCF controls over time.
+Controls are generally added to forms as control _classes_ rather than specific PCF controls. This means that the controls on your forms may be rendered as different PCF controls over time unless expliclty set.
 
-Power Playwright lets you retrieve form controls by providing an interface relating to either a class or a specific control. These can be found in the `PowerPlaywright.Framework.Controls.Pcf.Classes` and `PowerPlaywright.Framework.Controls.Pcf` namespaces respectively.
+Power Playwright lets you retrieve form controls by providing an interface for either a control class or a specific control. These can be found in the `PowerPlaywright.Framework.Controls.Pcf.Classes` and `PowerPlaywright.Framework.Controls.Pcf` namespaces respectively.
 
 ```csharp
 // This subgrid has not had a control explicitly configured on the form.
