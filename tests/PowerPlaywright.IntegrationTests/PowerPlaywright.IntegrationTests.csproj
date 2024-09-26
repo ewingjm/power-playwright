@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\PowerPlaywright.Strategies\PowerPlaywright.Strategies.csproj" />
     <ProjectReference Include="..\..\src\PowerPlaywright\PowerPlaywright.csproj" />
     <ProjectReference Include="..\solution\PowerPlaywright.TestApp.Model\PowerPlaywright.TestApp.Model.csproj" />
   </ItemGroup>
@@ -38,5 +37,20 @@
     <Using Include="Microsoft.Playwright.NUnit" />
     <Using Include="NUnit.Framework" />
   </ItemGroup>
+
+  <ItemGroup>
+    <SourceNupkgFiles Include="..\..\src\PowerPlaywright.Strategies\bin\$(Configuration)\PowerPlaywright.Strategies.*.nupkg" />
+    <TargetNupkgFiles Include="$(OutputPath)\PowerPlaywright.Strategies.*.nupkg" />
+  </ItemGroup>
+
+  <Target Name="CleanStrategies" BeforeTargets="PackStrategies">
+    <Delete Files="@(NupkgFiles)" />
+    <Delete Files="@(TargetNupkgFiles)" />
+  </Target>
+
+  <Target Name="PackStrategies" AfterTargets="Build">
+    <MSBuild Projects="..\..\src\PowerPlaywright.Strategies\PowerPlaywright.Strategies.csproj" Targets="Pack" Properties="Configuration=$(Configuration);" />
+    <Copy SourceFiles="@(SourceNupkgFiles)" DestinationFolder="$(OutputPath)" />
+  </Target>
 
 </Project>

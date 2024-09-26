@@ -1,12 +1,18 @@
 ﻿namespace PowerPlaywright.IntegrationTests
 {
     using System;
+    using System.Reflection;
     using Azure.Core;
     using Azure.Extensions.AspNetCore.Configuration.Secrets;
     using Azure.Identity;
     using Microsoft.Extensions.Configuration;
     using Microsoft.PowerPlatform.Dataverse.Client;
     using Microsoft.Xrm.Sdk;
+    using NuGet.Common;
+    using NuGet.Configuration;
+    using NuGet.Packaging;
+    using NuGet.Packaging.Signing;
+    using NuGet.Protocol.Core.Types;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.IntegrationTests.Config;
 
@@ -23,7 +29,7 @@
         private static IEnumerator<UserConfiguration> userEnumerator;
 
         private UserConfiguration? user;
-        private ModelDrivenApp? modelDrivenApp;
+        private ModelDrivenApp modelDrivenApp;
 
         static IntegrationTests()
         {
@@ -38,17 +44,6 @@
         protected static TestSuiteConfiguration Configuration { get; private set; }
 
         /// <summary>
-        /// Gets the model-driven app.
-        /// </summary>
-        protected ModelDrivenApp ModelDrivenApp
-        {
-            get
-            {
-                return this.modelDrivenApp ??= ModelDrivenApp.Launch(this.Context);
-            }
-        }
-
-        /// <summary>
         /// Gets a user for the current test.
         /// </summary>
         protected UserConfiguration User
@@ -57,6 +52,47 @@
             {
                 return this.user ??= GetUser();
             }
+        }
+
+        /// <summary>
+        /// Gets the model-driven app instance.
+        /// </summary>
+        protected ModelDrivenApp ModelDrivenApp => this.modelDrivenApp;
+
+        /// <summary>
+        /// Sets up the local feed and model-driven app.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        [SetUp]
+        public async Task SetUpAsync()
+        {
+            var localFeedPath = Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "packages");
+
+            if (Directory.Exists(localFeedPath))
+            {
+                Directory.Delete(localFeedPath, true);
+            }
+
+            Directory.CreateDirectory(localFeedPath);
+
+            var packagePath = Directory.GetFiles("./", "PowerPlaywright.Strategies.*.nupkg").OrderDescending().First();
+
+            await OfflineFeedUtility.AddPackageToSource(
+                new OfflineFeedAddContext(
+                    packagePath,
+                    localFeedPath,
+                    NullLogger.Instance,
+                    true,
+                    true,
+                    true,
+                    new PackageExtractionContext(
+                        PackageSaveMode.Defaultv3,
+                        XmlDocFileSaveMode.None,
+                        ClientPolicyContext.GetClientPolicy(Settings.LoadDefaultSettings(null), NullLogger.Instance),
+                        NullLogger.Instance)),
+                CancellationToken.None);
+
+            this.modelDrivenApp = await ModelDrivenApp.LaunchInternalAsync(this.Context, localFeedPath);
         }
 
         /// <summary>

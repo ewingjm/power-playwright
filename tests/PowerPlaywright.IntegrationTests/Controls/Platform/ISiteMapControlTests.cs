@@ -4,7 +4,6 @@
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Pages;
-    using PowerPlaywright.Strategies.Controls.Platform;
     using PowerPlaywright.TestApp.Model.App;
 
     /// <summary>
