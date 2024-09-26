@@ -58,7 +58,7 @@ var listPage = await app.LoginAsync<IEntityListPage>(Configuration.EnvironmentUr
 
 ### Pages
 
-Writing tests with PowerPlaywright involves interacting with page and control interfaces. Page interfaces have been created to model the different types of pages currently available within a model-driven app. These interfaces map onto the pages documented [here](https://learn.microsoft.com/en-us/power-apps/maker/model-driven-apps/create-remove-pages#create-a-page). These provide you with access to the right controls for the page you are on.
+Writing tests with Power Playwright involves interacting with page and control interfaces. Page interfaces have been created to model the different types of pages currently available within a model-driven app. These interfaces map onto the pages documented [here](https://learn.microsoft.com/en-us/power-apps/maker/model-driven-apps/create-remove-pages#create-a-page). These provide you with access to the right controls for the page you are on.
 
 At the time of writing, the supported pages are:
 
@@ -89,7 +89,7 @@ var listPage = await homePage.SiteMap.OpenPageAsync<IEntityListPage>("Area", "Gr
 
 Controls that are added to a model-driven app form are typically added as a control _class_. This means that the specific PCF control that gets rendered is not defined within the form and may change over time. An example of this is the read-only subgrid class. Microsoft have updated the control used for this class from **MscrmControls.Grid.PCFGridControl** to **Microsoft.PowerApps.PowerAppsOneGrid**. 
 
-PowerPlaywright allows you to retrieve an instance of control on a form either by specifying the class interface or the control interface. The latter is only used in cases where the control has been specified explicitly on the form. PowerPlaywright will automatically redirect requests for a control class to the right implementation.
+Power Playwright allows you to retrieve an instance of control on a form either by specifying the class interface or the control interface. The latter is only used in cases where the control has been specified explicitly on the form. Power Playwright will automatically redirect requests for a control class to the right implementation.
 
 Control class interfaces can be found in the `PowerPlaywright.Framework.Controls.Pcf.Classes` namespace.
 
