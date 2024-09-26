@@ -21,12 +21,5 @@
         /// <param name="entityId">The id.</param>
         /// <returns>The entity record page.</returns>
         Task<IEntityRecordPage> NavigateToRecordAsync(string entityName, Guid entityId);
-
-        /// <summary>
-        /// Waits for the app to be idle.
-        /// </summary>
-        /// <param name="timeout">The timeout.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task WaitForAppIdleAsync(TimeSpan timeout = default);
     }
 }

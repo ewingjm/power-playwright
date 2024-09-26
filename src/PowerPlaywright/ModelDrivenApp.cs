@@ -19,6 +19,7 @@ namespace PowerPlaywright
     using NuGet.Versioning;
     using PowerPlaywright.Extensions;
     using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Pages;
     using PowerPlaywright.Resolvers;
@@ -151,7 +152,7 @@ namespace PowerPlaywright
             this.loggedIn = true;
 
             await homePage.Page.GotoAsync(homePage.Page.Url + "&flags=easyreproautomation%3Dtrue%2Ctestmode%3Dtrue");
-            await homePage.WaitForAppIdleAsync();
+            await homePage.Page.WaitForAppIdleAsync();
 
             await Task.WhenAll(this.initializeOnLoad.Select(i => i.InitializeAsync(homePage.Page)));
 

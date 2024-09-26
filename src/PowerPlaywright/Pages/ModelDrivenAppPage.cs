@@ -39,11 +39,5 @@ namespace PowerPlaywright.Pages
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }
-
-        /// <inheritdoc/>
-        public async Task WaitForAppIdleAsync(TimeSpan timeout = default)
-        {
-            await this.Page.WaitForAppIdleAsync(timeout);
-        }
     }
 }
