@@ -12,6 +12,9 @@
     internal class ExternalControlStrategyResolver : IControlStrategyResolver
     {
         /// <inheritdoc/>
+        public event EventHandler<ResolverReadyEventArgs> OnReady;
+
+        /// <inheritdoc/>
         public bool IsReady => true;
 
         /// <inheritdoc/>

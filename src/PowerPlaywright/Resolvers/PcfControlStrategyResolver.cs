@@ -8,9 +8,7 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
     using PowerPlaywright;
-    using PowerPlaywright.Events;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
-    using PowerPlaywright.Framework.Events;
 
     /// <summary>
     /// A strategy resolver for PCF controls.
@@ -22,10 +20,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="PcfControlStrategyResolver"/> class.
         /// </summary>
-        /// <param name="eventAggregator">The event aggregator.</param>
         /// <param name="logger">The logger.</param>
-        public PcfControlStrategyResolver(IEventAggregator eventAggregator, ILogger<PcfControlStrategyResolver> logger = null)
-            : base(eventAggregator, logger)
+        public PcfControlStrategyResolver(ILogger<PcfControlStrategyResolver> logger = null)
+            : base(logger)
         {
         }
 
@@ -62,9 +59,9 @@
         }
 
         /// <inheritdoc/>
-        protected override async Task Initialise(AppInitializedEvent @event)
+        protected override async Task InitialiseResolverAsync(IPage page)
         {
-            this.controlVersions = await this.GetControlVesions(@event.HomePage.Page);
+            this.controlVersions = await this.GetControlVesions(page);
         }
 
         private async Task<IDictionary<string, Version>> GetControlVesions(IPage page)

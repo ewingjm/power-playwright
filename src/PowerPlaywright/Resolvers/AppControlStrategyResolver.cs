@@ -4,31 +4,27 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
-    using PowerPlaywright.Events;
-    using PowerPlaywright.Framework.Events;
-    using PowerPlaywright.Notifications;
+    using Microsoft.Playwright;
+    using PowerPlaywright.Framework;
 
     /// <summary>
     /// A base class for control strategy resolvers that initialise on app load.
     /// </summary>
-    internal abstract class AppControlStrategyResolver : IControlStrategyResolver
+    internal abstract class AppControlStrategyResolver : IControlStrategyResolver, IAppLoadInitializable
     {
-        private readonly IEventAggregator eventAggregator;
-
         private bool isReady;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AppControlStrategyResolver"/> class.
         /// </summary>
-        /// <param name="eventAggregator">The event aggregator.</param>
         /// <param name="logger">The logger.</param>
-        public AppControlStrategyResolver(IEventAggregator eventAggregator, ILogger logger)
+        public AppControlStrategyResolver(ILogger logger)
         {
-            this.eventAggregator = eventAggregator;
             this.Logger = logger;
-
-            this.eventAggregator.Subscribe<AppInitializedEvent>(this.InitialiseInternal);
         }
+
+        /// <inheritdoc/>
+        public event EventHandler<ResolverReadyEventArgs> OnReady;
 
         /// <inheritdoc/>
         public bool IsReady => this.isReady;
@@ -39,6 +35,15 @@
         protected ILogger Logger { get; }
 
         /// <inheritdoc/>
+        public async Task InitializeAsync(IPage page)
+        {
+            await this.InitialiseResolverAsync(page);
+
+            this.isReady = true;
+            this.OnReady?.Invoke(this, new ResolverReadyEventArgs(this));
+        }
+
+        /// <inheritdoc/>
         public abstract bool IsResolvable(Type controlType);
 
         /// <inheritdoc/>
@@ -47,16 +52,8 @@
         /// <summary>
         /// Initialise the control strategy resolver.
         /// </summary>
-        /// <param name="event">The event.</param>
+        /// <param name="page">The page.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected abstract Task Initialise(AppInitializedEvent @event);
-
-        private async Task InitialiseInternal(AppInitializedEvent @event)
-        {
-            await this.Initialise(@event);
-            this.isReady = true;
-
-            await this.eventAggregator.PublishAsync(new ResolverReadyEvent(this));
-        }
+        protected abstract Task InitialiseResolverAsync(IPage page);
     }
 }

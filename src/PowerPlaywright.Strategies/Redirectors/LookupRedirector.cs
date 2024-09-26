@@ -14,14 +14,15 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="LookupRedirector"/> class.
         /// </summary>
+        /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">the logger.</param>
-        public LookupRedirector(ILogger<LookupRedirector> logger = null)
-            : base(logger)
+        public LookupRedirector(IRedirectionInfoProvider<RedirectionInfo> infoProvider, ILogger<LookupRedirector> logger = null)
+            : base(infoProvider, logger)
         {
         }
 
         /// <inheritdoc/>
-        protected override Type GetTargetControlType(ControlRedirectionInfo redirectionInfo)
+        protected override Type GetTargetControlType(RedirectionInfo redirectionInfo)
         {
             return typeof(ISimpleLookupControl);
         }

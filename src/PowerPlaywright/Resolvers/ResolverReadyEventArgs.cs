@@ -1,17 +1,17 @@
-﻿namespace PowerPlaywright.Notifications
+﻿namespace PowerPlaywright.Resolvers
 {
-    using PowerPlaywright.Resolvers;
+    using System;
 
     /// <summary>
     /// A notification that is published when a control strategy resolver is ready.
     /// </summary>
-    internal class ResolverReadyEvent
+    internal class ResolverReadyEventArgs : EventArgs
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ResolverReadyEvent"/> class.
+        /// Initializes a new instance of the <see cref="ResolverReadyEventArgs"/> class.
         /// </summary>
         /// <param name="resolver">The control strategy resolver.</param>
-        public ResolverReadyEvent(IControlStrategyResolver resolver)
+        public ResolverReadyEventArgs(IControlStrategyResolver resolver)
         {
             this.Resolver = resolver;
         }

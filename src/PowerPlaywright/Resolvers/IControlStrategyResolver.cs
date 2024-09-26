@@ -9,6 +9,11 @@
     internal interface IControlStrategyResolver
     {
         /// <summary>
+        /// An event fired when the resolver is ready.
+        /// </summary>
+        event EventHandler<ResolverReadyEventArgs> OnReady;
+
+        /// <summary>
         /// Gets a value indicating whether whether or not the strategy resolver is ready to resolve controls.
         /// </summary>
         bool IsReady { get; }

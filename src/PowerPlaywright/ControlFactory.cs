@@ -4,40 +4,32 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using System.Text.Json;
-    using System.Text.Json.Nodes;
     using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
-    using PowerPlaywright.Assemblies;
-    using PowerPlaywright.Events;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
-    using PowerPlaywright.Framework.Events;
     using PowerPlaywright.Framework.Redirectors;
-    using PowerPlaywright.Notifications;
     using PowerPlaywright.Resolvers;
 
     /// <summary>
     /// A control factory that dynamically discovers controls at runtime from a remote source.
     /// </summary>
-    internal class ControlFactory : IControlFactory
+    internal class ControlFactory : IControlFactory, IAppLoadInitializable
     {
         private static readonly Type ControlInterfaceType = typeof(IControl);
 
-        private readonly IList<IControlStrategyAssemblyProvider> assemblyProviders;
+        private readonly IList<IAssemblyProvider> assemblyProviders;
         private readonly IList<IControlStrategyResolver> strategyResolvers;
-        private readonly ISet<IControlStrategyResolver> processedStrategyResolvers;
         private readonly IServiceProvider serviceProvider;
-        private readonly IEventAggregator eventAggregator;
         private readonly ILogger<ControlFactory> logger;
 
         private IEnumerable<Type> assemblyTypes;
         private IEnumerable<Type> controlTypes;
-        private IDictionary<Type, IControlRedirector<ControlRedirectionInfo, IControl>> redirectorsMap;
+        private IDictionary<Type, IControlRedirector<IControl>> redirectorsMap;
         private IDictionary<Type, Type> strategyMap;
-        private ControlRedirectionInfo redirectionInfo;
+        private IRedirectionInfoProvider<object> redirectionInfoProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ControlFactory"/> class.
@@ -47,18 +39,12 @@
         /// <param name="serviceProvider">The service provider.</param>
         /// <param name="eventAggregator">The event aggregator.</param>
         /// <param name="logger">The logger.</param>
-        public ControlFactory(IEnumerable<IControlStrategyAssemblyProvider> assemblyProviders, IEnumerable<IControlStrategyResolver> strategyResolvers, IServiceProvider serviceProvider, IEventAggregator eventAggregator, ILogger<ControlFactory> logger = null)
+        public ControlFactory(IEnumerable<IAssemblyProvider> assemblyProviders, IEnumerable<IControlStrategyResolver> strategyResolvers, IServiceProvider serviceProvider, ILogger<ControlFactory> logger = null)
         {
             this.assemblyProviders = assemblyProviders?.ToList() ?? throw new ArgumentNullException(nameof(assemblyProviders));
             this.strategyResolvers = strategyResolvers?.ToList() ?? throw new ArgumentNullException(nameof(strategyResolvers));
             this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-            this.eventAggregator = eventAggregator ?? throw new ArgumentNullException(nameof(eventAggregator));
             this.logger = logger;
-
-            this.processedStrategyResolvers = new HashSet<IControlStrategyResolver>();
-
-            this.eventAggregator.Subscribe<AppInitializedEvent>(this.OnAppInitialize);
-            this.eventAggregator.Subscribe<ResolverReadyEvent>(this.OnResolverReady);
         }
 
         private IEnumerable<Type> AssemblyTypes
@@ -91,7 +77,7 @@
             }
         }
 
-        private IDictionary<Type, IControlRedirector<ControlRedirectionInfo, IControl>> RedirectorsMap
+        private IDictionary<Type, IControlRedirector<IControl>> RedirectorsMap
         {
             get
             {
@@ -99,28 +85,28 @@
                 {
                     this.logger?.LogInformation("Getting control redirectors.");
 
-                    var redirectorTypes = this.AssemblyTypes.Where(t => typeof(IControlRedirector<ControlRedirectionInfo, IControl>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract);
+                    var redirectorTypes = this.AssemblyTypes.Where(t => typeof(IControlRedirector<IControl>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract);
                     this.logger?.LogTrace("Found {count} redirector types.", redirectorTypes.Count());
 
                     this.logger?.LogTrace("Instantiating redirectors.");
 
-                    var map = new Dictionary<Type, IControlRedirector<ControlRedirectionInfo, IControl>>();
+                    var map = new Dictionary<Type, IControlRedirector<IControl>>();
 
                     foreach (var redirectorType in redirectorTypes)
                     {
                         var typeRedirected = redirectorType
                             .GetInterfaces()
-                            .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IControlRedirector<,>))
+                            .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IControlRedirector<>))
                             .GetGenericArguments()
                             .Last();
 
-                        if (map.TryGetValue(typeRedirected, out IControlRedirector<ControlRedirectionInfo, IControl> value))
+                        if (map.TryGetValue(typeRedirected, out IControlRedirector<IControl> value))
                         {
                             this.logger.LogWarning("Redirector of type {redirector} will not be used as {existingRedirector} is already registered for type {type}.", redirectorType.Name, value.GetType().Name, typeRedirected.Name);
                             continue;
                         }
 
-                        map.Add(typeRedirected, (IControlRedirector<ControlRedirectionInfo, IControl>)ActivatorUtilities.CreateInstance(this.serviceProvider, redirectorType));
+                        map.Add(typeRedirected, (IControlRedirector<IControl>)ActivatorUtilities.CreateInstance(this.serviceProvider, redirectorType, this.RedirectionInfoProvider));
                     }
 
                     this.redirectorsMap = map;
@@ -136,15 +122,41 @@
             {
                 if (this.strategyMap is null)
                 {
-                    var readyResolvers = this.strategyResolvers.Where(r => r.IsReady);
-
-                    foreach (var resolver in readyResolvers)
+                    foreach (var resolver in this.strategyResolvers)
                     {
-                        this.ProcessControlStrategyResolver(resolver);
+                        if (resolver.IsReady)
+                        {
+                            this.ProcessControlStrategyResolver(resolver);
+                        }
+                        else
+                        {
+                            resolver.OnReady += this.Resolver_OnReady;
+                        }
                     }
                 }
 
                 return this.strategyMap;
+            }
+        }
+
+        private IRedirectionInfoProvider<object> RedirectionInfoProvider
+        {
+            get
+            {
+                if (this.redirectionInfoProvider is null)
+                {
+                    this.logger?.LogInformation("Getting redirection info provider.");
+
+                    var type = this.AssemblyTypes
+                        .Where(t => typeof(IRedirectionInfoProvider<object>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract)
+                        .FirstOrDefault() ?? throw new PowerPlaywrightException("A redirection info provider type was not found.");
+
+                    this.logger?.LogTrace("Found {type}.", type.Name);
+
+                    this.redirectionInfoProvider = (IRedirectionInfoProvider<object>)ActivatorUtilities.CreateInstance(this.serviceProvider, type);
+                }
+
+                return this.redirectionInfoProvider;
             }
         }
 
@@ -158,7 +170,7 @@
 
             if (this.RedirectorsMap.TryGetValue(type, out var redirectors))
             {
-                type = redirectors.Redirect(this.redirectionInfo);
+                type = redirectors.Redirect();
             }
 
             if (!this.StrategyMap.TryGetValue(type, out var strategyType) || strategyType == null)
@@ -181,16 +193,18 @@
             return (TControl)ActivatorUtilities.CreateInstance(this.serviceProvider, strategyType, parameters.ToArray());
         }
 
-        private Task OnResolverReady(ResolverReadyEvent notification)
+        /// <inheritdoc/>
+        public async Task InitializeAsync(IPage page)
         {
-            this.ProcessControlStrategyResolver(notification.Resolver);
-
-            return Task.CompletedTask;
+            if (this.RedirectionInfoProvider is IAppLoadInitializable i)
+            {
+                await i.InitializeAsync(page);
+            }
         }
 
-        private async Task OnAppInitialize(AppInitializedEvent @event)
+        private void Resolver_OnReady(object sender, ResolverReadyEventArgs e)
         {
-            this.redirectionInfo = await this.GetControlRedirectionInfoAsync(@event.HomePage.Page);
+            this.ProcessControlStrategyResolver(e.Resolver);
         }
 
         private void ProcessControlStrategyResolver(IControlStrategyResolver resolver)
@@ -214,26 +228,6 @@
                     this.logger?.LogTrace("Unable to resolve a strategy for {control}.", control.Name);
                 }
             }
-
-            this.processedStrategyResolvers.Add(resolver);
-        }
-
-        private async Task<ControlRedirectionInfo> GetControlRedirectionInfoAsync(IPage page)
-        {
-            var appId = await page.EvaluateAsync<Guid>("async () => { " +
-                "   var properties = await Xrm.Utility.getGlobalContext().getCurrentAppProperties();" +
-                "   return properties.appId" +
-                "}");
-            var userId = await page.EvaluateAsync<Guid>("Xrm.Utility.getGlobalContext().userSettings.userId");
-            var userSettings = await page.EvaluateAsync("async (userId) => Xrm.WebApi.online.retrieveRecord('usersettings', userId, '?$select=trytogglesets')", userId);
-            var toggleSetsString = userSettings.Value.GetProperty("trytogglesets").GetString();
-
-            if (!string.IsNullOrEmpty(toggleSetsString) && JsonNode.Parse(toggleSetsString).AsObject().TryGetPropertyValue(appId.ToString(), out var appTogglesJson))
-            {
-                return new ControlRedirectionInfo(appTogglesJson.Deserialize<AppToggles>());
-            }
-
-            return new ControlRedirectionInfo(null);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.UnitTests.Redirectors
 {
+    using Moq;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Redirectors;
     using PowerPlaywright.Strategies.Redirectors;
@@ -9,6 +10,7 @@
     /// </summary>
     public class ReadOnlyGridRedirectorTests
     {
+        private Mock<IRedirectionInfoProvider<RedirectionInfo>> redirectionInfoProvider;
         private ReadOnlyGridRedirector redirector;
 
         /// <summary>
@@ -17,7 +19,8 @@
         [SetUp]
         public void SetUp()
         {
-            this.redirector = new ReadOnlyGridRedirector();
+            this.redirectionInfoProvider = new Mock<IRedirectionInfoProvider<RedirectionInfo>>();
+            this.redirector = new ReadOnlyGridRedirector(this.redirectionInfoProvider.Object);
         }
 
         /// <summary>
@@ -29,7 +32,14 @@
         [TestCase(true, ExpectedResult = typeof(IPowerAppsOneGridControl))]
         public Type Redirect_ModernizationOptOutSet_ReturnsCorrespondingReadOnlyGridInterface(bool modernizationOptOut)
         {
-            return this.redirector.Redirect(new ControlRedirectionInfo(new AppToggles { ModernizationOptOut = modernizationOptOut }));
+            this.redirectionInfoProvider.Setup(p => p.GetRedirectionInfo()).Returns(
+                new RedirectionInfo(
+                    new AppToggles
+                    {
+                        ModernizationOptOut = modernizationOptOut,
+                    }));
+
+            return this.redirector.Redirect();
         }
     }
 }

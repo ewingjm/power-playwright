@@ -3,13 +3,13 @@
     /// <summary>
     /// Runtime information used for control redirection.
     /// </summary>
-    public class ControlRedirectionInfo
+    public class RedirectionInfo
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ControlRedirectionInfo"/> class.
+        /// Initializes a new instance of the <see cref="RedirectionInfo"/> class.
         /// </summary>
         /// <param name="appToggles">The app toggles.</param>
-        public ControlRedirectionInfo(AppToggles appToggles)
+        public RedirectionInfo(AppToggles appToggles)
         {
             this.AppToggles = appToggles;
         }

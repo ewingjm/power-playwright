@@ -7,9 +7,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
-    using PowerPlaywright.Events;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
-    using PowerPlaywright.Framework.Events;
 
     /// <summary>
     /// A strategy resolver for platform controls.
@@ -21,10 +19,9 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="PlatformControlStrategyResolver"/> class.
         /// </summary>
-        /// <param name="eventAggregator">The event aggregator.</param>
         /// <param name="logger">The logger.</param>
-        public PlatformControlStrategyResolver(IEventAggregator eventAggregator, ILogger<PlatformControlStrategyResolver> logger = null)
-            : base(eventAggregator, logger)
+        public PlatformControlStrategyResolver(ILogger<PlatformControlStrategyResolver> logger = null)
+            : base(logger)
         {
         }
 
@@ -61,9 +58,9 @@
         }
 
         /// <inheritdoc/>
-        protected override async Task Initialise(AppInitializedEvent @event)
+        protected override async Task InitialiseResolverAsync(IPage page)
         {
-            this.platformVersion = await this.GetPlatformVersionAsync(@event.HomePage.Page);
+            this.platformVersion = await this.GetPlatformVersionAsync(page);
         }
 
         private async Task<Version> GetPlatformVersionAsync(IPage page)

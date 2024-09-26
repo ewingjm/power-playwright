@@ -1,11 +1,11 @@
-﻿namespace PowerPlaywright.Assemblies
+﻿namespace PowerPlaywright
 {
     using System.Reflection;
 
     /// <summary>
-    /// Provides a mechanism for retrieving an assembly containing control strategies.
+    /// Provides an assembly.
     /// </summary>
-    internal interface IControlStrategyAssemblyProvider
+    internal interface IAssemblyProvider
     {
         /// <summary>
         /// Get the control strategy assembly.

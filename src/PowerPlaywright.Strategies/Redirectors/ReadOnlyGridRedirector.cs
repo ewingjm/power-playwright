@@ -14,14 +14,15 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadOnlyGridRedirector"/> class.
         /// </summary>
+        /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public ReadOnlyGridRedirector(ILogger<ReadOnlyGridRedirector> logger = null)
-            : base(logger)
+        public ReadOnlyGridRedirector(IRedirectionInfoProvider<RedirectionInfo> infoProvider, ILogger<ReadOnlyGridRedirector> logger = null)
+            : base(infoProvider, logger)
         {
         }
 
         /// <inheritdoc/>
-        protected override Type GetTargetControlType(ControlRedirectionInfo redirectionInfo)
+        protected override Type GetTargetControlType(RedirectionInfo redirectionInfo)
         {
             if (redirectionInfo.AppToggles is null || redirectionInfo.AppToggles.ModernizationOptOut.GetValueOrDefault(true))
             {
