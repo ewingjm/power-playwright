@@ -18,7 +18,6 @@ Power Playwright makes test automation for Power Apps easier by providing a [pag
     - [Pages and controls](#pages-and-controls)
       - [Custom pages](#custom-pages)
       - [Custom controls](#custom-controls)
-    - [Generate app model](#generate-app-model)
   - [Contributing](#contributing)
 
 ## Prerequisites
@@ -38,7 +37,7 @@ dotnet add package PowerPlaywright
 Instantiate a new `ModelDrivenApp` class by calling the `Launch` method and passing in the Playwright [BrowserContext](https://playwright.dev/dotnet/docs/api/class-browsercontext). If you are using the Playwright NUnit or MSTest base classes, you can use the `ContextTest` class to access an `IBrowserContext` instance.
 
 ```csharp
-await using var app = ModelDrivenApp.Launch(this.Context);
+await using var app = await ModelDrivenApp.LaunchAsync(this.Context);
 ```
 
 ### Login
@@ -78,17 +77,11 @@ All page interfaces also extend `IModelDrivenAppPage` which provides access to c
 var listPage = await homePage.SiteMap.OpenPageAsync<IEntityListPage>("Area", "Group", "Page");
 ```
 
-
 #### Custom pages
 
 TBA
 
-
 #### Custom controls
-
-TBA
-
-### Generate app model
 
 TBA
 
