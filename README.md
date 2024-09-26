@@ -15,8 +15,10 @@ Power Playwright makes test automation for Power Apps easier by providing a [pag
   - [Installation](#installation)
   - [Usage](#usage)
     - [Login](#login)
-    - [Pages and controls](#pages-and-controls)
+    - [Pages](#pages)
       - [Custom pages](#custom-pages)
+    - [Controls](#controls)
+      - [Control classes](#control-classes)
       - [Custom controls](#custom-controls)
   - [Contributing](#contributing)
 
@@ -54,7 +56,7 @@ This will return a generic `IModelDrivenAppPage`. If you know the type of home p
 var listPage = await app.LoginAsync<IEntityListPage>(Configuration.EnvironmentUrl, Configuration.AppName, Configuration.Username, Configuration.Password);
 ```
 
-### Pages and controls
+### Pages
 
 Writing tests with PowerPlaywright involves interacting with page and control interfaces. Page interfaces have been created to model the different types of pages currently available within a model-driven app. These interfaces map onto the pages documented [here](https://learn.microsoft.com/en-us/power-apps/maker/model-driven-apps/create-remove-pages#create-a-page). These provide you with access to the right controls for the page you are on.
 
@@ -64,6 +66,12 @@ At the time of writing, the supported pages are:
 - Dashboard (`IDashboardPage`)
 - Custom page (`ICustomPage`)
 - Web resource and Navigation link (`IWebResourcePage`)
+
+#### Custom pages
+
+TBA
+
+### Controls
 
 Control interfaces are accessible via properties on the pages. For example, an `IEntityListPage` page exposes a `Grid` property that provides access to the grid control found on these pages:
 
@@ -77,9 +85,23 @@ All page interfaces also extend `IModelDrivenAppPage` which provides access to c
 var listPage = await homePage.SiteMap.OpenPageAsync<IEntityListPage>("Area", "Group", "Page");
 ```
 
-#### Custom pages
+#### Control classes
 
-TBA
+Controls that are added to a model-driven app form are typically added as a control _class_. This means that the specific PCF control that gets rendered is not defined within the form and may change over time. An example of this is the read-only subgrid class. Microsoft have updated the control used for this class from **MscrmControls.Grid.PCFGridControl** to **Microsoft.PowerApps.PowerAppsOneGrid**. 
+
+PowerPlaywright allows you to retrieve an instance of control on a form either by specifying the class interface or the control interface. The latter is only used in cases where the control has been specified explicitly on the form. PowerPlaywright will automatically redirect requests for a control class to the right implementation.
+
+Control class interfaces can be found in the `PowerPlaywright.Framework.Controls.Pcf.Classes` namespace.
+
+```csharp
+// This subgrid has not had a control explicitly set on the form.
+recordPage.Form.GetControl<IReadOnlyGrid>("subgrid_a");
+```
+
+```csharp
+// Subgrid configured as 'Microsoft.PowerApps.PowerAppsOneGrid' control.
+recordPage.Form.GetControl<IPowerAppsOneGridControl>("subgrid_b"); 
+```
 
 #### Custom controls
 
