@@ -27,11 +27,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="LoginControl"/> class.
         /// </summary>
-        /// <param name="page">The page.</param>
+        /// <param name="appPage">The app page.</param>
         /// <param name="pageFactory">The page factory.</param>
         /// <param name="logger">The logger.</param>
-        public LoginControl(IPage page, IPageFactory pageFactory, ILogger<LoginControl> logger = null)
-            : base(page)
+        public LoginControl(IAppPage appPage, IPageFactory pageFactory, ILogger<LoginControl> logger = null)
+            : base(appPage)
         {
             this.pageFactory = pageFactory ?? throw new System.ArgumentNullException(nameof(pageFactory));
             this.logger = logger;

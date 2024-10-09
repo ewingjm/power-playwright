@@ -10,7 +10,9 @@
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
+    using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Framework.Redirectors;
+    using PowerPlaywright.Pages;
     using PowerPlaywright.Resolvers;
 
     /// <summary>
@@ -24,6 +26,7 @@
         private readonly IList<IControlStrategyResolver> strategyResolvers;
         private readonly IServiceProvider serviceProvider;
         private readonly ILogger<ControlFactory> logger;
+        private readonly IDictionary<IAppPage, IDictionary<(Type, string, IControl), IControl>> pageCache;
 
         private IEnumerable<Type> assemblyTypes;
         private IEnumerable<Type> controlTypes;
@@ -45,6 +48,7 @@
             this.strategyResolvers = strategyResolvers?.ToList() ?? throw new ArgumentNullException(nameof(strategyResolvers));
             this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             this.logger = logger;
+            this.pageCache = new Dictionary<IAppPage, IDictionary<(Type, string, IControl), IControl>>();
         }
 
         private IEnumerable<Type> AssemblyTypes
@@ -161,24 +165,32 @@
         }
 
         /// <inheritdoc/>
-        public TControl CreateInstance<TControl>(IPage page, string name = null, IControl parent = null)
+        public TControl CreateInstance<TControl>(IAppPage appPage, string name = null, IControl parent = null)
             where TControl : IControl
         {
-            var type = typeof(TControl);
+            var controlType = typeof(TControl);
 
-            this.logger?.LogTrace("Creating an instance of {type}.", type);
-
-            if (this.RedirectorsMap.TryGetValue(type, out var redirectors))
+            this.logger?.LogTrace("Checking for cached instance of {controlType}.", controlType);
+            var controlCacheKey = (controlType, name, parent);
+            if (this.pageCache.TryGetValue(appPage, out var controlCache) && controlCache.TryGetValue(controlCacheKey, out IControl cachedControl))
             {
-                type = redirectors.Redirect();
+                this.logger?.LogTrace("Control found in cache.");
+                return (TControl)cachedControl;
             }
 
-            if (!this.StrategyMap.TryGetValue(type, out var strategyType) || strategyType == null)
+            this.logger?.LogTrace("Creating an instance of {controlType}.", controlType);
+
+            if (this.RedirectorsMap.TryGetValue(controlType, out var redirector))
             {
-                throw new PowerPlaywrightException($"Unable to find a control strategy for type {type.Name}.");
+                controlType = redirector.Redirect();
             }
 
-            var parameters = new List<object> { page };
+            if (!this.StrategyMap.TryGetValue(controlType, out var strategyType) || strategyType == null)
+            {
+                throw new PowerPlaywrightException($"Unable to find a control strategy for type {controlType.Name}.");
+            }
+
+            var parameters = new List<object> { appPage };
 
             if (name != null)
             {
@@ -190,7 +202,26 @@
                 parameters.Add(parent);
             }
 
-            return (TControl)ActivatorUtilities.CreateInstance(this.serviceProvider, strategyType, parameters.ToArray());
+            var control = (TControl)ActivatorUtilities.CreateInstance(this.serviceProvider, strategyType, parameters.ToArray());
+
+            if (controlCache is null)
+            {
+                controlCache = new Dictionary<(Type, string, IControl), IControl>();
+            }
+
+            controlCache.Add(controlCacheKey, control);
+
+            if (!this.pageCache.ContainsKey(appPage))
+            {
+                this.pageCache.Add(appPage, controlCache);
+            }
+
+            if (appPage is IAppPageInternal appPageInternal)
+            {
+                appPageInternal.OnDestroy += this.AppPage_OnDestroy;
+            }
+
+            return control;
         }
 
         /// <inheritdoc/>
@@ -199,6 +230,14 @@
             if (this.RedirectionInfoProvider is IAppLoadInitializable i)
             {
                 await i.InitializeAsync(page);
+            }
+        }
+
+        private void AppPage_OnDestroy(object sender, EventArgs e)
+        {
+            if (sender is IAppPage appPage && this.pageCache.ContainsKey(appPage))
+            {
+                this.pageCache.Remove(appPage);
             }
         }
 

@@ -27,13 +27,13 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="PcfGridControl"/> class.
         /// </summary>
-        /// <param name="page">The page.</param>
+        /// <param name="appPage">The app page.</param>
         /// <param name="name">The name given to the control.</param>
         /// <param name="pageFactory">The page factory.</param>
         /// <param name="parent">The parent control.</param>
         /// <param name="logger">The logger.</param>
-        public PcfGridControl(IPage page, string name, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
-            : base(page, parent)
+        public PcfGridControl(IAppPage appPage, string name, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
+            : base(appPage, parent)
         {
             this.name = name;
             this.pageFactory = pageFactory;

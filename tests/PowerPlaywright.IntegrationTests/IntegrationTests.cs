@@ -66,33 +66,9 @@
         [SetUp]
         public async Task SetUpAsync()
         {
-            var localFeedPath = Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "packages");
-
-            if (Directory.Exists(localFeedPath))
-            {
-                Directory.Delete(localFeedPath, true);
-            }
-
-            Directory.CreateDirectory(localFeedPath);
-
-            var packagePath = Directory.GetFiles("./", "PowerPlaywright.Strategies.*.nupkg").OrderDescending().First();
-
-            await OfflineFeedUtility.AddPackageToSource(
-                new OfflineFeedAddContext(
-                    packagePath,
-                    localFeedPath,
-                    NullLogger.Instance,
-                    true,
-                    true,
-                    true,
-                    new PackageExtractionContext(
-                        PackageSaveMode.Defaultv3,
-                        XmlDocFileSaveMode.None,
-                        ClientPolicyContext.GetClientPolicy(Settings.LoadDefaultSettings(null), NullLogger.Instance),
-                        NullLogger.Instance)),
-                CancellationToken.None);
-
-            this.modelDrivenApp = await ModelDrivenApp.LaunchInternalAsync(this.Context, localFeedPath);
+            this.modelDrivenApp = await ModelDrivenApp.LaunchInternalAsync(
+                this.Context,
+                Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "packages"));
         }
 
         /// <summary>
@@ -133,7 +109,7 @@
 
             var page = await this.LoginAsync();
 
-            return await page.NavigateToRecordAsync(record.LogicalName, record.Id);
+            return await page.ClientApi.NavigateToRecordAsync(record.LogicalName, record.Id);
         }
 
         /// <summary>

@@ -37,6 +37,11 @@
         /// <inheritdoc/>
         public async Task InitializeAsync(IPage page)
         {
+            if (this.IsReady)
+            {
+                return;
+            }
+
             await this.InitialiseResolverAsync(page);
 
             this.isReady = true;

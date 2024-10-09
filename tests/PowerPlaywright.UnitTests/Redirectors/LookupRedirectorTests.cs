@@ -1,6 +1,6 @@
 ﻿namespace PowerPlaywright.UnitTests.Redirectors
 {
-    using Moq;
+    using NSubstitute;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Redirectors;
     using PowerPlaywright.Strategies.Redirectors;
@@ -10,7 +10,7 @@
     /// </summary>
     public class LookupRedirectorTests
     {
-        private Mock<IRedirectionInfoProvider<RedirectionInfo>> redirectionInfoProvider;
+        private IRedirectionInfoProvider<RedirectionInfo> redirectionInfoProvider;
         private LookupRedirector redirector;
 
         /// <summary>
@@ -19,8 +19,8 @@
         [SetUp]
         public void SetUp()
         {
-            this.redirectionInfoProvider = new Mock<IRedirectionInfoProvider<RedirectionInfo>>();
-            this.redirector = new LookupRedirector(this.redirectionInfoProvider.Object);
+            this.redirectionInfoProvider = Substitute.For<IRedirectionInfoProvider<RedirectionInfo>>();
+            this.redirector = new LookupRedirector(this.redirectionInfoProvider);
         }
 
         /// <summary>
@@ -32,7 +32,7 @@
         [TestCase(true, ExpectedResult = typeof(ISimpleLookupControl))]
         public Type Redirect_ModernizationOptOutSet_ReturnsCorrespondingLookupInterface(bool modernizationOptOut)
         {
-            this.redirectionInfoProvider.Setup(p => p.GetRedirectionInfo()).Returns(
+            this.redirectionInfoProvider.GetRedirectionInfo().Returns(
                  new RedirectionInfo(
                      new AppToggles
                      {

@@ -8,6 +8,7 @@
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// A control strategy for the <see cref="ISimpleLookupControl"/>.
@@ -30,12 +31,12 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleLookupControl"/> class.
         /// </summary>
-        /// <param name="page">The page.</param>
+        /// <param name="appPage">The app page.</param>
         /// <param name="name">The name given to the control.</param>
         /// <param name="parent">The parent control.</param>
         /// <param name="logger">The logger.</param>
-        public SimpleLookupControl(IPage page, string name, IControl parent, ILogger<PcfGridControl> logger = null)
-            : base(page, parent)
+        public SimpleLookupControl(IAppPage appPage, string name, IControl parent, ILogger<PcfGridControl> logger = null)
+            : base(appPage, parent)
         {
             this.name = name;
             this.logger = logger;

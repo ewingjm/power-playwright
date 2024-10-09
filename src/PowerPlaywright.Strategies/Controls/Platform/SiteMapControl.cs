@@ -28,10 +28,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SiteMapControl"/> class.
         /// </summary>
-        /// <param name="page">The page.</param>
+        /// <param name="appPage">The app page.</param>
         /// <param name="pageFactory">The page factory.</param>
-        public SiteMapControl(IPage page, IPageFactory pageFactory)
-            : base(page)
+        public SiteMapControl(IAppPage appPage, IPageFactory pageFactory)
+            : base(appPage)
         {
             this.pageFactory = pageFactory;
 

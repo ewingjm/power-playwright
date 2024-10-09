@@ -9,6 +9,7 @@
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
     using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// A main form.
@@ -24,10 +25,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="MainFormControl"/> class.
         /// </summary>
-        /// <param name="page">The page.</param>
+        /// <param name="appPage">The page.</param>
         /// <param name="controlFactory">The control factory.</param>
-        public MainFormControl(IPage page, IControlFactory controlFactory)
-            : base(page)
+        public MainFormControl(IAppPage appPage, IControlFactory controlFactory)
+            : base(appPage)
         {
             this.controlFactory = controlFactory ?? throw new ArgumentNullException(nameof(controlFactory));
 
@@ -55,7 +56,7 @@
         public TControl GetControl<TControl>(string name)
             where TControl : IPcfControl
         {
-            return this.controlFactory.CreateInstance<TControl>(this.Page, name, this);
+            return this.controlFactory.CreateInstance<TControl>(this.AppPage, name, this);
         }
     }
 }

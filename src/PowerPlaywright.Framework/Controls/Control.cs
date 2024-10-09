@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.Framework.Controls
 {
     using Microsoft.Playwright;
+    using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// A base class that all controls must inherit from.
@@ -13,11 +14,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="Control"/> class.
         /// </summary>
-        /// <param name="page">The page.</param>
+        /// <param name="appPage">The app page.</param>
         /// <param name="parent">The parent conrol.</param>
-        protected Control(IPage page, IControl parent = null)
+        protected Control(IAppPage appPage, IControl parent = null)
         {
-            this.Page = page;
+            this.AppPage = appPage;
             this.parent = parent;
         }
 
@@ -53,10 +54,16 @@
         protected ILocator Container => ((IControl)this).Container;
 
         /// <summary>
+        /// Gets the app page.
+        /// </summary>
+        /// <value>The app page.</value>
+        protected IAppPage AppPage { get; }
+
+        /// <summary>
         /// Gets the page.
         /// </summary>
         /// <value>The page.</value>
-        protected IPage Page { get; }
+        protected IPage Page => this.AppPage.Page;
 
         /// <summary>
         /// Gets the control root.

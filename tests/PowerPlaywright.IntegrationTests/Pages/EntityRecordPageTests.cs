@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Pages
 {
+    using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Pages;
@@ -28,7 +29,7 @@
                 await client.CreateAsync(record);
             }
 
-            this.recordPage = await (await this.LoginAsync()).NavigateToRecordAsync(record.LogicalName, record.Id);
+            this.recordPage = await (await this.LoginAsync()).ClientApi.NavigateToRecordAsync(record.LogicalName, record.Id);
         }
 
         /// <summary>
@@ -52,6 +53,8 @@
         [Test]
         public async Task GetActiveTabAsync_TabIsActive_ReturnsActiveTab()
         {
+            var grid = this.recordPage.Form.GetControl<IReadOnlyGrid>("subgrid_whatever");
+
             var activeTab = await this.recordPage.Form.GetActiveTabAsync();
 
             Assert.That(activeTab, Is.EqualTo(pp_Record.Forms.Information.Tabs.TabA));
@@ -63,7 +66,7 @@
         [Test]
         public void Form_GetControl_ReturnsControl()
         {
-            var gridControl = this.recordPage.Form.GetControl<IReadOnlyGrid>(pp_Record.Forms.Information.RelatedRecordsSubgrid);
+            var gridControl = this.recordPage.Form.GetControl<IPowerAppsOneGridControl>(pp_Record.Forms.Information.RelatedRecordsSubgrid).OpenRecordAsync(1);
 
             Assert.That(gridControl, Is.Not.Null);
         }

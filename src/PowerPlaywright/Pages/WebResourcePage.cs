@@ -13,10 +13,9 @@
         /// Initializes a new instance of the <see cref="WebResourcePage"/> class.
         /// </summary>
         /// <param name="page">The page.</param>
-        /// <param name="pageFactory">The page factory.</param>
         /// <param name="controlFactory">The control factory.</param>
-        public WebResourcePage(IPage page, IPageFactory pageFactory, IControlFactory controlFactory)
-            : base(page, pageFactory, controlFactory)
+        public WebResourcePage(IPage page, IControlFactory controlFactory)
+            : base(page, controlFactory)
         {
         }
     }

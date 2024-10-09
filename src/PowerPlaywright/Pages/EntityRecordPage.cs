@@ -10,20 +10,17 @@
     /// </summary>
     internal class EntityRecordPage : ModelDrivenAppPage, IEntityRecordPage
     {
-        private IMainFormControl form;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityRecordPage"/> class.
         /// </summary>
         /// <param name="page">The page.</param>
-        /// <param name="pageFactory">The page factory.</param>
         /// <param name="controlFactory">The control factory.</param>
-        public EntityRecordPage(IPage page, IPageFactory pageFactory, IControlFactory controlFactory)
-            : base(page, pageFactory, controlFactory)
+        public EntityRecordPage(IPage page, IControlFactory controlFactory)
+            : base(page, controlFactory)
         {
         }
 
         /// <inheritdoc/>
-        public IMainFormControl Form => this.form ?? (this.form = this.ControlFactory.CreateInstance<IMainFormControl>(this.Page));
+        public IMainFormControl Form => this.ControlFactory.CreateInstance<IMainFormControl>(this);
     }
 }

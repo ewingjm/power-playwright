@@ -34,7 +34,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IBasePage> CreateInstanceAsync(IPage page)
+        public async Task<IAppPage> CreateInstanceAsync(IPage page)
         {
             if (page is null)
             {
@@ -48,7 +48,7 @@
 
         /// <inheritdoc/>
         public async Task<TPage> CreateInstanceAsync<TPage>(IPage page)
-            where TPage : IBasePage
+            where TPage : IAppPage
         {
             if (page is null)
             {
@@ -115,7 +115,7 @@
             }
         }
 
-        private IBasePage InstantiateAppPage(IPage page, ModelDrivenPageType? pageType)
+        private IAppPage InstantiateAppPage(IPage page, ModelDrivenPageType? pageType)
         {
             switch (pageType)
             {
@@ -137,7 +137,7 @@
         }
 
         private TPage InstantiateAppPage<TPage>(IPage page)
-            where TPage : IBasePage
+            where TPage : IAppPage
         {
             return ActivatorUtilities.CreateInstance<TPage>(this.serviceProvider, page);
         }

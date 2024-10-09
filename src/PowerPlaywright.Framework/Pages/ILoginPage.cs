@@ -5,7 +5,7 @@
     /// <summary>
     /// A login page.
     /// </summary>
-    public interface ILoginPage : IBasePage
+    public interface ILoginPage : IAppPage
     {
         /// <summary>
         /// Logs in on the login page.

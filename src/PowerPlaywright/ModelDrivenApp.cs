@@ -140,6 +140,7 @@ namespace PowerPlaywright
 
             IModelDrivenAppPage homePage;
 
+            // TODO: Implement cookie based login
             if (currentPage is LoginPage loginPage)
             {
                 homePage = await loginPage.LoginAsync(username, password);

@@ -10,22 +10,20 @@
     /// </summary>
     internal class EntityListPage : ModelDrivenAppPage, IEntityListPage
     {
+        // TODO: Implement a strategies based app reference for strings
         private const string GridControlName = "entity_control";
-
-        private IReadOnlyGrid grid;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityListPage"/> class.
         /// </summary>
         /// <param name="page">The page.</param>
-        /// <param name="pageFactory">The page factory.</param>
         /// <param name="controlFactory">The control factory.</param>
-        public EntityListPage(IPage page, IPageFactory pageFactory, IControlFactory controlFactory)
-            : base(page, pageFactory, controlFactory)
+        public EntityListPage(IPage page, IControlFactory controlFactory)
+            : base(page, controlFactory)
         {
         }
 
         /// <inheritdoc/>
-        public IReadOnlyGrid Grid => this.grid ?? (this.grid = this.ControlFactory.CreateInstance<IReadOnlyGrid>(this.Page, GridControlName));
+        public IReadOnlyGrid Grid => this.ControlFactory.CreateInstance<IReadOnlyGrid>(this, GridControlName);
     }
 }

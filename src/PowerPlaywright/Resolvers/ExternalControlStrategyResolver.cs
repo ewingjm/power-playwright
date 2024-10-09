@@ -31,6 +31,16 @@
         /// <inheritdoc/>
         public Type Resolve(Type controlType, IEnumerable<Type> strategyTypes)
         {
+            if (controlType is null)
+            {
+                throw new ArgumentNullException(nameof(controlType));
+            }
+
+            if (strategyTypes is null)
+            {
+                throw new ArgumentNullException(nameof(strategyTypes));
+            }
+
             return strategyTypes
                 .Where(s => controlType.IsAssignableFrom(s) && !s.IsAbstract && s.IsClass && s.IsVisible)
                 .OrderByDescending(s => s.GetCustomAttribute<ExternalControlStrategyAttribute>().Version)

@@ -40,6 +40,21 @@
         /// <inheritdoc/>
         public override Type Resolve(Type controlType, IEnumerable<Type> strategyTypes)
         {
+            if (controlType is null)
+            {
+                throw new ArgumentNullException(nameof(controlType));
+            }
+
+            if (strategyTypes is null)
+            {
+                throw new ArgumentNullException(nameof(strategyTypes));
+            }
+
+            if (this.controlVersions is null)
+            {
+                throw new PowerPlaywrightException($"The {nameof(PcfControlStrategyResolver)} must be initialised before it can resolve controls");
+            }
+
             if (controlType.GetCustomAttribute<PcfControlAttribute>() is PcfControlAttribute control)
             {
                 return strategyTypes
@@ -61,10 +76,10 @@
         /// <inheritdoc/>
         protected override async Task InitialiseResolverAsync(IPage page)
         {
-            this.controlVersions = await this.GetControlVesions(page);
+            this.controlVersions = await this.GetControlVersions(page);
         }
 
-        private async Task<IDictionary<string, Version>> GetControlVesions(IPage page)
+        private async Task<IDictionary<string, Version>> GetControlVersions(IPage page)
         {
             var customControlsResponse = await page.APIRequest.GetAsync($"https://{new Uri(page.Url).Host}/api/data/v9.2/customcontrols?$select=name,version");
             var customControlsJson = await customControlsResponse.JsonAsync();

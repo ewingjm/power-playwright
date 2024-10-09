@@ -27,13 +27,13 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="PowerAppsOneGridControl"/> class.
         /// </summary>
-        /// <param name="page">The page.</param>
+        /// <param name="appPage">The app page.</param>
         /// <param name="parent">The parent control.</param>
         /// <param name="name">The name given to the control.</param>
         /// <param name="pageFactory">The page factory.</param>
         /// <param name="logger">The logger.</param>
-        public PowerAppsOneGridControl(IPage page, string name, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
-            : base(page, parent)
+        public PowerAppsOneGridControl(IAppPage appPage, string name, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
+            : base(appPage, parent)
         {
             this.name = name;
             this.pageFactory = pageFactory;
