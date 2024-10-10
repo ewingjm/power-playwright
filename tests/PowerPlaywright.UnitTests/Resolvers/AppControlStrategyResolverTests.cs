@@ -21,7 +21,8 @@ public class AppControlStrategyResolverTests
     {
         this.resolver = new PlatformControlStrategyResolver();
         this.page = Substitute.For<IPage>();
-        this.page.EvaluateAsync<string>("Xrm.Utility.getGlobalContext().getVersion()").Returns("1.0.0.0");
+
+        this.MockValidDefaults();
     }
 
     /// <summary>
@@ -82,5 +83,10 @@ public class AppControlStrategyResolverTests
         this.resolver.OnReady += (sender, args) => Assert.That(args.Resolver, Is.EqualTo(this.resolver));
 
         await this.resolver.InitializeAsync(this.page);
+    }
+
+    private void MockValidDefaults()
+    {
+        this.page.EvaluateAsync<string>("Xrm.Utility.getGlobalContext().getVersion()").Returns("1.0.0.0");
     }
 }

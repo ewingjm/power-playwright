@@ -41,7 +41,7 @@ public class PcfControlStrategyResolverTests
         this.controlVersions = new Dictionary<string, Version>();
         this.resolver = new PcfControlStrategyResolver();
 
-        this.MockDefaults();
+        this.MockValidDefaults();
     }
 
     /// <summary>
@@ -234,7 +234,7 @@ public class PcfControlStrategyResolverTests
             testName);
     }
 
-    private void MockDefaults()
+    private void MockValidDefaults()
     {
         var environmentUrl = $"https://{Guid.NewGuid()}.crm.dynamics.com";
 
