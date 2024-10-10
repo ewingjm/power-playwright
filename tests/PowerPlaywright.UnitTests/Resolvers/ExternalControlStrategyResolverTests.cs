@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using NUnit.Framework.Internal;
 using PowerPlaywright.Framework.Controls.External;
 using PowerPlaywright.Framework.Controls.External.Attributes;
+using PowerPlaywright.Framework.Controls.Pcf;
 using PowerPlaywright.Framework.Controls.Platform.Attributes;
 using PowerPlaywright.Resolvers;
 using PowerPlaywright.Strategies.Controls.External;
@@ -36,6 +37,15 @@ public class ExternalControlStrategyResolverTests
     public void IsReady_AfterConstruction_ReturnsTrue()
     {
         Assert.That(this.resolver.IsReady, Is.True);
+    }
+
+    /// <summary>
+    /// Tests that the <see cref="ExternalControlStrategyResolver.IsResolvable(Type)"/> method throws an <see cref="ArgumentNullException"/> when the type is null.
+    /// </summary>
+    [Test]
+    public void IsResolvable_NullType_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => this.resolver.IsResolvable(null));
     }
 
     /// <summary>
@@ -80,6 +90,15 @@ public class ExternalControlStrategyResolverTests
     public void Resolve_NullStrategyTypes_ThrowsArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(() => this.resolver.Resolve(typeof(ILoginControl), null));
+    }
+
+    /// <summary>
+    /// Tests that the <see cref="ExternalControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> method throws a <see cref="PowerPlaywrightException"/> when the control type does not have the <see cref="ExternalControlAttribute"/> attribute.
+    /// </summary>
+    [Test]
+    public void Resolve_ControlTypeDoesNotHaveExternalControlAttribute_ThrowsPowerPlaywrightException()
+    {
+        Assert.Throws<PowerPlaywrightException>(() => this.resolver.Resolve(typeof(IPowerAppsOneGridControl), [typeof(ILoginControl)]));
     }
 
     /// <summary>

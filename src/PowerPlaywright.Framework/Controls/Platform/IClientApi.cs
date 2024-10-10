@@ -9,7 +9,7 @@
     /// A control that is used as a helper to execute client API scripts.
     /// </summary>
     [PlatformControl]
-    public interface IClientApi : IControl
+    public interface IClientApi : IPlatformControl
     {
         /// <summary>
         /// Navigates to a record with the given logical name and ID.

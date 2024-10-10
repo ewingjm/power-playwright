@@ -8,7 +8,7 @@
     /// An interface representing a form.
     /// </summary>
     [PlatformControl]
-    public interface IMainFormControl : IControl
+    public interface IMainFormControl : IPlatformControl
     {
         /// <summary>
         /// Opens a tab on the form.

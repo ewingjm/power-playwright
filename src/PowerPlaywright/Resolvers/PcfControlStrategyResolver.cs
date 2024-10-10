@@ -70,7 +70,7 @@
                     .FirstOrDefault()?.Type;
             }
 
-            throw new NotSupportedException($"No supported attributes were found for control type {controlType.Name}. {nameof(PcfControlStrategyResolver)} resolver is unable to resolve the control strategy.");
+            throw new PowerPlaywrightException($"No supported attributes were found for control type {controlType.Name}. {nameof(PcfControlStrategyResolver)} resolver is unable to resolve the control strategy.");
         }
 
         /// <inheritdoc/>
@@ -86,7 +86,7 @@
 
             if (!customControlsResponse.Ok)
             {
-                throw new PowerPlaywrightException($"Unable to retrieve custom controls from environment: {customControlsJson?.GetProperty("error").GetProperty("message").GetString()}");
+                throw new PowerPlaywrightException($"Unable to retrieve custom controls from environment. Status code: {customControlsResponse.Status}.");
             }
 
             return customControlsJson?.GetProperty("value").EnumerateArray().ToDictionary(

@@ -1,7 +1,6 @@
 ﻿namespace PowerPlaywright.Framework.Controls.External
 {
     using System.Threading.Tasks;
-    using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.External.Attributes;
     using PowerPlaywright.Framework.Pages;
 
@@ -9,7 +8,7 @@
     /// A login control.
     /// </summary>
     [ExternalControl]
-    public interface ILoginControl : IControl
+    public interface ILoginControl : IExternalControl
     {
         /// <summary>
         /// Logs in.

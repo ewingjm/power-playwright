@@ -39,6 +39,21 @@
         /// <inheritdoc/>
         public override Type Resolve(Type controlType, IEnumerable<Type> strategyTypes)
         {
+            if (controlType is null)
+            {
+                throw new ArgumentNullException(nameof(controlType));
+            }
+
+            if (strategyTypes is null)
+            {
+                throw new ArgumentNullException(nameof(strategyTypes));
+            }
+
+            if (this.platformVersion is null)
+            {
+                throw new PowerPlaywrightException($"The {nameof(PcfControlStrategyResolver)} must be initialised before it can resolve controls");
+            }
+
             if (controlType.GetCustomAttribute<PlatformControlAttribute>() is PlatformControlAttribute control)
             {
                 return strategyTypes
@@ -54,7 +69,7 @@
                     .FirstOrDefault()?.Type;
             }
 
-            throw new NotSupportedException($"No supported attributes were found for control type {controlType.Name}. {nameof(PlatformControlStrategyResolver)} resolver is unable to resolve the control strategy.");
+            throw new PowerPlaywrightException($"No supported attributes were found for control type {controlType.Name}. {nameof(PlatformControlStrategyResolver)} resolver is unable to resolve the control strategy.");
         }
 
         /// <inheritdoc/>

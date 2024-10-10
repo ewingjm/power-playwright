@@ -6,6 +6,7 @@ using System.Text.Json;
 using Bogus;
 using Microsoft.Playwright;
 using NSubstitute;
+using PowerPlaywright.Framework.Controls.External;
 using PowerPlaywright.Framework.Controls.Pcf;
 using PowerPlaywright.Framework.Controls.Pcf.Attributes;
 using PowerPlaywright.Resolvers;
@@ -115,6 +116,15 @@ public class PcfControlStrategyResolverTests
     }
 
     /// <summary>
+    /// Tests that the <see cref="PcfControlStrategyResolver.IsResolvable(Type)"/> method throws an <see cref="ArgumentNullException"/> when the type is null.
+    /// </summary>
+    [Test]
+    public void IsResolvable_NullType_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => this.resolver.IsResolvable(null));
+    }
+
+    /// <summary>
     /// Tests that the <see cref="PcfControlStrategyResolver.IsResolvable(Type)"/> method returns true when the type has the <see cref="PcfControlAttribute"/> attribute.
     /// </summary>
     [Test]
@@ -161,6 +171,18 @@ public class PcfControlStrategyResolverTests
     }
 
     /// <summary>
+    /// Tests that the <see cref="PcfControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> method throws a <see cref="PowerPlaywrightException"/> when the control type does not have the <see cref="PcfControlAttribute"/> attribute.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task Resolve_ControlTypeDoesNotHaveExternalControlAttribute_ThrowsPowerPlaywrightException()
+    {
+        await this.resolver.InitializeAsync(this.page);
+
+        Assert.Throws<PowerPlaywrightException>(() => this.resolver.Resolve(typeof(ILoginControl), [typeof(PowerAppsOneGridControl)]));
+    }
+
+    /// <summary>
     /// Tests that a <see cref="PowerPlaywrightException"/> is thrown if <see cref="PcfControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> is called before the resolver is initialised via <see cref="PcfControlStrategyResolver.InitialiseResolverAsync(IPage)"/>.
     /// </summary>
     [Test]
@@ -170,11 +192,22 @@ public class PcfControlStrategyResolverTests
     }
 
     /// <summary>
+    /// Tests that a <see cref="PowerPlaywrightException"/> is thrown if the response from <see cref="PcfControlStrategyResolver.GetControlVersionsAsync"/> has a status code other than 200.
+    /// </summary>
+    [Test]
+    public void InitializeAsync_GetControlVersionsReturnsNon200Response_ThrowsPowerPlaywrightException()
+    {
+        this.getControlsResponse.Ok.Returns(false);
+
+        Assert.ThrowsAsync<PowerPlaywrightException>(async () => await this.resolver.InitializeAsync(this.page));
+    }
+
+    /// <summary>
     /// Tests that the <see cref="PcfControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> method returns public, non-abstract, concrete types that implement the control type interface and have the <see cref="PcfControlStrategyAttribute"/> attribute.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
-    public async Task Resolve_StrategyTypesContainsPublicNonAbstractConcreteTypeWithPcfControlStrategyAttributeLessThanOrEqualToEnvironmentControlVersion_ReturnsType()
+    public async Task Resolve_StrategyTypesContainsPublicNonAbstractConcreteTypeWithPcfControlStrategyAttributeVersionLessThanOrEqualToEnvironmentControlVersion_ReturnsType()
     {
         var strategyVersion = this.faker.System.Version();
         var expectedStrategyType = this.GetPcfControlStrategyTypeFor<IPowerAppsOneGridControl>(out var controlName, strategyVersion);
@@ -222,7 +255,7 @@ public class PcfControlStrategyResolverTests
     private Type GetPcfControlStrategyTypeFor<TControlType>(out string controlName, Version strategyVersion, [CallerMemberName] string testName = "")
         where TControlType : IPcfControl
     {
-        var controlAttribute = typeof(IPowerAppsOneGridControl).GetCustomAttribute<PcfControlAttribute>()
+        var controlAttribute = typeof(TControlType).GetCustomAttribute<PcfControlAttribute>()
             ?? throw new Exception($"The provided type of {typeof(TControlType).Name} is not a valid PCF control");
         controlName = controlAttribute.Name;
 

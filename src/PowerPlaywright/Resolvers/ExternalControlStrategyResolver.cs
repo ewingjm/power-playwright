@@ -41,10 +41,15 @@
                 throw new ArgumentNullException(nameof(strategyTypes));
             }
 
-            return strategyTypes
-                .Where(s => controlType.IsAssignableFrom(s) && !s.IsAbstract && s.IsClass && s.IsVisible)
-                .OrderByDescending(s => s.GetCustomAttribute<ExternalControlStrategyAttribute>().Version)
-                .FirstOrDefault();
+            if (controlType.GetCustomAttribute<ExternalControlAttribute>() is ExternalControlAttribute control)
+            {
+                return strategyTypes
+                    .Where(s => controlType.IsAssignableFrom(s) && !s.IsAbstract && s.IsClass && s.IsVisible)
+                    .OrderByDescending(s => s.GetCustomAttribute<ExternalControlStrategyAttribute>().Version)
+                    .FirstOrDefault();
+            }
+
+            throw new PowerPlaywrightException($"No supported attributes were found for control type {controlType.Name}. {nameof(ExternalControlStrategyResolver)} resolver is unable to resolve the control strategy.");
         }
     }
 }

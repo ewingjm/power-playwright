@@ -9,7 +9,7 @@
     /// An interface representing a sitemap.
     /// </summary>
     [PlatformControl]
-    public interface ISiteMapControl : IControl
+    public interface ISiteMapControl : IPlatformControl
     {
         /// <summary>
         /// Opens a page.
