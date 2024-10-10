@@ -17,7 +17,7 @@
         /// <param name="revision">The revision component of the environment version that introduced this control strategy.</param>
         public PlatformControlStrategyAttribute(uint major, uint minor, uint build, uint revision)
         {
-            Version = new Version((int)major, (int)minor, (int)build, (int)revision);
+            this.Version = new Version((int)major, (int)minor, (int)build, (int)revision);
         }
 
         /// <summary>
