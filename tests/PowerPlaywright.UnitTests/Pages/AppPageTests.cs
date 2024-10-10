@@ -1,6 +1,7 @@
 namespace PowerPlaywright.UnitTests.Pages;
 
 using Microsoft.Playwright;
+using NSubstitute.Extensions;
 using PowerPlaywright.Framework.Pages;
 using PowerPlaywright.Pages;
 
@@ -13,6 +14,24 @@ public class AppPageTests : AppPageTests<IAppPage>
     private new AppPage AppPage => (AppPage)base.AppPage;
 
     /// <summary>
+    /// Tests that an <see cref="ArgumentNullException"/> is thrown if a null <see cref="IPage"/> is passed to the constructor.
+    /// </summary>
+    [Test]
+    public void Constructor_NullPage_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => new CustomPage(null, this.ControlFactory));
+    }
+
+    /// <summary>
+    /// Tests that an <see cref="ArgumentNullException"/> is thrown if a null <see cref="IControlFactory"/> is passed to the constructor.
+    /// </summary>
+    [Test]
+    public void Constructor_NullControlFactory_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => new CustomPage(this.Page, null));
+    }
+
+    /// <summary>
     /// Tests that the <see cref="AppPage.Destroy"/> method always invokes the <see cref="AppPage.OnDestroy"/> event.
     /// </summary>
     [Test]
@@ -23,6 +42,15 @@ public class AppPageTests : AppPageTests<IAppPage>
         this.AppPage.Destroy();
 
         Assert.Fail($"The {nameof(this.AppPage.OnDestroy)} event was not invoked.");
+    }
+
+    /// <summary>
+    /// Tests that the <see cref="AppPage.Page"/> property always returns the page passed to the constructor.
+    /// </summary>
+    [Test]
+    public void Page_Always_ReturnsPagePassedToConstructor()
+    {
+        Assert.That(this.AppPage.Page, Is.EqualTo(this.Page));
     }
 
     /// <inheritdoc/>
