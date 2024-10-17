@@ -8,11 +8,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.PowerPlatform.Dataverse.Client;
     using Microsoft.Xrm.Sdk;
-    using NuGet.Common;
-    using NuGet.Configuration;
-    using NuGet.Packaging;
-    using NuGet.Packaging.Signing;
-    using NuGet.Protocol.Core.Types;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.IntegrationTests.Config;
 
