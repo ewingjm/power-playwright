@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
-    using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;

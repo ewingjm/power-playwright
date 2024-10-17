@@ -1,7 +1,5 @@
 ﻿namespace PowerPlaywright.Framework.Pages
 {
-    using System;
-    using System.Threading.Tasks;
     using PowerPlaywright.Framework.Controls.Platform;
 
     /// <summary>

@@ -5,7 +5,6 @@ using NUnit.Framework;
 using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Controls;
 using PowerPlaywright.Framework.Controls.Pcf.Classes;
-using PowerPlaywright.Framework.Controls.Platform;
 using PowerPlaywright.Framework.Pages;
 using PowerPlaywright.Pages;
 

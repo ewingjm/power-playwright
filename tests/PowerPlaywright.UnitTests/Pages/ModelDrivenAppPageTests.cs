@@ -1,9 +1,6 @@
 namespace PowerPlaywright.UnitTests.Pages;
 
-using Microsoft.Playwright;
-using NSubstitute;
 using NUnit.Framework;
-using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Controls;
 using PowerPlaywright.Framework.Controls.Platform;
 using PowerPlaywright.Framework.Pages;
