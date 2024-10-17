@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.UnitTests.Redirectors
 {
+    using Microsoft.Extensions.Logging;
     using NSubstitute;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Redirectors;
@@ -20,7 +21,7 @@
         public void SetUp()
         {
             this.redirectionInfoProvider = Substitute.For<IRedirectionInfoProvider<RedirectionInfo>>();
-            this.redirector = new ReadOnlyGridRedirector(this.redirectionInfoProvider);
+            this.redirector = new ReadOnlyGridRedirector(this.redirectionInfoProvider, Substitute.For<ILogger<ReadOnlyGridRedirector>>());
         }
 
         /// <summary>

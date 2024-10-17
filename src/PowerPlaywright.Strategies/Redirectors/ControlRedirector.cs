@@ -32,9 +32,9 @@
         /// <inheritdoc/>
         public Type Redirect()
         {
-            this.Logger?.LogTrace("Redirecting requested control type: {source}.", typeof(TSourceControl).Name);
+            this.Logger.LogTrace("Redirecting requested control type: {source}.", typeof(TSourceControl).Name);
             var targetControl = this.GetTargetControlType(this.infoProvider.GetRedirectionInfo());
-            this.Logger?.LogTrace("Found target control type: {source}.", targetControl.Name);
+            this.Logger.LogTrace("Found target control type: {source}.", targetControl.Name);
 
             return targetControl;
         }
