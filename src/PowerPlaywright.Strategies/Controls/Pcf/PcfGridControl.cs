@@ -15,7 +15,7 @@
     /// A control strategy for the <see cref="IPcfGridControl"/>.
     /// </summary>
     [PcfControlStrategy(1, 1, 148)]
-    public class PcfGridControl : Control, IPcfGridControl
+    public class PcfGridControl : PcfControl, IPcfGridControl
     {
         private readonly string name;
         private readonly IPageFactory pageFactory;
@@ -33,7 +33,7 @@
         /// <param name="parent">The parent control.</param>
         /// <param name="logger">The logger.</param>
         public PcfGridControl(IAppPage appPage, string name, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
-            : base(appPage, parent)
+            : base(name, appPage, parent)
         {
             this.name = name;
             this.pageFactory = pageFactory;

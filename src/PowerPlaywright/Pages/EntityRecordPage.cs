@@ -21,6 +21,6 @@
         }
 
         /// <inheritdoc/>
-        public IMainFormControl Form => this.ControlFactory.CreateInstance<IMainFormControl>(this);
+        public IMainFormControl Form => this.GetControl<IMainFormControl>();
     }
 }

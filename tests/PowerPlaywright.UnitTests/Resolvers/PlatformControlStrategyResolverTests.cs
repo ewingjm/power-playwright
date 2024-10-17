@@ -1,11 +1,10 @@
 ﻿namespace PowerPlaywright.UnitTests.Resolvers;
 
-using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text.Json;
 using Bogus;
 using Microsoft.Playwright;
 using NSubstitute;
+using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Controls.External;
 using PowerPlaywright.Framework.Controls.Platform;
 using PowerPlaywright.Framework.Controls.Platform.Attributes;
@@ -95,9 +94,9 @@ public class PlatformControlStrategyResolverTests
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task OnReady_EventTriggered_IncludesResolverInEventArgs()
+    public async Task OnReady_EventTriggered_SenderIsResolver()
     {
-        this.resolver.OnReady += (sender, args) => Assert.That(args.Resolver, Is.EqualTo(this.resolver));
+        this.resolver.OnReady += (sender, args) => Assert.That(sender, Is.EqualTo(this.resolver));
 
         await this.resolver.InitializeAsync(this.page);
     }

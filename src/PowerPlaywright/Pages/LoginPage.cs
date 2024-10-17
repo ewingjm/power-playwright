@@ -22,7 +22,7 @@
         {
         }
 
-        private ILoginControl LoginControl => this.ControlFactory.CreateInstance<ILoginControl>(this);
+        private ILoginControl LoginControl => this.GetControl<ILoginControl>();
 
         /// <inheritdoc/>
         public async Task<IModelDrivenAppPage> LoginAsync(string username, string password)

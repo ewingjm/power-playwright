@@ -1,7 +1,5 @@
 namespace PowerPlaywright.Pages
 {
-    using System;
-    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Platform;
@@ -24,9 +22,9 @@ namespace PowerPlaywright.Pages
         }
 
         /// <inheritdoc/>
-        public ISiteMapControl SiteMap => this.ControlFactory.CreateInstance<ISiteMapControl>(this);
+        public ISiteMapControl SiteMap => this.GetControl<ISiteMapControl>();
 
         /// <inheritdoc/>
-        public IClientApi ClientApi => this.ControlFactory.CreateInstance<IClientApi>(this);
+        public IClientApi ClientApi => this.GetControl<IClientApi>();
     }
 }

@@ -14,6 +14,8 @@
         private readonly PackageIdentity packageIdentity;
         private readonly ILogger<GlobalPackagesAssemblyProvider> logger;
 
+        private Assembly assembly;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GlobalPackagesAssemblyProvider"/> class.
         /// </summary>
@@ -29,17 +31,22 @@
         /// <inheritdoc/>
         public Assembly GetAssembly()
         {
-            var settings = Settings.LoadDefaultSettings(null);
-            var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(settings);
+            if (this.assembly == null)
+            {
+                var settings = Settings.LoadDefaultSettings(null);
+                var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(settings);
 
-            var packagePath = Path.Combine(
-                globalPackagesFolder,
-                this.packageIdentity.Id.ToLowerInvariant(),
-                this.packageIdentity.Version.ToString());
+                var packagePath = Path.Combine(
+                    globalPackagesFolder,
+                    this.packageIdentity.Id.ToLowerInvariant(),
+                    this.packageIdentity.Version.ToString());
 
-            var assemblyPath = Path.Combine(packagePath, "lib", "netstandard2.0", "PowerPlaywright.Strategies.dll");
+                var assemblyPath = Path.Combine(packagePath, "lib", "netstandard2.0", "PowerPlaywright.Strategies.dll");
 
-            return Assembly.LoadFrom(assemblyPath);
+                this.assembly = Assembly.LoadFrom(assemblyPath);
+            }
+
+            return this.assembly;
         }
     }
 }

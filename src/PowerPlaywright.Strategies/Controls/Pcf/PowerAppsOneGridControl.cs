@@ -15,7 +15,7 @@
     /// A control strategy for the <see cref="IPowerAppsOneGridControl"/>.
     /// </summary>
     [PcfControlStrategy(1, 0, 208)]
-    public class PowerAppsOneGridControl : Control, IPowerAppsOneGridControl
+    public class PowerAppsOneGridControl : PcfControl, IPowerAppsOneGridControl
     {
         private readonly string name;
         private readonly IPageFactory pageFactory;
@@ -33,7 +33,7 @@
         /// <param name="pageFactory">The page factory.</param>
         /// <param name="logger">The logger.</param>
         public PowerAppsOneGridControl(IAppPage appPage, string name, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
-            : base(appPage, parent)
+            : base(name, appPage, parent)
         {
             this.name = name;
             this.pageFactory = pageFactory;

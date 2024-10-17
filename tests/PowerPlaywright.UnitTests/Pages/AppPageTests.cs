@@ -1,7 +1,8 @@
 namespace PowerPlaywright.UnitTests.Pages;
 
 using Microsoft.Playwright;
-using NSubstitute.Extensions;
+using NSubstitute;
+using PowerPlaywright.Framework.Controls.Platform;
 using PowerPlaywright.Framework.Pages;
 using PowerPlaywright.Pages;
 
@@ -11,7 +12,7 @@ using PowerPlaywright.Pages;
 [TestFixture]
 public class AppPageTests : AppPageTests<IAppPage>
 {
-    private new AppPage AppPage => (AppPage)base.AppPage;
+    private new EntityRecordPage AppPage => (EntityRecordPage)base.AppPage;
 
     /// <summary>
     /// Tests that an <see cref="ArgumentNullException"/> is thrown if a null <see cref="IPage"/> is passed to the constructor.
@@ -53,9 +54,33 @@ public class AppPageTests : AppPageTests<IAppPage>
         Assert.That(this.AppPage.Page, Is.EqualTo(this.Page));
     }
 
+    /// <summary>
+    /// Tests that the <see cref="AppPage.GetControl{TControl}"/> method always calls <see cref="IControlFactory.CreateInstance{TControl}(IAppPage, string)"/> if the control has not been previously created.
+    /// </summary>
+    [Test]
+    public void GetControl_GetControlNotPreviouslyCalledWithSameTypeAndName_ReturnsControlFromControlFactory()
+    {
+        _ = this.AppPage.Form;
+
+        this.ControlFactory.Received(1).CreateInstance<IMainFormControl>(this.AppPage);
+    }
+
+    /// <summary>
+    /// Tests that the <see cref="AppPage.GetControl{TControl}"/> method returns the same control instance when called multiple times with the same type and name.
+    /// </summary>
+    [Test]
+    public void GetControl_GetControlPreviouslyCalledWithSameTypeAndName_ReturnsControlFromCache()
+    {
+        var firstControl = this.AppPage.Form;
+        var secondControl = this.AppPage.Form;
+
+        this.ControlFactory.Received(1).CreateInstance<IMainFormControl>(this.AppPage);
+        Assert.That(firstControl, Is.EqualTo(secondControl));
+    }
+
     /// <inheritdoc/>
     protected override IAppPage InstantiateAppPage()
     {
-        return new CustomPage(this.Page, this.ControlFactory);
+        return new EntityRecordPage(this.Page, this.ControlFactory);
     }
 }

@@ -1,10 +1,11 @@
-﻿namespace PowerPlaywright.Framework.Controls
+﻿namespace PowerPlaywright.Strategies.Controls
 {
     using Microsoft.Playwright;
+    using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
-    /// A base class that all controls must inherit from.
+    /// A control.
     /// </summary>
     public abstract class Control : IControl
     {

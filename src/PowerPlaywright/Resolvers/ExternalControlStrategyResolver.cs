@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.External.Attributes;
 
     /// <summary>
@@ -12,7 +13,7 @@
     internal class ExternalControlStrategyResolver : IControlStrategyResolver
     {
         /// <inheritdoc/>
-        public event EventHandler<ResolverReadyEventArgs> OnReady;
+        public event EventHandler OnReady;
 
         /// <inheritdoc/>
         public bool IsReady => true;

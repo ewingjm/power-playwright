@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
-    using PowerPlaywright;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
 
     /// <summary>

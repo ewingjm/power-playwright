@@ -14,7 +14,7 @@
     /// A control strategy for the <see cref="ISimpleLookupControl"/>.
     /// </summary>
     [PcfControlStrategy(1, 0, 470)]
-    public class SimpleLookupControl : Control, ISimpleLookupControl
+    public class SimpleLookupControl : PcfControl, ISimpleLookupControl
     {
         private readonly string name;
         private readonly ILogger<PcfGridControl> logger;
@@ -36,7 +36,7 @@
         /// <param name="parent">The parent control.</param>
         /// <param name="logger">The logger.</param>
         public SimpleLookupControl(IAppPage appPage, string name, IControl parent, ILogger<PcfGridControl> logger = null)
-            : base(appPage, parent)
+            : base(name, appPage, parent)
         {
             this.name = name;
             this.logger = logger;

@@ -24,7 +24,7 @@
         }
 
         /// <inheritdoc/>
-        public event EventHandler<ResolverReadyEventArgs> OnReady;
+        public event EventHandler OnReady;
 
         /// <inheritdoc/>
         public bool IsReady => this.isReady;
@@ -45,7 +45,7 @@
             await this.InitialiseResolverAsync(page);
 
             this.isReady = true;
-            this.OnReady?.Invoke(this, new ResolverReadyEventArgs(this));
+            this.OnReady?.Invoke(this, EventArgs.Empty);
         }
 
         /// <inheritdoc/>

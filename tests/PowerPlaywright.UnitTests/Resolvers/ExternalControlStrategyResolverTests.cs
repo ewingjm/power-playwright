@@ -2,6 +2,7 @@
 
 using System.Runtime.CompilerServices;
 using NUnit.Framework.Internal;
+using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Controls.External;
 using PowerPlaywright.Framework.Controls.External.Attributes;
 using PowerPlaywright.Framework.Controls.Pcf;

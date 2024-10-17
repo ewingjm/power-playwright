@@ -3,52 +3,52 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
-    using System.Threading.Tasks;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Framework.Redirectors;
-    using PowerPlaywright.Pages;
     using PowerPlaywright.Resolvers;
 
     /// <summary>
     /// A control factory that dynamically discovers controls at runtime from a remote source.
     /// </summary>
-    internal class ControlFactory : IControlFactory, IAppLoadInitializable
+    internal class ControlFactory : IControlFactory
     {
         private static readonly Type ControlInterfaceType = typeof(IControl);
 
-        private readonly IList<IAssemblyProvider> assemblyProviders;
-        private readonly IList<IControlStrategyResolver> strategyResolvers;
+        private readonly IEnumerable<IAssemblyProvider> assemblyProviders;
+        private readonly IEnumerable<IControlStrategyResolver> strategyResolvers;
+        private readonly IRedirectionInfoProvider<object> redirectionInfoProvider;
         private readonly IServiceProvider serviceProvider;
         private readonly ILogger<ControlFactory> logger;
-        private readonly IDictionary<IAppPage, IDictionary<(Type, string, IControl), IControl>> pageCache;
 
         private IEnumerable<Type> assemblyTypes;
         private IEnumerable<Type> controlTypes;
-        private IDictionary<Type, IControlRedirector<IControl>> redirectorsMap;
+        private Dictionary<Type, IControlRedirector<IControl>> redirectorsMap;
         private IDictionary<Type, Type> strategyMap;
-        private IRedirectionInfoProvider<object> redirectionInfoProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ControlFactory"/> class.
         /// </summary>
-        /// <param name="assemblyProviders">The control assembly provider(s).</param>
-        /// <param name="strategyResolvers">The control strategy resolver(s).</param>
+        /// <param name="assemblyProviders">The assembly providers.</param>
+        /// <param name="strategyResolvers">The control strategy resolvers.</param>
+        /// <param name="redirectionInfoProvider">The redirection info provider.</param>
         /// <param name="serviceProvider">The service provider.</param>
-        /// <param name="eventAggregator">The event aggregator.</param>
         /// <param name="logger">The logger.</param>
-        public ControlFactory(IEnumerable<IAssemblyProvider> assemblyProviders, IEnumerable<IControlStrategyResolver> strategyResolvers, IServiceProvider serviceProvider, ILogger<ControlFactory> logger = null)
+        public ControlFactory(
+            IEnumerable<IAssemblyProvider> assemblyProviders,
+            IEnumerable<IControlStrategyResolver> strategyResolvers,
+            IRedirectionInfoProvider<object> redirectionInfoProvider,
+            IServiceProvider serviceProvider,
+            ILogger<ControlFactory> logger = null)
         {
-            this.assemblyProviders = assemblyProviders?.ToList() ?? throw new ArgumentNullException(nameof(assemblyProviders));
-            this.strategyResolvers = strategyResolvers?.ToList() ?? throw new ArgumentNullException(nameof(strategyResolvers));
+            this.assemblyProviders = assemblyProviders ?? throw new ArgumentNullException(nameof(assemblyProviders));
+            this.strategyResolvers = strategyResolvers ?? throw new ArgumentNullException(nameof(strategyResolvers));
+            this.redirectionInfoProvider = redirectionInfoProvider ?? throw new ArgumentNullException(nameof(redirectionInfoProvider));
             this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             this.logger = logger;
-            this.pageCache = new Dictionary<IAppPage, IDictionary<(Type, string, IControl), IControl>>();
         }
 
         private IEnumerable<Type> AssemblyTypes
@@ -70,50 +70,40 @@
             {
                 if (this.controlTypes is null)
                 {
-                    this.controlTypes = Assembly
-                        .GetAssembly(ControlInterfaceType)
-                        .GetTypes()
-                        .Where(t => ControlInterfaceType.IsAssignableFrom(t) && t.IsInterface)
-                        .ToList();
+                    this.controlTypes = ControlInterfaceType.Assembly.GetTypes().Where(IsControlType).ToList();
                 }
 
                 return this.controlTypes;
             }
         }
 
-        private IDictionary<Type, IControlRedirector<IControl>> RedirectorsMap
+        private Dictionary<Type, IControlRedirector<IControl>> RedirectorsMap
         {
             get
             {
                 if (this.redirectorsMap is null)
                 {
-                    this.logger?.LogInformation("Getting control redirectors.");
+                    this.logger.LogInformation("Getting control redirectors.");
+                    this.redirectorsMap = new Dictionary<Type, IControlRedirector<IControl>>();
 
-                    var redirectorTypes = this.AssemblyTypes.Where(t => typeof(IControlRedirector<IControl>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract);
-                    this.logger?.LogTrace("Found {count} redirector types.", redirectorTypes.Count());
-
-                    this.logger?.LogTrace("Instantiating redirectors.");
-
-                    var map = new Dictionary<Type, IControlRedirector<IControl>>();
+                    var redirectorTypes = this.AssemblyTypes.Where(IsRedirectorType);
+                    this.logger.LogTrace("Found {count} redirector types.", redirectorTypes.Count());
 
                     foreach (var redirectorType in redirectorTypes)
                     {
-                        var typeRedirected = redirectorType
-                            .GetInterfaces()
-                            .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IControlRedirector<>))
-                            .GetGenericArguments()
-                            .Last();
+                        var typeRedirected = GetRedirectedType(redirectorType);
 
-                        if (map.TryGetValue(typeRedirected, out IControlRedirector<IControl> value))
+                        if (this.redirectorsMap.TryGetValue(typeRedirected, out IControlRedirector<IControl> value))
                         {
-                            this.logger.LogWarning("Redirector of type {redirector} will not be used as {existingRedirector} is already registered for type {type}.", redirectorType.Name, value.GetType().Name, typeRedirected.Name);
-                            continue;
+                            throw new PowerPlaywrightException($"A redirector of type {value} is already registered for {typeRedirected}. Unable to register {redirectorType}.");
                         }
 
-                        map.Add(typeRedirected, (IControlRedirector<IControl>)ActivatorUtilities.CreateInstance(this.serviceProvider, redirectorType, this.RedirectionInfoProvider));
-                    }
+                        this.logger.LogTrace("Instantiating redirector of type {redirector}.", redirectorType);
+                        var redirector = (IControlRedirector<IControl>)ActivatorUtilities.CreateInstance(
+                            this.serviceProvider, redirectorType, this.redirectionInfoProvider);
 
-                    this.redirectorsMap = map;
+                        this.redirectorsMap.Add(typeRedirected, redirector);
+                    }
                 }
 
                 return this.redirectorsMap;
@@ -126,6 +116,8 @@
             {
                 if (this.strategyMap is null)
                 {
+                    this.strategyMap = this.ControlTypes.ToDictionary(c => c, c => (Type)null);
+
                     foreach (var resolver in this.strategyResolvers)
                     {
                         if (resolver.IsReady)
@@ -143,53 +135,57 @@
             }
         }
 
-        private IRedirectionInfoProvider<object> RedirectionInfoProvider
-        {
-            get
-            {
-                if (this.redirectionInfoProvider is null)
-                {
-                    this.logger?.LogInformation("Getting redirection info provider.");
-
-                    var type = this.AssemblyTypes
-                        .Where(t => typeof(IRedirectionInfoProvider<object>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract)
-                        .FirstOrDefault() ?? throw new PowerPlaywrightException("A redirection info provider type was not found.");
-
-                    this.logger?.LogTrace("Found {type}.", type.Name);
-
-                    this.redirectionInfoProvider = (IRedirectionInfoProvider<object>)ActivatorUtilities.CreateInstance(this.serviceProvider, type);
-                }
-
-                return this.redirectionInfoProvider;
-            }
-        }
-
         /// <inheritdoc/>
         public TControl CreateInstance<TControl>(IAppPage appPage, string name = null, IControl parent = null)
             where TControl : IControl
         {
+            if (appPage is null)
+            {
+                throw new ArgumentNullException(nameof(appPage));
+            }
+
             var controlType = typeof(TControl);
+            this.logger.LogTrace("Creating an instance of {controlType}.", controlType);
 
-            this.logger?.LogTrace("Checking for cached instance of {controlType}.", controlType);
-            var controlCacheKey = (controlType, name, parent);
-            if (this.pageCache.TryGetValue(appPage, out var controlCache) && controlCache.TryGetValue(controlCacheKey, out IControl cachedControl))
+            if (this.TryRedirectControlType(ref controlType))
             {
-                this.logger?.LogTrace("Control found in cache.");
-                return (TControl)cachedControl;
+                this.logger.LogTrace("Type redirected to {controlType}.", controlType);
             }
 
-            this.logger?.LogTrace("Creating an instance of {controlType}.", controlType);
+            var strategyType = this.GetStrategyType(controlType);
+            this.logger.LogTrace("Found strategy type {strategyType}.", strategyType);
 
-            if (this.RedirectorsMap.TryGetValue(controlType, out var redirector))
-            {
-                controlType = redirector.Redirect();
-            }
+            var parameters = GetStrategyTypeParameters(appPage, name, parent);
+            this.logger.LogTrace("Parameters: {parameters}.", string.Join(", ", parameters));
 
-            if (!this.StrategyMap.TryGetValue(controlType, out var strategyType) || strategyType == null)
-            {
-                throw new PowerPlaywrightException($"Unable to find a control strategy for type {controlType.Name}.");
-            }
+            var strategy = (TControl)ActivatorUtilities.CreateInstance(
+                this.serviceProvider, strategyType, parameters);
+            this.logger.LogTrace("Created instance of {controlType}.", strategyType);
 
+            return strategy;
+        }
+
+        private static Type GetRedirectedType(Type redirectorType)
+        {
+            return redirectorType
+                .GetInterfaces()
+                .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IControlRedirector<>))
+                .GetGenericArguments()
+                .Last();
+        }
+
+        private static bool IsControlType(Type t)
+        {
+            return ControlInterfaceType.IsAssignableFrom(t) && t.IsInterface && t.IsPublic;
+        }
+
+        private static bool IsRedirectorType(Type t)
+        {
+            return typeof(IControlRedirector<IControl>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract;
+        }
+
+        private static object[] GetStrategyTypeParameters(IAppPage appPage, string name, IControl parent)
+        {
             var parameters = new List<object> { appPage };
 
             if (name != null)
@@ -202,69 +198,57 @@
                 parameters.Add(parent);
             }
 
-            var control = (TControl)ActivatorUtilities.CreateInstance(this.serviceProvider, strategyType, parameters.ToArray());
-
-            if (controlCache is null)
-            {
-                controlCache = new Dictionary<(Type, string, IControl), IControl>();
-            }
-
-            controlCache.Add(controlCacheKey, control);
-
-            if (!this.pageCache.ContainsKey(appPage))
-            {
-                this.pageCache.Add(appPage, controlCache);
-            }
-
-            if (appPage is IAppPageInternal appPageInternal)
-            {
-                appPageInternal.OnDestroy += this.AppPage_OnDestroy;
-            }
-
-            return control;
+            return parameters.ToArray();
         }
 
-        /// <inheritdoc/>
-        public async Task InitializeAsync(IPage page)
+        private Type GetStrategyType(Type controlType)
         {
-            if (this.RedirectionInfoProvider is IAppLoadInitializable i)
+            if (!this.StrategyMap.TryGetValue(controlType, out var strategyType))
             {
-                await i.InitializeAsync(page);
+                throw new PowerPlaywrightException($"Type {controlType.Name} is not a valid control interface type.");
             }
+
+            if (strategyType is null)
+            {
+                throw new PowerPlaywrightException($"Unable to find a control strategy for type {controlType.Name}.");
+            }
+
+            return strategyType;
         }
 
-        private void AppPage_OnDestroy(object sender, EventArgs e)
+        private bool TryRedirectControlType(ref Type controlType)
         {
-            if (sender is IAppPage appPage && this.pageCache.ContainsKey(appPage))
+            if (this.RedirectorsMap.TryGetValue(controlType, out var redirector))
             {
-                this.pageCache.Remove(appPage);
+                controlType = redirector.Redirect();
+
+                return true;
             }
+
+            return false;
         }
 
-        private void Resolver_OnReady(object sender, ResolverReadyEventArgs e)
+        private void Resolver_OnReady(object sender, EventArgs e)
         {
-            this.ProcessControlStrategyResolver(e.Resolver);
+            this.ProcessControlStrategyResolver((IControlStrategyResolver)sender);
         }
 
         private void ProcessControlStrategyResolver(IControlStrategyResolver resolver)
         {
-            this.logger?.LogTrace("Processing control strategy resolver {resolver}.", resolver.GetType().Name);
+            this.logger.LogTrace("Processing control strategy resolver {resolver}.", resolver.GetType().Name);
 
-            if (this.strategyMap == null)
-            {
-                this.strategyMap = this.ControlTypes.ToDictionary(c => c, c => (Type)null);
-            }
-
-            var controlsToResolve = this.strategyMap.Where(mapping => mapping.Value is null && resolver.IsResolvable(mapping.Key)).Select(mapping => mapping.Key);
+            var controlsToResolve = this.strategyMap
+                .Where(mapping => mapping.Value is null && resolver.IsResolvable(mapping.Key))
+                .Select(mapping => mapping.Key);
 
             foreach (var control in controlsToResolve)
             {
-                this.logger?.LogTrace("Getting control strategy for {control}.", control.Name);
+                this.logger.LogTrace("Getting control strategy for {control}.", control.Name);
                 this.strategyMap[control] = resolver.Resolve(control, this.AssemblyTypes);
 
                 if (this.strategyMap[control] is null)
                 {
-                    this.logger?.LogTrace("Unable to resolve a strategy for {control}.", control.Name);
+                    this.logger.LogTrace("Unable to resolve a strategy for {control}.", control.Name);
                 }
             }
         }

@@ -1,7 +1,6 @@
-﻿namespace PowerPlaywright
+﻿namespace PowerPlaywright.Framework
 {
     using System;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// An exception thrown by Power Playwright.

@@ -6,6 +6,7 @@ using System.Text.Json;
 using Bogus;
 using Microsoft.Playwright;
 using NSubstitute;
+using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Controls.External;
 using PowerPlaywright.Framework.Controls.Pcf;
 using PowerPlaywright.Framework.Controls.Pcf.Attributes;
@@ -108,9 +109,9 @@ public class PcfControlStrategyResolverTests
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task OnReady_EventTriggered_IncludesResolverInEventArgs()
+    public async Task OnReady_EventTriggered_SenderIsResolver()
     {
-        this.resolver.OnReady += (sender, args) => Assert.That(args.Resolver, Is.EqualTo(this.resolver));
+        this.resolver.OnReady += (sender, args) => Assert.That(sender, Is.EqualTo(this.resolver));
 
         await this.resolver.InitializeAsync(this.page);
     }

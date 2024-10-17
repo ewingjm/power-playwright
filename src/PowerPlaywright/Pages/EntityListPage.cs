@@ -24,6 +24,6 @@
         }
 
         /// <inheritdoc/>
-        public IReadOnlyGrid Grid => this.ControlFactory.CreateInstance<IReadOnlyGrid>(this, GridControlName);
+        public IReadOnlyGrid Grid => this.GetControl<IReadOnlyGrid>(GridControlName);
     }
 }

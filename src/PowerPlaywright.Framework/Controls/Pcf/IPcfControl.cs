@@ -5,5 +5,9 @@
     /// </summary>
     public interface IPcfControl : IControl
     {
+        /// <summary>
+        /// Gets the name of the PCF control.
+        /// </summary>
+        string Name { get; }
     }
 }
