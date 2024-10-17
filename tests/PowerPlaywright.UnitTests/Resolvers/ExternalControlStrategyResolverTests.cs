@@ -18,7 +18,6 @@ using PowerPlaywright.UnitTests.Helpers;
 [TestFixture]
 public class ExternalControlStrategyResolverTests
 {
-    private DynamicTypeHelper typeHelper;
     private ExternalControlStrategyResolver resolver;
 
     /// <summary>
@@ -27,7 +26,6 @@ public class ExternalControlStrategyResolverTests
     [SetUp]
     public void Setup()
     {
-        this.typeHelper = new DynamicTypeHelper();
         this.resolver = new ExternalControlStrategyResolver();
     }
 
@@ -55,7 +53,9 @@ public class ExternalControlStrategyResolverTests
     [Test]
     public void IsResolvable_TypeHasExternalControlAttribute_ReturnsTrue()
     {
-        var typeWithExternalControlAttribute = this.typeHelper.CreateType(typeof(ExternalControlAttribute).GetConstructor([])!);
+        var typeWithExternalControlAttribute = new DynamicTypeBuilder()
+            .AddAttribute<ExternalControlAttribute>([])
+            .Build();
 
         var isResolvable = this.resolver.IsResolvable(typeWithExternalControlAttribute);
 
@@ -68,7 +68,7 @@ public class ExternalControlStrategyResolverTests
     [Test]
     public void IsResolvable_TypeDoesNotHaveExternalControlAttribute_ReturnsFalse()
     {
-        var typeWithoutExternalControlAttribute = this.typeHelper.CreateType();
+        var typeWithoutExternalControlAttribute = new DynamicTypeBuilder().Build();
 
         var isResolvable = this.resolver.IsResolvable(typeWithoutExternalControlAttribute);
 
@@ -108,7 +108,7 @@ public class ExternalControlStrategyResolverTests
     [Test]
     public void Resolve_StrategyTypesContainsPublicNonAbstractConcreteTypeWithPlatformControlStrategyAttribute_ReturnsType()
     {
-        var expectedStrategyType = this.GetExternalControlStrategyTypeFor<ILoginControl>();
+        var expectedStrategyType = GetExternalControlStrategyTypeFor<ILoginControl>();
 
         var strategyType = this.resolver.Resolve(typeof(ILoginControl), [expectedStrategyType]);
 
@@ -121,8 +121,8 @@ public class ExternalControlStrategyResolverTests
     [Test]
     public void Resolve_MultipleStrategyTypesContainsPublicNonAbstractConcreteTypeWithPlatformControlStrategyAttribute_ReturnsTypeWithHighestVersion()
     {
-        var unexpectedStrategyType = this.GetExternalControlStrategyTypeFor<ILoginControl>(1);
-        var expectedStrategyType = this.GetExternalControlStrategyTypeFor<ILoginControl>(2);
+        var unexpectedStrategyType = GetExternalControlStrategyTypeFor<ILoginControl>(1);
+        var expectedStrategyType = GetExternalControlStrategyTypeFor<ILoginControl>(2);
 
         var strategyType = this.resolver.Resolve(typeof(ILoginControl), [unexpectedStrategyType, expectedStrategyType]);
 
@@ -140,12 +140,11 @@ public class ExternalControlStrategyResolverTests
         Assert.That(strategyType, Is.Null);
     }
 
-    private Type GetExternalControlStrategyTypeFor<TControlType>(uint version = 1, [CallerMemberName] string testName = "")
+    private static Type GetExternalControlStrategyTypeFor<TControlType>(uint version = 1)
     {
-        return this.typeHelper.CreateType(
-            typeof(TControlType),
-            typeof(ExternalControlStrategyAttribute).GetConstructor([typeof(uint)])!,
-            [version],
-            testName);
+        return new DynamicTypeBuilder()
+            .AddInterfaceImplementation<TControlType>()
+            .AddAttribute<ExternalControlStrategyAttribute>([version])
+            .Build();
     }
 }

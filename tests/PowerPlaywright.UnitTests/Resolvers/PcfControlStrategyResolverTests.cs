@@ -22,7 +22,6 @@ using PowerPlaywright.UnitTests.Helpers;
 public class PcfControlStrategyResolverTests
 {
     private Faker faker;
-    private DynamicTypeHelper typeHelper;
 
     private IPage page;
     private IAPIResponse getControlsResponse;
@@ -37,7 +36,6 @@ public class PcfControlStrategyResolverTests
     public void Setup()
     {
         this.faker = new Faker();
-        this.typeHelper = new DynamicTypeHelper();
         this.page = Substitute.For<IPage>();
         this.getControlsResponse = Substitute.For<IAPIResponse>();
         this.controlVersions = new Dictionary<string, Version>();
@@ -131,9 +129,9 @@ public class PcfControlStrategyResolverTests
     [Test]
     public void IsResolvable_TypeHasPcfControlAttribute_ReturnsTrue()
     {
-        var typeWithPcfControlAttribute = this.typeHelper.CreateType(
-            typeof(PcfControlAttribute).GetConstructor([typeof(string)])!,
-            ["Microsoft.PowerApps.PowerAppsOneGrid"]);
+        var typeWithPcfControlAttribute = new DynamicTypeBuilder()
+            .AddAttribute<PcfControlAttribute>(["Microsoft.PowerApps.PowerAppsOneGrid"])
+            .Build();
 
         var isResolvable = this.resolver.IsResolvable(typeWithPcfControlAttribute);
 
@@ -146,7 +144,7 @@ public class PcfControlStrategyResolverTests
     [Test]
     public void IsResolvable_TypeDoesNotHavePcfControlAttribute_ReturnsFalse()
     {
-        var typeWithoutPcfControlAttribute = this.typeHelper.CreateType();
+        var typeWithoutPcfControlAttribute = new DynamicTypeBuilder().Build();
 
         var isResolvable = this.resolver.IsResolvable(typeWithoutPcfControlAttribute);
 
@@ -253,19 +251,17 @@ public class PcfControlStrategyResolverTests
         Assert.That(strategyType, Is.Null);
     }
 
-    private Type GetPcfControlStrategyTypeFor<TControlType>(out string controlName, Version strategyVersion, [CallerMemberName] string testName = "")
+    private Type GetPcfControlStrategyTypeFor<TControlType>(out string controlName, Version strategyVersion)
         where TControlType : IPcfControl
     {
         var controlAttribute = typeof(TControlType).GetCustomAttribute<PcfControlAttribute>()
             ?? throw new Exception($"The provided type of {typeof(TControlType).Name} is not a valid PCF control");
         controlName = controlAttribute.Name;
 
-        var uintType = typeof(uint);
-        return this.typeHelper.CreateType(
-            typeof(TControlType),
-            typeof(PcfControlStrategyAttribute).GetConstructor([uintType, uintType, uintType])!,
-            [(uint)strategyVersion.Major, (uint)strategyVersion.Minor, (uint)strategyVersion.Build],
-            testName);
+        return new DynamicTypeBuilder()
+               .AddInterfaceImplementation<TControlType>()
+               .AddAttribute<PcfControlStrategyAttribute>([(uint)strategyVersion.Major, (uint)strategyVersion.Minor, (uint)strategyVersion.Build])
+               .Build();
     }
 
     private void MockValidDefaults()

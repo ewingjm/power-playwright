@@ -20,7 +20,6 @@ using PowerPlaywright.UnitTests.Helpers;
 public class PlatformControlStrategyResolverTests
 {
     private Faker faker;
-    private DynamicTypeHelper typeHelper;
 
     private IPage page;
     private Version platformVersion;
@@ -34,7 +33,6 @@ public class PlatformControlStrategyResolverTests
     public void Setup()
     {
         this.faker = new Faker();
-        this.typeHelper = new DynamicTypeHelper();
         this.page = Substitute.For<IPage>();
         this.resolver = new PlatformControlStrategyResolver();
 
@@ -116,9 +114,9 @@ public class PlatformControlStrategyResolverTests
     [Test]
     public void IsResolvable_TypeHasPlatformControlAttribute_ReturnsTrue()
     {
-        var typeWithPlatformControlAttribute = this.typeHelper.CreateType(
-            typeof(PlatformControlAttribute).GetConstructor(Type.EmptyTypes)!,
-            []);
+        var typeWithPlatformControlAttribute = new DynamicTypeBuilder()
+                .AddAttribute<PlatformControlAttribute>([])
+                .Build();
 
         var isResolvable = this.resolver.IsResolvable(typeWithPlatformControlAttribute);
 
@@ -131,7 +129,7 @@ public class PlatformControlStrategyResolverTests
     [Test]
     public void IsResolvable_TypeDoesNotHavePlatformControlAttribute_ReturnsFalse()
     {
-        var typeWithoutPlatformControlAttribute = this.typeHelper.CreateType();
+        var typeWithoutPlatformControlAttribute = new DynamicTypeBuilder().Build();
 
         var isResolvable = this.resolver.IsResolvable(typeWithoutPlatformControlAttribute);
 
@@ -227,16 +225,13 @@ public class PlatformControlStrategyResolverTests
         Assert.That(strategyType, Is.Null);
     }
 
-    private Type GetPlatformControlStrategyTypeFor<TControlType>(Version strategyVersion, [CallerMemberName] string testName = "")
+    private Type GetPlatformControlStrategyTypeFor<TControlType>(Version strategyVersion)
         where TControlType : IPlatformControl
     {
-        var uintType = typeof(uint);
-
-        return this.typeHelper.CreateType(
-            typeof(TControlType),
-            typeof(PlatformControlStrategyAttribute).GetConstructor([uintType, uintType, uintType, uintType])!,
-            [(uint)strategyVersion.Major, (uint)strategyVersion.Minor, (uint)strategyVersion.Build, (uint)strategyVersion.Revision],
-            testName);
+        return new DynamicTypeBuilder()
+            .AddInterfaceImplementation<TControlType>()
+            .AddAttribute<PlatformControlStrategyAttribute>([(uint)strategyVersion.Major, (uint)strategyVersion.Minor, (uint)strategyVersion.Build, (uint)strategyVersion.Revision])
+            .Build();
     }
 
     private void MockValidDefaults()
