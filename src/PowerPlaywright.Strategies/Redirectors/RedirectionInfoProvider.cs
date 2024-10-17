@@ -30,6 +30,12 @@
                 "}");
             var userId = await page.EvaluateAsync<Guid>("Xrm.Utility.getGlobalContext().userSettings.userId");
             var userSettings = await page.EvaluateAsync("async (userId) => Xrm.WebApi.online.retrieveRecord('usersettings', userId, '?$select=trytogglesets')", userId);
+
+            if (!userSettings.HasValue)
+            {
+                throw new PowerPlaywrightException("Unable to retrieve user settings");
+            }
+
             var toggleSetsString = userSettings.Value.GetProperty("trytogglesets").GetString();
 
             if (!string.IsNullOrEmpty(toggleSetsString) && JsonNode.Parse(toggleSetsString).AsObject().TryGetPropertyValue(appId.ToString(), out var appTogglesJson))
