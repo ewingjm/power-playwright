@@ -37,15 +37,16 @@
         /// <summary>
         /// Adds a singleton that is initialised on app load.
         /// </summary>
-        /// <typeparam name="TService">The type of the service to add.</typeparam>
+        /// <typeparam name="TImplementation">The type of the service to add.</typeparam>
         /// <param name="services">The service collection to add the service to.</param>
         /// <param name="implementationFactory">A factory which will be used to create the instance of the service.</param>
         /// <returns>The service collection with the added service.</returns>
-        public static IServiceCollection AddAppLoadInitializedSingleton<TService>(this IServiceCollection services, Func<IServiceProvider, TService> implementationFactory)
+        public static IServiceCollection AddAppLoadInitializedSingleton<TImplementation>(this IServiceCollection services, Func<IServiceProvider, TImplementation> implementationFactory)
+            where TImplementation : class
         {
             services
-                .AddSingleton(typeof(TService), implementationFactory)
-                .AddSingleton(sp => (IAppLoadInitializable)sp.GetRequiredService<TService>());
+                .AddSingleton(sp => implementationFactory(sp))
+                .AddSingleton(sp => (IAppLoadInitializable)sp.GetRequiredService<TImplementation>());
 
             return services;
         }
