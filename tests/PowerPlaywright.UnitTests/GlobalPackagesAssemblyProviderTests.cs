@@ -118,6 +118,5 @@ public class GlobalPackagesAssemblyProviderTests
 
         this.settings.GetSection(ConfigurationConstants.Config)
             .Returns(settingSection);
-
     }
 }
