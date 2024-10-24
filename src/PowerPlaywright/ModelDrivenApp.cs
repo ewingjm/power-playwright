@@ -262,6 +262,7 @@ namespace PowerPlaywright
                 .AddControlRedirectionInfoProvider()
                 .AddSingleton(browserContext)
                 .AddSingleton(strategiesPackageIdentity)
+                .AddSingleton(sp => Settings.LoadDefaultSettings(null))
                 .AddSingleton<IModelDrivenApp, ModelDrivenApp>()
                 .AddSingleton<IAssemblyProvider, GlobalPackagesAssemblyProvider>()
                 .AddSingleton<IControlFactory, ControlFactory>()

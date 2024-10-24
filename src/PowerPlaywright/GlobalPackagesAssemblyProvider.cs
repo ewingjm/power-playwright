@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright
 {
+    using System;
     using System.IO;
     using System.Reflection;
     using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@
     internal class GlobalPackagesAssemblyProvider : IAssemblyProvider
     {
         private readonly PackageIdentity packageIdentity;
+        private readonly ISettings nugetSettings;
         private readonly ILogger<GlobalPackagesAssemblyProvider> logger;
 
         private Assembly assembly;
@@ -21,11 +23,13 @@
         /// </summary>
         /// <param name="sourceRepositoryProvider">The source repository provider.</param>
         /// <param name="packageIdentity">The package identity.</param>
+        /// <param name="nugetSettings">The NuGet settings.</param>
         /// <param name="logger">The logger.</param>
-        public GlobalPackagesAssemblyProvider(PackageIdentity packageIdentity, ILogger<GlobalPackagesAssemblyProvider> logger)
+        public GlobalPackagesAssemblyProvider(PackageIdentity packageIdentity, ISettings nugetSettings, ILogger<GlobalPackagesAssemblyProvider> logger)
         {
-            this.packageIdentity = packageIdentity;
-            this.logger = logger;
+            this.packageIdentity = packageIdentity ?? throw new ArgumentNullException(nameof(packageIdentity));
+            this.nugetSettings = nugetSettings ?? throw new ArgumentNullException(nameof(nugetSettings));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <inheritdoc/>
@@ -33,8 +37,7 @@
         {
             if (this.assembly == null)
             {
-                var settings = Settings.LoadDefaultSettings(null);
-                var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(settings);
+                var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(this.nugetSettings);
 
                 var packagePath = Path.Combine(
                     globalPackagesFolder,
