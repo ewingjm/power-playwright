@@ -27,10 +27,10 @@
         /// </summary>
         /// <param name="serviceProvider">The service provider.</param>
         /// <param name="logger">The logger.</param>
-        public PageFactory(IServiceProvider serviceProvider, ILogger<PageFactory> logger = null)
+        public PageFactory(IServiceProvider serviceProvider, ILogger<PageFactory> logger)
         {
             this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
-            this.logger = logger;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <inheritdoc/>
@@ -41,9 +41,9 @@
                 throw new ArgumentNullException(nameof(page));
             }
 
-            var pageType = await this.GetPageType(page) ?? throw new PowerPlaywrightException("Current page type is unrecognized.");
+            var pageType = await this.GetConcreteTypeForPageAsync(page);
 
-            return this.InstantiateAppPage(page, pageType);
+            return this.InstantiateAppPage(pageType, page);
         }
 
         /// <inheritdoc/>
@@ -55,30 +55,32 @@
                 throw new ArgumentNullException(nameof(page));
             }
 
-            var pageType = await this.GetPageType(page) ?? throw new PowerPlaywrightException("Current page type is unrecognized.");
-            var detectedType = this.GetPageMappedType(pageType);
             var requestedType = typeof(TPage);
+            var pageType = await this.GetConcreteTypeForPageAsync(page);
 
-            if (requestedType == detectedType || requestedType.IsAssignableFrom(detectedType))
+            if (requestedType == pageType || requestedType.IsAssignableFrom(pageType))
             {
-                return (TPage)this.InstantiateAppPage(page, pageType);
+                return (TPage)this.InstantiateAppPage(pageType, page);
             }
 
-            if (!detectedType.IsAssignableFrom(requestedType))
+            if (!pageType.IsAssignableFrom(requestedType))
             {
-                throw new NotFoundException($"Expected a page of type {requestedType.Name} but found a page of type {detectedType.Name}.");
+                throw new PowerPlaywrightException($"Expected a page of type {requestedType.Name} but found a page of type {pageType.Name}.");
             }
 
             return this.InstantiateAppPage<TPage>(page);
         }
 
-        private async Task<ModelDrivenPageType?> GetPageType(IPage page)
+        private async Task<Type> GetConcreteTypeForPageAsync(IPage page)
         {
-            if (page is null)
-            {
-                throw new ArgumentNullException(nameof(page));
-            }
+            var pageType = await this.GetPageTypeAsync(page)
+                ?? throw new PowerPlaywrightException("Current page type is unrecognized.");
 
+            return this.GetPageMappedType(pageType);
+        }
+
+        private async Task<ModelDrivenPageType?> GetPageTypeAsync(IPage page)
+        {
             if (page.Url.StartsWith("https://login.microsoftonline.com"))
             {
                 return ModelDrivenPageType.Login;
@@ -99,41 +101,25 @@
             switch (pageType)
             {
                 case ModelDrivenPageType.EntityList:
-                    return typeof(IEntityListPage);
+                    return typeof(EntityListPage);
                 case ModelDrivenPageType.EntityRecord:
-                    return typeof(IEntityRecordPage);
+                    return typeof(EntityRecordPage);
                 case ModelDrivenPageType.Login:
-                    return typeof(ILoginPage);
+                    return typeof(LoginPage);
                 case ModelDrivenPageType.WebResource:
-                    return typeof(IWebResourcePage);
+                    return typeof(WebResourcePage);
                 case ModelDrivenPageType.Dashboard:
-                    return typeof(IDashboardPage);
+                    return typeof(DashboardPage);
                 case ModelDrivenPageType.Custom:
-                    return typeof(IModelDrivenAppPage);
+                    return typeof(CustomPage);
                 default:
-                    return null;
+                    throw new PowerPlaywrightException($"Page type {pageType} has not been mapped to a concrete type.");
             }
         }
 
-        private IAppPage InstantiateAppPage(IPage page, ModelDrivenPageType? pageType)
+        private IAppPage InstantiateAppPage(Type pageType, IPage page)
         {
-            switch (pageType)
-            {
-                case ModelDrivenPageType.EntityList:
-                    return ActivatorUtilities.CreateInstance<EntityListPage>(this.serviceProvider, page);
-                case ModelDrivenPageType.EntityRecord:
-                    return ActivatorUtilities.CreateInstance<EntityRecordPage>(this.serviceProvider, page);
-                case ModelDrivenPageType.Login:
-                    return ActivatorUtilities.CreateInstance<LoginPage>(this.serviceProvider, page);
-                case ModelDrivenPageType.Dashboard:
-                    return ActivatorUtilities.CreateInstance<DashboardPage>(this.serviceProvider, page);
-                case ModelDrivenPageType.WebResource:
-                    return ActivatorUtilities.CreateInstance<WebResourcePage>(this.serviceProvider, page);
-                case ModelDrivenPageType.Custom:
-                    return ActivatorUtilities.CreateInstance<CustomPage>(this.serviceProvider, page);
-                default:
-                    throw new PowerPlaywrightException($"Unable to create {nameof(IModelDrivenAppPage)} instance. The page type can't be determined for {page.Url}.");
-            }
+            return (IAppPage)ActivatorUtilities.CreateInstance(this.serviceProvider, pageType, page);
         }
 
         private TPage InstantiateAppPage<TPage>(IPage page)
