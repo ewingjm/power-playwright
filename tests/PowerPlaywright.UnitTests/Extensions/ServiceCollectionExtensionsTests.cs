@@ -84,7 +84,6 @@ public class ServiceCollectionExtensionsTests
     /// <summary>
     /// Tests that the <see cref="ServiceCollectionExtensions.AddControlRedirectionInfoProvider(IServiceCollection)"/> method registers the singleton instance returned by the implementation factory as both <see cref="IAppLoadInitializable"/> and <see cref="IRedirectionInfoProvider{TControlRedirectorInfo}"/>, ensuring that both interfaces reference the same instance.
     /// </summary>
-
     [Test]
     public void AddControlRedirectionInfoProvider_TypeImplementingInterfaceFoundInStrategiesAssembly_RegistersTypeAsAppLoadInitializableWithSingletonReferenceToService()
     {
