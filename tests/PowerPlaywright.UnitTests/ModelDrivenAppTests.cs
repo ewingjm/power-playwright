@@ -12,7 +12,7 @@ using PowerPlaywright.Framework.Pages;
 
 /// <summary>
 /// Tests for the <see cref="ModelDrivenApp"/> class.
-/// /// </summary>
+/// </summary>
 [TestFixture]
 public class ModelDrivenAppTests
 {
