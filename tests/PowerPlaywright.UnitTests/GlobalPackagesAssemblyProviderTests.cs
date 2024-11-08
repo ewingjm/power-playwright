@@ -1,7 +1,6 @@
 namespace PowerPlaywright.UnitTests;
 
 using System.Collections.ObjectModel;
-using System.Reflection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NuGet.Configuration;
