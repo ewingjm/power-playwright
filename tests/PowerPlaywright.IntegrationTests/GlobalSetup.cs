@@ -1,6 +1,6 @@
 ﻿namespace PowerPlaywright.IntegrationTests;
 
-using System.Reflection;
+using System.Text.RegularExpressions;
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Packaging;
@@ -11,8 +11,10 @@ using NuGet.Protocol.Core.Types;
 /// Global test setup.
 /// </summary>
 [SetUpFixture]
-public class GlobalSetup
+public partial class GlobalSetup
 {
+    private const string AssemblyName = "PowerPlaywright.Strategies.dll";
+
     /// <summary>
     /// One time setup before any tests run.
     /// </summary>
@@ -20,7 +22,7 @@ public class GlobalSetup
     [OneTimeSetUp]
     public async Task OneTimeSetup()
     {
-        var localFeedPath = Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "packages");
+        var localFeedPath = Path.Join(TestContext.CurrentContext.TestDirectory, "packages");
 
         if (Directory.Exists(localFeedPath))
         {
@@ -29,7 +31,9 @@ public class GlobalSetup
 
         Directory.CreateDirectory(localFeedPath);
 
-        var packagePath = Directory.GetFiles("./", "PowerPlaywright.Strategies.*.nupkg").OrderDescending().First();
+        var packagePath = Directory.GetFiles(
+            TestContext.CurrentContext.TestDirectory,
+            "PowerPlaywright.Strategies.*.nupkg").OrderDescending().First();
 
         await OfflineFeedUtility.AddPackageToSource(
             new OfflineFeedAddContext(
@@ -45,5 +49,15 @@ public class GlobalSetup
                     ClientPolicyContext.GetClientPolicy(Settings.LoadDefaultSettings(null), NullLogger.Instance),
                     NullLogger.Instance)),
             CancellationToken.None);
+
+        // The assembly in the test directory is instrumented by coverlet. Copying this to the feed.
+        var version = PackageVersionRegex().Match(packagePath).Groups[1].Value;
+        File.Copy(
+            Path.Join(TestContext.CurrentContext.TestDirectory, AssemblyName),
+            Path.Join(localFeedPath, "powerplaywright.strategies", version, "lib", "netstandard2.0", AssemblyName),
+            true);
     }
+
+    [GeneratedRegex(@"PowerPlaywright\.Strategies\.(\d\.\d\.\d)\.nupkg")]
+    private static partial Regex PackageVersionRegex();
 }
