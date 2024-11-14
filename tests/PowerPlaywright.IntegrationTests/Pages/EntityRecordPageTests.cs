@@ -53,8 +53,6 @@
         [Test]
         public async Task GetActiveTabAsync_TabIsActive_ReturnsActiveTab()
         {
-            var grid = this.recordPage.Form.GetControl<IReadOnlyGrid>("subgrid_whatever");
-
             var activeTab = await this.recordPage.Form.GetActiveTabAsync();
 
             Assert.That(activeTab, Is.EqualTo(pp_Record.Forms.Information.Tabs.TabA));
