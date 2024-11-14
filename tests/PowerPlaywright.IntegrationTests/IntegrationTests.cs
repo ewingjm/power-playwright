@@ -8,6 +8,9 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.PowerPlatform.Dataverse.Client;
     using Microsoft.Xrm.Sdk;
+    using NuGet.Protocol;
+    using NuGet.Protocol.Core.Types;
+    using PowerPlaywright.Api;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.IntegrationTests.Config;
@@ -25,7 +28,7 @@
         private static IEnumerator<UserConfiguration> userEnumerator;
 
         private UserConfiguration? user;
-        private ModelDrivenApp modelDrivenApp;
+        private IPowerPlaywright powerPlaywright;
 
         static IntegrationTests()
         {
@@ -51,9 +54,9 @@
         }
 
         /// <summary>
-        /// Gets the model-driven app instance.
+        /// Gets the Power Playwright instance.
         /// </summary>
-        protected ModelDrivenApp ModelDrivenApp => this.modelDrivenApp;
+        protected IPowerPlaywright PowerPlaywright => this.powerPlaywright;
 
         /// <summary>
         /// Sets up the local feed and model-driven app.
@@ -62,24 +65,13 @@
         [SetUp]
         public async Task SetUpAsync()
         {
-            this.modelDrivenApp = await ModelDrivenApp.LaunchInternalAsync(
-                this.Context,
-                Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "packages"));
-        }
+            var packageSource = Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "packages");
+            var findPackageByIdResource = await Repository.Factory
+                .GetCoreV3(packageSource)
+                .GetResourceAsync<FindPackageByIdResource>();
 
-        /// <summary>
-        /// Tears down the model-driven app.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous .</returns>
-        [TearDown]
-        public async Task TearDownAsync()
-        {
-            if (this.modelDrivenApp is null)
-            {
-                return;
-            }
-
-            await this.modelDrivenApp.DisposeAsync();
+            this.powerPlaywright = await Api.PowerPlaywright.CreateInternalAsync(
+                new NuGetPackageInstaller(findPackageByIdResource, packageSource));
         }
 
         /// <summary>
@@ -88,7 +80,8 @@
         /// <returns>The home page.</returns>
         protected Task<IModelDrivenAppPage> LoginAsync()
         {
-            return this.ModelDrivenApp.LoginAsync(Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password);
+            return this.powerPlaywright.LaunchAppAsync(
+                this.Context, Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password);
         }
 
         /// <summary>
