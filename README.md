@@ -3,9 +3,9 @@
 
 Power Playwright makes test automation for Power Apps easier by providing a [page object model](https://playwright.dev/dotnet/docs/pom) built on top of [Playwright](https://playwright.dev/dotnet/). It has been designed with the unique challenges of Power Apps test automation in mind:
 
-- Support for all regions
-- Automatic updates ensure platform changes are non-breaking
-- Extensibility for your custom pages and controls
+- Supports all environment regions
+- Resilient to platform updates
+- Extensible for custom pages and controls
 
 ## Table of Contents
 
