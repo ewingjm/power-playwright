@@ -65,7 +65,7 @@ At the time of writing, the supported pages are:
 - Dataverse table (`IEntityListPage`)
 - Dashboard (`IDashboardPage`)
 - Custom page (`ICustomPage`)
-- Web resource and Navigation link (`IWebResourcePage`)
+- Web resource (`IWebResourcePage`)
 
 #### Custom pages
 
