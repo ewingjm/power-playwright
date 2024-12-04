@@ -205,7 +205,7 @@ namespace PowerPlaywright.Api
                 .AddSingleton(browserContext)
                 .AddSingleton(this.packageIdentity)
                 .AddSingleton(sp => Settings.LoadDefaultSettings(null))
-                .Configure<ModelDrivenAppOptions>((opts) =>
+                .Configure<ModelDrivenAppOptions>(opts =>
                 {
                     opts.EnvironmentUrl = environmentUrl;
                     opts.AppUniqueName = appUniqueName;
@@ -217,6 +217,8 @@ namespace PowerPlaywright.Api
                 .AddSingleton<IControlStrategyResolver, ExternalControlStrategyResolver>()
                 .AddAppLoadInitializedSingleton<IControlStrategyResolver, PcfControlStrategyResolver>()
                 .AddAppLoadInitializedSingleton<IControlStrategyResolver, PlatformControlStrategyResolver>()
+                .AddAppLoadInitializedSingleton<IEnvironmentInfoProvider, EnvironmentInfoProvider>()
+                .AddSingleton<IPlatformReference, PlatformReference>()
                 .BuildServiceProvider();
         }
     }

@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Pages
 {
+    using System;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
@@ -10,20 +11,21 @@
     /// </summary>
     internal class EntityListPage : ModelDrivenAppPage, IEntityListPage
     {
-        // TODO: Implement a strategies based app reference for strings
-        private const string GridControlName = "entity_control";
+        private readonly IPlatformReference platformReference;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EntityListPage"/> class.
         /// </summary>
         /// <param name="page">The page.</param>
         /// <param name="controlFactory">The control factory.</param>
-        public EntityListPage(IPage page, IControlFactory controlFactory)
+        /// <param name="platformReference">The platform reference.</param>
+        public EntityListPage(IPage page, IControlFactory controlFactory, IPlatformReference platformReference)
             : base(page, controlFactory)
         {
+            this.platformReference = platformReference ?? throw new ArgumentNullException(nameof(platformReference));
         }
 
         /// <inheritdoc/>
-        public IReadOnlyGrid Grid => this.GetControl<IReadOnlyGrid>(GridControlName);
+        public IReadOnlyGrid Grid => this.GetControl<IReadOnlyGrid>(this.platformReference.EntityListPageGridControlName);
     }
 }

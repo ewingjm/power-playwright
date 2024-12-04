@@ -1,6 +1,7 @@
 namespace PowerPlaywright.UnitTests.Pages;
 
 using Microsoft.Playwright;
+using NSubstitute;
 using NUnit.Framework;
 using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Controls;
@@ -14,13 +15,17 @@ using PowerPlaywright.Pages;
 [TestFixture]
 public class EntityListPageTests : AppPageTests<IEntityListPage>
 {
+    private const string GridControlName = "entity_control";
+
+    private IPlatformReference? platformReference;
+
     /// <summary>
     /// Tests that an <see cref="ArgumentNullException"/> is thrown if a null <see cref="IPage"/> is passed to the constructor.
     /// </summary>
     [Test]
     public void Constructor_NullPage_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => new EntityListPage(null, this.ControlFactory));
+        Assert.Throws<ArgumentNullException>(() => new EntityListPage(null, this.ControlFactory, this.platformReference));
     }
 
     /// <summary>
@@ -29,7 +34,16 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
     [Test]
     public void Constructor_NullControlFactory_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => new EntityListPage(this.Page, null));
+        Assert.Throws<ArgumentNullException>(() => new EntityListPage(this.Page, null, this.platformReference));
+    }
+
+    /// <summary>
+    /// Tests that an <see cref="ArgumentNullException"/> is thrown if a null <see cref="IPlatformReference"/> is passed to the constructor.
+    /// </summary>
+    [Test]
+    public void Constructor_NullPlatformReference_Throws()
+    {
+        Assert.Throws<ArgumentNullException>(() => new EntityListPage(this.Page, this.ControlFactory, null));
     }
 
     /// <summary>
@@ -38,7 +52,7 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
     [Test]
     public void Constructor_ValidArguments_DoesNotThrow()
     {
-        Assert.DoesNotThrow(() => new EntityListPage(this.Page, this.ControlFactory));
+        Assert.DoesNotThrow(() => new EntityListPage(this.Page, this.ControlFactory, this.platformReference));
     }
 
     /// <summary>
@@ -48,7 +62,7 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
     /// <param name="propertyName">The property.</param>
     /// <param name="controlName">The control name (optional).</param>
     [Test]
-    [TestCase<IReadOnlyGrid>([nameof(IEntityListPage.Grid), "entity_control"])]
+    [TestCase<IReadOnlyGrid>([nameof(IEntityListPage.Grid), GridControlName])]
     public new void ControlProperty_Always_ReturnsControlInstantiatedByControlFactory<TControlType>(
         string propertyName, string? controlName = null)
         where TControlType : class, IControl
@@ -59,6 +73,12 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
     /// <inheritdoc/>
     protected override IEntityListPage InstantiateAppPage()
     {
-        return new EntityListPage(this.Page, this.ControlFactory);
+        this.platformReference = Substitute.For<IPlatformReference>();
+        this.platformReference.EntityListPageGridControlName.Returns(GridControlName);
+
+        return new EntityListPage(
+            this.Page,
+            this.ControlFactory,
+            this.platformReference);
     }
 }

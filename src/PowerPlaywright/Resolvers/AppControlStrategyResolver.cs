@@ -17,9 +17,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AppControlStrategyResolver"/> class.
         /// </summary>
+        /// <param name="environmentInfoProvider">The environment info provider.</param>
         /// <param name="logger">The logger.</param>
-        public AppControlStrategyResolver(ILogger logger)
+        public AppControlStrategyResolver(IEnvironmentInfoProvider environmentInfoProvider, ILogger logger)
         {
+            this.EnvironmentInfoProvider = environmentInfoProvider;
             this.Logger = logger;
         }
 
@@ -30,22 +32,27 @@
         public bool IsReady => this.isReady;
 
         /// <summary>
+        /// Gets the environment info provider.
+        /// </summary>
+        protected IEnvironmentInfoProvider EnvironmentInfoProvider { get; }
+
+        /// <summary>
         /// Gets the logger.
         /// </summary>
         protected ILogger Logger { get; }
 
         /// <inheritdoc/>
-        public async Task InitializeAsync(IPage page)
+        public Task InitializeAsync(IPage page)
         {
             if (this.IsReady)
             {
-                return;
+                return Task.CompletedTask;
             }
-
-            await this.InitialiseResolverAsync(page);
 
             this.isReady = true;
             this.OnReady?.Invoke(this, EventArgs.Empty);
+
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
@@ -53,12 +60,5 @@
 
         /// <inheritdoc/>
         public abstract Type Resolve(Type controlType, IEnumerable<Type> strategyTypes);
-
-        /// <summary>
-        /// Initialise the control strategy resolver.
-        /// </summary>
-        /// <param name="page">The page.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        protected abstract Task InitialiseResolverAsync(IPage page);
     }
 }

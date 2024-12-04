@@ -10,6 +10,7 @@ using PowerPlaywright.Resolvers;
 [TestFixture]
 public class AppControlStrategyResolverTests
 {
+    private IEnvironmentInfoProvider environmentInfoProvider;
     private AppControlStrategyResolver resolver;
     private IPage page;
 
@@ -19,7 +20,8 @@ public class AppControlStrategyResolverTests
     [SetUp]
     public void Setup()
     {
-        this.resolver = new PlatformControlStrategyResolver();
+        this.environmentInfoProvider = Substitute.For<IEnvironmentInfoProvider>();
+        this.resolver = new PlatformControlStrategyResolver(this.environmentInfoProvider);
         this.page = Substitute.For<IPage>();
 
         this.MockValidDefaults();
@@ -87,6 +89,6 @@ public class AppControlStrategyResolverTests
 
     private void MockValidDefaults()
     {
-        this.page.EvaluateAsync<string>("Xrm.Utility.getGlobalContext().getVersion()").Returns("1.0.0.0");
+        this.environmentInfoProvider.PlatformVersion.Returns(new Version());
     }
 }

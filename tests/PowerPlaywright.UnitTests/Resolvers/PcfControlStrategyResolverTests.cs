@@ -1,10 +1,10 @@
 ﻿namespace PowerPlaywright.UnitTests.Resolvers;
 
 using System.Reflection;
-using System.Text.Json;
 using Bogus;
 using Microsoft.Playwright;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Controls.External;
 using PowerPlaywright.Framework.Controls.Pcf;
@@ -23,7 +23,7 @@ public class PcfControlStrategyResolverTests
     private Faker faker;
 
     private IPage page;
-    private IAPIResponse getControlsResponse;
+    private IEnvironmentInfoProvider environmentInfoProvider;
     private IDictionary<string, Version> controlVersions;
 
     private PcfControlStrategyResolver resolver;
@@ -35,22 +35,12 @@ public class PcfControlStrategyResolverTests
     public void Setup()
     {
         this.faker = new Faker();
-        this.page = Substitute.For<IPage>();
-        this.getControlsResponse = Substitute.For<IAPIResponse>();
         this.controlVersions = new Dictionary<string, Version>();
-        this.resolver = new PcfControlStrategyResolver();
+        this.page = Substitute.For<IPage>();
+        this.environmentInfoProvider = Substitute.For<IEnvironmentInfoProvider>();
+        this.resolver = new PcfControlStrategyResolver(this.environmentInfoProvider);
 
         this.MockValidDefaults();
-    }
-
-    /// <summary>
-    /// Tears down the resolver.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [TearDown]
-    public async Task TearDown()
-    {
-        await this.getControlsResponse.DisposeAsync();
     }
 
     /// <summary>
@@ -186,18 +176,9 @@ public class PcfControlStrategyResolverTests
     [Test]
     public void Resolve_InitialiseAsyncNotCalled_ThrowsPowerPlaywrightException()
     {
+        this.environmentInfoProvider.ControlVersions.ReturnsNull<IDictionary<string, Version>>();
+
         Assert.Throws<PowerPlaywrightException>(() => this.resolver.Resolve(typeof(IPowerAppsOneGridControl), []));
-    }
-
-    /// <summary>
-    /// Tests that a <see cref="PowerPlaywrightException"/> is thrown if the response from <see cref="PcfControlStrategyResolver.GetControlVersionsAsync"/> has a status code other than 200.
-    /// </summary>
-    [Test]
-    public void InitializeAsync_GetControlVersionsReturnsNon200Response_ThrowsPowerPlaywrightException()
-    {
-        this.getControlsResponse.Ok.Returns(false);
-
-        Assert.ThrowsAsync<PowerPlaywrightException>(async () => await this.resolver.InitializeAsync(this.page));
     }
 
     /// <summary>
@@ -265,34 +246,14 @@ public class PcfControlStrategyResolverTests
 
     private void MockValidDefaults()
     {
-        var environmentUrl = $"https://{Guid.NewGuid()}.crm.dynamics.com";
-
         this.page.Url
-            .Returns(environmentUrl);
+            .Returns($"https://{Guid.NewGuid()}.crm.dynamics.com");
 
-        this.getControlsResponse.Ok
-            .Returns(true);
         this.MockControlVersion();
-
-        this.page.APIRequest.GetAsync($"{environmentUrl}/api/data/v9.2/customcontrols?$select=name,version")
-            .Returns(this.getControlsResponse);
     }
 
     private void MockControlVersion()
     {
-        this.getControlsResponse.JsonAsync()
-            .Returns((i) => Task.Run<JsonElement?>(() =>
-            {
-                var responseObject = new
-                {
-                    value = this.controlVersions.Select(kvp => new
-                    {
-                        name = kvp.Key,
-                        version = kvp.Value,
-                    }),
-                };
-
-                return JsonDocument.Parse(JsonSerializer.Serialize(responseObject)).RootElement;
-            }));
+        this.environmentInfoProvider.ControlVersions.Returns(this.controlVersions);
     }
 }

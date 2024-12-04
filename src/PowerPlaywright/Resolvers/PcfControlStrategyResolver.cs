@@ -4,9 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
 
@@ -15,14 +13,13 @@
     /// </summary>
     internal class PcfControlStrategyResolver : AppControlStrategyResolver
     {
-        private IDictionary<string, Version> controlVersions;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PcfControlStrategyResolver"/> class.
         /// </summary>
+        /// <param name="environmentInfoProvider">The environment info provider.</param>
         /// <param name="logger">The logger.</param>
-        public PcfControlStrategyResolver(ILogger<PcfControlStrategyResolver> logger = null)
-            : base(logger)
+        public PcfControlStrategyResolver(IEnvironmentInfoProvider environmentInfoProvider, ILogger<PcfControlStrategyResolver> logger = null)
+            : base(environmentInfoProvider, logger)
         {
         }
 
@@ -50,9 +47,9 @@
                 throw new ArgumentNullException(nameof(strategyTypes));
             }
 
-            if (this.controlVersions is null)
+            if (this.EnvironmentInfoProvider.ControlVersions is null)
             {
-                throw new PowerPlaywrightException($"The {nameof(PcfControlStrategyResolver)} must be initialised before it can resolve controls");
+                throw new PowerPlaywrightException("The environment's control versions could not be determined.");
             }
 
             if (controlType.GetCustomAttribute<PcfControlAttribute>() is PcfControlAttribute control)
@@ -65,33 +62,12 @@
                             Type = s,
                             s.GetCustomAttribute<PcfControlStrategyAttribute>().Version,
                         })
-                    .Where(s => s.Version <= this.controlVersions[control.Name])
+                    .Where(s => s.Version <= this.EnvironmentInfoProvider.ControlVersions[control.Name])
                     .OrderByDescending(s => s.Version)
                     .FirstOrDefault()?.Type;
             }
 
             throw new PowerPlaywrightException($"No supported attributes were found for control type {controlType.Name}. {nameof(PcfControlStrategyResolver)} resolver is unable to resolve the control strategy.");
-        }
-
-        /// <inheritdoc/>
-        protected override async Task InitialiseResolverAsync(IPage page)
-        {
-            this.controlVersions = await this.GetControlVersions(page);
-        }
-
-        private async Task<IDictionary<string, Version>> GetControlVersions(IPage page)
-        {
-            var customControlsResponse = await page.APIRequest.GetAsync($"https://{new Uri(page.Url).Host}/api/data/v9.2/customcontrols?$select=name,version");
-            var customControlsJson = await customControlsResponse.JsonAsync();
-
-            if (!customControlsResponse.Ok)
-            {
-                throw new PowerPlaywrightException($"Unable to retrieve custom controls from environment. Status code: {customControlsResponse.Status}.");
-            }
-
-            return customControlsJson?.GetProperty("value").EnumerateArray().ToDictionary(
-                c => c.GetProperty("name").GetString(),
-                c => new Version(c.GetProperty("version").GetString()));
         }
     }
 }

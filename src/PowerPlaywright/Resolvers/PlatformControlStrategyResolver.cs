@@ -4,9 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
-    using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
 
@@ -15,14 +13,13 @@
     /// </summary>
     internal class PlatformControlStrategyResolver : AppControlStrategyResolver
     {
-        private Version platformVersion;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PlatformControlStrategyResolver"/> class.
         /// </summary>
+        /// <param name="environmentInfoProvider">The environment info provider.</param>
         /// <param name="logger">The logger.</param>
-        public PlatformControlStrategyResolver(ILogger<PlatformControlStrategyResolver> logger = null)
-            : base(logger)
+        public PlatformControlStrategyResolver(IEnvironmentInfoProvider environmentInfoProvider, ILogger<PlatformControlStrategyResolver> logger = null)
+            : base(environmentInfoProvider, logger)
         {
         }
 
@@ -50,9 +47,9 @@
                 throw new ArgumentNullException(nameof(strategyTypes));
             }
 
-            if (this.platformVersion is null)
+            if (this.EnvironmentInfoProvider.PlatformVersion is null)
             {
-                throw new PowerPlaywrightException($"The {nameof(PcfControlStrategyResolver)} must be initialised before it can resolve controls");
+                throw new PowerPlaywrightException("The environment's platform version could not be determined.");
             }
 
             if (controlType.GetCustomAttribute<PlatformControlAttribute>() is PlatformControlAttribute control)
@@ -65,23 +62,12 @@
                             Type = s,
                             s.GetCustomAttribute<PlatformControlStrategyAttribute>().Version,
                         })
-                    .Where(s => s.Version <= this.platformVersion)
+                    .Where(s => s.Version <= this.EnvironmentInfoProvider.PlatformVersion)
                     .OrderByDescending(s => s.Version)
                     .FirstOrDefault()?.Type;
             }
 
             throw new PowerPlaywrightException($"No supported attributes were found for control type {controlType.Name}. {nameof(PlatformControlStrategyResolver)} resolver is unable to resolve the control strategy.");
-        }
-
-        /// <inheritdoc/>
-        protected override async Task InitialiseResolverAsync(IPage page)
-        {
-            this.platformVersion = await this.GetPlatformVersionAsync(page);
-        }
-
-        private async Task<Version> GetPlatformVersionAsync(IPage page)
-        {
-            return new Version(await page.EvaluateAsync<string>("Xrm.Utility.getGlobalContext().getVersion()"));
         }
     }
 }

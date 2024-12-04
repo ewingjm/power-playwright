@@ -3,6 +3,7 @@
 using Bogus;
 using Microsoft.Playwright;
 using NSubstitute;
+using NSubstitute.ReturnsExtensions;
 using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Controls.External;
 using PowerPlaywright.Framework.Controls.Platform;
@@ -21,6 +22,7 @@ public class PlatformControlStrategyResolverTests
     private Faker faker;
 
     private IPage page;
+    private IEnvironmentInfoProvider environmentInfoProvider;
     private Version platformVersion;
 
     private PlatformControlStrategyResolver resolver;
@@ -33,7 +35,8 @@ public class PlatformControlStrategyResolverTests
     {
         this.faker = new Faker();
         this.page = Substitute.For<IPage>();
-        this.resolver = new PlatformControlStrategyResolver();
+        this.environmentInfoProvider = Substitute.For<IEnvironmentInfoProvider>();
+        this.resolver = new PlatformControlStrategyResolver(this.environmentInfoProvider);
 
         this.MockValidDefaults();
     }
@@ -171,6 +174,8 @@ public class PlatformControlStrategyResolverTests
     [Test]
     public void Resolve_InitialiseAsyncNotCalled_ThrowsPowerPlaywrightException()
     {
+        this.environmentInfoProvider.PlatformVersion.ReturnsNull();
+
         Assert.Throws<PowerPlaywrightException>(() => this.resolver.Resolve(typeof(IClientApi), []));
     }
 
@@ -236,7 +241,6 @@ public class PlatformControlStrategyResolverTests
     private void MockValidDefaults()
     {
         this.platformVersion = new Version(9, 2, 0, 10020);
-        this.page.EvaluateAsync<string>("Xrm.Utility.getGlobalContext().getVersion()")
-            .Returns((i) => Task.FromResult(this.platformVersion.ToString()));
+        this.environmentInfoProvider.PlatformVersion.Returns(this.platformVersion);
     }
 }
