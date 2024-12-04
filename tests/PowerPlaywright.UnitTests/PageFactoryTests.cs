@@ -7,7 +7,6 @@ using NSubstitute;
 using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Pages;
 using PowerPlaywright.Pages;
-using PowerPlaywright.Pages.Enums;
 
 /// <summary>
 /// Tests for the <see cref="PageFactory"/> class.

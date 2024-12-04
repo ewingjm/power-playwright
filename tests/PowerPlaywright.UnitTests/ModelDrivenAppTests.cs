@@ -3,7 +3,6 @@ namespace PowerPlaywright.UnitTests;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.Playwright;
-using Microsoft.VisualBasic;
 using NSubstitute;
 using NuGet.Packaging;
 using PowerPlaywright;

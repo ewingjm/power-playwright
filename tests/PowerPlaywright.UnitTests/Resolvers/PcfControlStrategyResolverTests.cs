@@ -1,7 +1,6 @@
 ﻿namespace PowerPlaywright.UnitTests.Resolvers;
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Bogus;
 using Microsoft.Playwright;

@@ -10,7 +10,6 @@ namespace PowerPlaywright
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
-    using PowerPlaywright.Pages;
 
     /// <summary>
     /// Represents a model-driven app.

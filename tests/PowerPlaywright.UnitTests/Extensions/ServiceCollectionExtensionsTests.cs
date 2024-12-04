@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Playwright;
 using NSubstitute;
-using NUnit.Framework.Interfaces;
 using PowerPlaywright.Extensions;
 using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Redirectors;

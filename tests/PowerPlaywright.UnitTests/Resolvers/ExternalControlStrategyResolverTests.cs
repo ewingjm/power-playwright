@@ -1,6 +1,5 @@
 ﻿namespace PowerPlaywright.UnitTests.Resolvers;
 
-using System.Runtime.CompilerServices;
 using NUnit.Framework.Internal;
 using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Controls.External;
