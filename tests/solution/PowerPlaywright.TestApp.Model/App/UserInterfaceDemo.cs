@@ -40,6 +40,32 @@
                     /// </summary>
                     public const string RelatedRecords = "Related Records";
                 }
+
+                /// <summary>
+                /// Constants relating to Group B.
+                /// </summary>
+                public static class GroupB
+                {
+                    /// <summary>
+                    /// The display name of <see cref="GroupB"/>.
+                    /// </summary>
+                    public const string DisplayName = "Group B";
+
+                    /// <summary>
+                    /// The dashboard page.
+                    /// </summary>
+                    public const string Dashboard = "Dashboard";
+
+                    /// <summary>
+                    /// The web resource page.
+                    /// </summary>
+                    public const string WebResource = "Web Resource";
+
+                    /// <summary>
+                    /// The custom page.
+                    /// </summary>
+                    public const string Custom = "Custom";
+                }
             }
         }
     }
