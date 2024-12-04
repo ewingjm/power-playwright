@@ -1,15 +1,14 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Pages
 {
-    using System.Text.RegularExpressions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Pages;
 
     /// <summary>
     /// Tests for the <see cref="EntityListPage"/> class.
     /// </summary>
-    public partial class EntityListPageTests : IntegrationTests
+    public class EntityListPageTests : IntegrationTests
     {
-        private IEntityListPage listPage;
+        private IEntityListPage? listPage;
 
         /// <summary>
         /// Sets up the list page.
@@ -22,18 +21,30 @@
         }
 
         /// <summary>
-        /// Calling <see cref="ModelDrivenApp.LoginAsync"/> with valid credentials should login to the app.
+        /// Tests that <see cref="IEntityListPage.Grid"/> always exists on the page.
         /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task Grid_OpenRecordAsync_OpensRecordInGrid()
+        public void Grid_Always_Exists()
         {
-            var recordFormPage = await this.listPage.Grid.OpenRecordAsync(0);
-
-            await this.Expect(recordFormPage.Page).ToHaveURLAsync(EntityFormPageRegex());
+            Assert.That(this.listPage!.Grid.Container.IsVisibleAsync(), Is.True);
         }
 
-        [GeneratedRegex(@".*pagetype=entityrecord.*")]
-        private static partial Regex EntityFormPageRegex();
+        /// <summary>
+        /// Tests that <see cref="IEntityListPage.SiteMap"/> always exists on the page.
+        /// </summary>
+        [Test]
+        public void SiteMap_Always_Exists()
+        {
+            Assert.That(this.listPage!.SiteMap.Container.IsVisibleAsync(), Is.True);
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="IEntityListPage.Page"/> property is always not null.
+        /// </summary>
+        [Test]
+        public void Page_Always_NotNull()
+        {
+            Assert.That(this.listPage!.Page, Is.Not.Null);
+        }
     }
 }

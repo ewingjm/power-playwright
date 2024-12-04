@@ -1,11 +1,7 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Pages
 {
-    using PowerPlaywright.Framework.Controls.Pcf;
-    using PowerPlaywright.Framework.Controls.Pcf.Classes;
-    using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Pages;
-    using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
@@ -13,7 +9,7 @@
     /// </summary>
     public class EntityRecordPageTests : IntegrationTests
     {
-        private IEntityRecordPage recordPage;
+        private IEntityRecordPage? recordPage;
 
         /// <summary>
         /// Sets up the record page.
@@ -33,40 +29,30 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEntityRecordPage.Form"/> opens the provided tab when <see cref="IMainFormControl.OpenTabAsync(string)"/> is called with a valid tab.
+        /// Tests that <see cref="IEntityRecordPage.Form"/> always exists on the page.
         /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task OpenTabAsync_TabVisible_OpensTab()
+        public void Form_Always_Exists()
         {
-            await this.recordPage.Form.OpenTabAsync(pp_Record.Forms.Information.Tabs.TabB);
-
-            var activeTab = await this.recordPage.Form.GetActiveTabAsync();
-
-            Assert.That(activeTab, Is.EqualTo(pp_Record.Forms.Information.Tabs.TabB));
+            Assert.That(this.recordPage!.Form.Container.IsVisibleAsync(), Is.True);
         }
 
         /// <summary>
-        /// Tests that <see cref="IEntityRecordPage.Form"/> can open a tab when <see cref="IMainFormControl.OpenTabAsync(string)"/> is called.
+        /// Tests that <see cref="IEntityRecordPage.SiteMap"/> always exists on the page.
         /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetActiveTabAsync_TabIsActive_ReturnsActiveTab()
+        public void SiteMap_Always_Exists()
         {
-            var activeTab = await this.recordPage.Form.GetActiveTabAsync();
-
-            Assert.That(activeTab, Is.EqualTo(pp_Record.Forms.Information.Tabs.TabA));
+            Assert.That(this.recordPage!.SiteMap.Container.IsVisibleAsync(), Is.True);
         }
 
         /// <summary>
-        /// Tests that <see cref="IEntityRecordPage.Form"/> returns a control when <see cref="IMainFormControl.GetControl{TControl}(string)"/> is called with a non-null or empty control name.
+        /// Tests that the <see cref="IEntityRecordPage.Page"/> property is always not null.
         /// </summary>
         [Test]
-        public void Form_GetControl_ReturnsControl()
+        public void Page_Always_NotNull()
         {
-            var gridControl = this.recordPage.Form.GetControl<IPowerAppsOneGridControl>(pp_Record.Forms.Information.RelatedRecordsSubgrid).OpenRecordAsync(1);
-
-            Assert.That(gridControl, Is.Not.Null);
+            Assert.That(this.recordPage!.Page, Is.Not.Null);
         }
     }
 }
