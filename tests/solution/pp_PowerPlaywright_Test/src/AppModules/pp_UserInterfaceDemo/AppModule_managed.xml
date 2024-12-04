@@ -12,6 +12,7 @@
   <AppModuleComponents>
     <AppModuleComponent type="1" schemaName="pp_record" />
     <AppModuleComponent type="1" schemaName="pp_relatedrecord" />
+    <AppModuleComponent type="60" id="{80a7e62e-d4b0-ef11-b8e8-00224842fcbf}" />
     <AppModuleComponent type="62" schemaName="pp_UserInterfaceDemo" />
   </AppModuleComponents>
   <AppModuleRoleMaps>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.24083.180" OrganizationSchemaType="Standard" OrganizationType="Developer" TenantId="b829106b-b11f-4f75-8993-6410e659ba9b" CRMServerServiceabilityVersion="9.2.24083.00188">
+<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" OrganizationVersion="9.2.24111.198" OrganizationSchemaType="Standard" CRMServerServiceabilityVersion="9.2.24111.00198">
   <Entities />
   <Roles />
   <Workflows />
@@ -9,6 +9,9 @@
   <EntityRelationships />
   <OrganizationSettings />
   <optionsets />
+  <Dashboards />
+  <InteractionCentricDashboards />
+  <WebResources />
   <CustomControls />
   <AppModuleSiteMaps />
   <AppModules />

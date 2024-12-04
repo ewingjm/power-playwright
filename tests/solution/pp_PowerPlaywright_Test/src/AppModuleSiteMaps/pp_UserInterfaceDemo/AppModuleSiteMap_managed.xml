@@ -14,8 +14,23 @@
         <Titles>
           <Title LCID="1033" Title="Group A" />
         </Titles>
-        <SubArea Id="subarea_e1df0426" Entity="pp_record" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
-        <SubArea Id="subarea_4fc6d660" Entity="pp_relatedrecord" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
+        <SubArea Id="subarea_e1df0426" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="pp_record" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
+        <SubArea Id="subarea_4fc6d660" Icon="/_imgs/imagestrips/transparent_spacer.gif" Entity="pp_relatedrecord" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" />
+      </Group>
+      <Group Id="group_B" ResourceId="SitemapDesigner.NewGroup" DescriptionResourceId="SitemapDesigner.NewGroup" IntroducedVersion="7.0.0.0" IsProfile="false" ToolTipResourseId="SitemapDesigner.Unknown">
+        <Titles>
+          <Title LCID="1033" Title="Group B" />
+        </Titles>
+        <SubArea Id="subarea_51ef83d9" DescriptionResourceId="Dashboards_Description" Icon="/_imgs/imagestrips/transparent_spacer.gif" Url="/workplace/home_dashboards.aspx" DefaultDashboard="80a7e62e-d4b0-ef11-b8e8-00224842fcbf" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA" ToolTipResourseId="DashboardTooltip">
+          <Titles>
+            <Title LCID="1033" Title="Records Dashboard" />
+          </Titles>
+        </SubArea>
+        <SubArea Id="subarea_283b6a9e" ResourceId="SitemapDesigner.NewSubArea" Icon="/_imgs/imagestrips/transparent_spacer.gif" Url="$webresource:pp_/html/hello-world.html" Client="All,Outlook,OutlookLaptopClient,OutlookWorkstationClient,Web" AvailableOffline="true" PassParams="false" Sku="All,OnPremise,Live,SPLA">
+          <Titles>
+            <Title LCID="1033" Title="Web Resource" />
+          </Titles>
+        </SubArea>
       </Group>
     </Area>
     <Area Id="area_B" ResourceId="SitemapDesigner.NewArea" ShowGroups="true">

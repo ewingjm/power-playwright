@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Role id="{afbf7937-fe70-ef11-a671-000d3a7ecf6a}" name="PowerPlaywright Tester" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<Role id="{afbf7937-fe70-ef11-a671-000d3a7ecf6a}" name="Power Playwright Tester" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <IsCustomizable>1</IsCustomizable>
   <IsAutoAssigned>0</IsAutoAssigned>
   <RolePrivileges>

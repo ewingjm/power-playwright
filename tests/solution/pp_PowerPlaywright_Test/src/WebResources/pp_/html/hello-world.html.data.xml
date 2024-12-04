@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <WebResourceId>{ed193a4a-d6b0-ef11-b8e8-00224842fcbf}</WebResourceId>
+  <Name>pp_/html/hello-world.html</Name>
+  <DisplayName>pp_/html/hello-world.html</DisplayName>
+  <WebResourceType>1</WebResourceType>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsEnabledForMobileClient>0</IsEnabledForMobileClient>
+  <IsAvailableForMobileOffline>0</IsAvailableForMobileOffline>
+  <IsCustomizable>1</IsCustomizable>
+  <CanBeDeleted>1</CanBeDeleted>
+  <IsHidden>0</IsHidden>
+  <FileName>/WebResources/pp_htmlhello-worldhtmlED193A4A-D6B0-EF11-B8E8-00224842FCBF</FileName>
+</WebResource>
