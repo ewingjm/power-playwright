@@ -18,17 +18,13 @@ public class PageFactoryTests
     private const string PageTypeQueryWebResource = "webresource";
     private const string PageTypeQueryDashboard = "dashboard";
     private const string PageTypeQueryEntityList = "entitylist";
+
     private Faker faker;
     private ILogger<PageFactory> logger;
     private IServiceProvider serviceProvider;
     private IPage page;
 
     private PageFactory pageFactory;
-
-    private class MyCustomPage(IPage page, IControlFactory controlFactory)
-        : CustomPage(page, controlFactory)
-    {
-    }
 
     /// <summary>
     /// Sets up the tests.
@@ -188,5 +184,10 @@ public class PageFactoryTests
             .Returns(i => Substitute.For(i.Args().Cast<Type>().ToArray(), []));
         this.page.Url
             .Returns(this.faker.Internet.UrlWithPath(fileExt: "main.aspx?pagetype=entityrecord"));
+    }
+
+    private class MyCustomPage(IPage page, IControlFactory controlFactory)
+        : CustomPage(page, controlFactory)
+    {
     }
 }
