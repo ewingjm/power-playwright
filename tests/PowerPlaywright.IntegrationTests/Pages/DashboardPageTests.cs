@@ -29,10 +29,11 @@ namespace PowerPlaywright.IntegrationTests.Pages
         /// <summary>
         /// Tests that <see cref="IDashboardPage.SiteMap"/> always exists on the page.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public void SiteMap_Always_Exists()
+        public async Task SiteMap_Always_Exists()
         {
-            Assert.That(this.dashboardPage!.SiteMap.Container.IsVisibleAsync(), Is.True);
+            await this.Expect(this.dashboardPage!.SiteMap.Container).ToBeVisibleAsync();
         }
 
         /// <summary>

@@ -23,19 +23,21 @@
         /// <summary>
         /// Tests that <see cref="IEntityListPage.Grid"/> always exists on the page.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public void Grid_Always_Exists()
+        public async Task Grid_Always_Exists()
         {
-            Assert.That(this.listPage!.Grid.Container.IsVisibleAsync(), Is.True);
+            await this.Expect(this.listPage!.Grid.Container).ToBeVisibleAsync();
         }
 
         /// <summary>
         /// Tests that <see cref="IEntityListPage.SiteMap"/> always exists on the page.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public void SiteMap_Always_Exists()
+        public async Task SiteMap_Always_Exists()
         {
-            Assert.That(this.listPage!.SiteMap.Container.IsVisibleAsync(), Is.True);
+            await this.Expect(this.listPage!.SiteMap.Container).ToBeVisibleAsync();
         }
 
         /// <summary>

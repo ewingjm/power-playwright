@@ -31,19 +31,21 @@
         /// <summary>
         /// Tests that <see cref="IEntityRecordPage.Form"/> always exists on the page.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public void Form_Always_Exists()
+        public async Task Form_Always_Exists()
         {
-            Assert.That(this.recordPage!.Form.Container.IsVisibleAsync(), Is.True);
+            await this.Expect(this.recordPage!.Form.Container).ToBeVisibleAsync();
         }
 
         /// <summary>
         /// Tests that <see cref="IEntityRecordPage.SiteMap"/> always exists on the page.
         /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public void SiteMap_Always_Exists()
+        public async Task SiteMap_Always_Exists()
         {
-            Assert.That(this.recordPage!.SiteMap.Container.IsVisibleAsync(), Is.True);
+            await this.Expect(this.recordPage!.SiteMap.Container).ToBeVisibleAsync();
         }
 
         /// <summary>
