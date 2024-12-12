@@ -5,6 +5,7 @@ using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Packaging;
 using NuGet.Packaging.Signing;
+using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 
 /// <summary>
@@ -58,6 +59,6 @@ public partial class GlobalSetup
             true);
     }
 
-    [GeneratedRegex(@"PowerPlaywright\.Strategies\.(\d\.\d\.\d)\.nupkg")]
+    [GeneratedRegex(@"PowerPlaywright\.Strategies\.((\d\.\d\.\d)(-.*)?)(\.\d+)?\.nupkg")]
     private static partial Regex PackageVersionRegex();
 }
