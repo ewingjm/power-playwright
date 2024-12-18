@@ -90,8 +90,11 @@ public class NuGetPackageInstallerTests
         Assert.ThrowsAsync<ArgumentNullException>(() => this.packageInstaller.InstallPackageAsync(null));
     }
 
+    /// <summary>
+    /// Tests that the <see cref="NuGetPackageInstaller.InstallPackageAsync"/> method throws a <see cref="PowerPlaywrightException"/> when the package can't be copied to a stream.
+    /// </summary>
     [Test]
-    public async Task InstallPackageAsync_FailedToCopyToStream_ThrowsPowerPlaywrightException()
+    public void InstallPackageAsync_FailedToCopyToStream_ThrowsPowerPlaywrightException()
     {
         this.findPackageByIdResource.CopyNupkgToStreamAsync(
             PackageId,
@@ -105,6 +108,10 @@ public class NuGetPackageInstallerTests
         Assert.ThrowsAsync<PowerPlaywrightException>(() => this.packageInstaller.InstallPackageAsync(this.package));
     }
 
+    /// <summary>
+    /// Tests that the <see cref="NuGetPackageInstaller.InstallPackageAsync"/> method adds the package to the global packages folder.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task InstallPackageAsync_Always_AddsPackageToGlobalPackagesFolder()
     {

@@ -6,7 +6,6 @@ namespace PowerPlaywright
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
-    using NuGet.Common;
     using PowerPlaywright.Framework;
 
     /// <summary>
@@ -25,11 +24,17 @@ namespace PowerPlaywright
             this.logger = logger;
         }
 
+        /// <inheritdoc/>
+        public event EventHandler OnReady;
+
         /// <inheritdoc />
         public IDictionary<string, Version> ControlVersions { get; private set; }
 
         /// <inheritdoc />
         public Version PlatformVersion { get; private set; }
+
+        /// <inheritdoc/>
+        public bool IsReady { get; private set; }
 
         /// <inheritdoc />
         public async Task InitializeAsync(IPage page)
@@ -41,6 +46,9 @@ namespace PowerPlaywright
 
             this.ControlVersions = await GetControlVersionsAsync(page);
             this.PlatformVersion = await GetPlatformVersionAsync(page);
+
+            this.IsReady = true;
+            this.OnReady?.Invoke(this, EventArgs.Empty);
         }
 
         private static async Task<IDictionary<string, Version>> GetControlVersionsAsync(IPage page)

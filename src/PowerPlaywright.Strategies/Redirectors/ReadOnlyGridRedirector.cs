@@ -24,12 +24,12 @@
         /// <inheritdoc/>
         protected override Type GetTargetControlType(RedirectionInfo redirectionInfo)
         {
-            if (redirectionInfo.AppToggles is null || redirectionInfo.AppToggles.ModernizationOptOut.GetValueOrDefault(true))
+            if (redirectionInfo.ActiveReleaseChannel == ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
             {
-                return typeof(IPowerAppsOneGridControl);
+                return typeof(IPcfGridControl);
             }
 
-            return typeof(IPcfGridControl);
+            return typeof(IPowerAppsOneGridControl);
         }
     }
 }

@@ -26,20 +26,16 @@
         }
 
         /// <summary>
-        /// Tests that the right control is returned based on the <see cref="AppToggles.ModernizationOptOut"/> flag.
+        /// Tests that the right control is returned based on the <see cref="AppSettings.NewLookOptOut"/> flag.
         /// </summary>
-        /// <param name="modernizationOptOut">The <see cref="AppToggles.ModernizationOptOut"/> flag.</param>
+        /// <param name="newLookOptOut">The <see cref="AppToggles.ModernizationOptOut"/> flag.</param>
         /// <returns>The redirected type.</returns>
         [TestCase(false, ExpectedResult = typeof(ISimpleLookupControl))]
         [TestCase(true, ExpectedResult = typeof(ISimpleLookupControl))]
-        public Type Redirect_ModernizationOptOutSet_ReturnsCorrespondingLookupInterface(bool modernizationOptOut)
+        public Type Redirect_ModernizationOptOutSet_ReturnsCorrespondingLookupInterface(bool newLookOptOut)
         {
             this.redirectionInfoProvider.GetRedirectionInfo().Returns(
-                 new RedirectionInfo(
-                     new AppToggles
-                     {
-                         ModernizationOptOut = modernizationOptOut,
-                     }));
+                 new RedirectionInfo(new OrgSettings(), new AppSettings(), new UserSettings()));
 
             return this.redirector.Redirect();
         }

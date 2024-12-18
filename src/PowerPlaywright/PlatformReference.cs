@@ -2,8 +2,9 @@ namespace PowerPlaywright
 {
     using System.Collections.Generic;
     using System.IO;
-    using System.Reflection;
     using System.Text.Json;
+    using NuGet.Configuration;
+    using NuGet.Packaging.Core;
     using PowerPlaywright.Framework;
 
     /// <summary>
@@ -11,8 +12,8 @@ namespace PowerPlaywright
     /// </summary>
     internal class PlatformReference : IPlatformReference
     {
-        private static readonly string PlatformReferenceLocation = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "platform-reference.json");
-
+        private readonly PackageIdentity packageIdentity;
+        private readonly ISettings nugetSettings;
         private readonly IEnvironmentInfoProvider environmentInfoProvider;
         private readonly JsonSerializerOptions jsonSerializerOptions;
 
@@ -21,12 +22,16 @@ namespace PowerPlaywright
         /// <summary>
         /// Initializes a new instance of the <see cref="PlatformReference"/> class.
         /// </summary>
+        /// <param name="packageIdentity">The strategies package identity.</param>
+        /// <param name="nugetSettings">The NuGet settings.</param>
         /// <param name="environmentInfoProvider">The environment info provider.</param>
-        public PlatformReference(IEnvironmentInfoProvider environmentInfoProvider)
+        public PlatformReference(PackageIdentity packageIdentity, ISettings nugetSettings, IEnvironmentInfoProvider environmentInfoProvider)
         {
-            this.environmentInfoProvider = environmentInfoProvider;
+            this.packageIdentity = packageIdentity ?? throw new System.ArgumentNullException(nameof(packageIdentity));
+            this.nugetSettings = nugetSettings ?? throw new System.ArgumentNullException(nameof(nugetSettings));
+            this.environmentInfoProvider = environmentInfoProvider ?? throw new System.ArgumentNullException(nameof(environmentInfoProvider));
+
             this.jsonSerializerOptions = new JsonSerializerOptions();
-            this.jsonSerializerOptions.Converters.Add(new VersionedDictionaryConverter(this.environmentInfoProvider.PlatformVersion));
         }
 
         /// <inheritdoc/>
@@ -38,13 +43,23 @@ namespace PowerPlaywright
             {
                 if (this.reference == null)
                 {
-                    if (!File.Exists(PlatformReferenceLocation))
+                    var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(this.nugetSettings);
+
+                    var packagePath = Path.Combine(
+                        globalPackagesFolder,
+                        this.packageIdentity.Id.ToLowerInvariant(),
+                        this.packageIdentity.Version.ToString());
+
+                    var referencePath = Path.Combine(packagePath, "content", "platform-reference.json");
+
+                    if (!File.Exists(referencePath))
                     {
                         throw new PowerPlaywrightException("A platform-reference.json file was not found.");
                     }
 
+                    this.jsonSerializerOptions.Converters.Add(new VersionedDictionaryConverter(this.environmentInfoProvider.PlatformVersion));
                     this.reference = JsonSerializer.Deserialize<Dictionary<string, string>>(
-                        PlatformReferenceLocation, this.jsonSerializerOptions);
+                        File.ReadAllText(referencePath), this.jsonSerializerOptions);
                 }
 
                 return this.reference;

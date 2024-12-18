@@ -9,6 +9,16 @@ namespace PowerPlaywright
     internal interface IEnvironmentInfoProvider
     {
         /// <summary>
+        /// An event fired when the info provider is ready.
+        /// </summary>
+        event EventHandler OnReady;
+
+        /// <summary>
+        /// Gets a value indicating whether whether or not the environment info provider is ready.
+        /// </summary>
+        bool IsReady { get; }
+
+        /// <summary>
         /// Gets the platform version.
         /// </summary>
         Version PlatformVersion { get; }

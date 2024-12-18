@@ -3,14 +3,14 @@
     using System.Text.Json.Serialization;
 
     /// <summary>
-    /// User app toggles.
+    /// The organization settings.
     /// </summary>
-    internal class AppToggles
+    internal class OrgSettings
     {
         /// <summary>
-        /// Gets a value indicating whether modernizationOptOut is toggled.
+        /// Gets the release channel.
         /// </summary>
         [JsonInclude]
-        public bool? ModernizationOptOut { get; private set; }
+        public ReleaseChannel ReleaseChannel { get; private set; }
     }
 }

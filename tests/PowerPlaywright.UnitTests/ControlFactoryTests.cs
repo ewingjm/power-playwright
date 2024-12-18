@@ -14,6 +14,7 @@ using PowerPlaywright.Framework.Redirectors;
 using PowerPlaywright.Resolvers;
 using PowerPlaywright.Strategies.Controls.External;
 using PowerPlaywright.Strategies.Controls.Pcf;
+using PowerPlaywright.Strategies.Redirectors;
 
 /// <summary>
 /// Tests for the <see cref="ControlFactory"/> class.
@@ -38,7 +39,7 @@ public class ControlFactoryTests
     public void SetUp()
     {
         this.resolvedTypes = [];
-        this.redirectionInfo = new RedirectionInfo(new AppToggles());
+        this.redirectionInfo = new RedirectionInfo(new OrgSettings(), new AppSettings(), new UserSettings());
 
         this.assemblyProvider = Substitute.For<IAssemblyProvider>();
         this.strategyResolver = Substitute.For<IControlStrategyResolver>();

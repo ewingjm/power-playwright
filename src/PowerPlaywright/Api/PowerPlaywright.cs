@@ -181,12 +181,13 @@ namespace PowerPlaywright.Api
 
             var versions = await nuGetPackageInstaller.GetAllVersionsAsync(StrategiesPackageId);
 
-            var bestMatch = versions
-                .Where(v => v.Major == majorVersion)
-                .FindBestMatch(VersionRange.Parse($"{majorVersion}.*"), v => v)
-                    ?? throw new PowerPlaywrightException($"Unable to find strategies version matching '{majorVersion}.*'.");
+            var matchingMajorVersions = versions.Where(v => v.Major == majorVersion);
+            var idealVersion = matchingMajorVersions.Count() > 1
+                ? matchingMajorVersions.FindBestMatch(VersionRange.Parse($"{majorVersion}.*"), v => v)
+                : matchingMajorVersions.FirstOrDefault()
+                ?? throw new PowerPlaywrightException($"Unable to find strategies version matching '{majorVersion}.*'.");
 
-            return new PackageIdentity(StrategiesPackageId, bestMatch);
+            return new PackageIdentity(StrategiesPackageId, idealVersion);
         }
 
         private IModelDrivenApp GetModelDrivenApp(IBrowserContext browserContext, Uri environmentUrl, string uniqueName)
@@ -215,10 +216,10 @@ namespace PowerPlaywright.Api
                 .AddSingleton<IControlFactory, ControlFactory>()
                 .AddSingleton<IPageFactory, PageFactory>()
                 .AddSingleton<IControlStrategyResolver, ExternalControlStrategyResolver>()
-                .AddAppLoadInitializedSingleton<IControlStrategyResolver, PcfControlStrategyResolver>()
-                .AddAppLoadInitializedSingleton<IControlStrategyResolver, PlatformControlStrategyResolver>()
-                .AddAppLoadInitializedSingleton<IEnvironmentInfoProvider, EnvironmentInfoProvider>()
+                .AddSingleton<IControlStrategyResolver, PcfControlStrategyResolver>()
+                .AddSingleton<IControlStrategyResolver, PlatformControlStrategyResolver>()
                 .AddSingleton<IPlatformReference, PlatformReference>()
+                .AddAppLoadInitializedSingleton<IEnvironmentInfoProvider, EnvironmentInfoProvider>()
                 .BuildServiceProvider();
         }
     }

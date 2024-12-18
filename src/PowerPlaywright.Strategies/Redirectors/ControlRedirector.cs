@@ -1,8 +1,9 @@
-﻿namespace PowerPlaywright.Framework.Redirectors
+﻿namespace PowerPlaywright.Strategies.Redirectors
 {
     using System;
     using Microsoft.Extensions.Logging;
     using PowerPlaywright.Framework.Controls;
+    using PowerPlaywright.Framework.Redirectors;
 
     /// <summary>
     /// A control redirector.

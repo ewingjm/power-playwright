@@ -9,6 +9,7 @@ using NSubstitute;
 using PowerPlaywright.Extensions;
 using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Redirectors;
+using PowerPlaywright.Strategies.Redirectors;
 using PowerPlaywright.UnitTests.Helpers;
 
 /// <summary>

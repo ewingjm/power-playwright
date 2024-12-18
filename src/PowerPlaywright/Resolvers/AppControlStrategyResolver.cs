@@ -2,15 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Playwright;
-    using PowerPlaywright.Framework;
 
     /// <summary>
     /// A base class for control strategy resolvers that initialise on app load.
     /// </summary>
-    internal abstract class AppControlStrategyResolver : IControlStrategyResolver, IAppLoadInitializable
+    internal abstract class AppControlStrategyResolver : IControlStrategyResolver
     {
         private bool isReady;
 
@@ -23,13 +20,31 @@
         {
             this.EnvironmentInfoProvider = environmentInfoProvider;
             this.Logger = logger;
+            this.EnvironmentInfoProvider.OnReady += this.EnvironmentInfoProvider_OnReady;
+            this.IsReady = this.EnvironmentInfoProvider.IsReady;
         }
 
         /// <inheritdoc/>
         public event EventHandler OnReady;
 
         /// <inheritdoc/>
-        public bool IsReady => this.isReady;
+        public bool IsReady
+        {
+            get
+            {
+                return this.isReady;
+            }
+
+            protected set
+            {
+                this.isReady = value;
+
+                if (value)
+                {
+                    this.OnReady?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the environment info provider.
@@ -42,23 +57,14 @@
         protected ILogger Logger { get; }
 
         /// <inheritdoc/>
-        public Task InitializeAsync(IPage page)
-        {
-            if (this.IsReady)
-            {
-                return Task.CompletedTask;
-            }
-
-            this.isReady = true;
-            this.OnReady?.Invoke(this, EventArgs.Empty);
-
-            return Task.CompletedTask;
-        }
-
-        /// <inheritdoc/>
         public abstract bool IsResolvable(Type controlType);
 
         /// <inheritdoc/>
         public abstract Type Resolve(Type controlType, IEnumerable<Type> strategyTypes);
+
+        private void EnvironmentInfoProvider_OnReady(object sender, EventArgs e)
+        {
+            this.IsReady = true;
+        }
     }
 }

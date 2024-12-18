@@ -44,63 +44,47 @@ public class PcfControlStrategyResolverTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PcfControlStrategyResolver.IsReady"/> property returns false after the resolver is constructed.
+    /// Tests that the <see cref="PcfControlStrategyResolver.IsReady"/> property returns true if the environment info provider is ready.
     /// </summary>
     [Test]
-    public void IsReady_InitializeAsyncNotCalled_ReturnsFalse()
+    public void IsReady_EnvironmentInfoProviderReady_ReturnsTrue()
     {
-        Assert.That(this.resolver.IsReady, Is.False);
-    }
-
-    /// <summary>
-    /// Tests that the <see cref="PcfControlStrategyResolver.IsReady"/> property returns true after the resolver is initialised.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task IsReady_InitializeAsyncCalled_ReturnsTrue()
-    {
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         Assert.That(this.resolver.IsReady, Is.True);
     }
 
     /// <summary>
-    /// Tests that the <see cref="PcfControlStrategyResolver.OnReady"/> event is triggered by the <see cref="PcfControlStrategyResolver.InitialiseResolverAsync(IPage)"/> method when not already initialised.
+    /// Tests that the <see cref="PcfControlStrategyResolver.IsReady"/> property returns false if the environment info provider is not ready.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InitialiseAsync_InitializeAsyncNotCalled_TriggersOnReadyEvent()
+    public void IsReady_EnvironmentInfoProviderNotReady_ReturnsFalse()
+    {
+        Assert.That(this.resolver.IsReady, Is.False);
+    }
+
+    /// <summary>
+    /// Tests that the <see cref="PcfControlStrategyResolver.OnReady"/> event is triggered by the environment info provider becoming ready.
+    /// </summary>
+    [Test]
+    public void OnReady_EnvironmentInfoProviderOnReady_IsTriggered()
     {
         this.resolver.OnReady += (sender, args) => Assert.Pass();
 
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
-        Assert.Fail($"The {nameof(PcfControlStrategyResolver.OnReady)} event was not trigged.");
+        Assert.Fail($"The {nameof(PcfControlStrategyResolver.OnReady)} event was not triggered.");
     }
 
     /// <summary>
-    /// Tests that the <see cref="PcfControlStrategyResolver.OnReady"/> event is not triggered by the <see cref="PcfControlStrategyResolver.InitialiseResolverAsync(IPage)"/> method when already initialised.
+    /// Tests that the <see cref="PcfControlStrategyResolver.OnReady"/> event is triggered with the resolver as the sender;
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InitialiseAsync_InitializeAsyncCalled_DoesNotTriggersOnReadyEvent()
-    {
-        await this.resolver.InitializeAsync(this.page);
-        this.resolver.OnReady += (sender, args) => Assert.Fail();
-
-        await this.resolver.InitializeAsync(this.page);
-    }
-
-    /// <summary>
-    /// Tests that the <see cref="PcfControlStrategyResolver.OnReady"/> event is triggered by the <see cref="PcfControlStrategyResolver.InitialiseResolverAsync(IPage)"/> method.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task OnReady_EventTriggered_SenderIsResolver()
+    public void OnReady_EventTriggered_SenderIsResolver()
     {
         this.resolver.OnReady += (sender, args) => Assert.That(sender, Is.EqualTo(this.resolver));
 
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
     }
 
     /// <summary>
@@ -161,20 +145,19 @@ public class PcfControlStrategyResolverTests
     /// <summary>
     /// Tests that the <see cref="PcfControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> method throws a <see cref="PowerPlaywrightException"/> when the control type does not have the <see cref="PcfControlAttribute"/> attribute.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
-    public async Task Resolve_ControlTypeDoesNotHaveExternalControlAttribute_ThrowsPowerPlaywrightException()
+    public void Resolve_ControlTypeDoesNotHaveExternalControlAttribute_ThrowsPowerPlaywrightException()
     {
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         Assert.Throws<PowerPlaywrightException>(() => this.resolver.Resolve(typeof(ILoginControl), [typeof(PowerAppsOneGridControl)]));
     }
 
     /// <summary>
-    /// Tests that a <see cref="PowerPlaywrightException"/> is thrown if <see cref="PcfControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> is called before the resolver is initialised via <see cref="PcfControlStrategyResolver.InitialiseResolverAsync(IPage)"/>.
+    /// Tests that a <see cref="PowerPlaywrightException"/> is thrown if <see cref="PcfControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> is called before the resolver is ready.
     /// </summary>
     [Test]
-    public void Resolve_InitialiseAsyncNotCalled_ThrowsPowerPlaywrightException()
+    public void Resolve_EnvironmentInfoProviderNotReady_ThrowsPowerPlaywrightException()
     {
         this.environmentInfoProvider.ControlVersions.ReturnsNull<IDictionary<string, Version>>();
 
@@ -184,14 +167,13 @@ public class PcfControlStrategyResolverTests
     /// <summary>
     /// Tests that the <see cref="PcfControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> method returns public, non-abstract, concrete types that implement the control type interface and have the <see cref="PcfControlStrategyAttribute"/> attribute.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
-    public async Task Resolve_StrategyTypesContainsPublicNonAbstractConcreteTypeWithPcfControlStrategyAttributeVersionLessThanOrEqualToEnvironmentControlVersion_ReturnsType()
+    public void Resolve_StrategyTypesContainsPublicNonAbstractConcreteTypeWithPcfControlStrategyAttributeVersionLessThanOrEqualToEnvironmentControlVersion_ReturnsType()
     {
         var strategyVersion = this.faker.System.Version();
         var expectedStrategyType = this.GetPcfControlStrategyTypeFor<IPowerAppsOneGridControl>(out var controlName, strategyVersion);
         this.controlVersions[controlName] = strategyVersion;
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         var strategyType = this.resolver.Resolve(typeof(IPowerAppsOneGridControl), [expectedStrategyType]);
 
@@ -201,16 +183,15 @@ public class PcfControlStrategyResolverTests
     /// <summary>
     /// Tests that the <see cref="PcfControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> method returns the type with the highest version set in the <see cref="PcfControlStrategyAttribute"/> attribute when multiple matching strategy types are found.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
-    public async Task Resolve_MultipleStrategyTypesContainsPublicNonAbstractConcreteTypeWithPcfControlStrategyAttribute_ReturnsTypeWithHighestVersionLowerThanEnvironmentVersion()
+    public void Resolve_MultipleStrategyTypesContainsPublicNonAbstractConcreteTypeWithPcfControlStrategyAttribute_ReturnsTypeWithHighestVersionLowerThanEnvironmentVersion()
     {
         var lowerStrategyVersion = this.faker.System.Version();
         var unexpectedStrategyType = this.GetPcfControlStrategyTypeFor<IPowerAppsOneGridControl>(out var controlName, lowerStrategyVersion);
         var higherStrategyVersion = new Version(lowerStrategyVersion.Major, lowerStrategyVersion.Minor, lowerStrategyVersion.Build + 1);
         var expectedStrategyType = this.GetPcfControlStrategyTypeFor<IPowerAppsOneGridControl>(out _, higherStrategyVersion);
         this.controlVersions[controlName] = higherStrategyVersion;
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         var strategyType = this.resolver.Resolve(typeof(IPowerAppsOneGridControl), [unexpectedStrategyType, expectedStrategyType]);
 
@@ -220,11 +201,10 @@ public class PcfControlStrategyResolverTests
     /// <summary>
     /// Tests that the <see cref="PcfControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> method returns null when no public, non-abstract, concrete types that implement the control type interface and have the <see cref="PcfControlStrategyAttribute"/> attribute are found.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
-    public async Task Resolve_StrategyTypesDoesNotContainConcreteTypeWithPcfControlStrategyAttribute_ReturnsNull()
+    public void Resolve_StrategyTypesDoesNotContainConcreteTypeWithPcfControlStrategyAttribute_ReturnsNull()
     {
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         var strategyType = this.resolver.Resolve(typeof(IPowerAppsOneGridControl), [typeof(LoginControl)]);
 
@@ -254,6 +234,6 @@ public class PcfControlStrategyResolverTests
 
     private void MockControlVersion()
     {
-        this.environmentInfoProvider.ControlVersions.Returns(this.controlVersions);
+        this.environmentInfoProvider.ControlVersions.Returns((i) => this.controlVersions);
     }
 }

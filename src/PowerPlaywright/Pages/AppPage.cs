@@ -13,7 +13,7 @@ namespace PowerPlaywright.Pages
     internal abstract class AppPage : IAppPage, IAppPageInternal
     {
         private readonly IControlFactory controlFactory;
-        private readonly IDictionary<(Type, string), IControl> controlCache;
+        private readonly Dictionary<(Type, string), IControl> controlCache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AppPage"/> class.
@@ -40,7 +40,7 @@ namespace PowerPlaywright.Pages
         public void Destroy()
         {
             // TODO: Call this method on page navigation in PageFactory.
-            this.OnDestroy.Invoke(this, EventArgs.Empty);
+            this.OnDestroy?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>

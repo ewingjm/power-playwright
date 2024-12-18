@@ -274,7 +274,7 @@ public class ModelDrivenAppTests
     /// Tests that the <see cref="ModelDrivenApp.LoginAsync{TModelDrivenAppPage}"/> method throws a <see cref="PowerPlaywrightException"/> when the provided page type does not match the home page type.
     /// </summary>
     [Test]
-    public async Task LoginAsyncTModelDrivenAppPage_ProvidedTypeDoesNotMatchHomePageType_ThrowsPowerPlaywrightException()
+    public void LoginAsyncTModelDrivenAppPage_ProvidedTypeDoesNotMatchHomePageType_ThrowsPowerPlaywrightException()
     {
         var entityListPage = Substitute.For<IEntityListPage>();
         this.loginPage.LoginAsync(Username, Password)

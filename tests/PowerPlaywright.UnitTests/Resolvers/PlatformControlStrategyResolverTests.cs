@@ -21,7 +21,6 @@ public class PlatformControlStrategyResolverTests
 {
     private Faker faker;
 
-    private IPage page;
     private IEnvironmentInfoProvider environmentInfoProvider;
     private Version platformVersion;
 
@@ -34,7 +33,6 @@ public class PlatformControlStrategyResolverTests
     public void Setup()
     {
         this.faker = new Faker();
-        this.page = Substitute.For<IPage>();
         this.environmentInfoProvider = Substitute.For<IEnvironmentInfoProvider>();
         this.resolver = new PlatformControlStrategyResolver(this.environmentInfoProvider);
 
@@ -42,63 +40,47 @@ public class PlatformControlStrategyResolverTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PlatformControlStrategyResolver.IsReady"/> property returns false after the resolver is constructed.
+    /// Tests that the <see cref="PlatformControlStrategyResolver.IsReady"/> property returns true if the environment info provider is ready.
     /// </summary>
     [Test]
-    public void IsReady_InitializeAsyncNotCalled_ReturnsFalse()
+    public void IsReady_EnvironmentInfoProviderReady_ReturnsTrue()
     {
-        Assert.That(this.resolver.IsReady, Is.False);
-    }
-
-    /// <summary>
-    /// Tests that the <see cref="PlatformControlStrategyResolver.IsReady"/> property returns true after the resolver is initialised.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task IsReady_InitializeAsyncCalled_ReturnsTrue()
-    {
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         Assert.That(this.resolver.IsReady, Is.True);
     }
 
     /// <summary>
-    /// Tests that the <see cref="PlatformControlStrategyResolver.OnReady"/> event is triggered by the <see cref="PlatformControlStrategyResolver.InitialiseResolverAsync(IPage)"/> method when not already initialised.
+    /// Tests that the <see cref="PlatformControlStrategyResolver.IsReady"/> property returns false if the environment info provider is not ready.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InitialiseAsync_InitializeAsyncNotCalled_TriggersOnReadyEvent()
+    public void IsReady_EnvironmentInfoProviderNotReady_ReturnsFalse()
+    {
+        Assert.That(this.resolver.IsReady, Is.False);
+    }
+
+    /// <summary>
+    /// Tests that the <see cref="PlatformControlStrategyResolver.OnReady"/> event is triggered by the environment info provider becoming ready.
+    /// </summary>
+    [Test]
+    public void OnReady_EnvironmentInfoProviderOnReady_IsTriggered()
     {
         this.resolver.OnReady += (sender, args) => Assert.Pass();
 
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         Assert.Fail($"The {nameof(PlatformControlStrategyResolver.OnReady)} event was not trigged.");
     }
 
     /// <summary>
-    /// Tests that the <see cref="PlatformControlStrategyResolver.OnReady"/> event is not triggered by the <see cref="PlatformControlStrategyResolver.InitialiseResolverAsync(IPage)"/> method when already initialised.
+    /// Tests that the <see cref="PlatformControlStrategyResolver.OnReady"/> event is triggered with the resolver as the sender;
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InitialiseAsync_InitializeAsyncCalled_DoesNotTriggersOnReadyEvent()
-    {
-        await this.resolver.InitializeAsync(this.page);
-        this.resolver.OnReady += (sender, args) => Assert.Fail();
-
-        await this.resolver.InitializeAsync(this.page);
-    }
-
-    /// <summary>
-    /// Tests that the <see cref="PlatformControlStrategyResolver.OnReady"/> event is triggered by the <see cref="PlatformControlStrategyResolver.InitialiseResolverAsync(IPage)"/> method.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task OnReady_EventTriggered_SenderIsResolver()
+    public void OnReady_EventTriggered_SenderIsResolver()
     {
         this.resolver.OnReady += (sender, args) => Assert.That(sender, Is.EqualTo(this.resolver));
 
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
     }
 
     /// <summary>
@@ -150,11 +132,10 @@ public class PlatformControlStrategyResolverTests
     /// <summary>
     /// Tests that the <see cref="PlatformControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> method throws a <see cref="PowerPlaywrightException"/> when the control type does not have the <see cref="PlatformControlAttribute"/> attribute.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
-    public async Task Resolve_ControlTypeDoesNotHaveExternalControlAttribute_ThrowsPowerPlaywrightException()
+    public void Resolve_ControlTypeDoesNotHaveExternalControlAttribute_ThrowsPowerPlaywrightException()
     {
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         Assert.Throws<PowerPlaywrightException>(() => this.resolver.Resolve(typeof(ILoginControl), [typeof(ClientApi)]));
     }
@@ -169,10 +150,10 @@ public class PlatformControlStrategyResolverTests
     }
 
     /// <summary>
-    /// Tests that a <see cref="PowerPlaywrightException"/> is thrown if <see cref="PlatformControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> is called before the resolver is initialised via <see cref="PlatformControlStrategyResolver.InitialiseResolverAsync(IPage)"/>.
+    /// Tests that a <see cref="PowerPlaywrightException"/> is thrown if <see cref="PlatformControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> is called before the environment info provider is ready.
     /// </summary>
     [Test]
-    public void Resolve_InitialiseAsyncNotCalled_ThrowsPowerPlaywrightException()
+    public void Resolve_EnvironmentInfoProviderNotReady_ThrowsPowerPlaywrightException()
     {
         this.environmentInfoProvider.PlatformVersion.ReturnsNull();
 
@@ -182,14 +163,13 @@ public class PlatformControlStrategyResolverTests
     /// <summary>
     /// Tests that the <see cref="PlatformControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> method returns public, non-abstract, concrete types that implement the control type interface and have the <see cref="PlatformControlStrategyAttribute"/> attribute.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
-    public async Task Resolve_StrategyTypesContainsPublicNonAbstractConcreteTypeWithPlatformControlStrategyAttributeLessThanOrEqualToEnvironmentVersion_ReturnsType()
+    public void Resolve_StrategyTypesContainsPublicNonAbstractConcreteTypeWithPlatformControlStrategyAttributeLessThanOrEqualToEnvironmentVersion_ReturnsType()
     {
         var strategyVersion = this.faker.System.Version();
         var expectedStrategyType = this.GetPlatformControlStrategyTypeFor<IClientApi>(strategyVersion);
         this.platformVersion = strategyVersion;
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         var strategyType = this.resolver.Resolve(typeof(IClientApi), [expectedStrategyType]);
 
@@ -199,16 +179,15 @@ public class PlatformControlStrategyResolverTests
     /// <summary>
     /// Tests that the <see cref="PlatformControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> method returns the type with the highest version set in the <see cref="PlatformControlStrategyAttribute"/> attribute when multiple matching strategy types are found.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
-    public async Task Resolve_MultipleStrategyTypesContainsPublicNonAbstractConcreteTypeWithPlatformControlStrategyAttribute_ReturnsTypeWithHighestVersionLowerThanEnvironmentVersion()
+    public void Resolve_MultipleStrategyTypesContainsPublicNonAbstractConcreteTypeWithPlatformControlStrategyAttribute_ReturnsTypeWithHighestVersionLowerThanEnvironmentVersion()
     {
         var lowerStrategyVersion = this.faker.System.Version();
         var unexpectedStrategyType = this.GetPlatformControlStrategyTypeFor<IClientApi>(lowerStrategyVersion);
         var higherStrategyVersion = new Version(lowerStrategyVersion.Major, lowerStrategyVersion.Minor, lowerStrategyVersion.Build + 1, lowerStrategyVersion.Revision);
         var expectedStrategyType = this.GetPlatformControlStrategyTypeFor<IClientApi>(higherStrategyVersion);
         this.platformVersion = higherStrategyVersion;
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         var strategyType = this.resolver.Resolve(typeof(IClientApi), [unexpectedStrategyType, expectedStrategyType]);
 
@@ -218,11 +197,10 @@ public class PlatformControlStrategyResolverTests
     /// <summary>
     /// Tests that the <see cref="PlatformControlStrategyResolver.Resolve(Type, IEnumerable{Type})"/> method returns null when no public, non-abstract, concrete types that implement the control type interface and have the <see cref="PlatformControlStrategyAttribute"/> attribute are found.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
-    public async Task Resolve_StrategyTypesDoesNotContainConcreteTypeWithPlatformControlStrategyAttribute_ReturnsNull()
+    public void Resolve_StrategyTypesDoesNotContainConcreteTypeWithPlatformControlStrategyAttribute_ReturnsNull()
     {
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         var strategyType = this.resolver.Resolve(typeof(IClientApi), [typeof(LoginControl)]);
 
@@ -241,6 +219,7 @@ public class PlatformControlStrategyResolverTests
     private void MockValidDefaults()
     {
         this.platformVersion = new Version(9, 2, 0, 10020);
-        this.environmentInfoProvider.PlatformVersion.Returns(this.platformVersion);
+        this.environmentInfoProvider.IsReady.Returns(true);
+        this.environmentInfoProvider.PlatformVersion.Returns((i) => this.platformVersion);
     }
 }

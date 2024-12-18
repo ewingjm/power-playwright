@@ -12,7 +12,6 @@ public class AppControlStrategyResolverTests
 {
     private IEnvironmentInfoProvider environmentInfoProvider;
     private AppControlStrategyResolver resolver;
-    private IPage page;
 
     /// <summary>
     /// Sets up the resolver.
@@ -22,7 +21,6 @@ public class AppControlStrategyResolverTests
     {
         this.environmentInfoProvider = Substitute.For<IEnvironmentInfoProvider>();
         this.resolver = new PlatformControlStrategyResolver(this.environmentInfoProvider);
-        this.page = Substitute.For<IPage>();
 
         this.MockValidDefaults();
     }
@@ -37,54 +35,47 @@ public class AppControlStrategyResolverTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="AppControlStrategyResolver.IsReady"/> property returns true after the resolver is initialised.
+    /// Tests that the <see cref="PlatformControlStrategyResolver.IsReady"/> property returns true if the environment info provider is ready.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task IsReady_InitializeAsyncCalled_ReturnsTrue()
+    public void IsReady_EnvironmentInfoProviderReady_ReturnsTrue()
     {
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
         Assert.That(this.resolver.IsReady, Is.True);
     }
 
     /// <summary>
-    /// Tests that the <see cref="AppControlStrategyResolver.OnReady"/> event is triggered by the <see cref="AppControlStrategyResolver.InitialiseResolverAsync(IPage)"/> method when not already initialised.
+    /// Tests that the <see cref="PlatformControlStrategyResolver.IsReady"/> property returns false if the environment info provider is not ready.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InitialiseAsync_InitializeAsyncNotCalled_TriggersOnReadyEvent()
+    public void IsReady_EnvironmentInfoProviderNotReady_ReturnsFalse()
+    {
+        Assert.That(this.resolver.IsReady, Is.False);
+    }
+
+    /// <summary>
+    /// Tests that the <see cref="AppControlStrategyResolver.OnReady"/> event is triggered by the environment info provider becoming ready.
+    /// </summary>
+    [Test]
+    public void OnReady_EnvironmentInfoProviderOnReady_IsTriggered()
     {
         this.resolver.OnReady += (sender, args) => Assert.Pass();
 
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
 
-        Assert.Fail($"The {nameof(AppControlStrategyResolver.OnReady)} event was not trigged.");
+        Assert.Fail($"The {nameof(PcfControlStrategyResolver.OnReady)} event was not trigged.");
     }
 
     /// <summary>
-    /// Tests that the <see cref="AppControlStrategyResolver.OnReady"/> event is not triggered by the <see cref="AppControlStrategyResolver.InitialiseResolverAsync(IPage)"/> method when already initialised.
+    /// Tests that the <see cref="AppControlStrategyResolver.OnReady"/> event is triggered with the resolver as the sender.
     /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Test]
-    public async Task InitialiseAsync_InitializeAsyncCalled_DoesNotTriggersOnReadyEvent()
-    {
-        await this.resolver.InitializeAsync(this.page);
-        this.resolver.OnReady += (sender, args) => Assert.Fail();
-
-        await this.resolver.InitializeAsync(this.page);
-    }
-
-    /// <summary>
-    /// Tests that the <see cref="AppControlStrategyResolver.OnReady"/> event is triggered by the <see cref="AppControlStrategyResolver.InitialiseResolverAsync(IPage)"/> method.
-    /// </summary>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    [Test]
-    public async Task OnReady_EventTriggered_SenderIsResolver()
+    public void OnReady_EventTriggered_SenderIsResolver()
     {
         this.resolver.OnReady += (sender, args) => Assert.That(sender, Is.EqualTo(this.resolver));
 
-        await this.resolver.InitializeAsync(this.page);
+        this.environmentInfoProvider.OnReady += Raise.Event();
     }
 
     private void MockValidDefaults()
