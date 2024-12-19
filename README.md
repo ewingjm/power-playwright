@@ -1,11 +1,11 @@
 
 # Power Playwright
 
-Power Playwright makes test automation for Power Apps easier by providing a [page object model](https://playwright.dev/dotnet/docs/pom) built on top of [Playwright](https://playwright.dev/dotnet/). It has been designed with the unique challenges of Power Apps test automation in mind:
+Power Playwright makes test automation for Power Apps easier by providing a [page object model](https://playwright.dev/dotnet/docs/pom) built on top of [Playwright](https://playwright.dev/dotnet/).
 
-- Supports all environment regions
+- All regions supported
 - Resilient to platform updates
-- Extensible for custom pages and controls
+- Extensible for custom pages and controls **(coming soon)**
 
 ## Table of Contents
 
@@ -14,7 +14,6 @@ Power Playwright makes test automation for Power Apps easier by providing a [pag
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Usage](#usage)
-    - [Login](#login)
     - [Pages](#pages)
       - [Custom pages](#custom-pages)
     - [Controls](#controls)
@@ -36,72 +35,80 @@ dotnet add package PowerPlaywright
 
 ## Usage
 
-Instantiate a new `ModelDrivenApp` class by calling the `Launch` method and passing in the Playwright [BrowserContext](https://playwright.dev/dotnet/docs/api/class-browsercontext). If you are using the Playwright NUnit or MSTest base classes, you can use the `ContextTest` class to access an `IBrowserContext` instance.
+Create an instance of `IPowerPlaywright`. You can reuse a single instance across your test suite:
 
 ```csharp
-await using var app = await ModelDrivenApp.LaunchAsync(this.Context);
+var powerPlaywright = await PowerPlaywright.CreateAsync();
 ```
 
-### Login
-
-You can login to a specific environment and app (using the unique name) as a given user:
+You can use this to create instances of `IModelDrivenApp` by providing the Playwright `IBrowserContext` (refer to the [Playwright docs](https://playwright.dev/dotnet/docs/intro)) along with the environment url, app unique name, and credentials:
 
 ```csharp
-var homePage = await app.LoginAsync(Configuration.EnvironmentUrl, Configuration.AppName, Configuration.Username, Configuration.Password);
+var homePage = await powerPlaywright.LaunchAppAsync(this.Context, environmentUrl, appUniqueName, username, passsword)
 ```
 
-This will return a generic `IModelDrivenAppPage`. If you know the type of home page, you can pass the type as a generic type argument:
+This will return a generic `IModelDrivenAppPage` that provides access to functionality common across all app pages (e.g. the site map). If you know the type of home page then you can pass the type as an argument:
 
 ```csharp
-var listPage = await app.LoginAsync<IEntityListPage>(Configuration.EnvironmentUrl, Configuration.AppName, Configuration.Username, Configuration.Password);
+var listPage = await powerPlaywright.LaunchAppAsync<IEntityListPage>(this.Context, environmentUrl, appUniqueName, username, passsword)
 ```
 
 ### Pages
 
-Writing tests with Power Playwright involves interacting with page and control interfaces. Page interfaces model the different pages available within model-driven apps (documented [here](https://learn.microsoft.com/en-us/power-apps/maker/model-driven-apps/create-remove-pages#create-a-page)). These page interfaces provide you with the relevant controls.
+Writing tests with Power Playwright involves interacting with page and control interfaces. 
+
+Page interfaces model the different pages available within model-driven apps (documented [here](https://learn.microsoft.com/en-us/power-apps/maker/model-driven-apps/create-remove-pages#create-a-page)). These page interfaces provide you with the relevant controls. 
 
 At the time of writing, the supported pages are:
 
+- Dataverse form (`IEntityRecordPage`)
 - Dataverse table (`IEntityListPage`)
 - Dashboard (`IDashboardPage`)
 - Custom page (`ICustomPage`)
 - Web resource (`IWebResourcePage`)
 
+You should pass one of these types as an argument when opening pages from the site map.
+
 #### Custom pages
 
-TBA
+Work-in-progress 👷
 
 ### Controls
 
-Controls are accessible via properties on the pages. For example, an `IEntityListPage` page exposes a `Grid` property that provides access to the grid control found on these pages:
+Controls are accessible via properties on the pages. For example, an `IEntityListPage` page exposes a `Grid` control property that provides access to the grid control:
 
 ```csharp
 var recordPage = await listPage.Grid.OpenRecordAsync(0);
 ```
 
-All page interfaces also extend `IModelDrivenAppPage` which provides access to controls common on every page. For example, the site map:
+In addition, some controls are accessible by interacting with other controls. For example, an `IEntityRecordPage` page exposes a `Form` control property with a `GetControl` method:
 
 ```csharp
-var listPage = await homePage.SiteMap.OpenPageAsync<IEntityListPage>("Area", "Group", "Page");
+var readOnlyGrid = recordPage.Form.GetControl<IReadOnlyGrid>(pp_Record.Forms.Information.RelatedRecordsSubgrid);
 ```
+
 
 #### Control classes
 
-Controls are generally added to forms as control _classes_ rather than specific PCF controls. This means that the controls on your forms may be rendered as different PCF controls over time unless expliclty set.
+In most cases, PCF controls are added to forms as control _classes_ rather than specific controls. This means that the actual PCF control that gets rendered on the form can change over time.
 
-Power Playwright lets you retrieve form controls by providing an interface for either a control class or a specific control. These can be found in the `PowerPlaywright.Framework.Controls.Pcf.Classes` and `PowerPlaywright.Framework.Controls.Pcf` namespaces respectively.
+You can retrieve form controls by specifying either a control class _or_ a specific control. These can be found in the `PowerPlaywright.Framework.Controls.Pcf.Classes` and `PowerPlaywright.Framework.Controls.Pcf` namespaces respectively.
+
+This subgrid has been added without configuring a specific control:
 
 ```csharp
-// This subgrid has not had a control explicitly configured on the form.
-recordPage.Form.GetControl<IReadOnlyGrid>("subgrid_a");
+var subGrid = recordPage.Form.GetControl<PowerPlaywright.Framework.Controls.Pcf.Classes.IReadOnlyGrid>(pp_Record.Forms.Information.RelatedRecordsSubgrid);
+```
 
-// This subgrid configured as 'Microsoft.PowerApps.PowerAppsOneGrid' control.
-recordPage.Form.GetControl<IPowerAppsOneGridControl>("subgrid_b"); 
+This subgrid has been added with the PowerAppsOneGrid control explicitly configured:
+
+```csharp
+var subGrid = recordPage.Form.GetControl<PowerPlaywright.Framework.Controls.Pcf.IPowerAppsOneGridControl>(pp_Record.Forms.Information.RelatedRecordsSubgrid); 
 ```
 
 #### Custom controls
 
-TBA
+Work-in-progress 👷
 
 ## Contributing
 
