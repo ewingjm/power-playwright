@@ -10,6 +10,7 @@
 
     /// <summary>
     /// A 'control' that provides client API functionality.
+    /// TODO: Move to PowerPlaywright and use PlatformReference class for scripts.
     /// </summary>
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class ClientApi : Control, IClientApi
@@ -28,9 +29,6 @@
         }
 
         /// <inheritdoc/>
-        protected override ILocator Root => throw new NotSupportedException($"The {nameof(ClientApi)} control does not have a root.");
-
-        /// <inheritdoc/>
         public async Task<IEntityRecordPage> NavigateToRecordAsync(string entityName, Guid entityId)
         {
             await this.Page.EvaluateAsync(
@@ -47,6 +45,12 @@
                 new { entityName, entityId });
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            throw new NotSupportedException($"The {nameof(ClientApi)} control does not have a root.");
         }
     }
 }

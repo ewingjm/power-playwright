@@ -16,10 +16,8 @@
     [PcfControlStrategy(1, 0, 470)]
     public class SimpleLookupControl : PcfControl, ISimpleLookupControl
     {
-        private readonly string name;
         private readonly ILogger<PcfGridControl> logger;
 
-        private readonly ILocator root;
         private readonly ILocator flyoutRoot;
         private readonly ILocator flyoutResults;
         private readonly ILocator flyoutNoRecordsText;
@@ -38,21 +36,16 @@
         public SimpleLookupControl(IAppPage appPage, string name, IControl parent, ILogger<PcfGridControl> logger = null)
             : base(name, appPage, parent)
         {
-            this.name = name;
             this.logger = logger;
 
-            this.root = this.Container.Locator($"div[data-lp-id*='MscrmControls.Containers.FieldSectionItem|{this.name}']");
-            this.flyoutRoot = this.Page.Locator($"div[data-id='{this.name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']");
-            this.flyoutNoRecordsText = this.flyoutRoot.Locator($"span[data-id='{this.name}.fieldControl-LookupResultsDropdown_{this.name}_No_Records_Text']");
+            this.flyoutRoot = this.Page.Locator($"div[data-id='{this.Name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']");
+            this.flyoutNoRecordsText = this.flyoutRoot.Locator($"span[data-id='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_No_Records_Text']");
             this.flyoutResults = this.flyoutRoot.GetByRole(AriaRole.Treeitem);
-            this.selectedRecordListItem = this.Container.Locator($"ul[data-id*='{this.name}.fieldControl-LookupResultsDropdown_{this.name}_SelectedRecordList']").Locator("li").First;
-            this.selectedRecordText = this.selectedRecordListItem.Locator($"div[data-id*='{this.name}.fieldControl-LookupResultsDropdown_{this.name}_selected_tag_text']");
-            this.selectedRecordDeleteButton = this.selectedRecordListItem.Locator($"button[data-id*='{this.name}.fieldControl-LookupResultsDropdown_{this.name}_selected_tag_delete']");
+            this.selectedRecordListItem = this.Container.Locator($"ul[data-id*='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_SelectedRecordList']").Locator("li").First;
+            this.selectedRecordText = this.selectedRecordListItem.Locator($"div[data-id*='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_selected_tag_text']");
+            this.selectedRecordDeleteButton = this.selectedRecordListItem.Locator($"button[data-id*='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_selected_tag_delete']");
             this.input = this.Container.Locator("input");
         }
-
-        /// <inheritdoc/>
-        protected override ILocator Root => this.root;
 
         /// <inheritdoc/>
         public async Task<string> GetValueAsync()
@@ -86,10 +79,16 @@
 
             if (!await flyoutResult.IsVisibleAsync())
             {
-                throw new NotFoundException($"No records found in the {this.name} lookup with search: {value}.");
+                throw new NotFoundException($"No records found in the {this.Name} lookup with search: {value}.");
             }
 
             await flyoutResult.ClickAsync();
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator($"div[data-lp-id*='MscrmControls.FieldControls.SimpleLookupControl|{this.Name}.fieldControl|']");
         }
     }
 }

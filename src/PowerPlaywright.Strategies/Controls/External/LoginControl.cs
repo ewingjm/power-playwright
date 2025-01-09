@@ -17,7 +17,6 @@
         private readonly IPageFactory pageFactory;
         private readonly ILogger<LoginControl> logger;
 
-        private readonly ILocator root;
         private readonly ILocator usernameInput;
         private readonly ILocator nextButton;
         private readonly ILocator passwordInput;
@@ -35,15 +34,11 @@
             this.pageFactory = pageFactory ?? throw new System.ArgumentNullException(nameof(pageFactory));
             this.logger = logger;
 
-            this.root = this.Container.Locator("div[id='lightbox']");
             this.usernameInput = this.Container.Locator("input[type=email]");
             this.nextButton = this.Container.Locator("input[type=submit]");
             this.passwordInput = this.Container.Locator("input[type=password]");
             this.staySignedInButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Yes" });
         }
-
-        /// <inheritdoc/>
-        protected override ILocator Root => this.root;
 
         /// <inheritdoc/>
         public async Task<IModelDrivenAppPage> LoginAsync(string username, string password)
@@ -62,6 +57,12 @@
             await this.Page.WaitForURLAsync("**/main.aspx*");
 
             return (IModelDrivenAppPage)await this.pageFactory.CreateInstanceAsync(this.Page);
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator("div[id='lightbox']");
         }
     }
 }

@@ -16,9 +16,9 @@
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class MainFormControl : Control, IMainFormControl
     {
+        private const string RootLocator = "div[data-id='editFormRoot']";
         private readonly IControlFactory controlFactory;
 
-        private readonly ILocator root;
         private readonly ILocator tabList;
 
         /// <summary>
@@ -31,12 +31,8 @@
         {
             this.controlFactory = controlFactory ?? throw new ArgumentNullException(nameof(controlFactory));
 
-            this.root = this.Container.Locator("div[data-id='editFormRoot']");
             this.tabList = this.Container.GetByRole(AriaRole.Tablist);
         }
-
-        /// <inheritdoc/>
-        protected override ILocator Root => this.root;
 
         /// <inheritdoc/>
         public Task<string> GetActiveTabAsync()
@@ -56,6 +52,12 @@
             where TControl : IPcfControl
         {
             return this.controlFactory.CreateInstance<TControl>(this.AppPage, name, this);
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator(RootLocator);
         }
     }
 }

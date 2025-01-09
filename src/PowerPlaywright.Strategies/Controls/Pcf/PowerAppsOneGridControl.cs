@@ -17,11 +17,9 @@
     [PcfControlStrategy(1, 0, 208)]
     public class PowerAppsOneGridControl : PcfControl, IPowerAppsOneGridControl
     {
-        private readonly string name;
         private readonly IPageFactory pageFactory;
         private readonly ILogger<PcfGridControl> logger;
 
-        private readonly ILocator root;
         private readonly ILocator rowsContainer;
 
         /// <summary>
@@ -35,16 +33,11 @@
         public PowerAppsOneGridControl(IAppPage appPage, string name, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
             : base(name, appPage, parent)
         {
-            this.name = name;
             this.pageFactory = pageFactory;
             this.logger = logger;
 
-            this.root = this.Container.Locator($"div[data-lp-id*='Microsoft.PowerApps.PowerAppsOneGrid|{this.name}']");
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
         }
-
-        /// <inheritdoc/>
-        protected override ILocator Root => this.root;
 
         /// <inheritdoc/>
         public async Task<IEntityRecordPage> OpenRecordAsync(int index)
@@ -54,12 +47,18 @@
             var row = this.GetRow(index);
             if (!await row.IsVisibleAsync())
             {
-                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.name}");
+                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
             }
 
             await row.DblClickAsync();
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator($"div[data-lp-id*='Microsoft.PowerApps.PowerAppsOneGrid|{this.Name}']");
         }
 
         private ILocator GetRow(int index)

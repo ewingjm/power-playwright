@@ -35,14 +35,9 @@
         {
             get
             {
-                if (this.Root is null)
-                {
-                    return this.parent?.Container ?? this.Page.Locator("html");
-                }
-
                 if (this.container is null)
                 {
-                    this.container = this.Root;
+                    this.container = this.GetRoot(this.parent?.Container ?? this.Page.Locator("html"));
                 }
 
                 return this.container;
@@ -67,9 +62,10 @@
         protected IPage Page => this.AppPage.Page;
 
         /// <summary>
-        /// Gets the control root.
+        /// Gets the control root locator.
         /// </summary>
-        /// <returns>The root.</returns>
-        protected abstract ILocator Root { get; }
+        /// <param name="context">The locator context.</param>
+        /// <returns>The control root locator.</returns>
+        protected abstract ILocator GetRoot(ILocator context);
     }
 }

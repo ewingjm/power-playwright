@@ -14,13 +14,12 @@
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class SiteMapControl : Control, ISiteMapControl
     {
-        private const string RootSelector = "div[data-id='navbar-container']";
-        private const string AreaSwitcherSelector = "#areaSwitcherId";
-        private const string AreaSwitcherFlyoutSelector = "div[data-lp-id='sitemap-area-switcher-flyout']";
+        private const string RootLocator = "div[data-id='navbar-container']";
+        private const string AreaSwitcherLocator = "#areaSwitcherId";
+        private const string AreaSwitcherFlyoutLocator = "div[data-lp-id='sitemap-area-switcher-flyout']";
 
         private readonly IPageFactory pageFactory;
 
-        private readonly ILocator root;
         private readonly ILocator areaSwitcher;
         private readonly ILocator areaSwitcherFlyout;
 
@@ -34,13 +33,9 @@
         {
             this.pageFactory = pageFactory;
 
-            this.root = this.Container.Locator(RootSelector);
-            this.areaSwitcher = this.Container.Locator(AreaSwitcherSelector);
-            this.areaSwitcherFlyout = this.Page.Locator(AreaSwitcherFlyoutSelector);
+            this.areaSwitcher = this.Container.Locator(AreaSwitcherLocator);
+            this.areaSwitcherFlyout = this.Page.Locator(AreaSwitcherFlyoutLocator);
         }
-
-        /// <inheritdoc/>
-        protected override ILocator Root => this.root;
 
         /// <inheritdoc/>
         public async Task<TPage> OpenPageAsync<TPage>(string area, string group, string page)
@@ -63,6 +58,12 @@
             await this.Page.WaitForAppIdleAsync();
 
             return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator(RootLocator);
         }
 
         private async Task OpenAreaAsync(string area)
