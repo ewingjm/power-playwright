@@ -105,6 +105,16 @@ public class GlobalPackagesAssemblyProviderTests
 
         Directory.CreateDirectory(Path.GetDirectoryName(targetAssemblyPath)!);
         File.Copy(sourceAssemblyPath, targetAssemblyPath, true);
+
+        if (!File.Exists(targetAssemblyPath))
+        {
+            if (!File.Exists(sourceAssemblyPath))
+            {
+                throw new Exception($"File at {sourceAssemblyPath} does not exist.");
+            }
+
+            throw new Exception($"Failed to copy file from {sourceAssemblyPath} to {targetAssemblyPath}.");
+        }
     }
 
     private void MockValidDefaults()
