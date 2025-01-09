@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<savedqueries xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedquery>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>0</CanBeDeleted>
+    <isquickfindquery>0</isquickfindquery>
+    <isprivate>0</isprivate>
+    <isdefault>1</isdefault>
+    <savedqueryid>{0baa8ef6-67ba-4ebd-b639-983c02181c72}</savedqueryid>
+    <layoutxml>
+      <grid name="pp_records" jump="pp_singlelineoftexttext" select="1" icon="1" preview="1">
+        <row name="pp_record" id="pp_recordid">
+          <cell name="pp_singlelineoftexttext" width="300" />
+          <cell name="createdon" width="125" />
+        </row>
+      </grid>
+    </layoutxml>
+    <querytype>2</querytype>
+    <fetchxml>
+      <fetch version="1.0" mapping="logical">
+        <entity name="pp_record">
+          <attribute name="pp_recordid" />
+          <attribute name="pp_singlelineoftexttext" />
+          <attribute name="createdon" />
+          <order attribute="pp_singlelineoftexttext" descending="false" />
+          <filter type="and">
+            <condition attribute="statecode" operator="eq" value="0" />
+          </filter>
+        </entity>
+      </fetch>
+    </fetchxml>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <LocalizedNames>
+      <LocalizedName description="Record Associated View" languagecode="1033" />
+    </LocalizedNames>
+  </savedquery>
+</savedqueries>
