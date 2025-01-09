@@ -1,13 +1,10 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Pcf.Classes
 {
     using System.Threading.Tasks;
-    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
-    using PowerPlaywright.Framework.Controls.Pcf.Enums;
 
     /// <summary>
     /// Lookup control class.
     /// </summary>
-    [PcfControlClass("270BD3DB-D9AF-4782-9025-509E298DEC0A", DataType.LookupSimple)]
     public interface ILookup : IPcfControl
     {
         /// <summary>

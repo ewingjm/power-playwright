@@ -1,14 +1,11 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Pcf.Classes
 {
     using System.Threading.Tasks;
-    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
-    using PowerPlaywright.Framework.Controls.Pcf.Enums;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// Read-only grid control class.
     /// </summary>
-    [PcfControlClass("E7A81278-8635-4d9e-8D4D-59480B391C5B", DataType.DataSet, "Read-only grid")]
     public interface IReadOnlyGrid : IPcfControl
     {
         /// <summary>
