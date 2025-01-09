@@ -20,12 +20,12 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
       - name: Run unit tests
+        id: test
         run: dotnet test tests/PowerPlaywright.UnitTests/PowerPlaywright.UnitTests.csproj --logger html --no-build --no-restore --verbosity normal --results-directory TestResults
       - name: Upload dotnet test results
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-results
           path: TestResults
-        if: ${{ always() }}
-
+        if: ${{ steps.test.outcome != 'skipped' }}
     
