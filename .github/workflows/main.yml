@@ -29,5 +29,5 @@ jobs:
         with:
           name: unit-test-results
           path: TestResults
-        if: ${{ steps.test.outcome != 'skipped' }}
+        if: ${{ always() }}
     
