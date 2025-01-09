@@ -1,6 +1,5 @@
 ﻿namespace PowerPlaywright.UnitTests.Resolvers;
 
-using Microsoft.Playwright;
 using NSubstitute;
 using PowerPlaywright.Resolvers;
 

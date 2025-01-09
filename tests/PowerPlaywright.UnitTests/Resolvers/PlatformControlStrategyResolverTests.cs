@@ -1,7 +1,6 @@
 ﻿namespace PowerPlaywright.UnitTests.Resolvers;
 
 using Bogus;
-using Microsoft.Playwright;
 using NSubstitute;
 using NSubstitute.ReturnsExtensions;
 using PowerPlaywright.Framework;
