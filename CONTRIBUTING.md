@@ -156,7 +156,7 @@ To enable this control type to be used when a control for the class is requested
 
 Control redirector classes are used to redirect requests for an instance of a PCF control class type (e.g., `ILookup`) to a specific control type (e.g. `ISimpleLookupControl`) based on a combination of organisation, app, and user settings. The specific control type rendered for any given control class is subject to change as a result of Microsoft's platform updates, which means these classes are located in the _PowerPlaywright.Strategies_ project.
 
-Create a new interface under _src\PowerPlaywright.Strategies\Redirectors_ that inherits from the abstract `ControlRedirector<TSourceControl>` class, where `TSourceControl` is interface created for the PCF control class. Generate the constructor and method override required by the abstract class and implement the method body. 
+Create a new class under _src\PowerPlaywright.Strategies\Redirectors_ that inherits from the abstract `ControlRedirector<TSourceControl>` class, where `TSourceControl` is interface created for the PCF control class. Generate the constructor and method override required by the abstract class and implement the method body. 
 
 ```csharp
 /// <summary>
