@@ -2,7 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard20</TargetFramework>
-    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <IsPackable>true</IsPackable>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>

@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard20</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeProjectReferenceDlls</TargetsForTfmSpecificBuildOutput>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,8 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj" />
-    <ProjectReference Include="..\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj" />
+    <ProjectReference Include="..\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,4 +35,17 @@
       <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
+  
+  <Target Name="IncludeProjectReferenceDlls" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+    <ItemGroup>
+      <BuildOutputInPackage Include="@(ReferenceCopyLocalPaths->WithMetadataValue('ReferenceSourceTarget', 'ProjectReference')->WithMetadataValue('PrivateAssets', 'all'))"
+                            TargetPath="%(ReferenceCopyLocalPaths.DestinationSubDirectory)" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="IncludeReferenceAssemblies">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(TargetPath)" PackagePath="ref/$(TargetFramework)" />
+    </ItemGroup>
+  </Target>
 </Project>
