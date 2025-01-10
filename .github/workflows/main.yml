@@ -23,7 +23,7 @@ jobs:
         run: dotnet build -c Release --no-restore
       - name: Run unit tests
         id: test
-        run: dotnet test tests/PowerPlaywright.UnitTests/PowerPlaywright.UnitTests.csproj --logger html --no-build --results-directory TestResults
+        run: dotnet test tests/PowerPlaywright.UnitTests/PowerPlaywright.UnitTests.csproj -c Release --logger html --no-build --results-directory TestResults
       - name: Upload dotnet test results
         uses: actions/upload-artifact@v4
         with:
