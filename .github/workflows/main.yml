@@ -23,8 +23,8 @@ jobs:
         run: dotnet build -c Release --no-restore
       - name: Run unit tests
         id: test
-        run: dotnet test tests/PowerPlaywright.UnitTests/PowerPlaywright.UnitTests.csproj -c Release --logger html --no-build --results-directory TestResults
-      - name: Upload dotnet test results
+        run: dotnet test tests/PowerPlaywright.UnitTests/PowerPlaywright.UnitTests.csproj -c Release --logger console --logger html --no-build --results-directory TestResults
+      - name: Upload unit test results
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-results
@@ -42,5 +42,26 @@ jobs:
         with:
           name: integration-tests
           path: tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0
+  test:
+    runs-on: windows-latest
+    steps:
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Download integration tests
+        uses: actions/download-artifact@v4
+        with:
+          name: integration-tests
+      - name: Setup Playwright
+        run: integration-tests/playwright.ps1 install
+      - name: Run integration tests
+        run: dotnet test integration-tests/PowerPlaywright.IntegrationTests.dll --logger html --logger console --results-directory TestResults -- MSTest.Parallelize.Workers=4 Playwright.LaunchOptions.Headless=true
+      - name: Upload integration test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: TestResults
+        if: ${{ always() }}
 
     
