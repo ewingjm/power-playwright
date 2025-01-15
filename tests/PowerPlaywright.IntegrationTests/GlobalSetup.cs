@@ -33,7 +33,7 @@ public partial class GlobalSetup
 
         var packagePath = Directory.GetFiles(
             TestContext.CurrentContext.TestDirectory,
-            "PowerPlaywright.Strategies.*.nupkg").OrderDescending().First();
+            "PowerPlaywright.Strategies.*.nupkg").Where(f => !f.Contains(".symbols.")).OrderDescending().First();
 
         await OfflineFeedUtility.AddPackageToSource(
             new OfflineFeedAddContext(
