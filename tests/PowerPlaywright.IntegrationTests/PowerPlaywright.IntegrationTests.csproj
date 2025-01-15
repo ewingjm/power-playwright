@@ -41,18 +41,21 @@
   </ItemGroup>
 
   <ItemGroup>
-    <SourceNupkgFiles Include="..\..\src\PowerPlaywright.Strategies\bin\$(Configuration)\PowerPlaywright.Strategies.*.nupkg" />
     <TargetNupkgFiles Include="$(OutputPath)\PowerPlaywright.Strategies.*.nupkg" />
   </ItemGroup>
 
   <Target Name="CleanStrategies" BeforeTargets="Build">
-    <Delete Files="@(SourceNupkgFiles)" />
     <Delete Files="@(TargetNupkgFiles)" />
   </Target>
 
   <Target Name="PackStrategies" AfterTargets="Build">
-    <MSBuild Projects="..\..\src\PowerPlaywright.Strategies\PowerPlaywright.Strategies.csproj" Targets="Pack" Properties="Configuration=$(Configuration);" />
-    <Copy SourceFiles="@(SourceNupkgFiles)" DestinationFolder="$(OutputPath)" />
+    <MSBuild Projects="..\..\src\PowerPlaywright.Strategies\PowerPlaywright.Strategies.csproj" Targets="Pack" Properties="Configuration=$(Configuration);" RebaseOutputs="true" />
   </Target>
 
+  <Target Name="CopyStrategies" AfterTargets="PackStrategies">
+    <ItemGroup>
+      <SourceNupkgFiles Include="..\..\src\PowerPlaywright.Strategies\bin\$(Configuration)\PowerPlaywright.Strategies.*.nupkg" />
+    </ItemGroup>
+    <Copy SourceFiles="@(SourceNupkgFiles)" DestinationFolder="$(OutputPath)" />
+  </Target>
 </Project>
