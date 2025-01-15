@@ -42,6 +42,7 @@ jobs:
         with:
           name: integration-tests
           path: tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0
+          include-hidden-files: true
   test:
     runs-on: windows-latest
     needs: build
