@@ -44,7 +44,7 @@ jobs:
           path: tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0
           include-hidden-files: true
   test:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - name: Setup .NET
@@ -58,6 +58,7 @@ jobs:
           path: integration-tests
       - name: Setup Playwright
         run: integration-tests/playwright.ps1 install chromium --with-deps
+        shell: pwsh
       - name: Run integration tests
         run: dotnet test integration-tests/PowerPlaywright.IntegrationTests.dll --results-directory TestResults -- MSTest.Parallelize.Workers=4 Playwright.LaunchOptions.Headless=true
       - name: Upload integration test results
@@ -66,11 +67,3 @@ jobs:
           name: integration-test-results
           path: TestResults
         if: ${{ always() }}
-      - name: Upload traces
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-traces
-          path: playwright-traces
-        if: ${{ failure() }}
-
-    
