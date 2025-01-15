@@ -54,6 +54,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: integration-tests
+          path: integration-tests
       - name: Setup Playwright
         run: integration-tests/playwright.ps1 install
       - name: Run integration tests
