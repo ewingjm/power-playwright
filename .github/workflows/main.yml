@@ -69,6 +69,12 @@ jobs:
           KEYVAULT__TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID}}
           KEYVAULT__CLIENTID: ${{ secrets.TEST_KEYVAULT_CLIENTID}} 
           KEYVAULT__CLIENTSECRET: ${{ secrets.TEST_KEYVAULT_CLIENTSECRET}} 
+      - name: Upload integration test packages feed (temporary)
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-packages
+          path: integration-tests/packages
+        if: ${{ always() }}
       - name: Upload integration test results
         uses: actions/upload-artifact@v4
         with:
@@ -77,15 +83,15 @@ jobs:
         if: ${{ always() }}
       - name: Login to Azure
         id: azureLogin
-        if: ${{ steps.runTests.outcome == 'failure' }}
+        if: ${{ failure() && steps.runTests.outcome == 'failure' }}
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }} 
       - name: Upload traces to Blob Storage
-        if: ${{ steps.azureLogin.conclusion == 'success' }}
+        if: ${{ failure() && steps.azureLogin.conclusion == 'success' }}
         uses: azure/CLI@v2
         with:
           inlineScript: az storage blob upload-batch --account-name '${{ secrets.AZURE_STORAGE_ACCOUNTNAME }}' --auth-mode key -d 'playwright-traces' -s 'playwright-traces' --destination-path '${{ github.workflow }}/${{ github.run_id }}_${{ github.run_attempt }}' 
       - name: Logout of Azure
-        if: ${{ steps.azureLogin.conclusion == 'success' }}
+        if: ${{ failure() && steps.azureLogin.conclusion == 'success' }}
         run: az logout
