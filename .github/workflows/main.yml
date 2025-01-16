@@ -60,7 +60,7 @@ jobs:
         run: integration-tests/playwright.ps1 install chromium --with-deps
         shell: pwsh
       - name: Run integration tests
-        run: dotnet test integration-tests/PowerPlaywright.IntegrationTests.dll --results-directory TestResults -- NUnit.NumberOfTestWorkers=4 Playwright.LaunchOptions.Headless=true
+        run: dotnet test integration-tests/PowerPlaywright.IntegrationTests.dll --logger console --logger html --results-directory TestResults -- NUnit.NumberOfTestWorkers=2 Playwright.LaunchOptions.Headless=true
         env:
           KEYVAULT__URL: ${{ secrets.TEST_KEYVAULT_URL}}
           KEYVAULT__TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID}}
