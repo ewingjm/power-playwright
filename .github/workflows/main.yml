@@ -72,3 +72,16 @@ jobs:
           name: integration-test-results
           path: TestResults
         if: ${{ always() }}
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} 
+      - name: Upload traces to Blob Storage
+        if: ${{ failure() }}
+        uses: azure/CLI@v1
+        with:
+          inlineScript: az storage blob upload-batch --account-name '${{ secrets.AZURE_STORAGE_ACCOUNTNAME }}' --auth-mode key -d 'playwright-traces' -s 'playwright-traces' --destination-path '${{ github.workflow }}/${{ github.run_id }}_${{ github.run_attempt }}' 
+      - name: Logout of Azure
+        run: |
+              az logout
+        if: always()
