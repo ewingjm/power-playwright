@@ -54,7 +54,7 @@ public partial class GlobalSetup
         var version = PackageVersionRegex().Match(packagePath).Groups[1].Value;
         File.Copy(
             Path.Join(TestContext.CurrentContext.TestDirectory, AssemblyName),
-            Path.Join(localFeedPath, "PowerPlaywright.Strategies", version, "lib", "netstandard2.0", AssemblyName),
+            Path.Join(localFeedPath, "powerplaywright.strategies", version, "lib", "netstandard2.0", AssemblyName),
             true);
     }
 
