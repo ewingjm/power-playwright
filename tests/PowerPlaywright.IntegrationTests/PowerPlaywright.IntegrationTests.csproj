@@ -41,6 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <SourceNupkgFiles Include="..\..\src\PowerPlaywright.Strategies\bin\$(Configuration)\PowerPlaywright.Strategies.*.nupkg" />
     <TargetNupkgFiles Include="$(OutputPath)\PowerPlaywright.Strategies.*.nupkg" />
   </ItemGroup>
 
