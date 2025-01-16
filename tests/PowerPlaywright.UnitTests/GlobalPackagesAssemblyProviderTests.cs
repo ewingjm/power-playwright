@@ -97,7 +97,7 @@ public class GlobalPackagesAssemblyProviderTests
         var sourceAssemblyPath = Path.Join(TestContext.CurrentContext.TestDirectory, StrategiesAssemblyName);
         var targetAssemblyPath = Path.Join(
             this.globalPackagesFolder,
-            this.packageIdentity.Id,
+            this.packageIdentity.Id.ToLowerInvariant(),
             this.packageIdentity.Version.ToString(),
             "lib",
             "netstandard2.0",
