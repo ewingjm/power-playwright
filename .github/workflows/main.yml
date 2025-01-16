@@ -62,6 +62,7 @@ jobs:
           integration-tests/playwright.ps1 install chromium --with-deps
         shell: pwsh
       - name: Run integration tests
+        id: runTests
         run: dotnet test integration-tests/PowerPlaywright.IntegrationTests.dll --logger console --logger html --results-directory TestResults -- NUnit.NumberOfTestWorkers=2 Playwright.LaunchOptions.Headless=true
         env:
           KEYVAULT__URL: ${{ secrets.TEST_KEYVAULT_URL}}
@@ -75,15 +76,16 @@ jobs:
           path: TestResults
         if: ${{ always() }}
       - name: Login to Azure
+        id: azureLogin
+        if: ${{ steps.runTests.outcome == 'failure' }}
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }} 
       - name: Upload traces to Blob Storage
-        if: ${{ failure() }}
+        if: ${{ steps.azureLogin.conclusion == 'success' }}
         uses: azure/CLI@v2
         with:
           inlineScript: az storage blob upload-batch --account-name '${{ secrets.AZURE_STORAGE_ACCOUNTNAME }}' --auth-mode key -d 'playwright-traces' -s 'playwright-traces' --destination-path '${{ github.workflow }}/${{ github.run_id }}_${{ github.run_attempt }}' 
       - name: Logout of Azure
-        run: |
-              az logout
-        if: always()
+        if: ${{ steps.azureLogin.conclusion == 'success' }}
+        run: az logout
