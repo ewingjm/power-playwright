@@ -217,7 +217,7 @@
             var configuration = configurationRoot.Get<TestSuiteConfiguration>() ??
                 throw new PowerPlaywrightException("The integration test suite has missing configuration values.");
 
-            if (!configuration.Users.Any())
+            if (configuration.Users == null || !configuration.Users.Any())
             {
                 throw new Exception("You have not configured any users for the tests.");
             }

@@ -61,6 +61,11 @@ jobs:
         shell: pwsh
       - name: Run integration tests
         run: dotnet test integration-tests/PowerPlaywright.IntegrationTests.dll --results-directory TestResults -- MSTest.Parallelize.Workers=4 Playwright.LaunchOptions.Headless=true
+        env:
+          KEYVAULT__URL: ${{ secrets.TEST_KEYVAULT_URL}}
+          KEYVAULT__TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID}}
+          KEYVAULT__CLIENTID: ${{ secrets.TEST_KEYVAULT_CLIENTID}} 
+          KEYVAULT__CLIENTSECRET: ${{ secrets.TEST_KEYVAULT_CLIENTSECRET}} 
       - name: Upload integration test results
         uses: actions/upload-artifact@v4
         with:
