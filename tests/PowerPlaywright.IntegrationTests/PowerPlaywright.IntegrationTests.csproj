@@ -45,6 +45,12 @@
     <TargetNupkgFiles Include="$(OutputPath)\PowerPlaywright.Strategies.*.nupkg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update=".runsettings">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <Target Name="CleanStrategies" BeforeTargets="Build">
     <Delete Files="@(TargetNupkgFiles)" />
   </Target>
