@@ -20,6 +20,7 @@
         private readonly ILocator usernameInput;
         private readonly ILocator nextButton;
         private readonly ILocator passwordInput;
+        private readonly ILocator workOrSchoolAccount;
         private readonly ILocator staySignedInButton;
 
         /// <summary>
@@ -37,7 +38,8 @@
             this.usernameInput = this.Container.Locator("input[type=email]");
             this.nextButton = this.Container.Locator("input[type=submit]");
             this.passwordInput = this.Container.Locator("input[type=password]");
-            this.staySignedInButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Yes" });
+            this.workOrSchoolAccount = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Work or school account" });
+            this.staySignedInButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Yes" });
         }
 
         /// <inheritdoc/>
@@ -45,6 +47,12 @@
         {
             await this.usernameInput.FillAsync(username);
             await this.nextButton.ClickAsync();
+
+            if (await this.workOrSchoolAccount.IsVisibleAsync())
+            {
+                await this.workOrSchoolAccount.ClickAsync();
+            }
+
             await this.passwordInput.FillAsync(password);
             await this.nextButton.ClickAsync();
             await this.staySignedInButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
