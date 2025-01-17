@@ -36,7 +36,7 @@
                 UserInterfaceDemo.SiteMap.AreaA.GroupA.DisplayName,
                 UserInterfaceDemo.SiteMap.AreaA.GroupA.RelatedRecords);
 
-            await this.Expect(page.Page).ToHaveURLAsync(RelatedRecordListUrlRegex());
+            await this.Expect(page.Page).ToHaveURLAsync("Force a failure");
         }
 
         /// <summary>
