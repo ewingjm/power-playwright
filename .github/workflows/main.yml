@@ -37,11 +37,13 @@ jobs:
         with:
           name: nupkg
           path: nupkg
+      - name: Publish integration tests
+        run: dotnet publish tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj -c Release --no-restore
       - name: Upload integration tests
         uses: actions/upload-artifact@v4
         with:
           name: integration-tests
-          path: tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0
+          path: tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0/publish
           include-hidden-files: true
   test:
     runs-on: ubuntu-latest
