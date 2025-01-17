@@ -11,6 +11,7 @@
     <Description>A library of concrete control implementations for internal use by Power Playwright.</Description>
     <PackageTags>power-playwright</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,7 +30,11 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Playwright" Version="1.49.0" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="/" />
+  </ItemGroup>
+  
   <ItemGroup>
     <Content Include="platform-reference.json" />
   </ItemGroup>
