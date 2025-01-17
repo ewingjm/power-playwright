@@ -37,35 +37,29 @@ jobs:
         with:
           name: nupkg
           path: nupkg
-      - name: Publish integration tests
-        run: dotnet publish tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj -c Release --no-restore
-      - name: Upload integration tests
-        uses: actions/upload-artifact@v4
-        with:
-          name: integration-tests
-          path: tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0/publish
-          include-hidden-files: true
   test:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-      - name: Download integration tests
-        uses: actions/download-artifact@v4
-        with:
-          name: integration-tests
-          path: integration-tests
+      - name: Restore integration test dependencies
+        run: dotnet restore tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj
+      - name: Build integration test
+        run: dotnet build tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj -c Release --no-restore
       - name: Setup Playwright
         run: |
-          chmod +x integration-tests/.playwright/node/linux-x64/node
-          integration-tests/playwright.ps1 install chromium --with-deps
+          chmod +x tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0/.playwright/node/linux-x64/node
+          tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0/playwright.ps1 install chromium --with-deps
         shell: pwsh
       - name: Run integration tests
         id: runTests
-        run: dotnet test integration-tests/PowerPlaywright.IntegrationTests.dll --logger console --logger html --results-directory TestResults --collect:"XPlat code coverage" --settings integration-tests/.runsettings -- NUnit.NumberOfTestWorkers=${{ vars.TEST_NUMBEROFTESTWORKERS }} Playwright.LaunchOptions.Headless=true
+        run: dotnet test tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj --logger console --logger html --results-directory TestResults --collect:"XPlat code coverage" -- NUnit.NumberOfTestWorkers=${{ vars.TEST_NUMBEROFTESTWORKERS }} Playwright.LaunchOptions.Headless=true
         env:
           KEYVAULT__URL: ${{ secrets.TEST_KEYVAULT_URL}}
           KEYVAULT__TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID}}
@@ -88,7 +82,7 @@ jobs:
         if: ${{ failure() && steps.azureLogin.conclusion == 'success' }}
         uses: azure/CLI@v2
         with:
-          inlineScript: az storage blob upload-batch --account-name '${{ secrets.AZURE_STORAGE_ACCOUNTNAME }}' --auth-mode key -d 'playwright-traces' -s 'integration-tests/playwright-traces' --destination-path '${{ github.workflow }}/${{ github.run_number }}_${{ github.run_attempt }}' 
+          inlineScript: az storage blob upload-batch --account-name '${{ secrets.AZURE_STORAGE_ACCOUNTNAME }}' --auth-mode key -d 'playwright-traces' -s 'tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0/playwright-traces' --destination-path '${{ github.workflow }}/${{ github.run_number }}_${{ github.run_attempt }}' 
       - name: Logout of Azure
         if: ${{ failure() && steps.azureLogin.conclusion == 'success' }}
         run: az logout
