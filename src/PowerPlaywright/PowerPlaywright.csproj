@@ -12,6 +12,7 @@
     <Description>A testing framework Power Apps built using Playwright.</Description>
     <PackageTags>power-apps power-platform testing test playwright model-driven-apps dynamics365 easyrepro ui-automation ui-testing devops page-object-model pom</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>icon.png</PackageIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,6 +29,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="icon.png" Pack="true" PackagePath="/" />
   </ItemGroup>
 
   <ItemGroup>
