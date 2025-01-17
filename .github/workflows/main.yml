@@ -59,7 +59,7 @@ jobs:
         shell: pwsh
       - name: Run integration tests
         id: runTests
-        run: dotnet test tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj --logger console --logger html --results-directory TestResults --collect:"XPlat code coverage" -- NUnit.NumberOfTestWorkers=${{ vars.TEST_NUMBEROFTESTWORKERS }} Playwright.LaunchOptions.Headless=true
+        run: dotnet test tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj --logger console --logger html --results-directory TestResults --collect:"XPlat code coverage" --no-build -- NUnit.NumberOfTestWorkers=${{ vars.TEST_NUMBEROFTESTWORKERS }} Playwright.LaunchOptions.Headless=true
         env:
           KEYVAULT__URL: ${{ secrets.TEST_KEYVAULT_URL}}
           KEYVAULT__TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID}}
