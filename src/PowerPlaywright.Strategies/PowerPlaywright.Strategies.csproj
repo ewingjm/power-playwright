@@ -3,8 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard20</TargetFramework>
     <IsPackable>true</IsPackable>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EnablePackageValidation>true</EnablePackageValidation>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Max Ewing</Authors>
+    <Description>A library of concrete control implementations for internal use by Power Playwright.</Description>
+    <PackageTags>power-playwright</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>

@@ -3,9 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard20</TargetFramework>
     <IsPackable>true</IsPackable>
+    <EnablePackageValidation>true</EnablePackageValidation>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeProjectReferenceDlls</TargetsForTfmSpecificBuildOutput>
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Max Ewing</Authors>
+    <Description>A testing framework Power Apps built using Playwright.</Description>
+    <PackageTags>power-apps power-platform testing test playwright model-driven-apps dynamics365 easyrepro ui-automation ui-testing devops page-object-model pom</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
