@@ -59,7 +59,7 @@ public class ModelDrivenAppTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ModelDrivenApp"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="options"/> is null.
+    /// Tests that the <see cref="ModelDrivenApp"/> constructor throws an <see cref="ArgumentNullException"/> when the options is null.
     /// </summary>
     [Test]
     public void Constructor_NullOptions_ThrowsArgumentNullException()
@@ -68,7 +68,7 @@ public class ModelDrivenAppTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ModelDrivenApp"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="browserContext"/> is null.
+    /// Tests that the <see cref="ModelDrivenApp"/> constructor throws an <see cref="ArgumentNullException"/> when the browserContext is null.
     /// </summary>
     [Test]
     public void Constructor_NullBrowserContext_ThrowsArgumentNullException()
@@ -78,7 +78,7 @@ public class ModelDrivenAppTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ModelDrivenApp"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="pageFactory"/> is null.
+    /// Tests that the <see cref="ModelDrivenApp"/> constructor throws an <see cref="ArgumentNullException"/> when the pageFactory is null.
     /// </summary>
     [Test]
     public void Constructor_NullPageFactory_ThrowsArgumentNullException()
@@ -88,7 +88,7 @@ public class ModelDrivenAppTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ModelDrivenApp"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="logger"/> is null.
+    /// Tests that the <see cref="ModelDrivenApp"/> constructor throws an <see cref="ArgumentNullException"/> when the logger is null.
     /// </summary>
     [Test]
     public void Constructor_NullLogger_ThrowsArgumentNullException()
@@ -98,7 +98,7 @@ public class ModelDrivenAppTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ModelDrivenApp"/> constructor does not throw an <see cref="ArgumentNullException"/> when the <paramref name="initializables"/> is null.
+    /// Tests that the <see cref="ModelDrivenApp"/> constructor does not throw an <see cref="ArgumentNullException"/> when the initializables is null.
     /// </summary>
     [Test]
     public void Constructor_NullAppInitializables_DoesNotThrow()
@@ -174,7 +174,7 @@ public class ModelDrivenAppTests
     }
 
     /// <summary>
-    /// Tests that calling <see cref="ModelDrivenApp.LoginAsync"/> with the initial page being a <see cref="LoginPage"/> will return the page returned by calling <see cref="LoginPage.LoginAsync(string, string)"/>.
+    /// Tests that calling <see cref="ModelDrivenApp.LoginAsync"/> with the initial page being a <see cref="ILoginPage"/> will return the page returned by calling <see cref="ILoginPage.LoginAsync(string, string)"/>.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
@@ -191,7 +191,7 @@ public class ModelDrivenAppTests
     }
 
     /// <summary>
-    /// Tests that calling <see cref="ModelDrivenApp.LoginAsync"/> with the initial page being a <see cref="ModelDrivenAppPage"/> will return the initial page.
+    /// Tests that calling <see cref="ModelDrivenApp.LoginAsync"/> with the initial page being an <see cref="IModelDrivenAppPage"/> will return the initial page.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
@@ -251,7 +251,7 @@ public class ModelDrivenAppTests
 
         await this.modelDrivepApp.LoginAsync(Username, Password);
 
-        Assert.That(tasks.Where(t => t.IsCompleted).Count(), Is.EqualTo(tasks.Count()));
+        Assert.That(tasks.Where(t => t.IsCompleted).Count(), Is.EqualTo(tasks.Length));
     }
 
     /// <summary>

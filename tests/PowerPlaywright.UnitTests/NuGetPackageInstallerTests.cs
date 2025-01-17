@@ -35,7 +35,7 @@ public class NuGetPackageInstallerTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="NuGetPackageInstaller"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="findPackageByIdResource"/> parameter is null.
+    /// Tests that the <see cref="NuGetPackageInstaller"/> constructor throws an <see cref="ArgumentNullException"/> when the findPackageByIdResource parameter is null.
     /// </summary>
     [Test]
     public void Constructor_NullFindPackageByIdResource_ThrowsArgumentNullException()
@@ -44,7 +44,7 @@ public class NuGetPackageInstallerTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="NuGetPackageInstaller"/> constructor throws an <see cref="ArgumentException"/> when the <paramref name="source"/> parameter is null.
+    /// Tests that the <see cref="NuGetPackageInstaller"/> constructor throws an <see cref="ArgumentException"/> when the source parameter is null.
     /// </summary>
     [Test]
     public void Constructor_NullSource_ThrowsArgumentException()
@@ -53,7 +53,7 @@ public class NuGetPackageInstallerTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="NuGetPackageInstaller.GetAllVersionsAsync"/> method throws an <see cref="ArgumentException"/> when the <paramref name="packageId"/> parameter is <see langword="null"/>.
+    /// Tests that the <see cref="NuGetPackageInstaller.GetAllVersionsAsync"/> method throws an <see cref="ArgumentException"/> when the packageId parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void GetAllVersionsAsync_NullPackageId_ThrowsArgumentException()
@@ -82,7 +82,7 @@ public class NuGetPackageInstallerTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="NuGetPackageInstaller.InstallPackageAsync"/> method throws an <see cref="ArgumentNullException"/> when the <paramref name="packageIdentity"/> parameter is <see langword="null"/>.
+    /// Tests that the <see cref="NuGetPackageInstaller.InstallPackageAsync"/> method throws an <see cref="ArgumentNullException"/> when the packageIdentity parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void InstallPackageAsync_NullPackageIdentity_ThrowsArgumentNullException()

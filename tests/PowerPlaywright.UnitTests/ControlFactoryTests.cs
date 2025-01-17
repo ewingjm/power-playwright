@@ -55,7 +55,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="assemblyProviders"/> is null.
+    /// Tests that the <see cref="ControlFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the assemblyProviders is null.
     /// </summary>
     [Test]
     public void Constructor_AssemblyProvidersNull_ThrowsArgumentNullException()
@@ -64,7 +64,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="strategyResolvers"/> is null.
+    /// Tests that the <see cref="ControlFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the strategyResolvers is null.
     /// </summary>
     [Test]
     public void Constructor_StrategyResolversNull_ThrowsArgumentNullException()
@@ -73,7 +73,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="redirectionInfoProvider"/> is null.
+    /// Tests that the <see cref="ControlFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the redirectionInfoProvider is null.
     /// </summary>
     [Test]
     public void Constructor_RedirectionInfoProviderNull_ThrowsArgumentNullException()
@@ -82,7 +82,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="serviceProvider"/> is null.
+    /// Tests that the <see cref="ControlFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the serviceProvider is null.
     /// </summary>
     [Test]
     public void Constructor_ServiceProviderNull_ThrowsArgumentNullException()
@@ -91,7 +91,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance(Type, IAppPage, string)"/> method throws an <see cref="ArgumentNullException"/> when the <paramref name="appPage"/> is null.
+    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws an <see cref="ArgumentNullException"/> when the appPage is null.
     /// </summary>
     [Test]
     public void CreateInstance_NullAppPage_ThrowsArgumentNullException()
@@ -100,7 +100,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// /// Tests that the <see cref="ControlFactory.CreateInstance(Type, IAppPage, string)"/> method throws a <see cref="PowerPlaywrightException"/> when the <paramref name="strategyResolvers"/> have not resolved the control type from the strategy assemblies.
+    /// /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the strategyResolvers have not resolved the control type from the strategy assemblies.
     /// </summary>
     [Test]
     public void CreateInstance_ResolverHasNotResolvedControlTypeFromStrategyAssemblies_ThrowsPowerPlaywrightException()
@@ -114,7 +114,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance(Type, IAppPage, string)"/> method creates an instance of the resolved control type when the <paramref name="strategyResolvers"/> have resolved the control type from the strategy assemblies.
+    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method creates an instance of the resolved control type when the strategyResolvers have resolved the control type from the strategy assemblies.
     /// </summary>
     [Test]
     public void CreateInstance_ResolverHasResolvedControlTypeFromStrategyAssemblies_CreatesInstanceForResolvedType()
@@ -131,7 +131,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance(Type, IAppPage, string)"/> method creates an instance of the redirected control type when the <paramref name="strategyResolvers"/> have resolved the control type from the strategy assemblies and a control redirection is found for the control type in the strategy assemblies.
+    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method creates an instance of the redirected control type when the strategyResolvers have resolved the control type from the strategy assemblies and a control redirection is found for the control type in the strategy assemblies.
     /// </summary>
     [Test]
     public void CreateInstance_RedirectorFoundForControlTypeInStrategyAssemblies_CreatesInstanceForRedirectedType()
@@ -142,7 +142,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance(Type, IAppPage, string)"/> method throws a <see cref="PowerPlaywrightException"/> when multiple redirectors are found for the control type in the strategy assemblies.
+    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when multiple redirectors are found for the control type in the strategy assemblies.
     /// </summary>
     [Test]
     public void CreateInstance_MultipleRedirectorsFoundForControlTypeInStrategyAssemblies_ThrowsPowerPlaywrightException()
@@ -151,7 +151,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance(Type, IAppPage, string)"/> method throws a <see cref="PowerPlaywrightException"/> when the <paramref name="strategyResolvers"/> are not ready.
+    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the strategyResolvers are not ready.
     /// </summary>
     [Test]
     public void CreateInstance_ResolverNotReady_DoesNotResolve()
@@ -163,7 +163,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance(Type, IAppPage, string)"/> method throws a <see cref="PowerPlaywrightException"/> when the <paramref name="strategyResolvers"/> are not ready.
+    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the strategyResolvers are not ready.
     /// </summary>
     [Test]
     public void CreateInstance_ResolverReadyPostStrategyInitialisation_CreatesInstanceForResolvedType()
@@ -184,7 +184,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance(Type, IAppPage, string)"/> method throws a <see cref="PowerPlaywrightException"/> when the control type is not found in the framework assembly.
+    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the control type is not found in the framework assembly.
     /// </summary>
     [Test]
     public void CreateInstance_ControlTypeNotFoundInFrameworkAssemblys_ThrowsPowerPlaywrightException()
@@ -193,7 +193,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance(Type, IAppPage, string)"/> method passes the provided <paramref name="name"/> as a constructor argument to the resolved control type.
+    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method passes the provided name as a constructor argument to the resolved control type.
     /// </summary>
     [Test]
     public void CreateInstance_NameProvided_PassesNameAsConstructorArgument()
@@ -206,7 +206,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance(Type, IAppPage, string, IControl?)"/> method passes the provided <paramref name="parent"/> as a constructor argument to the resolved control type.
+    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method passes the provided parent as a constructor argument to the resolved control type.
     /// </summary>
     [Test]
     public void CreateInstance_ParentProvided_PassesParentAsConstructorArgument()

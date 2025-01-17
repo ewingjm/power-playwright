@@ -43,7 +43,7 @@ public class GlobalPackagesAssemblyProviderTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="packageIdentity"/> is null.
+    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the packageIdentity is null.
     /// </summary>
     [Test]
     public void Constructor_NullPackageIdentity_ThrowsArgumentNullException()
@@ -53,7 +53,7 @@ public class GlobalPackagesAssemblyProviderTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="nugetSettings"/> is null.
+    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the nugetSettings is null.
     /// </summary>
     [Test]
     public void Constructor_NullNuGetSettings_ThrowsArgumentNullException()
@@ -63,7 +63,7 @@ public class GlobalPackagesAssemblyProviderTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="logger"/> is null.
+    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the logger is null.
     /// </summary>
     [Test]
     public void Constructor_NullLogger_ThrowsArgumentNullException()

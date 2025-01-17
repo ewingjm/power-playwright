@@ -58,7 +58,7 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
     /// <summary>
     /// Tests that the control properties return the expected control instances from the control factory.
     /// </summary>
-    /// <typeparam name="TControlType">The type of control.</param>
+    /// <typeparam name="TControlType">The type of control.</typeparam>
     /// <param name="propertyName">The property.</param>
     /// <param name="controlName">The control name (optional).</param>
     [Test]

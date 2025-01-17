@@ -54,7 +54,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="packageIdentity"/> parameter is <see langword="null"/>.
+    /// Tests that the <see cref="PowerPlaywright"/> constructor throws an <see cref="ArgumentNullException"/> when the packageIdentity parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void Constructor_NullPackageIdentity_ThrowsArgumentNullException()
@@ -63,7 +63,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentNullException"/> when the <paramref name="environmentUrl"/> parameter is <see langword="null"/>.
+    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentNullException"/> when the environmentUrl parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void LaunchAppAsync_NullEnvironmentUrl_ThrowsArgumentNullException()
@@ -73,7 +73,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the <paramref name="uniqueName"/> parameter is <see langword="null"/>.
+    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the uniqueName parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void LaunchAppAsync_NullUniqueName_ThrowsArgumentException()
@@ -83,7 +83,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the <paramref name="username"/> parameter is <see langword="null"/>.
+    /// /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the username parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void LaunchAppAsync_NullUsername_ThrowsArgumentException()
@@ -93,7 +93,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the <paramref name="password"/> parameter is <see langword="null"/>.
+    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the password parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void LaunchAppAsync_NullPassword_ThrowsArgumentException()
@@ -103,7 +103,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync{TModelDrivenAppPage}(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentNullException"/> when the <paramref name="environmentUrl"/> parameter is <see langword="null"/>.
+    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync{TModelDrivenAppPage}(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentNullException"/> when the environmentUrl parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void LaunchAppAsyncTModelDrivenAppPage_NullEnvironmentUrl_ThrowsArgumentNullException()
@@ -113,7 +113,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync{TModelDrivenAppPage}(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the <paramref name="uniqueName"/> parameter is <see langword="null"/>.
+    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync{TModelDrivenAppPage}(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the uniqueName parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void LaunchAppAsyncTModelDrivenAppPage_NullUniqueName_ThrowsArgumentException()
@@ -123,7 +123,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync{TModelDrivenAppPage}(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the <paramref name="username"/> parameter is <see langword="null"/>.
+    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync{TModelDrivenAppPage}(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the username parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void LaunchAppAsyncTModelDrivenAppPage_NullUsername_ThrowsArgumentException()
@@ -133,7 +133,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync{TModelDrivenAppPage}(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the <paramref name="password"/> parameter is <see langword="null"/>.
+    /// Tests that the <see cref="PowerPlaywright.LaunchAppAsync{TModelDrivenAppPage}(IBrowserContext, Uri, string, string, string)"/> method throws an <see cref="ArgumentException"/> when the password parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void LaunchAppAsyncTModelDrivenAppPage_NullPassword_ThrowsArgumentException()
@@ -143,7 +143,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(IBrowserContext, string)"/> method throws an <see cref="ArgumentNullException"/> when the <paramref name="packageInstaller"/> parameter is <see langword="null"/>.
+    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(INuGetPackageInstaller)"/> method throws an <see cref="ArgumentNullException"/> when the packageInstaller parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void CreateInternalAsync_NullPackageInstaller_ThrowsArgumentNullException()
@@ -153,7 +153,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(IBrowserContext, string)"/> method returns a non-null <see cref="IPowerPlaywright"/> instance.
+    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(INuGetPackageInstaller)"/> method returns a non-null <see cref="IPowerPlaywright"/> instance.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
@@ -165,7 +165,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(IBrowserContext, INuGetPackageInstaller)"/> method selects and installs the highest package version with the same major version as the current PowerPlaywright major version when a package with a higher major version is also available.
+    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(INuGetPackageInstaller)"/> method selects and installs the highest package version with the same major version as the current PowerPlaywright major version when a package with a higher major version is also available.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]

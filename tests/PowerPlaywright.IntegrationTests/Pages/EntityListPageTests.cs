@@ -31,7 +31,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEntityListPage.SiteMap"/> always exists on the page.
+        /// Tests that <see cref="IModelDrivenAppPage.SiteMap"/> always exists on the page.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -41,7 +41,7 @@
         }
 
         /// <summary>
-        /// Tests that the <see cref="IEntityListPage.Page"/> property is always not null.
+        /// Tests that the <see cref="IAppPage.Page"/> property is always not null.
         /// </summary>
         [Test]
         public void Page_Always_NotNull()

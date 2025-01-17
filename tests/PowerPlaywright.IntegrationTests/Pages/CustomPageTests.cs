@@ -26,7 +26,7 @@ namespace PowerPlaywright.IntegrationTests.Pages
         }
 
         /// <summary>
-        /// Tests that <see cref="ICustomPage.SiteMap"/> always exists on the page.
+        /// Tests that <see cref="ModelDrivenAppPage.SiteMap"/> always exists on the page.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -36,7 +36,7 @@ namespace PowerPlaywright.IntegrationTests.Pages
         }
 
         /// <summary>
-        /// Tests that the <see cref="ICustomPage.Page"/> property is always not null.
+        /// Tests that the <see cref="AppPage.Page"/> property is always not null.
         /// </summary>
         [Test]
         public void Page_Always_NotNull()
