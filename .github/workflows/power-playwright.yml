@@ -3,18 +3,28 @@ name: Power Playwright
 on:
   push:
     branches: [ main ]
+    paths-ignore:
+      - 'LICENSE'
+      - '**/*.editorconfig'
+      - '**/*.gitignore'
+      - '**/*.md'
   pull_request: 
     branches: [ main ]
+    paths-ignore: 
+      - 'LICENSE'
+      - '**/*.editorconfig'
+      - '**/*.gitignore'
+      - '**/*.md'
   workflow_dispatch: 
     inputs:
-      skipTestJob:
+      runTestJob:
+        default: true
+        type: boolean
+        description: Run test job
+      runDeployJob:
         default: false
         type: boolean
-        description: Skip test job
-      publishPreRelease:
-        default: false
-        type: boolean
-        description: Publish pre-release package
+        description: Run deploy job
 
 concurrency: 
   group: test
@@ -53,7 +63,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ success() && (github.event_name != 'workflow_dispatch' || !inputs.skipTestJob) }}
+    if: ${{ success() && (github.event_name != 'workflow_dispatch' || inputs.runTestJob) }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -102,7 +112,7 @@ jobs:
         run: az logout
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ success() && (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.publishPreRelease) }}
+    if: ${{ success() && (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.runDeployJob) }}
     needs: [ build, test ]
     steps:
       - name: Download NuGet package
