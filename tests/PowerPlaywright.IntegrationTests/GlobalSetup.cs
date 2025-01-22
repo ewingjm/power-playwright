@@ -33,7 +33,7 @@ public partial class GlobalSetup
 
         var packagePath = Directory.GetFiles(
             TestContext.CurrentContext.TestDirectory,
-            "PowerPlaywright.Strategies.*.nupkg").OrderDescending().First();
+            "PowerPlaywright.Strategies.*.nupkg").Where(f => !f.Contains(".symbols.")).OrderDescending().First();
 
         await OfflineFeedUtility.AddPackageToSource(
             new OfflineFeedAddContext(
@@ -54,7 +54,7 @@ public partial class GlobalSetup
         var version = PackageVersionRegex().Match(packagePath).Groups[1].Value;
         File.Copy(
             Path.Join(TestContext.CurrentContext.TestDirectory, AssemblyName),
-            Path.Join(localFeedPath, "powerplaywright.strategies", version, "lib", "netstandard2.0", AssemblyName),
+            Path.Join(localFeedPath, "powerplaywright.strategies", version.ToLowerInvariant(), "lib", "netstandard2.0", AssemblyName),
             true);
     }
 

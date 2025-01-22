@@ -43,7 +43,7 @@ public class GlobalPackagesAssemblyProviderTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="packageIdentity"/> is null.
+    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the packageIdentity is null.
     /// </summary>
     [Test]
     public void Constructor_NullPackageIdentity_ThrowsArgumentNullException()
@@ -53,7 +53,7 @@ public class GlobalPackagesAssemblyProviderTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="nugetSettings"/> is null.
+    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the nugetSettings is null.
     /// </summary>
     [Test]
     public void Constructor_NullNuGetSettings_ThrowsArgumentNullException()
@@ -63,7 +63,7 @@ public class GlobalPackagesAssemblyProviderTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="logger"/> is null.
+    /// Tests that the <see cref="GlobalPackagesAssemblyProvider"/> constructor throws an <see cref="ArgumentNullException"/> when the logger is null.
     /// </summary>
     [Test]
     public void Constructor_NullLogger_ThrowsArgumentNullException()
@@ -97,7 +97,7 @@ public class GlobalPackagesAssemblyProviderTests
         var sourceAssemblyPath = Path.Join(TestContext.CurrentContext.TestDirectory, StrategiesAssemblyName);
         var targetAssemblyPath = Path.Join(
             this.globalPackagesFolder,
-            this.packageIdentity.Id,
+            this.packageIdentity.Id.ToLowerInvariant(),
             this.packageIdentity.Version.ToString(),
             "lib",
             "netstandard2.0",
@@ -105,6 +105,16 @@ public class GlobalPackagesAssemblyProviderTests
 
         Directory.CreateDirectory(Path.GetDirectoryName(targetAssemblyPath)!);
         File.Copy(sourceAssemblyPath, targetAssemblyPath, true);
+
+        if (!File.Exists(targetAssemblyPath))
+        {
+            if (!File.Exists(sourceAssemblyPath))
+            {
+                throw new Exception($"File at {sourceAssemblyPath} does not exist.");
+            }
+
+            throw new Exception($"Failed to copy file from {sourceAssemblyPath} to {targetAssemblyPath}.");
+        }
     }
 
     private void MockValidDefaults()

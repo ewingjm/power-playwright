@@ -44,7 +44,7 @@ public class PcfControlStrategyResolverTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PcfControlStrategyResolver.IsReady"/> property returns true if the environment info provider is ready.
+    /// Tests that the <see cref="AppControlStrategyResolver.IsReady"/> property returns true if the environment info provider is ready.
     /// </summary>
     [Test]
     public void IsReady_EnvironmentInfoProviderReady_ReturnsTrue()
@@ -55,7 +55,7 @@ public class PcfControlStrategyResolverTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PcfControlStrategyResolver.IsReady"/> property returns false if the environment info provider is not ready.
+    /// Tests that the <see cref="AppControlStrategyResolver.IsReady"/> property returns false if the environment info provider is not ready.
     /// </summary>
     [Test]
     public void IsReady_EnvironmentInfoProviderNotReady_ReturnsFalse()
@@ -64,7 +64,7 @@ public class PcfControlStrategyResolverTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PcfControlStrategyResolver.OnReady"/> event is triggered by the environment info provider becoming ready.
+    /// Tests that the <see cref="AppControlStrategyResolver.OnReady"/> event is triggered by the environment info provider becoming ready.
     /// </summary>
     [Test]
     public void OnReady_EnvironmentInfoProviderOnReady_IsTriggered()
@@ -77,7 +77,7 @@ public class PcfControlStrategyResolverTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PcfControlStrategyResolver.OnReady"/> event is triggered with the resolver as the sender;
+    /// Tests that the <see cref="AppControlStrategyResolver.OnReady"/> event is triggered with the resolver as the sender.
     /// </summary>
     [Test]
     public void OnReady_EventTriggered_SenderIsResolver()

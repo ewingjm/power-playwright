@@ -54,7 +54,7 @@
         }
 
         /// <summary>
-        /// Gets the test cases for <see cref="Redirect_SemiAnnualChannelWithModernizationOptOutFalse_ReturnsPcfGridControl(ReleaseChannel, ReleaseChannel, ReleaseChannelOverride, bool)"/>.
+        /// Gets the test cases for <see cref="Redirect_RedirectionInfoSet_ReturnsCorrectControl(ReleaseChannel, ReleaseChannel, ReleaseChannelOverride, bool, bool, bool?)"/>.
         /// </summary>
         /// <returns>The test case data.</returns>
         private static IEnumerable<TestCaseData> GetRedirectionTestCases()

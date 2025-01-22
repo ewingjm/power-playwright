@@ -2,6 +2,7 @@ namespace PowerPlaywright.UnitTests.Pages;
 
 using Microsoft.Playwright;
 using NSubstitute;
+using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Controls.Platform;
 using PowerPlaywright.Framework.Pages;
 using PowerPlaywright.Pages;
@@ -55,7 +56,7 @@ public class AppPageTests : AppPageTests<IAppPage>
     }
 
     /// <summary>
-    /// Tests that the <see cref="AppPage.GetControl{TControl}"/> method always calls <see cref="IControlFactory.CreateInstance{TControl}(IAppPage, string)"/> if the control has not been previously created.
+    /// Tests that the <see cref="AppPage.GetControl{TControl}"/> method always calls <see cref="IControlFactory.CreateInstance{TControl}(IAppPage, string, Framework.Controls.IControl)"/> if the control has not been previously created.
     /// </summary>
     [Test]
     public void GetControl_GetControlNotPreviouslyCalledWithSameTypeAndName_ReturnsControlFromControlFactory()

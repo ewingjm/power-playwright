@@ -10,6 +10,7 @@
     using Microsoft.Xrm.Sdk;
     using NuGet.Protocol;
     using NuGet.Protocol.Core.Types;
+    using NUnit.Framework.Interfaces;
     using PowerPlaywright.Api;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Pages;
@@ -27,6 +28,7 @@
 
         private static IEnumerator<UserConfiguration> userEnumerator;
 
+        private bool isTracing;
         private UserConfiguration? user;
         private IPowerPlaywright powerPlaywright;
 
@@ -59,11 +61,11 @@
         protected IPowerPlaywright PowerPlaywright => this.powerPlaywright;
 
         /// <summary>
-        /// Sets up the local feed and model-driven app.
+        /// Sets up the Power Playwright instance.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [SetUp]
-        public async Task SetUpAsync()
+        public async Task SetUpPowerPlaywrightAsync()
         {
             var packageSource = Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "packages");
             var findPackageByIdResource = await Repository.Factory
@@ -72,6 +74,51 @@
 
             this.powerPlaywright = await Api.PowerPlaywright.CreateInternalAsync(
                 new NuGetPackageInstaller(findPackageByIdResource, packageSource));
+        }
+
+        /// <summary>
+        /// Sets up tracing.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        [SetUp]
+        public async Task SetupTracingAsync()
+        {
+            await this.Context.Tracing.StartAsync(new()
+            {
+                Title = $"{TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.Name}",
+                Screenshots = true,
+                Snapshots = true,
+                Sources = true,
+            });
+
+            this.isTracing = true;
+        }
+
+        /// <summary>
+        /// Tears down tracing for the test.
+        /// </summary>
+        /// <remarks>
+        /// Stops the tracing and saves the trace to a file if the test failed.
+        /// </remarks>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        [TearDown]
+        public async Task TearDownTracingAsync()
+        {
+            if (!this.isTracing)
+            {
+                return;
+            }
+
+            var isFailed = TestContext.CurrentContext.Result.Outcome == ResultState.Error ||
+                TestContext.CurrentContext.Result.Outcome == ResultState.Failure;
+
+            await this.Context.Tracing.StopAsync(new()
+            {
+                Path = isFailed ? Path.Combine(
+                    TestContext.CurrentContext.WorkDirectory,
+                    "playwright-traces",
+                    $"{TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.Name}.zip") : null,
+            });
         }
 
         /// <summary>
@@ -170,7 +217,7 @@
             var configuration = configurationRoot.Get<TestSuiteConfiguration>() ??
                 throw new PowerPlaywrightException("The integration test suite has missing configuration values.");
 
-            if (!configuration.Users.Any())
+            if (configuration.Users == null || !configuration.Users.Any())
             {
                 throw new Exception("You have not configured any users for the tests.");
             }

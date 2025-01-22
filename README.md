@@ -97,13 +97,13 @@ You can retrieve form controls by specifying either a control class _or_ a speci
 This subgrid has been added without configuring a specific control:
 
 ```csharp
-var subGrid = recordPage.Form.GetControl<PowerPlaywright.Framework.Controls.Pcf.Classes.IReadOnlyGrid>(pp_Record.Forms.Information.RelatedRecordsSubgrid);
+var subGrid = recordPage.Form.GetControl<IReadOnlyGrid>(pp_Record.Forms.Information.RelatedRecordsSubgrid);
 ```
 
 This subgrid has been added with the PowerAppsOneGrid control explicitly configured:
 
 ```csharp
-var subGrid = recordPage.Form.GetControl<PowerPlaywright.Framework.Controls.Pcf.IPowerAppsOneGridControl>(pp_Record.Forms.Information.RelatedRecordsSubgrid); 
+var subGrid = recordPage.Form.GetControl<IPowerAppsOneGridControl>(pp_Record.Forms.Information.RelatedRecordsSubgrid); 
 ```
 
 #### Custom controls

@@ -34,7 +34,7 @@ public class AppControlStrategyResolverTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PlatformControlStrategyResolver.IsReady"/> property returns true if the environment info provider is ready.
+    /// Tests that the <see cref="AppControlStrategyResolver.IsReady"/> property returns true if the environment info provider is ready.
     /// </summary>
     [Test]
     public void IsReady_EnvironmentInfoProviderReady_ReturnsTrue()
@@ -45,7 +45,7 @@ public class AppControlStrategyResolverTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PlatformControlStrategyResolver.IsReady"/> property returns false if the environment info provider is not ready.
+    /// Tests that the <see cref="AppControlStrategyResolver.IsReady"/> property returns false if the environment info provider is not ready.
     /// </summary>
     [Test]
     public void IsReady_EnvironmentInfoProviderNotReady_ReturnsFalse()

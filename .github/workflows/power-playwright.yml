@@ -1,0 +1,128 @@
+name: Power Playwright
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'LICENSE'
+      - '**/*.editorconfig'
+      - '**/*.gitignore'
+      - '**/*.md'
+  pull_request: 
+    branches: [ main ]
+    paths-ignore: 
+      - 'LICENSE'
+      - '**/*.editorconfig'
+      - '**/*.gitignore'
+      - '**/*.md'
+  workflow_dispatch: 
+    inputs:
+      runTestJob:
+        default: true
+        type: boolean
+        description: Run test job
+      runDeployJob:
+        default: false
+        type: boolean
+        description: Run deploy job
+
+concurrency: 
+  group: test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build -c Release --no-restore
+      - name: Run unit tests
+        id: test
+        run: dotnet test tests/PowerPlaywright.UnitTests/PowerPlaywright.UnitTests.csproj -c Release --logger console --logger html --no-build --results-directory TestResults --collect:"XPlat code coverage"
+      - name: Upload unit test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: TestResults
+        if: ${{ always() }}
+      - name: Pack
+        run: dotnet pack --no-restore --output nupkg
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: nupkg
+          path: nupkg
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ success() && (github.event_name != 'workflow_dispatch' || inputs.runTestJob) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore integration test dependencies
+        run: dotnet restore tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj
+      - name: Build integration test
+        run: dotnet build tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj -c Release --no-restore
+      - name: Setup Playwright
+        run: |
+          chmod +x tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0/.playwright/node/linux-x64/node
+          tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0/playwright.ps1 install chromium --with-deps
+        shell: pwsh
+      - name: Run integration tests
+        id: runTests
+        run: dotnet test tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj -c Release --logger console --logger html --results-directory TestResults --collect:"XPlat code coverage" --no-build -- NUnit.NumberOfTestWorkers=${{ vars.TEST_NUMBEROFTESTWORKERS }} Playwright.LaunchOptions.Headless=true
+        env:
+          KEYVAULT__URL: ${{ secrets.TEST_KEYVAULT_URL}}
+          KEYVAULT__TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID}}
+          KEYVAULT__CLIENTID: ${{ secrets.TEST_KEYVAULT_CLIENTID}} 
+          KEYVAULT__CLIENTSECRET: ${{ secrets.TEST_KEYVAULT_CLIENTSECRET}} 
+        if: ${{ always() }}
+      - name: Upload integration test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: TestResults
+        if: ${{ always() }}
+      - name: Login to Azure
+        id: azureLogin
+        if: ${{ failure() && steps.runTests.outcome == 'failure' }}
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} 
+      - name: Upload traces to Blob Storage
+        if: ${{ failure() && steps.azureLogin.conclusion == 'success' }}
+        uses: azure/CLI@v2
+        with:
+          inlineScript: az storage blob upload-batch --account-name '${{ secrets.AZURE_STORAGE_ACCOUNTNAME }}' --auth-mode login -d 'playwright-traces' -s 'tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0/playwright-traces' --destination-path '${{ github.workflow }}/${{ github.run_number }}_${{ github.run_attempt }}' 
+      - name: Logout of Azure
+        if: ${{ failure() && steps.azureLogin.conclusion == 'success' }}
+        run: az logout
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ success() && (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.runDeployJob) }}
+    needs: [ build, test ]
+    steps:
+      - name: Download NuGet package
+        uses: actions/download-artifact@v4
+        with:
+          name: nupkg
+          path: nupkg
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Push to NuGet
+        run: dotnet nuget push "nupkg/**/*.nupkg" --api-key "${{ secrets.NUGET_APIKEY }}" --source https://api.nuget.org/v3/index.json --skip-duplicate

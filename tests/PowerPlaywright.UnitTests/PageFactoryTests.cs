@@ -43,7 +43,7 @@ public class PageFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PageFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="serviceProvider"/> is null.
+    /// Tests that the <see cref="PageFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the serviceProvider is null.
     /// </summary>
     [Test]
     public void Constructor_NullServiceProvider_ThrowsArgumentNullException()
@@ -52,7 +52,7 @@ public class PageFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PageFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the <paramref name="logger"/> is null.
+    /// Tests that the <see cref="PageFactory"/> constructor throws an <see cref="ArgumentNullException"/> when the logger is null.
     /// </summary>
     [Test]
     public void Constructor_NullLogger_ThrowsArgumentNullException()
@@ -61,7 +61,7 @@ public class PageFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PageFactory.CreateInstanceAsync{TPage}(IPage)"/> method throws an <see cref="ArgumentNullException"/> when the <paramref name="page"/> is null.
+    /// Tests that the <see cref="PageFactory.CreateInstanceAsync{TPage}(IPage)"/> method throws an <see cref="ArgumentNullException"/> when the page is null.
     /// </summary>
     [Test]
     public void CreateInstanceAsync_NullPage_ThrowsArgumentNullException()
@@ -118,7 +118,7 @@ public class PageFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PageFactory.CreateInstanceAsync{TPage}(IPage)"/> method throws an <see cref="ArgumentNullException"/> when the <paramref name="page"/> is null.
+    /// Tests that the <see cref="PageFactory.CreateInstanceAsync{TPage}(IPage)"/> method throws an <see cref="ArgumentNullException"/> when the page is null.
     /// </summary>
     [Test]
     public void CreateInstanceAsyncTPage_NullPage_ThrowsArgumentNullException()
@@ -132,7 +132,7 @@ public class PageFactoryTests
     /// <typeparam name="TRequestedType">The requested page type.</typeparam>
     /// <typeparam name="TExpectedType">The expected instantiated page type.</typeparam>
     /// <param name="pageType">The page type query string parameter value.</param>
-    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns> unit test.</returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [TestCase<IEntityRecordPage, EntityRecordPage>(PageTypeQueryEntityRecord)]
     [TestCase<IEntityListPage, EntityListPage>(PageTypeQueryEntityList)]
     [TestCase<IDashboardPage, DashboardPage>(PageTypeQueryDashboard)]
