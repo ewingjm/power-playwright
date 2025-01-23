@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard20</TargetFramework>
     <IsPackable>false</IsPackable>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
