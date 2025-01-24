@@ -239,7 +239,8 @@
 
             var controlsToResolve = this.strategyMap
                 .Where(mapping => mapping.Value is null && resolver.IsResolvable(mapping.Key))
-                .Select(mapping => mapping.Key);
+                .Select(mapping => mapping.Key)
+                .ToList();
 
             foreach (var control in controlsToResolve)
             {
