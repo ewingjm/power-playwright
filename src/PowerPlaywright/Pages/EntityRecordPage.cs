@@ -22,5 +22,8 @@
 
         /// <inheritdoc/>
         public IMainFormControl Form => this.GetControl<IMainFormControl>();
+
+        /// <inheritdoc/>
+        public ICommandBar CommandBar => this.GetControl<ICommandBar>();
     }
 }
