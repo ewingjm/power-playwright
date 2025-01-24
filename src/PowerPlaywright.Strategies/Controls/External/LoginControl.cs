@@ -46,6 +46,7 @@
         public async Task<IModelDrivenAppPage> LoginAsync(string username, string password)
         {
             await this.usernameInput.FillAsync(username);
+            await this.nextButton.ScrollIntoViewIfNeededAsync();
             await this.nextButton.ClickAsync();
 
             if (await this.workOrSchoolAccount.IsVisibleAsync())
@@ -54,6 +55,7 @@
             }
 
             await this.passwordInput.FillAsync(password);
+            await this.nextButton.ScrollIntoViewIfNeededAsync();
             await this.nextButton.ClickAsync();
             await this.staySignedInButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
 
