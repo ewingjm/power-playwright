@@ -11,23 +11,17 @@ public class DynamicTypeBuilder
     private const string AssemblyName = "TypeHelperAssembly";
     private const string ModuleName = "MainModule";
 
-    private static readonly ModuleBuilder ModuleBuilder;
-
     private readonly TypeBuilder typeBuilder;
-
-    static DynamicTypeBuilder()
-    {
-        ModuleBuilder = AssemblyBuilder
-            .DefineDynamicAssembly(new AssemblyName(AssemblyName), AssemblyBuilderAccess.Run)
-            .DefineDynamicModule(ModuleName);
-    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DynamicTypeBuilder"/> class.
     /// </summary>
     public DynamicTypeBuilder()
     {
-        this.typeBuilder = ModuleBuilder.DefineType(Guid.NewGuid().ToString(), TypeAttributes.Public);
+        this.typeBuilder = AssemblyBuilder
+            .DefineDynamicAssembly(new AssemblyName(AssemblyName), AssemblyBuilderAccess.Run)
+            .DefineDynamicModule(ModuleName)
+            .DefineType(Guid.NewGuid().ToString(), TypeAttributes.Public);
     }
 
     /// <summary>
