@@ -15,7 +15,7 @@
         private ISiteMapControl siteMapControl;
 
         /// <summary>
-        /// Sets up the read-only grid.
+        /// Sets up the site map.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [SetUp]
