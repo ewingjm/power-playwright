@@ -18,7 +18,6 @@
     {
         private readonly ILogger<PcfGridControl> logger;
 
-        private readonly ILocator flyoutRoot;
         private readonly ILocator flyoutResults;
         private readonly ILocator flyoutNoRecordsText;
         private readonly ILocator selectedRecordListItem;
@@ -38,9 +37,9 @@
         {
             this.logger = logger;
 
-            this.flyoutRoot = this.Page.Locator($"div[data-id='{this.Name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']");
-            this.flyoutNoRecordsText = this.flyoutRoot.Locator($"span[data-id='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_No_Records_Text']");
-            this.flyoutResults = this.flyoutRoot.GetByRole(AriaRole.Treeitem);
+            var flyoutRoot = this.Page.Locator($"div[data-id='{this.Name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']");
+            this.flyoutNoRecordsText = flyoutRoot.Locator($"span[data-id='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_No_Records_Text']");
+            this.flyoutResults = flyoutRoot.GetByRole(AriaRole.Treeitem);
             this.selectedRecordListItem = this.Container.Locator($"ul[data-id*='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_SelectedRecordList']").Locator("li").First;
             this.selectedRecordText = this.selectedRecordListItem.Locator($"div[data-id*='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_selected_tag_text']");
             this.selectedRecordDeleteButton = this.selectedRecordListItem.Locator($"button[data-id*='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_selected_tag_delete']");
