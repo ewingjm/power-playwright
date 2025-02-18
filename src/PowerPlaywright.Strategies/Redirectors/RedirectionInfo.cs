@@ -40,12 +40,12 @@
         {
             get
             {
-                if (this.AppSettings.NewLookAlwaysOn)
+                if (!this.AppSettings.NewLookAlwaysOn.HasValue)
                 {
-                    return true;
+                    return false;
                 }
 
-                if (!this.AppSettings.NewLookOptOut)
+                if (!this.AppSettings.NewLookOptOut.HasValue)
                 {
                     return false;
                 }
@@ -73,16 +73,18 @@
                     {
                         case ReleaseChannelOverride.SemiAnnual:
                             return ReleaseChannel.SemiAnnualChannel;
+
                         case ReleaseChannelOverride.Inner:
                             return ReleaseChannel.MicrosoftInnerChannel;
+
                         case ReleaseChannelOverride.Monthly:
                             return ReleaseChannel.Monthly;
                     }
                 }
 
-                if (this.AppSettings.AppChannel != ReleaseChannel.Auto)
+                if (this.AppSettings.AppChannel.HasValue && this.AppSettings.AppChannel != ReleaseChannel.Auto)
                 {
-                    return this.AppSettings.AppChannel;
+                    return (ReleaseChannel)this.AppSettings.AppChannel;
                 }
 
                 if (this.OrgSettings.ReleaseChannel != ReleaseChannel.Auto)
