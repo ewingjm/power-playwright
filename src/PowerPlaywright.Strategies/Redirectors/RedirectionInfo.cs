@@ -82,7 +82,7 @@
                     }
                 }
 
-                if (this.AppSettings != null && this.AppSettings.AppChannel != ReleaseChannel.Auto)
+                if (this.AppSettings.AppChannel != null && this.AppSettings.AppChannel != ReleaseChannel.Auto)
                 {
                     return (ReleaseChannel)this.AppSettings.AppChannel;
                 }
