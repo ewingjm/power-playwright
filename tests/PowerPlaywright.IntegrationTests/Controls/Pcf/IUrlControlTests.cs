@@ -33,11 +33,12 @@
         [Test]
         public async Task SetValueAsync_ReturnsValue()
         {
-            var urlControl = await this.SetupUrlScenarioAsync(withRecord: this.GetNamedRecordFaker(out var recordName));
+            var urlFaker = this.GeUrlFaker(out var urlValue);
+            var urlControl = await this.SetupUrlScenarioAsync(withUrl: urlFaker);
 
-            await urlControl.SetValueAsync(recordName);
+            await urlControl.SetValueAsync(urlValue);
 
-            Assert.That(urlControl.GetValueAsync, Is.EqualTo(recordName));
+            Assert.That(urlControl.GetValueAsync, Is.EqualTo(urlValue));
         }
 
         /// <summary>
@@ -47,25 +48,25 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsEmptyString()
         {
-            var urlControl = await this.SetupUrlScenarioAsync(withRecord: null, generateNullUrl: true);
+            var urlControl = await this.SetupUrlScenarioAsync(withUrl: null, generateNullUrl: true);
             Assert.That(async () => Uri.TryCreate(await urlControl.GetValueAsync(), UriKind.Absolute, out _), Is.False);
         }
 
-        private async Task<IUrlControl> SetupUrlScenarioAsync(Faker<pp_Record>? withRecord = null, bool generateNullUrl = false)
+        private async Task<IUrlControl> SetupUrlScenarioAsync(Faker<pp_Record>? withUrl = null, bool generateNullUrl = false)
         {
-            withRecord ??= new RecordFaker();
+            withUrl ??= new RecordFaker();
 
             if (generateNullUrl)
             {
-                withRecord.RuleFor(x => x.pp_singlelineoftexturl, f => string.Empty);
+                withUrl.RuleFor(x => x.pp_singlelineoftexturl, f => string.Empty);
             }
 
-            var recordPage = await this.LoginAndNavigateToRecordAsync(withRecord.Generate());
+            var recordPage = await this.LoginAndNavigateToRecordAsync(withUrl.Generate());
 
             return recordPage.Form.GetControl<IUrlControl>(nameof(pp_Record.pp_singlelineoftexturl));
         }
 
-        private Faker<pp_Record> GetNamedRecordFaker(out string recordName)
+        private Faker<pp_Record> GeUrlFaker(out string recordName)
         {
             var url = this.faker.Internet.Url();
             recordName = url;
