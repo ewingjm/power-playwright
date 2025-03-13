@@ -51,8 +51,4 @@
       <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controls\Pcf\FieldControls\" />
-  </ItemGroup>
 </Project>
