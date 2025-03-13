@@ -19,7 +19,8 @@ namespace PowerPlaywright.Strategies.Controls.Pcf
 
         public async Task<string> GetValueAsync()
         {
-            return await this.urlInput.InputValueAsync();
+            var res = await this.urlInput.InputValueAsync();
+            return res;
         }
 
         public async Task SetValueAsync(string value)

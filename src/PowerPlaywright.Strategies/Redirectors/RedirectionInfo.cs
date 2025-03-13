@@ -40,12 +40,12 @@
         {
             get
             {
-                if ((bool)this.AppSettings.NewLookAlwaysOn)
+                if (this.AppSettings.NewLookAlwaysOn)
                 {
                     return true;
                 }
 
-                if ((bool)!this.AppSettings.NewLookOptOut)
+                if (!this.AppSettings.NewLookOptOut)
                 {
                     return false;
                 }
@@ -82,9 +82,9 @@
                     }
                 }
 
-                if (this.AppSettings.AppChannel != null && this.AppSettings.AppChannel != ReleaseChannel.Auto)
+                if (this.AppSettings.AppChannel != ReleaseChannel.Auto)
                 {
-                    return (ReleaseChannel)this.AppSettings.AppChannel;
+                    return this.AppSettings.AppChannel;
                 }
 
                 if (this.OrgSettings.ReleaseChannel != ReleaseChannel.Auto)

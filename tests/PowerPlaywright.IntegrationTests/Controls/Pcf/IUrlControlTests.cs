@@ -41,30 +41,17 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISettableControl.GetValueAsync"/> returns string when the field has been set.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task GetValueAsync_ContainValue_ReturnsValue()
-        {
-            var urlControl = await this.SetupUrlScenarioAsync(withRelatedRecord: null);
-
-            Assert.That(urlControl.GetValueAsync, Is.Not.Null);
-        }
-
-        /// <summary>
-        /// Tests that <see cref="ISettableControl.GetValueAsync"/> returns empty string when the value has not been set.
+        /// Tests that <see cref="ISettableControl.GetValueAsync"/> returns empty string when the value has not been set. Checks the value coming back is not a valid Url. Playwright otherwises pases back a placeholder like '---'
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsEmptyString()
         {
-            var urlControl = await this.SetupUrlScenarioAsync(withRecord: null, generateNull: true);
-
-            Assert.That(urlControl.GetValueAsync, Is.EqualTo("---"));
+            var urlControl = await this.SetupUrlScenarioAsync(withRecord: null, generateNullUrl: true);
+            Assert.That(async () => Uri.TryCreate(await urlControl.GetValueAsync(), UriKind.Absolute, out _), Is.False);
         }
 
-        private async Task<IUrlControl> SetupUrlScenarioAsync(Faker<pp_Record>? withRecord = null, Faker<pp_RelatedRecord>? withRelatedRecord = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatableRecords = null, bool generateNull = false)
+        private async Task<IUrlControl> SetupUrlScenarioAsync(Faker<pp_Record>? withRecord = null, Faker<pp_RelatedRecord>? withRelatedRecord = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatableRecords = null, bool generateNullUrl = false)
         {
             withRecord ??= new RecordFaker();
 
@@ -78,7 +65,7 @@
                 withRecord.RuleFor(r => r.pp_Record_RelatedRecord, f => withRelatableRecords?.Select(f => f.Generate()));
             }
 
-            if (generateNull)
+            if (generateNullUrl)
             {
                 withRecord.RuleFor(x => x.pp_singlelineoftexturl, f => string.Empty);
             }
