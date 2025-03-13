@@ -7,7 +7,7 @@ using System.Text;
 namespace PowerPlaywright.Framework.Controls.Pcf
 {
     [PcfControl("MscrmControls.FieldControls.UrlControl")]
-    public interface IUrlControl : ISettableControl
+    public interface IUrlControl : ISingleLineUrl
     {
     }
 }

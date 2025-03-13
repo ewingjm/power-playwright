@@ -1,12 +1,12 @@
-﻿using PowerPlaywright.Framework.Controls.Pcf.Attributes;
-using PowerPlaywright.Framework.Controls.Pcf;
-using System.Threading.Tasks;
-using Microsoft.Playwright;
-using PowerPlaywright.Framework.Pages;
-using PowerPlaywright.Framework.Controls;
-
-namespace PowerPlaywright.Strategies.Controls.Pcf
+﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System.Threading.Tasks;
+    using Microsoft.Playwright;
+    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Framework.Controls;
+
     [PcfControlStrategy(0, 0, 0)]
     public class UrlContol : PcfControl, IUrlControl
     {
@@ -19,8 +19,7 @@ namespace PowerPlaywright.Strategies.Controls.Pcf
 
         public async Task<string> GetValueAsync()
         {
-            var res = await this.urlInput.InputValueAsync();
-            return res;
+            return await this.urlInput.InputValueAsync();
         }
 
         public async Task SetValueAsync(string value)

@@ -27,7 +27,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISettableControl.SetValueAsync(string)"/> returns string when the field has been set.
+        /// Tests that <see cref="ISingleLineUrl.SetValueAsync(string)"/> returns string when the field has been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -41,7 +41,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISettableControl.GetValueAsync"/> returns empty string when the value has not been set. Checks the value coming back is not a valid Url. Playwright otherwises pases back a placeholder like '---'
+        /// Tests that <see cref="ISingleLineUrl.GetValueAsync"/> returns empty string when the value has not been set. Checks the value coming back is not a valid Url. Playwright otherwises pases back a placeholder like '---'
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -51,19 +51,9 @@
             Assert.That(async () => Uri.TryCreate(await urlControl.GetValueAsync(), UriKind.Absolute, out _), Is.False);
         }
 
-        private async Task<IUrlControl> SetupUrlScenarioAsync(Faker<pp_Record>? withRecord = null, Faker<pp_RelatedRecord>? withRelatedRecord = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatableRecords = null, bool generateNullUrl = false)
+        private async Task<IUrlControl> SetupUrlScenarioAsync(Faker<pp_Record>? withRecord = null, bool generateNullUrl = false)
         {
             withRecord ??= new RecordFaker();
-
-            if (withRelatedRecord != null)
-            {
-                withRecord.RuleFor(r => r.pp_relatedrecord_record, f => withRelatedRecord?.Generate());
-            }
-
-            if (withRelatableRecords != null)
-            {
-                withRecord.RuleFor(r => r.pp_Record_RelatedRecord, f => withRelatableRecords?.Select(f => f.Generate()));
-            }
 
             if (generateNullUrl)
             {
