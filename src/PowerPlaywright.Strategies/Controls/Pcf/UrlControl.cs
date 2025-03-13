@@ -1,12 +1,9 @@
 ﻿using PowerPlaywright.Framework.Controls.Pcf.Attributes;
 using PowerPlaywright.Framework.Controls.Pcf;
-using System;
 using System.Threading.Tasks;
 using Microsoft.Playwright;
 using PowerPlaywright.Framework.Pages;
 using PowerPlaywright.Framework.Controls;
-using static System.Net.Mime.MediaTypeNames;
-using System.ComponentModel.DataAnnotations;
 
 namespace PowerPlaywright.Strategies.Controls.Pcf
 {
