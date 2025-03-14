@@ -1,8 +1,5 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using Bogus;
     using PowerPlaywright.Framework.Controls.Pcf;
