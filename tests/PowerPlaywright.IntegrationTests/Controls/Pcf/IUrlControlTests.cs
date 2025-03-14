@@ -42,7 +42,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISingleLineUrl.GetValueAsync"/> returns empty string when the value has not been set. Checks the value coming back is not a valid Url. Playwright otherwises pases back a placeholder like '---'
+        /// Tests that <see cref="ISingleLineUrl.GetValueAsync"/> returns empty string when the value has not been set. Checks the value coming back is not a valid Url. Playwright otherwises pases back a placeholder like '---'.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
