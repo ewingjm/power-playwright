@@ -166,7 +166,7 @@ public class ModelDrivenAppTests
     [Test]
     public async Task LoginAsync_Always_GoesToAppUrl()
     {
-        var appUrl = $"{this.options.Value.EnvironmentUrl}Apps/uniquename/{this.options.Value.AppUniqueName}/main.aspx";
+        var appUrl = $"{this.options.Value.EnvironmentUrl}Apps/uniquename/{this.options.Value.AppUniqueName}";
 
         await this.modelDrivepApp.LoginAsync(Username, Password);
 

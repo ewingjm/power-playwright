@@ -90,7 +90,7 @@ namespace PowerPlaywright
             }
 
             var page = await this.browserContext.NewPageAsync();
-            await page.GotoAsync(new Uri(this.options.EnvironmentUrl, $"Apps/uniquename/{this.options.AppUniqueName}/main.aspx").ToString());
+            await page.GotoAsync(new Uri(this.options.EnvironmentUrl, $"Apps/uniquename/{this.options.AppUniqueName}").ToString());
 
             var currentPage = await this.pageFactory.CreateInstanceAsync(page);
 

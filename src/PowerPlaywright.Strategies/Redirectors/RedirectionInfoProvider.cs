@@ -14,7 +14,8 @@
     {
         private static readonly string[] AppSettingKeys = new[] { "NewLookAlwaysOn", "NewLookOptOut", "AppChannel" };
 
-        private JsonSerializerOptions serializerOptions;
+        private readonly JsonSerializerOptions serializerOptions;
+
         private RedirectionInfo redirectionInfo;
 
         /// <summary>
@@ -22,7 +23,10 @@
         /// </summary>
         public RedirectionInfoProvider()
         {
-            this.serializerOptions = new JsonSerializerOptions();
+            this.serializerOptions = new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            };
         }
 
         /// <inheritdoc/>
