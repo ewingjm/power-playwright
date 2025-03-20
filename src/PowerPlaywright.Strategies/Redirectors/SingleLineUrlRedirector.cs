@@ -26,11 +26,10 @@
         {
             if (redirectionInfo.ActiveReleaseChannel == ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
             {
-                return typeof(IUrlControl);
+                return typeof(IClassicUrlControl);
             }
 
-            // TODO: Create new look implementation.
-            throw new NotSupportedException("The single-line URL control class is not supported on the new look.");
+            return typeof(IUrlControl);
         }
     }
 }

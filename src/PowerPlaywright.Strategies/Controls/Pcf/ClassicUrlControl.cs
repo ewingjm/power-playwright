@@ -12,17 +12,17 @@
     /// A control strategy for the <see cref="IUrlControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class UrlControl : PcfControl, IUrlControl
+    public class ClassicUrlControl : PcfControl, IClassicUrlControl
     {
         private readonly ILocator urlInput;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UrlControl"/> class.
+        /// Initializes a new instance of the <see cref="ClassicUrlControl"/> class.
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
         /// <param name="parent">The parent control.</param>
-        public UrlControl(string name, IAppPage appPage, IControl parent = null)
+        public ClassicUrlControl(string name, IAppPage appPage, IControl parent = null)
             : base(name, appPage, parent)
         {
             this.urlInput = this.Container.Locator("input");
@@ -43,7 +43,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"div[data-control-name='{this.Name}']");
+            return context.Locator($"div[data-lp-id*='MscrmControls.FieldControls.UrlControl|{this.Name}.fieldControl|']");
         }
     }
 }

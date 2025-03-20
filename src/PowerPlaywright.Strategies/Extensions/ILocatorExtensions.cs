@@ -17,7 +17,7 @@
         {
             var value = await locator.InputValueAsync(options);
 
-            return value != PowerAppsInputPlaceholderValue ? value : null;
+            return string.IsNullOrEmpty(value) || value == PowerAppsInputPlaceholderValue ? null : value;
         }
     }
 }

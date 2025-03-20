@@ -6,8 +6,8 @@
     /// <summary>
     /// An interface for the MscrmControls.FieldControls.UrlControl control.
     /// </summary>
-    [PcfControl("PowerApps.CoreControls.ActionInput")]
-    public interface IUrlControl : ISingleLineUrl
+    [PcfControl("MscrmControls.FieldControls.UrlControl")]
+    public interface IClassicUrlControl : ISingleLineUrl
     {
     }
 }
