@@ -12,6 +12,8 @@
     /// </summary>
     public class RedirectionInfoProvider : IRedirectionInfoProvider<RedirectionInfo>, IAppLoadInitializable
     {
+        private static readonly string[] AppSettingKeys = new[] { "NewLookAlwaysOn", "NewLookOptOut", "AppChannel" };
+
         private readonly JsonSerializerOptions serializerOptions;
 
         private RedirectionInfo redirectionInfo;
@@ -61,10 +63,15 @@
         private async Task<AppSettings> GetAppSettingsAsync(IPage page)
         {
             var appSettings = await page.EvaluateAsync(
-                @"() => {
-                    var appSettings = Xrm.Utility.getGlobalContext().getCurrentAppSettings();
+                @"(keys) => {
+                    const globalContext = Xrm.Utility.getGlobalContext();
+                    const appSettings = {};
+                    keys.forEach(key => {
+                        appSettings[key] = globalContext.getCurrentAppSetting(key);
+                    });
                     return appSettings;
-                }");
+                }",
+                AppSettingKeys);
 
             if (!appSettings.HasValue)
             {
