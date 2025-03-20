@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public SingleLineUrlRedirector(IRedirectionInfoProvider<RedirectionInfo> infoProvider, ILogger logger = null)
+        public SingleLineUrlRedirector(IRedirectionInfoProvider<RedirectionInfo> infoProvider, ILogger<SingleLineUrlRedirector> logger)
             : base(infoProvider, logger)
         {
         }

@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public ReadOnlyGridRedirector(IRedirectionInfoProvider<RedirectionInfo> infoProvider, ILogger<ReadOnlyGridRedirector> logger = null)
+        public ReadOnlyGridRedirector(IRedirectionInfoProvider<RedirectionInfo> infoProvider, ILogger<ReadOnlyGridRedirector> logger)
             : base(infoProvider, logger)
         {
         }
