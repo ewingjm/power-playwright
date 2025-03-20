@@ -1,11 +1,11 @@
-﻿using PowerPlaywright.Framework.Controls.Pcf.Attributes;
-using PowerPlaywright.Framework.Controls.Pcf.Classes;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PowerPlaywright.Framework.Controls.Pcf
+﻿namespace PowerPlaywright.Framework.Controls.Pcf
 {
+    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Controls.Pcf.Classes;
+
+    /// <summary>
+    /// An interface for the MscrmControls.FieldControls.UrlControl control.
+    /// </summary>
     [PcfControl("MscrmControls.FieldControls.UrlControl")]
     public interface IUrlControl : ISingleLineUrl
     {
