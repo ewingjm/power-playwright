@@ -14,7 +14,6 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ExternalControlAttribute"/> class.
         /// </summary>
-        /// <param name="name">The name of the custom control (e.g. MscrmControls.Grid.ReadOnlyGrid).</param>
         public ExternalControlAttribute()
         {
         }

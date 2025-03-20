@@ -73,8 +73,10 @@
                     {
                         case ReleaseChannelOverride.SemiAnnual:
                             return ReleaseChannel.SemiAnnualChannel;
+
                         case ReleaseChannelOverride.Inner:
                             return ReleaseChannel.MicrosoftInnerChannel;
+
                         case ReleaseChannelOverride.Monthly:
                             return ReleaseChannel.Monthly;
                     }
