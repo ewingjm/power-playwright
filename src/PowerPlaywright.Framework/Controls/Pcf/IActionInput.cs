@@ -4,10 +4,10 @@
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
 
     /// <summary>
-    /// An interface for the MscrmControls.FieldControls.UrlControl control.
+    /// An interface for the PowerApps.CoreControls.ActionInput control.
     /// </summary>
-    [PcfControl("MscrmControls.FieldControls.UrlControl")]
-    public interface IClassicUrlControl : ISingleLineUrl
+    [PcfControl("PowerApps.CoreControls.ActionInput")]
+    public interface IActionInput : ISingleLineUrl
     {
     }
 }
