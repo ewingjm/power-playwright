@@ -95,7 +95,7 @@
                 return typeof(IPcfGridControl);
             }
 
-            return typeof(IPowerAppsOneGridControl);
+            return typeof(IPowerAppsOneGrid);
         }
 
         private static bool IsNewLookEnabled(bool newLookAlwaysOn, bool newLookOptOut, bool? modernizationOptOut)

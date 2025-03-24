@@ -138,7 +138,7 @@ public class ControlFactoryTests
     {
         var actualControl = this.controlFactory.CreateInstance<IReadOnlyGrid>(Substitute.For<IAppPage>(), "name");
 
-        Assert.That(actualControl, Is.InstanceOf<IPowerAppsOneGridControl>());
+        Assert.That(actualControl, Is.InstanceOf<IPowerAppsOneGrid>());
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public class ControlFactoryTests
         this.strategyResolver.IsReady.Returns(false);
 
         Assert.Throws<PowerPlaywrightException>(
-            () => this.controlFactory.CreateInstance<IPowerAppsOneGridControl>(Substitute.For<IAppPage>(), "name"));
+            () => this.controlFactory.CreateInstance<IPowerAppsOneGrid>(Substitute.For<IAppPage>(), "name"));
     }
 
     /// <summary>
@@ -171,14 +171,14 @@ public class ControlFactoryTests
         this.strategyResolver.IsReady.Returns(false);
         try
         {
-            this.controlFactory.CreateInstance<IPowerAppsOneGridControl>(Substitute.For<IAppPage>(), "name");
+            this.controlFactory.CreateInstance<IPowerAppsOneGrid>(Substitute.For<IAppPage>(), "name");
         }
         catch (PowerPlaywrightException)
         {
             this.strategyResolver.OnReady += Raise.Event();
         }
 
-        var actualControl = this.controlFactory.CreateInstance<IPowerAppsOneGridControl>(Substitute.For<IAppPage>(), "name");
+        var actualControl = this.controlFactory.CreateInstance<IPowerAppsOneGrid>(Substitute.For<IAppPage>(), "name");
 
         Assert.That(actualControl, Is.InstanceOf(typeof(PowerAppsOneGridControl)));
     }
@@ -200,7 +200,7 @@ public class ControlFactoryTests
     {
         var expectedName = "ControlName";
 
-        var actualControl = this.controlFactory.CreateInstance<IPowerAppsOneGridControl>(Substitute.For<IAppPage>(), expectedName);
+        var actualControl = this.controlFactory.CreateInstance<IPowerAppsOneGrid>(Substitute.For<IAppPage>(), expectedName);
 
         Assert.That(actualControl.Name, Is.EqualTo(expectedName));
     }
@@ -213,7 +213,7 @@ public class ControlFactoryTests
     {
         var expectedParent = Substitute.For<IControl>();
 
-        var actualControl = this.controlFactory.CreateInstance<IPowerAppsOneGridControl>(Substitute.For<IAppPage>(), "name", expectedParent);
+        var actualControl = this.controlFactory.CreateInstance<IPowerAppsOneGrid>(Substitute.For<IAppPage>(), "name", expectedParent);
 
         Assert.That(actualControl.Parent, Is.EqualTo(expectedParent));
     }
@@ -221,7 +221,7 @@ public class ControlFactoryTests
     private void MockValidDefaults()
     {
         this.resolvedTypes
-            .Add(typeof(IPowerAppsOneGridControl), typeof(PowerAppsOneGridControl));
+            .Add(typeof(IPowerAppsOneGrid), typeof(PowerAppsOneGridControl));
 
         // TODO: Refactor tests to use DynamicTypeBuilder
         this.assemblyProvider.GetAssembly()
