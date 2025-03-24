@@ -7,7 +7,7 @@
     /// An interface for the Microsoft.PowerApps.PowerAppsOneGrid control.
     /// </summary>
     [PcfControl("Microsoft.PowerApps.PowerAppsOneGrid")]
-    public interface IPowerAppsOneGridControl : IReadOnlyGrid
+    public interface IPowerAppsOneGrid : IReadOnlyGrid
     {
     }
 }
