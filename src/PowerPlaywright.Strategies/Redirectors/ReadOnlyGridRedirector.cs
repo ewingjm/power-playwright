@@ -29,7 +29,7 @@
                 return typeof(IPcfGridControl);
             }
 
-            return typeof(IPowerAppsOneGridControl);
+            return typeof(IPowerAppsOneGrid);
         }
     }
 }

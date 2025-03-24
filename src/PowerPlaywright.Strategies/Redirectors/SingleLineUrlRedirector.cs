@@ -26,10 +26,10 @@
         {
             if (redirectionInfo.ActiveReleaseChannel == ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
             {
-                return typeof(IClassicUrlControl);
+                return typeof(IUrlControl);
             }
 
-            return typeof(IUrlControl);
+            return typeof(IActionInput);
         }
     }
 }
