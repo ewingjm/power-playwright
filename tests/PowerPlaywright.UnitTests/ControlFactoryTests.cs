@@ -39,7 +39,7 @@ public class ControlFactoryTests
     public void SetUp()
     {
         this.resolvedTypes = [];
-        this.redirectionInfo = new RedirectionInfo(new OrgSettings(), new AppSettings(), new UserSettings());
+        this.redirectionInfo = new RedirectionInfo(new Version(), new OrgSettings(), new AppSettings(), new UserSettings());
 
         this.assemblyProvider = Substitute.For<IAssemblyProvider>();
         this.strategyResolver = Substitute.For<IControlStrategyResolver>();

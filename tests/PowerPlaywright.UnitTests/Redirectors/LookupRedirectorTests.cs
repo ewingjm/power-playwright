@@ -35,7 +35,7 @@
         public Type Redirect_ModernizationOptOutSet_ReturnsCorrespondingLookupInterface(bool newLookOptOut)
         {
             this.redirectionInfoProvider.GetRedirectionInfo().Returns(
-                 new RedirectionInfo(new OrgSettings(), new AppSettings(), new UserSettings()));
+                 new RedirectionInfo(new Version(), new OrgSettings(), new AppSettings(), new UserSettings()));
 
             return this.redirector.Redirect();
         }

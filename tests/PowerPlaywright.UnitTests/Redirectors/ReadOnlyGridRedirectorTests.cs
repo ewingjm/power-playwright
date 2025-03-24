@@ -42,6 +42,7 @@
             var jsonSerializerOptions = new JsonSerializerOptions();
             jsonSerializerOptions.Converters.Add(new AppTogglesConverter(appId));
             var redirectionInfo = new RedirectionInfo(
+                new Version(),
                 JsonSerializer.Deserialize<OrgSettings>($"{{ \"ReleaseChannel\": {(int)orgChannel} }}"),
                 JsonSerializer.Deserialize<AppSettings>($"{{ \"AppChannel\": {(int)appChannel}, \"NewLookAlwaysOn\": {newLookAlwaysOn.ToString().ToLower()}, \"NewLookOptOut\": {newLookOptOut.ToString().ToLower()} }}"),
                 JsonSerializer.Deserialize<UserSettings>($"{{ \"ReleaseChannel\": {(int)userOverride}, \"TryToggleSets\": {{ \"ModernizationOptOut\": {modernizationOptOut?.ToString().ToLower() ?? "null"} }} }}"));
