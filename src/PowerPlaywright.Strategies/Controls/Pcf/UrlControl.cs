@@ -43,7 +43,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"div[data-control-name='{this.Name}']");
+            return context.Locator($"div[data-lp-id*='MscrmControls.FieldControls.UrlControl|{this.Name}.fieldControl|']");
         }
     }
 }
