@@ -25,7 +25,7 @@
         public ActionInput(string name, IAppPage appPage, IControl parent = null)
             : base(name, appPage, parent)
         {
-            this.urlInput = this.Container.Locator("input");
+            this.urlInput = this.Container;
         }
 
         /// <inheritdoc/>
@@ -43,7 +43,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"div[data-control-name='{this.Name}']");
+            return context.Locator($"input[data-id='{this.Name}.fieldControl-url-text-input']");
         }
     }
 }
