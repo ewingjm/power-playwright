@@ -43,7 +43,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"//div[contains(@data-lp-id, 'PowerApps.CoreControls.ActionInput|{this.Name}.fieldControl')]");
+            return context.Locator($"//div[contains(@data-lp-id,'PowerApps.CoreControls.ActionInput|{this.Name}.fieldControl')]");
         }
     }
 }
