@@ -1,5 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
+    using System;
+
     /// <summary>
     /// Runtime information used for control redirection.
     /// </summary>
@@ -8,15 +10,22 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="RedirectionInfo"/> class.
         /// </summary>
+        /// <param name="version">The environment version.</param>
         /// <param name="orgSettings">The org settings.</param>
         /// <param name="appSettings">The app settings.</param>
         /// <param name="userSettings">The user settings.</param>
-        internal RedirectionInfo(OrgSettings orgSettings, AppSettings appSettings, UserSettings userSettings)
+        internal RedirectionInfo(Version version, OrgSettings orgSettings, AppSettings appSettings, UserSettings userSettings)
         {
+            this.Version = version;
             this.OrgSettings = orgSettings;
             this.AppSettings = appSettings;
             this.UserSettings = userSettings;
         }
+
+        /// <summary>
+        /// Gets the environment version.k
+        /// </summary>
+        internal Version Version { get; }
 
         /// <summary>
         /// Gets the org settings.
@@ -50,7 +59,7 @@
                     return false;
                 }
 
-                if (this.UserSettings.TryToggleSets != null && this.UserSettings.TryToggleSets.ModernizationOptOut.HasValue)
+                if (this.Version < Version.Parse("9.2.25031.180") && this.UserSettings.TryToggleSets != null && this.UserSettings.TryToggleSets.ModernizationOptOut.HasValue)
                 {
                     return this.UserSettings.TryToggleSets.ModernizationOptOut.Value;
                 }
@@ -73,8 +82,10 @@
                     {
                         case ReleaseChannelOverride.SemiAnnual:
                             return ReleaseChannel.SemiAnnualChannel;
+
                         case ReleaseChannelOverride.Inner:
                             return ReleaseChannel.MicrosoftInnerChannel;
+
                         case ReleaseChannelOverride.Monthly:
                             return ReleaseChannel.Monthly;
                     }

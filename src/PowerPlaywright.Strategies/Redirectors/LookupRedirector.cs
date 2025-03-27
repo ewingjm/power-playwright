@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">the logger.</param>
-        public LookupRedirector(IRedirectionInfoProvider<RedirectionInfo> infoProvider, ILogger<LookupRedirector> logger = null)
+        public LookupRedirector(IRedirectionInfoProvider<RedirectionInfo> infoProvider, ILogger<LookupRedirector> logger)
             : base(infoProvider, logger)
         {
         }

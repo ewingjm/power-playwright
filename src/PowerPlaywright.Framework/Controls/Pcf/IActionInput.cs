@@ -4,10 +4,10 @@
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
 
     /// <summary>
-    /// An interface for the Microsoft.PowerApps.PowerAppsOneGrid control.
+    /// An interface for the PowerApps.CoreControls.ActionInput control.
     /// </summary>
-    [PcfControl("Microsoft.PowerApps.PowerAppsOneGrid")]
-    public interface IPowerAppsOneGridControl : IReadOnlyGrid
+    [PcfControl("PowerApps.CoreControls.ActionInput")]
+    public interface IActionInput : ISingleLineUrl
     {
     }
 }
