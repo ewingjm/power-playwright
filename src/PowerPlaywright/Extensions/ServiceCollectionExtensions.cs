@@ -1,8 +1,10 @@
 ﻿namespace PowerPlaywright.Extensions
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using Microsoft.Extensions.DependencyInjection;
+    using PowerPlaywright.Config;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Redirectors;
 
@@ -22,7 +24,7 @@
             services
                 .AddAppLoadInitializedSingleton(sp =>
                 {
-                    var resolvedType = sp.GetRequiredService<IAssemblyProvider>()
+                    var resolvedType = sp.GetRequiredService<GlobalPackagesAssemblyProvider>()
                         .GetAssembly()
                         .GetTypes()
                         .FirstOrDefault(t => typeof(IRedirectionInfoProvider<object>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract)
@@ -66,6 +68,21 @@
                 .AddSingleton<TImplementation>()
                 .AddSingleton<TService>(sp => sp.GetRequiredService<TImplementation>())
                 .AddSingleton<IAppLoadInitializable>(sp => sp.GetRequiredService<TImplementation>());
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds additional (user-defined) control assemblies to the <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/>.</param>
+        /// <returns></returns>
+        public static IServiceCollection AddAdditionalControlAssemblies(this IServiceCollection services, IEnumerable<ControlAssemblyConfiguration> controlAssemblies)
+        {
+            foreach (var controlAssembly in controlAssemblies)
+            {
+                services.AddSingleton<IAssemblyProvider>(new LocalAssemblyProvider(controlAssembly.Name));
+            }
 
             return services;
         }

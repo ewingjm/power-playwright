@@ -4,6 +4,7 @@
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.External;
     using PowerPlaywright.Framework.Controls.External.Attributes;
     using PowerPlaywright.Framework.Pages;

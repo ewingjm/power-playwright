@@ -5,6 +5,7 @@ namespace PowerPlaywright.Api
     using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
+    using global::PowerPlaywright.Config;
     using global::PowerPlaywright.Extensions;
     using global::PowerPlaywright.Framework;
     using global::PowerPlaywright.Framework.Pages;
@@ -29,25 +30,25 @@ namespace PowerPlaywright.Api
         private static PackageIdentity installedStrategiesPackage;
         private static INuGetPackageInstaller packageInstaller;
 
-        private readonly PackageIdentity packageIdentity;
+        private readonly PowerPlaywrightConfiguration configuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PowerPlaywright"/> class.
         /// </summary>
-        /// <param name="packageIdentity">The package identity information.</param>
+        /// <param name="configuration">The configuration.</param>
         /// <exception cref="ArgumentNullException">Thrown if any of the parameters are null.</exception>
-        internal PowerPlaywright(PackageIdentity packageIdentity)
+        internal PowerPlaywright(PowerPlaywrightConfiguration configuration)
         {
-            this.packageIdentity = packageIdentity ?? throw new ArgumentNullException(nameof(packageIdentity));
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         /// <summary>
         /// Creates an instance of Power Playwright.
         /// </summary>
         /// <returns>A Power Playwright instance.</returns>
-        public static async Task<IPowerPlaywright> CreateAsync()
+        public static async Task<IPowerPlaywright> CreateAsync(PowerPlaywrightConfiguration configuration = null)
         {
-            return await CreateInternalAsync(await GetNuGetPackageInstaller());
+            return await CreateInternalAsync(await GetNuGetPackageInstaller(), configuration);
         }
 
         /// <inheritdoc/>
@@ -110,14 +111,17 @@ namespace PowerPlaywright.Api
         /// </summary>
         /// <param name="packageInstaller">The NuGet package installer.</param>
         /// <returns>A Power Playwright instance.</returns>
-        internal static async Task<IPowerPlaywright> CreateInternalAsync(INuGetPackageInstaller packageInstaller)
+        internal static async Task<IPowerPlaywright> CreateInternalAsync(INuGetPackageInstaller packageInstaller, PowerPlaywrightConfiguration configuration = null)
         {
             if (packageInstaller is null)
             {
                 throw new ArgumentNullException(nameof(packageInstaller));
             }
 
-            return new PowerPlaywright(installedStrategiesPackage ?? await InstallStrategiesAsync(packageInstaller));
+            configuration = configuration ?? new PowerPlaywrightConfiguration();
+            configuration.PackageIdentity = installedStrategiesPackage ?? await InstallStrategiesAsync(packageInstaller);
+
+            return new PowerPlaywright(configuration);
         }
 
         /// <summary>
@@ -204,7 +208,7 @@ namespace PowerPlaywright.Api
                 .AddOptions()
                 .AddControlRedirectionInfoProvider()
                 .AddSingleton(browserContext)
-                .AddSingleton(this.packageIdentity)
+                .AddSingleton(this.configuration.PackageIdentity)
                 .AddSingleton(sp => Settings.LoadDefaultSettings(null))
                 .Configure<ModelDrivenAppOptions>(opts =>
                 {
@@ -213,6 +217,8 @@ namespace PowerPlaywright.Api
                 })
                 .AddSingleton<IModelDrivenApp, ModelDrivenApp>()
                 .AddSingleton<IAssemblyProvider, GlobalPackagesAssemblyProvider>()
+                .AddSingleton<GlobalPackagesAssemblyProvider>()
+                .AddAdditionalControlAssemblies(this.configuration.ControlAssemblies)
                 .AddSingleton<IControlFactory, ControlFactory>()
                 .AddSingleton<IPageFactory, PageFactory>()
                 .AddSingleton<IControlStrategyResolver, ExternalControlStrategyResolver>()

@@ -70,7 +70,7 @@
             {
                 if (this.controlTypes is null)
                 {
-                    this.controlTypes = ControlInterfaceType.Assembly.GetTypes().Where(IsControlType).ToList();
+                    this.controlTypes = ControlInterfaceType.Assembly.GetTypes().Concat(this.AssemblyTypes).Where(IsControlType).ToList();
                 }
 
                 return this.controlTypes;
