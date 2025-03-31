@@ -16,6 +16,6 @@
         /// <summary>
         /// Additional control assemblies.
         /// </summary>
-        public IEnumerable<ControlAssemblyConfiguration> ControlAssemblies { get; set; }
+        public IList<ControlAssemblyConfiguration> ControlAssemblies { get; set; }
     }
 }
