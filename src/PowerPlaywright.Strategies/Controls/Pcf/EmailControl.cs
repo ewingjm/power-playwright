@@ -9,10 +9,10 @@
     using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
-    /// A control strategy for the <see cref="IEmailControl"/>.
+    /// A control strategy for the <see cref="IEmailAddressControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class EmailControl : PcfControl, IEmailControl
+    public class EmailControl : PcfControl, IEmailAddressControl
     {
         private readonly ILocator emailInput;
 

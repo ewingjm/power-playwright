@@ -7,7 +7,7 @@
     /// An interface for the MscrmControls.FieldControls.Email control.
     /// </summary>
     [PcfControl("MscrmControls.FieldControls.EmailAddressControl")]
-    public interface IEmailControl : ISingleLineEmail
+    public interface IEmailAddressControl : ISingleLineEmail
     {
     }
 }

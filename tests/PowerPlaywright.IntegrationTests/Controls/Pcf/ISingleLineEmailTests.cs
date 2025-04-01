@@ -54,7 +54,7 @@
         /// Sets up a URL control scenario for testing by creating a record with a specified or generated Email.
         /// </summary>
         /// <param name="withEmail">An optional URL string to set in the record. If null, a random Email will be generated.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IEmailControl"/>.</returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IEmailAddressControl"/>.</returns>
         private async Task<ISingleLineEmail> SetupEmailScenarioAsync(string? withEmail = null)
         {
             var record = new RecordFaker();

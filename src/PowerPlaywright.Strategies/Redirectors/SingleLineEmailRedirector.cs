@@ -26,7 +26,7 @@
         {
             if (redirectionInfo.ActiveReleaseChannel == ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
             {
-                return typeof(IEmailControl);
+                return typeof(IEmailAddressControl);
             }
 
             return typeof(IActionInput);
