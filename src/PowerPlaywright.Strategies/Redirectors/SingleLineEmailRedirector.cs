@@ -29,7 +29,7 @@
                 return typeof(IEmailControl);
             }
 
-            return typeof(IActionInputEmail);
+            return typeof(IActionInput);
         }
     }
 }

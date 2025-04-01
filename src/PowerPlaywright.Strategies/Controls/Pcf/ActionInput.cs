@@ -25,7 +25,7 @@
         public ActionInput(string name, IAppPage appPage, IControl parent = null)
             : base(name, appPage, parent)
         {
-            this.urlInput = this.Container.Locator($"input[data-id='{this.Name}.fieldControl-url-text-input']");
+            this.urlInput = this.Container.Locator("input");
         }
 
         /// <inheritdoc/>

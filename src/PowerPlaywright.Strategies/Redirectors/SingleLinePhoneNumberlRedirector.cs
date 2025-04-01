@@ -29,7 +29,7 @@
                 return typeof(IPhoneNumberControl);
             }
 
-            return typeof(IActionInputPhoneNumber);
+            return typeof(IActionInput);
         }
     }
 }

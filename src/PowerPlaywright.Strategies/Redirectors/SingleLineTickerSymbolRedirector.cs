@@ -29,7 +29,7 @@
                 return typeof(ITickerSymbolControl);
             }
 
-            return typeof(IActionInputTickerSymbol);
+            return typeof(IActionInput);
         }
     }
 }
