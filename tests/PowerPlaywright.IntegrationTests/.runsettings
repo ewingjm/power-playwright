@@ -6,7 +6,7 @@
   <RunConfiguration>
     <EnvironmentVariables>
       <PWDEBUG>0</PWDEBUG>
-      <HEADED>0</HEADED>
+      <HEADED>1</HEADED>
     </EnvironmentVariables>
   </RunConfiguration>
   <DataCollectionRunSettings>

@@ -12,6 +12,7 @@
     using NuGet.Protocol.Core.Types;
     using NUnit.Framework.Interfaces;
     using PowerPlaywright.Api;
+    using PowerPlaywright.Config;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.IntegrationTests.Config;
@@ -26,7 +27,7 @@
         /// </summary>
         protected const string TestAppUniqueName = "pp_UserInterfaceDemo";
 
-        private static IEnumerator<UserConfiguration> userEnumerator;
+        private static readonly IEnumerator<UserConfiguration> UserEnumerator;
 
         private bool isTracing;
         private UserConfiguration? user;
@@ -36,7 +37,7 @@
         {
             Configuration = GetConfiguration();
 
-            userEnumerator = Configuration.Users.GetEnumerator();
+            UserEnumerator = Configuration.Users.GetEnumerator();
         }
 
         /// <summary>
@@ -73,7 +74,11 @@
                 .GetResourceAsync<FindPackageByIdResource>();
 
             this.powerPlaywright = await Api.PowerPlaywright.CreateInternalAsync(
-                new NuGetPackageInstaller(findPackageByIdResource, packageSource));
+                new NuGetPackageInstaller(findPackageByIdResource, packageSource),
+                new PowerPlaywrightConfiguration
+                {
+                    ControlAssemblies = [new ControlAssemblyConfiguration { Name = "PowerPlaywright.TestApp.CustomControls.dll" }],
+                });
         }
 
         /// <summary>
@@ -163,13 +168,13 @@
         /// <returns>The user configuration.</returns>
         private static UserConfiguration GetUser()
         {
-            if (!userEnumerator.MoveNext())
+            if (!UserEnumerator.MoveNext())
             {
-                userEnumerator.Reset();
-                userEnumerator.MoveNext();
+                UserEnumerator.Reset();
+                UserEnumerator.MoveNext();
             }
 
-            return userEnumerator.Current;
+            return UserEnumerator.Current;
         }
 
         private static TestSuiteConfiguration GetConfiguration()

@@ -32,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\PowerPlaywright.Strategies\PowerPlaywright.Strategies.csproj" />
     <ProjectReference Include="..\..\src\PowerPlaywright\PowerPlaywright.csproj" />
+    <ProjectReference Include="..\PowerPlaywright.IntegrationTests.CustomControls\PowerPlaywright.TestApp.CustomControls.csproj" />
     <ProjectReference Include="..\solution\PowerPlaywright.TestApp.Model\PowerPlaywright.TestApp.Model.csproj" />
   </ItemGroup>
 
