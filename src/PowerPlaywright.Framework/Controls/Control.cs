@@ -1,7 +1,6 @@
 ﻿namespace PowerPlaywright.Framework.Controls
 {
     using Microsoft.Playwright;
-    using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>

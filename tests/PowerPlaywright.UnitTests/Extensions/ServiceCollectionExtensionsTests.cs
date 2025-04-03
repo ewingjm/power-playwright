@@ -9,7 +9,6 @@ using NSubstitute;
 using PowerPlaywright.Extensions;
 using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Redirectors;
-using PowerPlaywright.Strategies.Redirectors;
 using PowerPlaywright.UnitTests.Helpers;
 
 /// <summary>
@@ -46,7 +45,7 @@ public class ServiceCollectionExtensionsTests
 
         this.services.AddControlRedirectionInfoProvider();
 
-        Assert.Throws<PowerPlaywrightException>(() => this.services.BuildServiceProvider().GetService<IRedirectionInfoProvider<object>>());
+        Assert.Throws<PowerPlaywrightException>(() => this.services.BuildServiceProvider().GetService<IRedirectionInfoProvider>());
     }
 
     /// <summary>
@@ -60,9 +59,9 @@ public class ServiceCollectionExtensionsTests
         var redirectionInfoProvider = this.services
             .AddControlRedirectionInfoProvider()
             .BuildServiceProvider()
-            .GetService<IRedirectionInfoProvider<object>>();
+            .GetService<IRedirectionInfoProvider>();
 
-        Assert.That(redirectionInfoProvider, Is.InstanceOf<IRedirectionInfoProvider<RedirectionInfo>>());
+        Assert.That(redirectionInfoProvider, Is.InstanceOf<IRedirectionInfoProvider>());
     }
 
     /// <summary>
@@ -78,7 +77,7 @@ public class ServiceCollectionExtensionsTests
             .BuildServiceProvider()
             .GetService<IAppLoadInitializable>();
 
-        Assert.That(initializable, Is.InstanceOf<IRedirectionInfoProvider<RedirectionInfo>>());
+        Assert.That(initializable, Is.InstanceOf<IRedirectionInfoProvider>());
     }
 
     /// <summary>
@@ -94,7 +93,7 @@ public class ServiceCollectionExtensionsTests
             .BuildServiceProvider();
 
         var firstInstance = serviceProvider.GetService<IAppLoadInitializable>();
-        var secondInstance = serviceProvider.GetService<IRedirectionInfoProvider<object>>();
+        var secondInstance = serviceProvider.GetService<IRedirectionInfoProvider>();
 
         Assert.That(firstInstance, Is.EqualTo(secondInstance));
     }
@@ -110,8 +109,8 @@ public class ServiceCollectionExtensionsTests
             .AddControlRedirectionInfoProvider()
             .BuildServiceProvider();
 
-        var firstInstance = serviceProvider.GetService<IRedirectionInfoProvider<object>>();
-        var secondInstance = serviceProvider.GetService<IRedirectionInfoProvider<object>>();
+        var firstInstance = serviceProvider.GetService<IRedirectionInfoProvider>();
+        var secondInstance = serviceProvider.GetService<IRedirectionInfoProvider>();
 
         Assert.That(firstInstance, Is.EqualTo(secondInstance));
     }
@@ -245,7 +244,7 @@ public class ServiceCollectionExtensionsTests
     private static Type GetRedirectionInfoProviderType()
     {
         return new DynamicTypeBuilder()
-            .AddInterfaceImplementation<IRedirectionInfoProvider<RedirectionInfo>>()
+            .AddInterfaceImplementation<IRedirectionInfoProvider>()
             .AddInterfaceImplementation<IAppLoadInitializable>()
             .Build();
     }

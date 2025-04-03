@@ -24,13 +24,12 @@
             services
                 .AddAppLoadInitializedSingleton(sp =>
                 {
-                    var resolvedType = sp.GetRequiredService<GlobalPackagesAssemblyProvider>()
-                        .GetAssembly()
-                        .GetTypes()
-                        .FirstOrDefault(t => typeof(IRedirectionInfoProvider<object>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract)
+                    var resolvedType = sp.GetRequiredService<IEnumerable<IAssemblyProvider>>()
+                        .SelectMany(p => p.GetAssembly().GetTypes())
+                        .FirstOrDefault(t => typeof(IRedirectionInfoProvider).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract)
                     ?? throw new PowerPlaywrightException("A redirection info provider type was not found.");
 
-                    return (IRedirectionInfoProvider<object>)ActivatorUtilities.CreateInstance(sp, resolvedType);
+                    return (IRedirectionInfoProvider)ActivatorUtilities.CreateInstance(sp, resolvedType);
                 });
 
             return services;

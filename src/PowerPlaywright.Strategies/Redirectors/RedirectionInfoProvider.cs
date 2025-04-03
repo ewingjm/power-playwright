@@ -10,7 +10,7 @@
     /// <summary>
     /// Provides the information required for control redirection.
     /// </summary>
-    public class RedirectionInfoProvider : IRedirectionInfoProvider<RedirectionInfo>, IAppLoadInitializable
+    public class RedirectionInfoProvider : IRedirectionInfoProvider, IAppLoadInitializable
     {
         private static readonly string[] AppSettingKeys = new[] { "NewLookAlwaysOn", "NewLookOptOut", "AppChannel" };
 
@@ -30,7 +30,7 @@
         }
 
         /// <inheritdoc/>
-        public RedirectionInfo GetRedirectionInfo()
+        public IRedirectionInfo GetRedirectionInfo()
         {
             return this.redirectionInfo;
         }

@@ -11,22 +11,22 @@
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
-    /// A control strategy for the <see cref="IToggleControl"/>.
+    /// A control strategy for the <see cref="ICustomControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class ToggleControl : PcfControl, IToggleControl
+    public class CustomControl : PcfControl, ICustomControl
     {
         private readonly ILocator input;
         private readonly IEnvironmentInfoProvider environmentInfo;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToggleControl"/> class.
+        /// Initializes a new instance of the <see cref="CustomControl"/> class.
         /// </summary>
         /// <param name="environmentInfo">The environment info provider.</param>
         /// <param name="name">The name.</param>
         /// <param name="appPage">The app page.</param>
         /// <param name="parent">The parent control.</param>
-        public ToggleControl(IEnvironmentInfoProvider environmentInfo, string name, IAppPage appPage, IControl parent = null)
+        public CustomControl(IEnvironmentInfoProvider environmentInfo, string name, IAppPage appPage, IControl parent = null)
             : base(name, appPage, parent)
         {
             this.environmentInfo = environmentInfo;
@@ -56,7 +56,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"div[data-lp-id*='{this.environmentInfo.ControlIds[typeof(IToggleControl).GetCustomAttribute<PcfControlAttribute>().Name]}|{this.Name}.fieldControl']");
+            return context.Locator($"div[data-lp-id*='{this.environmentInfo.ControlIds[typeof(ICustomControl).GetCustomAttribute<PcfControlAttribute>().Name]}|{this.Name}.fieldControl']");
         }
     }
 }

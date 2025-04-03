@@ -11,7 +11,7 @@
     /// </summary>
     public class LookupRedirectorTests
     {
-        private IRedirectionInfoProvider<RedirectionInfo> redirectionInfoProvider;
+        private IRedirectionInfoProvider redirectionInfoProvider;
         private LookupRedirector redirector;
 
         /// <summary>
@@ -20,7 +20,7 @@
         [SetUp]
         public void SetUp()
         {
-            this.redirectionInfoProvider = Substitute.For<IRedirectionInfoProvider<RedirectionInfo>>();
+            this.redirectionInfoProvider = Substitute.For<IRedirectionInfoProvider>();
 
             this.redirector = new LookupRedirector(this.redirectionInfoProvider, Substitute.For<ILogger<LookupRedirector>>());
         }

@@ -8,7 +8,7 @@ namespace PowerPlaywright.Pages
     /// <summary>
     /// A model-driven app page.
     /// </summary>
-    internal abstract class ModelDrivenAppPage : AppPage, IModelDrivenAppPage
+    public abstract class ModelDrivenAppPage : AppPage, IModelDrivenAppPage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelDrivenAppPage"/> class.

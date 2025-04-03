@@ -1,0 +1,30 @@
+﻿namespace PowerPlaywright.Framework.Redirectors
+{
+    public interface IRedirectionInfo
+    {
+        /// <summary>
+        /// Gets the org settings.
+        /// </summary>
+        IOrgSettings Org { get; }
+
+        /// <summary>
+        /// Gets the app settings.
+        /// </summary>
+        IAppSettings App { get; }
+
+        /// <summary>
+        /// Gets the user settings.
+        /// </summary>
+        IUserSettings User { get; }
+
+        /// <summary>
+        /// Gets the active release channel based on the user, app, and org settings.
+        /// </summary>
+        int ActiveReleaseChannel { get; }
+
+        /// <summary>
+        /// Gets whether the new look is enabled based on user, app, and org settings.
+        /// </summary>
+        bool IsNewLookEnabled { get; }
+    }
+}

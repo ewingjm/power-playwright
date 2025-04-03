@@ -20,7 +20,7 @@
 
         private readonly IEnumerable<IAssemblyProvider> assemblyProviders;
         private readonly IEnumerable<IControlStrategyResolver> strategyResolvers;
-        private readonly IRedirectionInfoProvider<object> redirectionInfoProvider;
+        private readonly IRedirectionInfoProvider redirectionInfoProvider;
         private readonly IServiceProvider serviceProvider;
         private readonly ILogger<ControlFactory> logger;
 
@@ -40,7 +40,7 @@
         public ControlFactory(
             IEnumerable<IAssemblyProvider> assemblyProviders,
             IEnumerable<IControlStrategyResolver> strategyResolvers,
-            IRedirectionInfoProvider<object> redirectionInfoProvider,
+            IRedirectionInfoProvider redirectionInfoProvider,
             IServiceProvider serviceProvider,
             ILogger<ControlFactory> logger = null)
         {

@@ -1,6 +1,5 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
-    using Bogus;
     using PowerPlaywright.TestApp.CustomControls;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
@@ -11,15 +10,7 @@
     public class ICustomControlTests : IntegrationTests
     {
         /// <summary>
-        /// Sets up the lookup control.
-        /// </summary>
-        [SetUp]
-        public void Setup()
-        {
-        }
-
-        /// <summary>
-        /// Tests that <see cref="IToggleControl.SetValueAsync(bool)"/> checks the toggle when the toggle is unchecked.
+        /// Tests that <see cref="ICustomControlClass.SetValueAsync(bool)"/> checks the toggle when the toggle is unchecked.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -31,7 +22,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IToggleControl.SetValueAsync(bool)"/> checks the toggle when the toggle is unchecked.
+        /// Tests that <see cref="ICustomControlClass.SetValueAsync(bool)"/> checks the toggle when the toggle is unchecked.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -44,14 +35,14 @@
             Assert.That(control.GetValueAsync, Is.True);
         }
 
-        private async Task<IToggleControl> SetupCustomControlScenarioAsync(bool withToggle = false)
+        private async Task<ICustomControlClass> SetupCustomControlScenarioAsync(bool withToggle = false)
         {
             var faker = new RecordFaker();
             faker.RuleFor(f => f.pp_yesno, f => withToggle);
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(faker.Generate());
 
-            return recordPage.Form.GetControl<IToggleControl>(pp_Record.Forms.Information.Toggle);
+            return recordPage.Form.GetControl<ICustomControlClass>(pp_Record.Forms.Information.Toggle);
         }
     }
 }

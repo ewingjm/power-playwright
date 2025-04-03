@@ -77,7 +77,7 @@
                 new NuGetPackageInstaller(findPackageByIdResource, packageSource),
                 new PowerPlaywrightConfiguration
                 {
-                    ControlAssemblies = [new ControlAssemblyConfiguration { Name = "PowerPlaywright.TestApp.CustomControls.dll" }],
+                    ControlAssemblies = [new() { Name = "PowerPlaywright.TestApp.CustomControls.dll" }],
                 });
         }
 
