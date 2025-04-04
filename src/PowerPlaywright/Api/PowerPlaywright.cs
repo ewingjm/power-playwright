@@ -110,6 +110,7 @@ namespace PowerPlaywright.Api
         /// Creates an instance of Power Playwright.
         /// </summary>
         /// <param name="packageInstaller">The NuGet package installer.</param>
+        /// <param name="configuration">The configuration.</param>
         /// <returns>A Power Playwright instance.</returns>
         internal static async Task<IPowerPlaywright> CreateInternalAsync(INuGetPackageInstaller packageInstaller, PowerPlaywrightConfiguration configuration = null)
         {

@@ -12,10 +12,10 @@
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
-    /// A control strategy for the <see cref="IPowerAppsOneGridControl"/>.
+    /// A control strategy for the <see cref="IPowerAppsOneGrid"/>.
     /// </summary>
     [PcfControlStrategy(1, 0, 208)]
-    public class PowerAppsOneGridControl : PcfControl, IPowerAppsOneGridControl
+    public class PowerAppsOneGridControl : PcfControl, IPowerAppsOneGrid
     {
         private readonly IPageFactory pageFactory;
         private readonly ILogger<PcfGridControl> logger;

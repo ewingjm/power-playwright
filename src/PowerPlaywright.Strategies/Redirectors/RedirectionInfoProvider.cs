@@ -39,9 +39,15 @@
         public async Task InitializeAsync(IPage page)
         {
             this.redirectionInfo = new RedirectionInfo(
+                await this.GetVersionAsync(page),
                 await this.GetOrgSettingsAsync(page),
                 await this.GetAppSettingsAsync(page),
                 await this.GetUserSettingsAsync(page));
+        }
+
+        private async Task<Version> GetVersionAsync(IPage page)
+        {
+            return new Version(await page.EvaluateAsync<string>("Xrm.Utility.getGlobalContext().getVersion()"));
         }
 
         private async Task<OrgSettings> GetOrgSettingsAsync(IPage page)

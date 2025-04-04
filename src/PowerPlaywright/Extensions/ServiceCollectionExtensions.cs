@@ -75,6 +75,7 @@
         /// Adds additional (user-defined) control assemblies to the <see cref="IServiceCollection"/>.
         /// </summary>
         /// <param name="services">The <see cref="IServiceCollection"/>.</param>
+        /// <param name="pageObjectAssemblies">The page object assemblies to register.</param>
         /// <returns></returns>
         public static IServiceCollection AddAdditionalPageObjectAssemblies(this IServiceCollection services, IEnumerable<PageObjectAssemblyConfiguration> pageObjectAssemblies)
         {

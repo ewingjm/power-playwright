@@ -1,8 +1,8 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
-    using PowerPlaywright.TestApp.PageObjects;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
+    using PowerPlaywright.TestApp.PageObjects;
 
     /// <summary>
     /// Tests for controls add through a custom assembly.

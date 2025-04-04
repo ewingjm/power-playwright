@@ -36,7 +36,7 @@ public class ServiceCollectionExtensionsTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ServiceCollectionExtensions.AddControlRedirectionInfoProvider(IServiceCollection)"/> method registers an implementation factory that throws a <see cref="PowerPlaywrightException"/> when no type implementing <see cref="IRedirectionInfoProvider{TControlRedirectorInfo}"/> is found in the strategies assembly.
+    /// Tests that the <see cref="ServiceCollectionExtensions.AddControlRedirectionInfoProvider(IServiceCollection)"/> method registers an implementation factory that throws a <see cref="PowerPlaywrightException"/> when no type implementing <see cref="IRedirectionInfoProvider"/> is found in the strategies assembly.
     /// </summary>
     [Test]
     public void AddControlRedirectionInfoProvider_TypeImplementingInterfaceNotFoundInStrategiesAssembly_ThrowsPowerPlaywrightException()
@@ -49,7 +49,7 @@ public class ServiceCollectionExtensionsTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ServiceCollectionExtensions.AddControlRedirectionInfoProvider(IServiceCollection)"/> method registers an implementation factory that returns an instance when a type implementing <see cref="IRedirectionInfoProvider{TControlRedirectorInfo}"/> is found in the strategies assembly.
+    /// Tests that the <see cref="ServiceCollectionExtensions.AddControlRedirectionInfoProvider(IServiceCollection)"/> method registers an implementation factory that returns an instance when a type implementing <see cref="IRedirectionInfoProvider"/> is found in the strategies assembly.
     /// </summary>
     [Test]
     public void AddControlRedirectionInfoProvider_TypeImplementingInterfaceFoundInStrategiesAssembly_ImplementationFactoryReturnsInstance()
@@ -81,7 +81,7 @@ public class ServiceCollectionExtensionsTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ServiceCollectionExtensions.AddControlRedirectionInfoProvider(IServiceCollection)"/> method registers the singleton instance returned by the implementation factory as both <see cref="IAppLoadInitializable"/> and <see cref="IRedirectionInfoProvider{TControlRedirectorInfo}"/>, ensuring that both interfaces reference the same instance.
+    /// Tests that the <see cref="ServiceCollectionExtensions.AddControlRedirectionInfoProvider(IServiceCollection)"/> method registers the singleton instance returned by the implementation factory as both <see cref="IAppLoadInitializable"/> and <see cref="IRedirectionInfoProvider"/>, ensuring that both interfaces reference the same instance.
     /// </summary>
     [Test]
     public void AddControlRedirectionInfoProvider_TypeImplementingInterfaceFoundInStrategiesAssembly_RegistersTypeAsAppLoadInitializableWithSingletonReferenceToService()

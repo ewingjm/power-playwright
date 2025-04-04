@@ -4,6 +4,8 @@
     <TargetFramework>netstandard20</TargetFramework>
     <IsPackable>false</IsPackable>
     <DebugType>portable</DebugType>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

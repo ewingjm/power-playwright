@@ -58,6 +58,6 @@ public partial class GlobalSetup
             true);
     }
 
-    [GeneratedRegex(@"PowerPlaywright\.Strategies\.((\d\.\d\.\d)(-.*)?)(\.\d+)?\.nupkg")]
+    [GeneratedRegex(@"PowerPlaywright\.Strategies\.((\d+\.\d+\.\d+)(-.*)?)(\.\d+)?\.nupkg")]
     private static partial Regex PackageVersionRegex();
 }

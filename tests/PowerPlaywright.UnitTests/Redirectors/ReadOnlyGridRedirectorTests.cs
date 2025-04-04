@@ -29,21 +29,21 @@
             this.redirectionInfoProvider = Substitute.For<IRedirectionInfoProvider>();
             this.faker = new Faker();
 
-            this.redirectionInfoProvider.GetRedirectionInfo().Returns(redirectionInfo);
+            this.redirectionInfoProvider.GetRedirectionInfo().Returns(this.redirectionInfo);
 
             this.redirector = new ReadOnlyGridRedirector(this.redirectionInfoProvider, Substitute.For<ILogger<ReadOnlyGridRedirector>>());
         }
 
         /// <summary>
         /// Tests that the right control is returned based on the environment, app, and user settings.
-        /// </summary
+        /// </summary>
         /// <param name="isNewLookEnabled">A value indicating whether the new look is enabled.</param>
         /// <param name="isSemiAnnualChannel">A value indicating whether the active release channel is 'semi-annual'.</param>
         /// <returns>The redirected type.</returns>
         [TestCase(false, true, ExpectedResult = typeof(IPcfGridControl))]
-        [TestCase(false, false, ExpectedResult = typeof(IPowerAppsOneGridControl))]
-        [TestCase(true, false, ExpectedResult = typeof(IPowerAppsOneGridControl))]
-        [TestCase(true, true, ExpectedResult = typeof(IPowerAppsOneGridControl))]
+        [TestCase(false, false, ExpectedResult = typeof(IPowerAppsOneGrid))]
+        [TestCase(true, false, ExpectedResult = typeof(IPowerAppsOneGrid))]
+        [TestCase(true, true, ExpectedResult = typeof(IPowerAppsOneGrid))]
         public Type Redirect_RedirectionInfoSet_ReturnsCorrectControl(bool isNewLookEnabled, bool isSemiAnnualChannel)
         {
             this.redirectionInfo.IsNewLookEnabled.Returns(isNewLookEnabled);

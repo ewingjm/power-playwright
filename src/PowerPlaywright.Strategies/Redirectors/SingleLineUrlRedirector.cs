@@ -1,22 +1,22 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
-    using System;
     using Microsoft.Extensions.Logging;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Redirectors;
+    using System;
 
     /// <summary>
-    /// Redirects requests for an <see cref="IReadOnlyGrid"/> control.
+    /// Redirects requests for an <see cref="ISingleLineUrl"/> control.
     /// </summary>
-    public class ReadOnlyGridRedirector : ControlRedirector<IReadOnlyGrid>
+    public class SingleLineUrlRedirector : ControlRedirector<ISingleLineUrl>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ReadOnlyGridRedirector"/> class.
+        /// Initializes a new instance of the <see cref="SingleLineUrlRedirector"/> class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public ReadOnlyGridRedirector(IRedirectionInfoProvider infoProvider, ILogger<ReadOnlyGridRedirector> logger)
+        public SingleLineUrlRedirector(IRedirectionInfoProvider infoProvider, ILogger<SingleLineUrlRedirector> logger)
             : base(infoProvider, logger)
         {
         }
@@ -24,12 +24,12 @@
         /// <inheritdoc/>
         protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
         {
-            if ((ReleaseChannel)redirectionInfo.ActiveReleaseChannel == ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
+            if (redirectionInfo.ActiveReleaseChannel == (int)ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
             {
-                return typeof(IPcfGridControl);
+                return typeof(IUrlControl);
             }
 
-            return typeof(IPowerAppsOneGrid);
+            return typeof(IActionInput);
         }
     }
 }

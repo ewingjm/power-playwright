@@ -18,7 +18,7 @@
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        protected ControlRedirector(IRedirectionInfoProvider infoProvider, ILogger logger = null)
+        protected ControlRedirector(IRedirectionInfoProvider infoProvider, ILogger logger)
         {
             this.infoProvider = infoProvider;
             this.Logger = logger;

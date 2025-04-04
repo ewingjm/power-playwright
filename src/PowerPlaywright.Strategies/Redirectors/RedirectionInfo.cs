@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
     using PowerPlaywright.Framework.Redirectors;
+    using System;
 
     /// <summary>
     /// Runtime information used for control redirection.
@@ -10,11 +11,13 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="RedirectionInfo"/> class.
         /// </summary>
+        /// <param name="version">The environment version.</param>
         /// <param name="orgSettings">The org settings.</param>
         /// <param name="appSettings">The app settings.</param>
         /// <param name="userSettings">The user settings.</param>
-        internal RedirectionInfo(OrgSettings orgSettings, AppSettings appSettings, UserSettings userSettings)
+        internal RedirectionInfo(Version version, OrgSettings orgSettings, AppSettings appSettings, UserSettings userSettings)
         {
+            this.Version = version;
             this.OrgSettings = orgSettings;
             this.AppSettings = appSettings;
             this.UserSettings = userSettings;
@@ -28,6 +31,11 @@
 
         /// <inheritdoc />
         public IUserSettings User => this.UserSettings;
+
+        /// <summary>
+        /// Gets the environment version.k
+        /// </summary>
+        internal Version Version { get; }
 
         /// <summary>
         /// Gets the org settings.
@@ -61,7 +69,7 @@
                     return false;
                 }
 
-                if (this.User.AppToggles != null && this.UserSettings.AppTogglesTyped.ModernizationOptOut.HasValue)
+                if (this.User.AppToggles != null && this.UserSettings.AppTogglesTyped.ModernizationOptOut.HasValue && this.Version < Version.Parse("9.2.25031.180") )
                 {
                     return this.UserSettings.AppTogglesTyped.ModernizationOptOut.Value;
                 }
