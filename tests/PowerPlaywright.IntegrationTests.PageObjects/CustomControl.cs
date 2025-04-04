@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.TestApp.CustomControls
+﻿namespace PowerPlaywright.TestApp.PageObjects
 {
     using System.Reflection;
     using System.Threading.Tasks;

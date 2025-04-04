@@ -76,11 +76,11 @@
         /// </summary>
         /// <param name="services">The <see cref="IServiceCollection"/>.</param>
         /// <returns></returns>
-        public static IServiceCollection AddAdditionalControlAssemblies(this IServiceCollection services, IEnumerable<ControlAssemblyConfiguration> controlAssemblies)
+        public static IServiceCollection AddAdditionalPageObjectAssemblies(this IServiceCollection services, IEnumerable<PageObjectAssemblyConfiguration> pageObjectAssemblies)
         {
-            foreach (var controlAssembly in controlAssemblies)
+            foreach (var pageObjectAssembly in pageObjectAssemblies)
             {
-                services.AddSingleton<IAssemblyProvider>(new LocalAssemblyProvider(controlAssembly.Name));
+                services.AddSingleton<IAssemblyProvider>(new LocalAssemblyProvider(pageObjectAssembly.Path));
             }
 
             return services;

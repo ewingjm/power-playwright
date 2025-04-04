@@ -3,11 +3,11 @@
     /// <summary>
     /// Configuration for a control assembly.
     /// </summary>
-    public class ControlAssemblyConfiguration
+    public class PageObjectAssemblyConfiguration
     {
         /// <summary>
         /// The name of the assembly.
         /// </summary>
-        public string Name { get; set; }
+        public string Path { get; set; }
     }
 }

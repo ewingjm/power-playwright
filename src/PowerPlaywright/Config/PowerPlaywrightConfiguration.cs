@@ -16,6 +16,6 @@
         /// <summary>
         /// Additional control assemblies.
         /// </summary>
-        public IList<ControlAssemblyConfiguration> ControlAssemblies { get; set; }
+        public IList<PageObjectAssemblyConfiguration> PageObjectAssemblies { get; set; }
     }
 }

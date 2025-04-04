@@ -115,7 +115,7 @@ Power Playwright can be extended by consumers to support their own custom contro
 PowerPlaywright.CreateAsync(
   new PowerPlaywrightConfiguration 
   {
-    ControlAssemblies = [new() { Name = "Company.Project.CustomControls.dll" }] 
+    PageObjectAssemblies = [new() { Path = "Company.Project.PageObjects.dll" }] 
   });
 ```
 

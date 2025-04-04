@@ -217,7 +217,7 @@ namespace PowerPlaywright.Api
                 })
                 .AddSingleton<IModelDrivenApp, ModelDrivenApp>()
                 .AddSingleton<IAssemblyProvider, GlobalPackagesAssemblyProvider>()
-                .AddAdditionalControlAssemblies(this.configuration.ControlAssemblies)
+                .AddAdditionalPageObjectAssemblies(this.configuration.PageObjectAssemblies)
                 .AddSingleton<IControlFactory, ControlFactory>()
                 .AddSingleton<IPageFactory, PageFactory>()
                 .AddSingleton<IControlStrategyResolver, ExternalControlStrategyResolver>()

@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.TestApp.Mod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.Framework", "src\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj", "{31DB4EF5-446B-4D2B-A722-4995179F1711}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.TestApp.CustomControls", "tests\PowerPlaywright.IntegrationTests.CustomControls\PowerPlaywright.TestApp.CustomControls.csproj", "{56C99067-3B10-4414-9579-E138B929D708}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.TestApp.PageObjects", "tests\PowerPlaywright.IntegrationTests.PageObjects\PowerPlaywright.TestApp.PageObjects.csproj", "{56C99067-3B10-4414-9579-E138B929D708}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
