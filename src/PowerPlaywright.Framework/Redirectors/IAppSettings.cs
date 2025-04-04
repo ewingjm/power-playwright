@@ -1,5 +1,8 @@
 ﻿namespace PowerPlaywright.Framework.Redirectors
 {
+    /// <summary>
+    /// The active app settings.
+    /// </summary>
     public interface IAppSettings
     {
         /// <summary>
