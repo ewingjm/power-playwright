@@ -1,5 +1,8 @@
 ﻿namespace PowerPlaywright.Framework.Redirectors
 {
+    /// <summary>
+    /// The active org settings.
+    /// </summary>
     public interface IOrgSettings
     {
         /// <summary>
