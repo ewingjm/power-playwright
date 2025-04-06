@@ -2,9 +2,6 @@
 {
     using System.Collections.Generic;
 
-    /// <summary>
-    /// The active user settings.
-    /// </summary>
     public interface IUserSettings
     {
         /// <summary>

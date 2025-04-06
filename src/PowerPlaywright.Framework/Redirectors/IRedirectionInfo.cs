@@ -1,8 +1,5 @@
 ﻿namespace PowerPlaywright.Framework.Redirectors
 {
-    /// <summary>
-    /// Contextual information used to assist with control redirection (e.g. PCF classes to specific PCF controls).
-    /// </summary>
     public interface IRedirectionInfo
     {
         /// <summary>
