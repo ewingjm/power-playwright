@@ -5,7 +5,7 @@ Power Playwright makes test automation for Power Apps easier by providing a [pag
 
 - All regions supported
 - Resilient to platform updates
-- Extensible for custom pages and controls **(coming soon)**
+- Extensible for custom pages and controls
 
 ## Table of Contents
 
@@ -67,11 +67,13 @@ At the time of writing, the supported pages are:
 - Custom page (`ICustomPage`)
 - Web resource (`IWebResourcePage`)
 
-You should pass one of these types as an argument when opening pages from the site map.
+You should pass one of these interfaces as a type argument when calling methods that return a page.
 
 #### Custom pages
 
-Work-in-progress 👷
+You can create a custom page by creating a sub-class of the `CustomPage` class and adding properties with public getters to represent its controls. These getters should be implemented using the inherited `GetControl` method.
+
+At present, there are no canvas app controls included in Power Playwright. This means you will need to implement these controls as [custom controls](#custom-controls).
 
 ### Controls
 
@@ -86,7 +88,6 @@ In addition, some controls are accessible by interacting with other controls. Fo
 ```csharp
 var readOnlyGrid = recordPage.Form.GetControl<IReadOnlyGrid>(pp_Record.Forms.Information.RelatedRecordsSubgrid);
 ```
-
 
 #### Control classes
 
@@ -108,8 +109,18 @@ var subGrid = recordPage.Form.GetControl<IPowerAppsOneGridControl>(pp_Record.For
 
 #### Custom controls
 
-Work-in-progress 👷
+Power Playwright can be extended by consumers to support their own custom controls or controls that have not yet been implemented by Power Playwright. To add additional controls, pass the names of your assemblies containing the controls to the `PowerPlaywright.CreateAsync` method.
+
+```csharp
+PowerPlaywright.CreateAsync(
+  new PowerPlaywrightConfiguration 
+  {
+    PageObjectAssemblies = [new() { Path = "Company.Project.PageObjects.dll" }] 
+  });
+```
+
+For information on implementing controls, refer to [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Contributing
 
-Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md)
+Please refer to the [CONTRIBUTING.md](./CONTRIBUTING.md).

@@ -1,7 +1,6 @@
-﻿namespace PowerPlaywright.Strategies.Controls
+﻿namespace PowerPlaywright.Framework.Controls.Pcf
 {
     using PowerPlaywright.Framework.Controls;
-    using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
@@ -18,7 +17,7 @@
         protected PcfControl(string name, IAppPage appPage, IControl parent = null)
             : base(appPage, parent)
         {
-            this.Name = name;
+            Name = name;
         }
 
         /// <summary>

@@ -9,22 +9,22 @@
     /// <summary>
     /// Redirects requests for an <see cref="ISingleLinePhoneNumber"/> control.
     /// </summary>
-    public class SingleLinePhoneNumberlRedirector : ControlRedirector<ISingleLinePhoneNumber>
+    public class SingleLinePhoneNumberRedirector : ControlRedirector<ISingleLinePhoneNumber>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ISingleLineEmail"/> class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public SingleLinePhoneNumberlRedirector(IRedirectionInfoProvider<RedirectionInfo> infoProvider, ILogger<ISingleLinePhoneNumber> logger)
+        public SingleLinePhoneNumberRedirector(IRedirectionInfoProvider infoProvider, ILogger<ISingleLinePhoneNumber> logger)
             : base(infoProvider, logger)
         {
         }
 
         /// <inheritdoc/>
-        protected override Type GetTargetControlType(RedirectionInfo redirectionInfo)
+        protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
         {
-            if (redirectionInfo.ActiveReleaseChannel == ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
+            if (redirectionInfo.ActiveReleaseChannel == (int)ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
             {
                 return typeof(IPhoneNumberControl);
             }

@@ -26,7 +26,7 @@ public class ControlFactoryTests
     private RedirectionInfo redirectionInfo;
     private IAssemblyProvider assemblyProvider;
     private IControlStrategyResolver strategyResolver;
-    private IRedirectionInfoProvider<object> redirectionInfoProvider;
+    private IRedirectionInfoProvider redirectionInfoProvider;
     private IServiceProvider serviceProvider;
     private ILogger<ControlFactory> logger;
 
@@ -43,7 +43,7 @@ public class ControlFactoryTests
 
         this.assemblyProvider = Substitute.For<IAssemblyProvider>();
         this.strategyResolver = Substitute.For<IControlStrategyResolver>();
-        this.redirectionInfoProvider = Substitute.For<IRedirectionInfoProvider<RedirectionInfo>>();
+        this.redirectionInfoProvider = Substitute.For<IRedirectionInfoProvider>();
 
         this.serviceProvider = Substitute.For<IServiceProvider>();
         this.logger = Substitute.For<ILogger<ControlFactory>>();

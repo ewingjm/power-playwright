@@ -1,8 +1,10 @@
 ﻿namespace PowerPlaywright.Extensions
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using Microsoft.Extensions.DependencyInjection;
+    using PowerPlaywright.Config;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Redirectors;
 
@@ -22,13 +24,12 @@
             services
                 .AddAppLoadInitializedSingleton(sp =>
                 {
-                    var resolvedType = sp.GetRequiredService<IAssemblyProvider>()
-                        .GetAssembly()
-                        .GetTypes()
-                        .FirstOrDefault(t => typeof(IRedirectionInfoProvider<object>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract)
+                    var resolvedType = sp.GetRequiredService<IEnumerable<IAssemblyProvider>>()
+                        .SelectMany(p => p.GetAssembly().GetTypes())
+                        .FirstOrDefault(t => typeof(IRedirectionInfoProvider).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract)
                     ?? throw new PowerPlaywrightException("A redirection info provider type was not found.");
 
-                    return (IRedirectionInfoProvider<object>)ActivatorUtilities.CreateInstance(sp, resolvedType);
+                    return (IRedirectionInfoProvider)ActivatorUtilities.CreateInstance(sp, resolvedType);
                 });
 
             return services;
@@ -66,6 +67,22 @@
                 .AddSingleton<TImplementation>()
                 .AddSingleton<TService>(sp => sp.GetRequiredService<TImplementation>())
                 .AddSingleton<IAppLoadInitializable>(sp => sp.GetRequiredService<TImplementation>());
+
+            return services;
+        }
+
+        /// <summary>
+        /// Adds additional (user-defined) control assemblies to the <see cref="IServiceCollection"/>.
+        /// </summary>
+        /// <param name="services">The <see cref="IServiceCollection"/>.</param>
+        /// <param name="pageObjectAssemblies">The page object assemblies to register.</param>
+        /// <returns></returns>
+        public static IServiceCollection AddAdditionalPageObjectAssemblies(this IServiceCollection services, IEnumerable<PageObjectAssemblyConfiguration> pageObjectAssemblies)
+        {
+            foreach (var pageObjectAssembly in pageObjectAssemblies)
+            {
+                services.AddSingleton<IAssemblyProvider>(new LocalAssemblyProvider(pageObjectAssembly.Path));
+            }
 
             return services;
         }
