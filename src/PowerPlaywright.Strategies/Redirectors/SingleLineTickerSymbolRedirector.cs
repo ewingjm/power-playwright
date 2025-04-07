@@ -16,15 +16,15 @@
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public SingleLineTickerSymbolRedirector(IRedirectionInfoProvider<RedirectionInfo> infoProvider, ILogger<ISingleLineTickerSymbol> logger)
+        public SingleLineTickerSymbolRedirector(IRedirectionInfoProvider infoProvider, ILogger<ISingleLineTickerSymbol> logger)
             : base(infoProvider, logger)
         {
         }
 
         /// <inheritdoc/>
-        protected override Type GetTargetControlType(RedirectionInfo redirectionInfo)
+        protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
         {
-            if (redirectionInfo.ActiveReleaseChannel == ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
+            if (redirectionInfo.ActiveReleaseChannel == (int)ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
             {
                 return typeof(ITickerSymbolControl);
             }
