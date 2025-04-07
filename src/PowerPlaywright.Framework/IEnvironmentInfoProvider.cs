@@ -1,4 +1,4 @@
-namespace PowerPlaywright
+namespace PowerPlaywright.Framework
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@ namespace PowerPlaywright
     /// <summary>
     /// Provides information about the environment.
     /// </summary>
-    internal interface IEnvironmentInfoProvider
+    public interface IEnvironmentInfoProvider
     {
         /// <summary>
         /// An event fired when the info provider is ready.
@@ -27,5 +27,10 @@ namespace PowerPlaywright
         /// Gets the control versions.
         /// </summary>
         IDictionary<string, Version> ControlVersions { get; }
+
+        /// <summary>
+        /// Gets the control IDs.
+        /// </summary>
+        IDictionary<string, Guid> ControlIds { get; }
     }
 }

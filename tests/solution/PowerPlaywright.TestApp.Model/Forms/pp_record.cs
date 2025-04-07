@@ -35,6 +35,11 @@
                 public const string RelatedRecord = "pp_relatedrecord";
 
                 /// <summary>
+                /// The toggle control.
+                /// </summary>
+                public const string Toggle = "pp_yesno";
+
+                /// <summary>
                 /// The Information form tabs.
                 /// </summary>
                 public static class Tabs
