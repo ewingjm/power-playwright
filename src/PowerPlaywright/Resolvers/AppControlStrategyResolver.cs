@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Microsoft.Extensions.Logging;
+    using PowerPlaywright.Framework;
 
     /// <summary>
     /// A base class for control strategy resolvers that initialise on app load.

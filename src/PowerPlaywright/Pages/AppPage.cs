@@ -10,7 +10,7 @@ namespace PowerPlaywright.Pages
     /// <summary>
     /// A base class for all pages.
     /// </summary>
-    internal abstract class AppPage : IAppPage, IAppPageInternal
+    public abstract class AppPage : IAppPage, IAppPageInternal
     {
         private readonly IControlFactory controlFactory;
         private readonly Dictionary<(Type, string), IControl> controlCache;

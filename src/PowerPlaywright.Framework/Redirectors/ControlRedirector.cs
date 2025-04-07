@@ -1,9 +1,8 @@
-﻿namespace PowerPlaywright.Strategies.Redirectors
+﻿namespace PowerPlaywright.Framework.Redirectors
 {
     using System;
     using Microsoft.Extensions.Logging;
     using PowerPlaywright.Framework.Controls;
-    using PowerPlaywright.Framework.Redirectors;
 
     /// <summary>
     /// A control redirector.
@@ -12,14 +11,14 @@
     public abstract class ControlRedirector<TSourceControl> : IControlRedirector<TSourceControl>
         where TSourceControl : IControl
     {
-        private readonly IRedirectionInfoProvider<RedirectionInfo> infoProvider;
+        private readonly IRedirectionInfoProvider infoProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ControlRedirector{TSourceControl}"/> class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        protected ControlRedirector(IRedirectionInfoProvider<RedirectionInfo> infoProvider, ILogger logger)
+        protected ControlRedirector(IRedirectionInfoProvider infoProvider, ILogger logger)
         {
             this.infoProvider = infoProvider;
             this.Logger = logger;
@@ -45,6 +44,6 @@
         /// </summary>
         /// <param name="redirectionInfo">The redirection info.</param>
         /// <returns>The target type.</returns>
-        protected abstract Type GetTargetControlType(RedirectionInfo redirectionInfo);
+        protected abstract Type GetTargetControlType(IRedirectionInfo redirectionInfo);
     }
 }

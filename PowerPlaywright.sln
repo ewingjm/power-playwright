@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.TestApp.Mod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.Framework", "src\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj", "{31DB4EF5-446B-4D2B-A722-4995179F1711}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerPlaywright.TestApp.PageObjects", "tests\PowerPlaywright.IntegrationTests.PageObjects\PowerPlaywright.TestApp.PageObjects.csproj", "{56C99067-3B10-4414-9579-E138B929D708}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{31DB4EF5-446B-4D2B-A722-4995179F1711}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31DB4EF5-446B-4D2B-A722-4995179F1711}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31DB4EF5-446B-4D2B-A722-4995179F1711}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56C99067-3B10-4414-9579-E138B929D708}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56C99067-3B10-4414-9579-E138B929D708}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56C99067-3B10-4414-9579-E138B929D708}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56C99067-3B10-4414-9579-E138B929D708}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{5E5E55EB-C7EA-4BFD-A149-C4EBD515606E} = {1A52EE88-8A18-4CBE-8B25-5AD2A34BBD43}
 		{A3405D67-22D2-4E58-97E7-9686250CD254} = {1BFB836D-12D1-4998-BD4A-074F25A29D87}
 		{31DB4EF5-446B-4D2B-A722-4995179F1711} = {1A52EE88-8A18-4CBE-8B25-5AD2A34BBD43}
+		{56C99067-3B10-4414-9579-E138B929D708} = {1BFB836D-12D1-4998-BD4A-074F25A29D87}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5E7A79E6-9AB7-409B-9A17-2418FFE16E05}

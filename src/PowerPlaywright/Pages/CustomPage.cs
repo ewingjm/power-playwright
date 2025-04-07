@@ -6,7 +6,7 @@
     /// <summary>s
     /// A custom page.
     /// </summary>
-    internal class CustomPage : ModelDrivenAppPage
+    public class CustomPage : ModelDrivenAppPage
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomPage"/> class.
