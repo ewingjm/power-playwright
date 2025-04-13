@@ -14,7 +14,7 @@
     [PcfControlStrategy(0, 0, 0)]
     public class CurrencyControl : PcfControl, ICurrencyControl
     {
-        private readonly ILocator urlInput;
+        private readonly ILocator input;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CurrencyControl"/> class.
@@ -25,19 +25,19 @@
         public CurrencyControl(string name, IAppPage appPage, IControl parent = null)
             : base(name, appPage, parent)
         {
-            this.urlInput = this.Container.Locator("input");
+            this.input = this.Container.Locator("input");
         }
 
         /// <inheritdoc/>
         public async Task<decimal?> GetValueAsync()
         {
-            return await this.urlInput.InputValueOrNullAsync<decimal?>();
+            return await this.input.InputValueOrNullAsync<decimal?>();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(decimal value)
         {
-            await this.urlInput.FillAsync(value.ToString());
+            await this.input.FillAsync(value.ToString());
         }
 
         /// <inheritdoc/>

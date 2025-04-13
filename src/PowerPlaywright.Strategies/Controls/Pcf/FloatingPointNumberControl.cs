@@ -15,7 +15,7 @@
     [PcfControlStrategy(0, 0, 0)]
     public class FloatingPointNumberControl : PcfControl, IFloatingPointNumberControl
     {
-        private readonly ILocator urlInput;
+        private readonly ILocator input;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FloatingPointNumberControl"/> class.
@@ -26,19 +26,19 @@
         public FloatingPointNumberControl(string name, IAppPage appPage, IControl parent = null)
             : base(name, appPage, parent)
         {
-            this.urlInput = this.Container.Locator("input");
+            this.input = this.Container.Locator("input");
         }
 
         /// <inheritdoc/>
         public async Task<double?> GetValueAsync()
         {
-            return await this.urlInput.InputValueOrNullAsync<double?>();
+            return await this.input.InputValueOrNullAsync<double?>();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(double value)
         {
-            await this.urlInput.FillAsync(value.ToString());
+            await this.input.FillAsync(value.ToString());
         }
 
         /// <inheritdoc/>
