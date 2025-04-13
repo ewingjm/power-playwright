@@ -33,7 +33,7 @@
             var floatAmount = this.faker.Finance.Amount();
             var floatControl = await this.SetupFloatScenarioAsync();
 
-            await floatControl.SetValueAsync((float)floatAmount);
+            await floatControl.SetValueAsync((double)floatAmount);
 
             Assert.That(floatControl.GetValueAsync, Is.EqualTo(floatAmount));
         }
