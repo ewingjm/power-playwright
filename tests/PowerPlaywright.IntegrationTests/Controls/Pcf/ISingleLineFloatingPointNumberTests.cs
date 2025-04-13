@@ -30,10 +30,10 @@
         [Test]
         public async Task SetValueAsync_ReturnsValue()
         {
-            var floatAmount = this.faker.Finance.Amount();
+            var floatAmount = this.faker.Random.Double(1.0, 100.0);
             var floatControl = await this.SetupFloatScenarioAsync();
 
-            await floatControl.SetValueAsync((double)floatAmount);
+            await floatControl.SetValueAsync(floatAmount);
 
             Assert.That(floatControl.GetValueAsync, Is.EqualTo(floatAmount));
         }
