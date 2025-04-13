@@ -36,7 +36,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(float value)
+        public async Task SetValueAsync(double value)
         {
             await this.urlInput.FillAsync(value.ToString());
         }
