@@ -63,7 +63,7 @@ public class AppPageTests : AppPageTests<IAppPage>
     {
         _ = this.AppPage.Form;
 
-        this.ControlFactory.Received(1).CreateInstance<IMainFormControl>(this.AppPage);
+        this.ControlFactory.Received(1).CreateInstance<IMainForm>(this.AppPage);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class AppPageTests : AppPageTests<IAppPage>
         var firstControl = this.AppPage.Form;
         var secondControl = this.AppPage.Form;
 
-        this.ControlFactory.Received(1).CreateInstance<IMainFormControl>(this.AppPage);
+        this.ControlFactory.Received(1).CreateInstance<IMainForm>(this.AppPage);
         Assert.That(firstControl, Is.EqualTo(secondControl));
     }
 

@@ -21,6 +21,6 @@
         }
 
         /// <inheritdoc/>
-        public IMainFormControl Form => this.GetControl<IMainFormControl>();
+        public IMainForm Form => this.GetControl<IMainForm>();
     }
 }
