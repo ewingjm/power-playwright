@@ -36,7 +36,7 @@
         }
 
         /// <inheritdoc/>
-        async Task<decimal?> IDecimal.GetValueAsync()
+        async Task<decimal?> IDecimalNumber.GetValueAsync()
         {
             return await this.numericInput.InputValueOrNullAsync<decimal?>();
         }
@@ -54,25 +54,25 @@
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(float value)
+        public async Task SetValueAsync(float? value)
         {
             await this.numericInput.FillAsync(value.ToString());
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(decimal value)
+        public async Task SetValueAsync(decimal? value)
         {
             await this.numericInput.FillAsync(value.ToString());
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(int value)
+        public async Task SetValueAsync(int? value)
         {
             await this.numericInput.FillAsync(value.ToString());
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(double value)
+        public async Task SetValueAsync(double? value)
         {
             await this.numericInput.FillAsync(value.ToString());
         }

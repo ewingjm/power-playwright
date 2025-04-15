@@ -7,12 +7,12 @@
     using System;
 
     /// <summary>
-    /// Redirects requests for an <see cref="IDecimal"/> control.
+    /// Redirects requests for an <see cref="IDecimalNumber"/> control.
     /// </summary>
-    public class DecimalRedirector : ControlRedirector<IDecimal>
+    public class DecimalRedirector : ControlRedirector<IDecimalNumber>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="IDecimal"/> class.
+        /// Initializes a new instance of the <see cref="IDecimalNumber"/> class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>

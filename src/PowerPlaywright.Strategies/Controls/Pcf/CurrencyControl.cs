@@ -35,7 +35,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(decimal value)
+        public async Task SetValueAsync(decimal? value)
         {
             await this.input.FillAsync(value.ToString());
         }

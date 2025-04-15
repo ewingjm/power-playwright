@@ -12,7 +12,7 @@
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SetValueAsync(int value);
+        Task SetValueAsync(int? value);
 
         /// <summary>
         /// Gets the value of the (Whole Number) control.

@@ -53,10 +53,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(DateTime value)
+        public async Task SetValueAsync(DateTime? value)
         {
-            var dateTask = this.dateInput.FillAsync(value.ToShortDateString());
-            var timeTask = this.timeInput.FillAsync(value.ToShortTimeString());
+            var dateTask = this.dateInput.FillAsync(value.Value.ToShortDateString());
+            var timeTask = this.timeInput.FillAsync(value.Value.ToShortTimeString());
 
             await Task.WhenAll(dateTask, timeTask);
         }

@@ -8,7 +8,7 @@
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests the <see cref="IDecimal"/> PCF control class.
+    /// Tests the <see cref="IDecimalNumber"/> PCF control class.
     /// </summary>
     public class IDecimalTests : IntegrationTests
     {
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IDecimal.SetValueAsync(decimal)"/> sets the value.
+        /// Tests that <see cref="IDecimalNumber.SetValueAsync(decimal?)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -39,7 +39,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IDecimal.GetValueAsync"/> returns null when the value has not been set.
+        /// Tests that <see cref="IDecimalNumber.GetValueAsync"/> returns null when the value has not been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -54,8 +54,8 @@
         /// Sets up a Decimal control scenario for testing by creating a record with a specified or generated decimal.
         /// </summary>
         /// <param name="withDecimal">An optional decimal Value to set in the record. If null, a random decimal will be generated.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IDecimal"/>.</returns>
-        private async Task<IDecimal> SetupDecimalScenarioAsync(bool withDecimal = true)
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IDecimalNumber"/>.</returns>
+        private async Task<IDecimalNumber> SetupDecimalScenarioAsync(bool withDecimal = true)
         {
             var record = new RecordFaker();
 
@@ -65,7 +65,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetControl<IDecimal>(nameof(pp_Record.pp_decimal));
+            return recordPage.Form.GetControl<IDecimalNumber>(nameof(pp_Record.pp_decimal));
         }
     }
 }

@@ -12,7 +12,7 @@
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SetValueAsync(double value);
+        Task SetValueAsync(double? value);
 
         /// <summary>
         /// Gets the value of the (Floating Point Number) control.

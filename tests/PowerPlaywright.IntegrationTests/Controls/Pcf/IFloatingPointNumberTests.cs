@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IFloatingPointNumber.SetValueAsync(double)"/> sets the value.
+        /// Tests that <see cref="IFloatingPointNumber.SetValueAsync(double?)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]

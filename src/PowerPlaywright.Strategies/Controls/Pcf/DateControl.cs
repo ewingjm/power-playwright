@@ -36,7 +36,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(DateTime value)
+        public async Task SetValueAsync(DateTime? value)
         {
             await this.input.FillAsync(value.ToString());
         }

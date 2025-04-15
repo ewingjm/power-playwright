@@ -5,7 +5,7 @@ namespace PowerPlaywright.Framework.Controls.Pcf
     ///  <summary>
     /// An interface for the MscrmControls.FieldControls.DecimalNumberControl control.
     /// </summary>
-    public interface IDecimalNumberControl : IDecimal
+    public interface IDecimalNumberControl : IDecimalNumber
     {
     }
 }

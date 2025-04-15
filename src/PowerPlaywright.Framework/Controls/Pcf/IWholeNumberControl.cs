@@ -1,7 +1,7 @@
-﻿using PowerPlaywright.Framework.Controls.Pcf.Classes;
-
-namespace PowerPlaywright.Framework.Controls.Pcf
+﻿namespace PowerPlaywright.Framework.Controls.Pcf
 {
+    using PowerPlaywright.Framework.Controls.Pcf.Classes;
+
     ///  <summary>
     /// An interface for theMscrmControls.FieldControls.WholeNumberControl control.
     /// </summary>
