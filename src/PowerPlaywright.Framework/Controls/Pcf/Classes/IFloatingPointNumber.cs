@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// (Floating Point Number) control class.
+    /// Floating-point number control class.
     /// </summary>
     public interface IFloatingPointNumber : IPcfControl
     {
