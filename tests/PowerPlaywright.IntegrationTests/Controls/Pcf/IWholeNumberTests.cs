@@ -23,7 +23,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IWholeNumber.SetValueAsync(int)"/> sets the value.
+        /// Tests that <see cref="IWholeNumber.SetValueAsync(int?)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
