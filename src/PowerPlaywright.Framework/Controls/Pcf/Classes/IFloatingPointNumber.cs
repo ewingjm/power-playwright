@@ -8,7 +8,7 @@
     public interface IFloatingPointNumber : IPcfControl
     {
         /// <summary>
-        /// Sets the value of the  (Floating Point Number) control.
+        /// Sets the value of the floating-point number control.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
