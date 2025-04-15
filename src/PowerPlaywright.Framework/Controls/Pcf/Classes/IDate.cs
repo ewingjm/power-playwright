@@ -1,23 +1,24 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Pcf.Classes
 {
+    using System;
     using System.Threading.Tasks;
 
     /// <summary>
-    /// (Whole Number) control class.
+    /// Single-line text (Date) control class.
     /// </summary>
-    public interface IWholeNumber : IPcfControl
+    public interface IDate : IPcfControl
     {
         /// <summary>
-        /// Sets the value of the (Whole Number) control.
+        /// Sets the value of the (Date) control.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SetValueAsync(int value);
+        Task SetValueAsync(DateTime value);
 
         /// <summary>
-        /// Gets the value of the (Whole Number) control.
+        /// Gets the value of the (Date) control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<int?> GetValueAsync();
+        Task<DateTime?> GetValueAsync();
     }
 }

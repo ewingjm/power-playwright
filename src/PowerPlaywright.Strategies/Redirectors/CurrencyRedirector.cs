@@ -7,16 +7,16 @@
     using System;
 
     /// <summary>
-    /// Redirects requests for an <see cref="IWholeNumber"/> control.
+    /// Redirects requests for an <see cref="ICurrency"/> control.
     /// </summary>
-    public class SingleLineWholeNumberRedirector : ControlRedirector<IWholeNumber>
+    public class CurrencyRedirector : ControlRedirector<ICurrency>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SingleLineCurrencyRedirector"/> class.
+        /// Initializes a new instance of the <see cref="CurrencyRedirector"/> class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public SingleLineWholeNumberRedirector(IRedirectionInfoProvider infoProvider, ILogger<SingleLineWholeNumberRedirector> logger)
+        public CurrencyRedirector(IRedirectionInfoProvider infoProvider, ILogger<CurrencyRedirector> logger)
             : base(infoProvider, logger)
         {
         }
@@ -26,7 +26,7 @@
         {
             if (redirectionInfo.ActiveReleaseChannel == (int)ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
             {
-                return typeof(IWholeNumberControl);
+                return typeof(ICurrencyControl);
             }
 
             return typeof(INumericInput);

@@ -9,7 +9,7 @@
     /// <summary>
     /// Tests the <see cref="IWholeNumber"/> PCF control class.
     /// </summary>
-    public class ISingleLineWholeNumberTests : IntegrationTests
+    public class IWholeNumberTests : IntegrationTests
     {
         private Faker faker;
 

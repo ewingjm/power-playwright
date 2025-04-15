@@ -7,16 +7,16 @@
     using System;
 
     /// <summary>
-    /// Redirects requests for an <see cref="IFloatingPointNumber"/> control.
+    /// Redirects requests for an <see cref="IDecimal"/> control.
     /// </summary>
-    public class SingleLineFloatingPointNumberRedirector : ControlRedirector<IFloatingPointNumber>
+    public class DecimalRedirector : ControlRedirector<IDecimal>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SingleLineCurrencyRedirector"/> class.
+        /// Initializes a new instance of the <see cref="IDecimal"/> class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public SingleLineFloatingPointNumberRedirector(IRedirectionInfoProvider infoProvider, ILogger<SingleLineFloatingPointNumberRedirector> logger)
+        public DecimalRedirector(IRedirectionInfoProvider infoProvider, ILogger<DecimalRedirector> logger)
             : base(infoProvider, logger)
         {
         }
@@ -26,7 +26,7 @@
         {
             if (redirectionInfo.ActiveReleaseChannel == (int)ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
             {
-                return typeof(IFloatingPointNumberControl);
+                return typeof(IDecimalNumberControl);
             }
 
             return typeof(INumericInput);

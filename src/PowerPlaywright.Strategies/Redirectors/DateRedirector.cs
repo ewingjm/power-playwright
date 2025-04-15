@@ -7,16 +7,16 @@
     using System;
 
     /// <summary>
-    /// Redirects requests for an <see cref="ICurrency"/> control.
+    /// Redirects requests for an <see cref="IDate"/> control.
     /// </summary>
-    public class SingleLineCurrencyRedirector : ControlRedirector<ICurrency>
+    public class DateRedirector : ControlRedirector<IDate>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SingleLineCurrencyRedirector"/> class.
+        /// Initializes a new instance of the <see cref="DateRedirector"/> class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public SingleLineCurrencyRedirector(IRedirectionInfoProvider infoProvider, ILogger<SingleLineCurrencyRedirector> logger)
+        public DateRedirector(IRedirectionInfoProvider infoProvider, ILogger<DateRedirector> logger)
             : base(infoProvider, logger)
         {
         }
@@ -24,12 +24,7 @@
         /// <inheritdoc/>
         protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
         {
-            if (redirectionInfo.ActiveReleaseChannel == (int)ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
-            {
-                return typeof(ICurrencyControl);
-            }
-
-            return typeof(INumericInput);
+            return typeof(IDateControl);
         }
     }
 }

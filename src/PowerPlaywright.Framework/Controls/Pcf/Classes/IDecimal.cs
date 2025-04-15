@@ -3,19 +3,19 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Single-line text (Decimal) control class.
+    /// (Decimal) control class.
     /// </summary>
     public interface IDecimal : IPcfControl
     {
         /// <summary>
-        /// Sets the value of the single-line text (Decimal) control.
+        /// Sets the value of the (Decimal) control.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task SetValueAsync(decimal value);
 
         /// <summary>
-        /// Gets the value of the single-line text (Decimal) control.
+        /// Gets the value of the (Decimal) control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<decimal?> GetValueAsync();

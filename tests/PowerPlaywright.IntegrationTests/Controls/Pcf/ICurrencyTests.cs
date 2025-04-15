@@ -10,7 +10,7 @@
     /// <summary>
     /// Tests the <see cref="ICurrency"/> PCF control class.
     /// </summary>
-    public class ISingleLineCurrencyTests : IntegrationTests
+    public class ICurrencyTests : IntegrationTests
     {
         private Faker faker;
 

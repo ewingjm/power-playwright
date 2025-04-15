@@ -10,7 +10,7 @@
     /// <summary>
     /// Tests the <see cref="IFloatingPointNumber"/> PCF control class.
     /// </summary>
-    public class ISingleLineFloatingPointNumberTests : IntegrationTests
+    public class IFloatingPointNumberTests : IntegrationTests
     {
         private Faker faker;
 

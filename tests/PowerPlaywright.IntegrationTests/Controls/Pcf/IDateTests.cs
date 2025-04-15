@@ -8,9 +8,9 @@
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests the <see cref="IDecimal"/> PCF control class.
+    /// Tests the <see cref="IDate"/> PCF control class.
     /// </summary>
-    public class ISingleLineDecimalTests : IntegrationTests
+    public class IDateTests : IntegrationTests
     {
         private Faker faker;
 
@@ -24,18 +24,18 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IDecimal.SetValueAsync(decimal)"/> sets the value.
+        /// Tests that <see cref="IDate.SetValueAsync(DateTime)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task SetValueAsync_ReturnsValue()
         {
-            var decimalValue = this.faker.Finance.Amount();
-            var decimalControl = await this.SetupDecimalScenarioAsync();
+            var dateValue = this.faker.Date.Recent().Date;
+            var dateControl = await this.SetupDateScenarioAsync();
 
-            await decimalControl.SetValueAsync(decimalValue);
+            await dateControl.SetValueAsync(dateValue);
 
-            Assert.That(decimalControl.GetValueAsync, Is.EqualTo(decimalValue));
+            Assert.That(dateControl.GetValueAsync, Is.EqualTo(dateValue));
         }
 
         /// <summary>
@@ -45,27 +45,27 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var currencyControl = await this.SetupDecimalScenarioAsync(withDecimal: false);
+            var dateControl = await this.SetupDateScenarioAsync(withDate: false);
 
-            Assert.That(currencyControl.GetValueAsync, Is.Null);
+            Assert.That(dateControl.GetValueAsync, Is.EqualTo(DateTime.MinValue));
         }
 
         /// <summary>
         /// Sets up a URL control scenario for testing by creating a record with a specified or generated Currency.
         /// </summary>
-        /// <param name="withDecimal">An optional Currency Value to set in the record. If null, a random Currency will be generated.</param>
+        /// <param name="withDate">An optional Currency Value to set in the record. If null, a random Currency will be generated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="ICurrencyControl"/>.</returns>
-        private async Task<ICurrency> SetupDecimalScenarioAsync(bool withDecimal = true)
+        private async Task<IDate> SetupDateScenarioAsync(bool withDate = true)
         {
             var record = new RecordFaker();
 
-            if (!withDecimal)
+            if (!withDate)
             {
-                record.Ignore(p => p.pp_decimal);
+                record.Ignore(p => p.pp_dateandtimedateonly);
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetControl<ICurrency>(nameof(pp_Record.pp_decimal));
+            return recordPage.Form.GetControl<IDate>(nameof(pp_Record.pp_dateandtimedateonly));
         }
     }
 }
