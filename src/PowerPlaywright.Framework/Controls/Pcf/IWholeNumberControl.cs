@@ -5,7 +5,7 @@ namespace PowerPlaywright.Framework.Controls.Pcf
     ///  <summary>
     /// An interface for theMscrmControls.FieldControls.WholeNumberControl control.
     /// </summary>
-    public interface IWholeNumberControl : ISingleLineWholeNumber
+    public interface IWholeNumberControl : IWholeNumber
     {
     }
 }

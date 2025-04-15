@@ -7,7 +7,7 @@
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests the <see cref="ISingleLineWholeNumber"/> PCF control class.
+    /// Tests the <see cref="IWholeNumber"/> PCF control class.
     /// </summary>
     public class ISingleLineWholeNumberTests : IntegrationTests
     {
@@ -23,7 +23,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISingleLineWholeNumber.SetValueAsync(int)"/> sets the value.
+        /// Tests that <see cref="IWholeNumber.SetValueAsync(int)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -38,7 +38,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISingleLineWholeNumber.GetValueAsync"/> returns null when the value has not been set.
+        /// Tests that <see cref="IWholeNumber.GetValueAsync"/> returns null when the value has not been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -53,8 +53,8 @@
         /// Sets up a Whole Number control scenario for testing by creating a record with a specified or generated Whole Number.
         /// </summary>
         /// <param name="withWholeNumber">An optional Currency Value to set in the record. If null, a random Whole Number will be generated.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="ISingleLineWholeNumber"/>.</returns>
-        private async Task<ISingleLineWholeNumber> SetupDecimalScenarioAsync(bool withWholeNumber = true)
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IWholeNumber"/>.</returns>
+        private async Task<IWholeNumber> SetupDecimalScenarioAsync(bool withWholeNumber = true)
         {
             var record = new RecordFaker();
 
@@ -64,7 +64,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetControl<ISingleLineWholeNumber>(nameof(pp_Record.pp_wholenumbernone));
+            return recordPage.Form.GetControl<IWholeNumber>(nameof(pp_Record.pp_wholenumbernone));
         }
     }
 }

@@ -7,9 +7,9 @@
     using System;
 
     /// <summary>
-    /// Redirects requests for an <see cref="ISingleLineWholeNumber"/> control.
+    /// Redirects requests for an <see cref="IWholeNumber"/> control.
     /// </summary>
-    public class SingleLineWholeNumberRedirector : ControlRedirector<ISingleLineWholeNumber>
+    public class SingleLineWholeNumberRedirector : ControlRedirector<IWholeNumber>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SingleLineCurrencyRedirector"/> class.

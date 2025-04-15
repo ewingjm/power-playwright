@@ -5,7 +5,7 @@
     /// <summary>
     /// Single-line text (Decimal) control class.
     /// </summary>
-    public interface ISingleLineDecimal : IPcfControl
+    public interface IDecimal : IPcfControl
     {
         /// <summary>
         /// Sets the value of the single-line text (Decimal) control.

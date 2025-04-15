@@ -7,9 +7,9 @@
     using System;
 
     /// <summary>
-    /// Redirects requests for an <see cref="ISingleLineCurrency"/> control.
+    /// Redirects requests for an <see cref="ICurrency"/> control.
     /// </summary>
-    public class SingleLineCurrencyRedirector : ControlRedirector<ISingleLineCurrency>
+    public class SingleLineCurrencyRedirector : ControlRedirector<ICurrency>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SingleLineCurrencyRedirector"/> class.

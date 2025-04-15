@@ -7,9 +7,9 @@
     using System;
 
     /// <summary>
-    /// Redirects requests for an <see cref="ISingleLineFloatingPointNumber"/> control.
+    /// Redirects requests for an <see cref="IFloatingPointNumber"/> control.
     /// </summary>
-    public class SingleLineFloatingPointNumberRedirector : ControlRedirector<ISingleLineFloatingPointNumber>
+    public class SingleLineFloatingPointNumberRedirector : ControlRedirector<IFloatingPointNumber>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SingleLineCurrencyRedirector"/> class.

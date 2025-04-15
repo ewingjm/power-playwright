@@ -8,7 +8,7 @@
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests the <see cref="ISingleLineCurrency"/> PCF control class.
+    /// Tests the <see cref="ICurrency"/> PCF control class.
     /// </summary>
     public class ISingleLineCurrencyTests : IntegrationTests
     {
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISingleLineCurrency.SetValueAsync(decimal)"/> sets the value.
+        /// Tests that <see cref="ICurrency.SetValueAsync(decimal)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -55,7 +55,7 @@
         /// </summary>
         /// <param name="withCurrency">An optional Currency Value to set in the record. If null, a random Currency will be generated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="ICurrencyControl"/>.</returns>
-        private async Task<ISingleLineCurrency> SetupCurrencyScenarioAsync(bool withCurrency = true)
+        private async Task<ICurrency> SetupCurrencyScenarioAsync(bool withCurrency = true)
         {
             var record = new RecordFaker();
 
@@ -65,7 +65,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetControl<ISingleLineCurrency>(nameof(pp_Record.pp_currency));
+            return recordPage.Form.GetControl<ICurrency>(nameof(pp_Record.pp_currency));
         }
     }
 }

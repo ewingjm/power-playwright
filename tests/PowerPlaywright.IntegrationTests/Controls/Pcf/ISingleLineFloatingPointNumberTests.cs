@@ -8,7 +8,7 @@
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests the <see cref="ISingleLineFloatingPointNumber"/> PCF control class.
+    /// Tests the <see cref="IFloatingPointNumber"/> PCF control class.
     /// </summary>
     public class ISingleLineFloatingPointNumberTests : IntegrationTests
     {
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISingleLineFloatingPointNumber.SetValueAsync(double)"/> sets the value.
+        /// Tests that <see cref="IFloatingPointNumber.SetValueAsync(double)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -55,7 +55,7 @@
         /// </summary>
         /// <param name="withFloat">An optional Floating Number Value to set in the record. If null, a random Amount will be generated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IFloatingPointNumberControl"/>.</returns>
-        private async Task<ISingleLineFloatingPointNumber> SetupFloatScenarioAsync(bool withFloat = true)
+        private async Task<IFloatingPointNumber> SetupFloatScenarioAsync(bool withFloat = true)
         {
             var record = new RecordFaker();
 
@@ -65,7 +65,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetControl<ISingleLineFloatingPointNumber>(nameof(pp_Record.pp_float));
+            return recordPage.Form.GetControl<IFloatingPointNumber>(nameof(pp_Record.pp_float));
         }
     }
 }

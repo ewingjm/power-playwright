@@ -30,25 +30,25 @@
         }
 
         /// <inheritdoc/>
-        async Task<decimal?> ISingleLineCurrency.GetValueAsync()
+        async Task<decimal?> ICurrency.GetValueAsync()
         {
             return await this.numericInput.InputValueOrNullAsync<decimal?>();
         }
 
         /// <inheritdoc/>
-        async Task<decimal?> ISingleLineDecimal.GetValueAsync()
+        async Task<decimal?> IDecimal.GetValueAsync()
         {
             return await this.numericInput.InputValueOrNullAsync<decimal?>();
         }
 
         /// <inheritdoc/>
-        async Task<double?> ISingleLineFloatingPointNumber.GetValueAsync()
+        async Task<double?> IFloatingPointNumber.GetValueAsync()
         {
             return await this.numericInput.InputValueOrNullAsync<double?>();
         }
 
         /// <inheritdoc/>
-        async Task<int?> ISingleLineWholeNumber.GetValueAsync()
+        async Task<int?> IWholeNumber.GetValueAsync()
         {
             return await this.numericInput.InputValueOrNullAsync<int?>();
         }

@@ -3,21 +3,21 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Single-line text (Whole Number) control class.
+    /// Single-line text (Currency) control class.
     /// </summary>
-    public interface ISingleLineWholeNumber : IPcfControl
+    public interface ICurrency : IPcfControl
     {
         /// <summary>
-        /// Sets the value of the single-line text (Whole Number) control.
+        /// Sets the value of the single-line text (Currency) control.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SetValueAsync(int value);
+        Task SetValueAsync(decimal value);
 
         /// <summary>
-        /// Gets the value of the single-line text (Whole Number) control.
+        /// Gets the value of the single-line text (Currency) control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<int?> GetValueAsync();
+        Task<decimal?> GetValueAsync();
     }
 }

@@ -8,7 +8,7 @@
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests the <see cref="ISingleLineDecimal"/> PCF control class.
+    /// Tests the <see cref="IDecimal"/> PCF control class.
     /// </summary>
     public class ISingleLineDecimalTests : IntegrationTests
     {
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISingleLineDecimal.SetValueAsync(decimal)"/> sets the value.
+        /// Tests that <see cref="IDecimal.SetValueAsync(decimal)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -55,7 +55,7 @@
         /// </summary>
         /// <param name="withDecimal">An optional Currency Value to set in the record. If null, a random Currency will be generated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="ICurrencyControl"/>.</returns>
-        private async Task<ISingleLineCurrency> SetupDecimalScenarioAsync(bool withDecimal = true)
+        private async Task<ICurrency> SetupDecimalScenarioAsync(bool withDecimal = true)
         {
             var record = new RecordFaker();
 
@@ -65,7 +65,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetControl<ISingleLineCurrency>(nameof(pp_Record.pp_decimal));
+            return recordPage.Form.GetControl<ICurrency>(nameof(pp_Record.pp_decimal));
         }
     }
 }
