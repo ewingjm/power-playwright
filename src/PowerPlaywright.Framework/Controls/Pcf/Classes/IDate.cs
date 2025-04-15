@@ -4,7 +4,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Single-line text (Date) control class.
+    /// Date control class.
     /// </summary>
     public interface IDate : IPcfControl
     {
