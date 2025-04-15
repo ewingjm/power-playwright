@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IDateTime.SetValueAsync(DateTime)"/> sets the value.
+        /// Tests that <see cref="IDateTime.SetValueAsync(DateTime?)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -35,10 +35,10 @@
 
             await dateControl.SetValueAsync(dateValue);
 
-            var formattedDate = await dateControl.GetValueAsync();
+            var actualDate = await dateControl.GetValueAsync();
 
             var expected = new DateTime(dateValue.Year, dateValue.Month, dateValue.Day, dateValue.Hour, dateValue.Minute, 0, dateValue.Kind);
-            var actual = new DateTime(formattedDate.Value.Year, formattedDate.Value.Month, formattedDate.Value.Day, formattedDate.Value.Hour, formattedDate.Value.Minute, 0, formattedDate.Value.Kind);
+            var actual = new DateTime(actualDate.Value.Year, actualDate.Value.Month, actualDate.Value.Day, actualDate.Value.Hour, actualDate.Value.Minute, 0, actualDate.Value.Kind);
 
             Assert.That(actual, Is.EqualTo(expected), "Set and retrieved DateTime do not match");
         }
@@ -52,7 +52,7 @@
         {
             var dateControl = await this.SetupDateTimeScenarioAsync(withDate: false);
 
-            Assert.That(dateControl.GetValueAsync, Is.EqualTo(DateTime.MinValue));
+            Assert.That(dateControl.GetValueAsync, Is.Null);
         }
 
         /// <summary>

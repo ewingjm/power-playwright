@@ -4,7 +4,7 @@
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
 
     ///  <summary>
-    /// An interface for theMscrmControls.FieldControls.WholeNumberControl control.
+    /// An interface for the MscrmControls.FieldControls.WholeNumberControl control.
     /// </summary>
     [PcfControl("MscrmControls.FieldControls.WholeNumberControl")]
     public interface IWholeNumberControl : IWholeNumber

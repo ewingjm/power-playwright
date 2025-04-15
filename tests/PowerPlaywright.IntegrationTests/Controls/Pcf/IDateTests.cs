@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IDate.SetValueAsync(DateTime)"/> sets the value.
+        /// Tests that <see cref="IDate.SetValueAsync(DateTime?)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -47,7 +47,7 @@
         {
             var dateControl = await this.SetupDateScenarioAsync(withDate: false);
 
-            Assert.That(dateControl.GetValueAsync, Is.EqualTo(DateTime.MinValue));
+            Assert.That(dateControl.GetValueAsync, Is.Null);
         }
 
         /// <summary>

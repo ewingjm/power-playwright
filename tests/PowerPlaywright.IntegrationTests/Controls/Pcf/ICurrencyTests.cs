@@ -15,7 +15,7 @@
         private Faker faker;
 
         /// <summary>
-        /// Sets up the url control.
+        /// Sets up the currency control.
         /// </summary>
         [SetUp]
         public void Setup()
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ICurrency.SetValueAsync(decimal)"/> sets the value.
+        /// Tests that <see cref="ICurrency.SetValueAsync(decimal?)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -39,7 +39,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISingleLineUrl.GetValueAsync"/> returns null when the value has not been set.
+        /// Tests that <see cref="ICurrency.GetValueAsync"/> returns null when the value has not been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -51,9 +51,9 @@
         }
 
         /// <summary>
-        /// Sets up a URL control scenario for testing by creating a record with a specified or generated Currency.
+        /// Sets up a currency control scenario for testing by creating a record with a specified or generated currency.
         /// </summary>
-        /// <param name="withCurrency">An optional Currency Value to set in the record. If null, a random Currency will be generated.</param>
+        /// <param name="withCurrency">An optional Currency Value to set in the record. If null, a random currency will be generated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="ICurrencyControl"/>.</returns>
         private async Task<ICurrency> SetupCurrencyScenarioAsync(bool withCurrency = true)
         {

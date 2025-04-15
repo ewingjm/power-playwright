@@ -31,29 +31,18 @@
         {
             var value = await locator.InputValueAsync(options);
 
-            if (string.IsNullOrEmpty(value) || value == PowerAppsInputPlaceholderValue)
-            {
-                return default;
-            }
-
-            return ChangeType<T>(value);
+            return string.IsNullOrEmpty(value) || value == PowerAppsInputPlaceholderValue
+                ? default
+                : ConvertTo<T>(value);
         }
 
-        private static T ChangeType<T>(object value)
+        private static T ConvertTo<T>(object value)
         {
-            var t = typeof(T);
+            var targetType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
 
-            if (t.IsGenericType && t.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
-            {
-                if (value == null)
-                {
-                    return default(T);
-                }
-
-                t = Nullable.GetUnderlyingType(t);
-            }
-
-            return (T)Convert.ChangeType(value, t);
+            return value == null
+                ? default
+                : (T)Convert.ChangeType(value, targetType);
         }
     }
 }

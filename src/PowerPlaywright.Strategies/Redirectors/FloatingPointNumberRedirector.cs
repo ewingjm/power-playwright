@@ -12,7 +12,7 @@
     public class FloatingPointNumberRedirector : ControlRedirector<IFloatingPointNumber>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="CurrencyRedirector"/> class.
+        /// Initializes a new instance of the <see cref="FloatingPointNumberRedirector"/> class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>

@@ -7,8 +7,6 @@
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Strategies.Extensions;
-    using System;
-    using PowerPlaywright.Framework.Controls.Pcf.Classes;
 
     /// <summary>
     /// A control strategy for the <see cref="IWholeNumberControl"/>.

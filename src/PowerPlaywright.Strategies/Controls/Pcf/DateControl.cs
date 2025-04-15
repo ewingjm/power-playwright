@@ -32,7 +32,7 @@
         /// <inheritdoc/>
         public async Task<DateTime?> GetValueAsync()
         {
-            return await this.input.InputValueOrNullAsync<DateTime>();
+            return await this.input.InputValueOrNullAsync<DateTime?>();
         }
 
         /// <inheritdoc/>

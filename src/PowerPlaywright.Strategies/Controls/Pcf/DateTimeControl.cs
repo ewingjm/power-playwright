@@ -10,14 +10,17 @@
     using System.Globalization;
     using System.Threading.Tasks;
 
+    //TODO: Implement Composite using the IFactory once we have the time control (Added in Issue #50).
     /// <summary>
     /// A control strategy for the <see cref="IDateTimeControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
     public class DateTimeControl : PcfControl, IDateTimeControl
     {
-        private readonly ILocator dateInput;
-        private readonly ILocator timeInput;
+        private ILocator dateInput;
+        private ILocator timeInput;
+        private ILocator timeContainer;
+        private ILocator dateContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DateTimeControl"/> class.
@@ -28,8 +31,8 @@
         public DateTimeControl(string name, IAppPage appPage, IControl parent = null)
             : base(name, appPage, parent)
         {
-            var dateContainer = this.Container.Locator($"div[data-lp-id*='MscrmControls.FieldControls.DateControl|{this.Name}.fieldControl._datecontrol']");
-            var timeContainer = this.Container.Locator($"div[data-lp-id*='MscrmControls.FieldControls.TimeControl|{this.Name}.fieldControl._timecontrol']");
+            this.dateContainer = this.Container.Locator($"div[data-lp-id*='MscrmControls.FieldControls.DateControl|{this.Name}.fieldControl._datecontrol']");
+            this.timeContainer = this.Container.Locator($"div[data-lp-id*='MscrmControls.FieldControls.TimeControl|{this.Name}.fieldControl._timecontrol']");
 
             this.dateInput = dateContainer.Locator("input");
             this.timeInput = timeContainer.Locator("input");
@@ -39,12 +42,16 @@
         public async Task<DateTime?> GetValueAsync()
         {
             var dateString = await this.dateInput.InputValueAsync();
-            var timeString = await this.timeInput.InputValueAsync();
+            var timeString = string.Empty;
 
-            var combinedString = $"{dateString} {timeString}";
+            //Handle when its null because it renders differently.
+            if (await timeContainer.IsVisibleAsync())
+            {
+                this.timeInput = timeContainer.Locator("input");
+                timeString = await this.timeInput.InputValueAsync();
+            }
 
-            // Try parsing with current culture
-            if (DateTime.TryParse(combinedString, CultureInfo.CurrentCulture, DateTimeStyles.None, out var dateTime))
+            if (DateTime.TryParse($"{dateString} {timeString}", CultureInfo.CurrentCulture, DateTimeStyles.None, out var dateTime))
             {
                 return dateTime;
             }
