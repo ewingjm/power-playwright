@@ -15,7 +15,7 @@
         Task SetValueAsync(decimal value);
 
         /// <summary>
-        /// Gets the value of the (Currency) control.
+        /// Gets the value of the Currency control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<decimal?> GetValueAsync();
