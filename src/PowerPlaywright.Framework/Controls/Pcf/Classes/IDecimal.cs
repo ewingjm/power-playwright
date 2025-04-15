@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// (Decimal) control class.
+    /// Decimal control class.
     /// </summary>
     public interface IDecimal : IPcfControl
     {
