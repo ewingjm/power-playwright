@@ -62,7 +62,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
 
-            return recordPage.Form.GetControl<ISingleLineUrl>(nameof(pp_Record.pp_singlelineoftexturl));
+            return recordPage.Form.GetField<ISingleLineUrl>(nameof(pp_Record.pp_singlelineoftexturl)).Control;
         }
     }
 }

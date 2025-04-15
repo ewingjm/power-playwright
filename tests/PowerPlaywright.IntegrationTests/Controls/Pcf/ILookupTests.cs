@@ -105,7 +105,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(withRecord.Generate());
 
-            return recordPage.Form.GetControl<ILookup>(pp_Record.Forms.Information.RelatedRecord);
+            return recordPage.Form.GetField<ILookup>(pp_Record.Forms.Information.RelatedRecord).Control;
         }
 
         private Faker<pp_RelatedRecord> GetNamedRelatedRecordFaker(out string relatedRecordName)

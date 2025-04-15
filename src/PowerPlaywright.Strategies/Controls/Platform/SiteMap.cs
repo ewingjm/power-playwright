@@ -13,7 +13,7 @@
     /// A sitemap control.
     /// </summary>
     [PlatformControlStrategy(0, 0, 0, 0)]
-    public class SiteMapControl : Control, ISiteMapControl
+    public class SiteMap : Control, ISiteMap
     {
         private const string RootLocator = "div[data-id='navbar-container']";
         private const string AreaSwitcherLocator = "#areaSwitcherId";
@@ -25,11 +25,11 @@
         private readonly ILocator areaSwitcherFlyout;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SiteMapControl"/> class.
+        /// Initializes a new instance of the <see cref="SiteMap"/> class.
         /// </summary>
         /// <param name="appPage">The app page.</param>
         /// <param name="pageFactory">The page factory.</param>
-        public SiteMapControl(IAppPage appPage, IPageFactory pageFactory)
+        public SiteMap(IAppPage appPage, IPageFactory pageFactory)
             : base(appPage)
         {
             this.pageFactory = pageFactory;

@@ -203,7 +203,10 @@
 
         private Type GetStrategyType(Type controlType)
         {
-            if (!this.StrategyMap.TryGetValue(controlType, out var strategyType))
+            var key = controlType.IsConstructedGenericType ?
+                controlType.GetGenericTypeDefinition() : controlType;
+
+            if (!this.StrategyMap.TryGetValue(key, out var strategyType))
             {
                 throw new PowerPlaywrightException($"Type {controlType.Name} is not a valid control interface type.");
             }
@@ -211,6 +214,11 @@
             if (strategyType is null)
             {
                 throw new PowerPlaywrightException($"Unable to find a control strategy for type {controlType.Name}.");
+            }
+
+            if (strategyType.IsGenericTypeDefinition)
+            {
+                strategyType = strategyType.MakeGenericType(controlType.GenericTypeArguments);
             }
 
             return strategyType;

@@ -10,7 +10,7 @@
         /// <summary>
         /// Gets the site map control.
         /// </summary>
-        ISiteMapControl SiteMap { get; }
+        ISiteMap SiteMap { get; }
 
         /// <summary>
         /// Gets an object that provides client API functionality.
