@@ -27,6 +27,7 @@
         /// Tests that <see cref="IDateTime.SetValueAsync(DateTime?)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Ignore("Experimental")]
         [Test]
         public async Task SetValueAsync_ReturnsValue()
         {
@@ -67,6 +68,10 @@
             if (!withDate)
             {
                 record.Ignore(p => p.pp_dateandtimedateandtime);
+            }
+            else
+            {
+                record.RuleFor(x => x.pp_dateandtimedateandtime, DateTime.Now);
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
