@@ -18,7 +18,7 @@
         private readonly ILocator numericInput;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ActionInput"/> class.
+        /// Initializes a new instance of the <see cref="NumericInput"/> class.
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
