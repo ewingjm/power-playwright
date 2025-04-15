@@ -15,7 +15,7 @@
         Task SetValueAsync(double? value);
 
         /// <summary>
-        /// Gets the value of the (Floating Point Number) control.
+        /// Gets the value of the floating-point number control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<double?> GetValueAsync();
