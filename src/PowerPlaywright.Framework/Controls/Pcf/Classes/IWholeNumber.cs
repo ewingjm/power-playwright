@@ -3,12 +3,12 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// (Whole Number) control class.
+    /// Whole number control class.
     /// </summary>
     public interface IWholeNumber : IPcfControl
     {
         /// <summary>
-        /// Sets the value of the (Whole Number) control.
+        /// Sets the value of the whole number control.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
