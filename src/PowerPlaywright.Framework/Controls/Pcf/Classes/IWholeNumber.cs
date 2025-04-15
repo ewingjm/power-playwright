@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// (Whole Number) control class.
+    /// Whole number control class.
     /// </summary>
     public interface IWholeNumber : IPcfControl
     {
