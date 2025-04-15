@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Single-line text (Currency) control class.
+    /// Currency control class.
     /// </summary>
     public interface ICurrency : IPcfControl
     {
