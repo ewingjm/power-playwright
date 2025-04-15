@@ -8,14 +8,14 @@
     public interface IDecimalNumber : IPcfControl
     {
         /// <summary>
-        /// Sets the value of the (Decimal) control.
+        /// Sets the value of the Decimal control.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task SetValueAsync(decimal? value);
 
         /// <summary>
-        /// Gets the value of the (Decimal) control.
+        /// Gets the value of the Decimal control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<decimal?> GetValueAsync();
