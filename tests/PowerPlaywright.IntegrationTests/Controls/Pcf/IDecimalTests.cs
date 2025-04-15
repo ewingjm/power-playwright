@@ -15,7 +15,7 @@
         private Faker faker;
 
         /// <summary>
-        /// Sets up the url control.
+        /// Sets up the Decimal control.
         /// </summary>
         [SetUp]
         public void Setup()
@@ -39,23 +39,23 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISingleLineUrl.GetValueAsync"/> returns null when the value has not been set.
+        /// Tests that <see cref="IDecimal.GetValueAsync"/> returns null when the value has not been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var currencyControl = await this.SetupDecimalScenarioAsync(withDecimal: false);
+            var decimalControl = await this.SetupDecimalScenarioAsync(withDecimal: false);
 
-            Assert.That(currencyControl.GetValueAsync, Is.Null);
+            Assert.That(decimalControl.GetValueAsync, Is.Null);
         }
 
         /// <summary>
-        /// Sets up a URL control scenario for testing by creating a record with a specified or generated Currency.
+        /// Sets up a Decimal control scenario for testing by creating a record with a specified or generated decimal.
         /// </summary>
-        /// <param name="withDecimal">An optional Currency Value to set in the record. If null, a random Currency will be generated.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="ICurrencyControl"/>.</returns>
-        private async Task<ICurrency> SetupDecimalScenarioAsync(bool withDecimal = true)
+        /// <param name="withDecimal">An optional decimal Value to set in the record. If null, a random decimal will be generated.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IDecimal"/>.</returns>
+        private async Task<IDecimal> SetupDecimalScenarioAsync(bool withDecimal = true)
         {
             var record = new RecordFaker();
 
@@ -65,7 +65,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetControl<ICurrency>(nameof(pp_Record.pp_decimal));
+            return recordPage.Form.GetControl<IDecimal>(nameof(pp_Record.pp_decimal));
         }
     }
 }

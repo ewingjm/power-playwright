@@ -15,7 +15,7 @@
         private Faker faker;
 
         /// <summary>
-        /// Sets up the url control.
+        /// Sets up the Date control.
         /// </summary>
         [SetUp]
         public void Setup()
@@ -39,7 +39,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISingleLineUrl.GetValueAsync"/> returns null when the value has not been set.
+        /// Tests that <see cref="IDate.GetValueAsync"/> returns null when the value has not been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -51,10 +51,10 @@
         }
 
         /// <summary>
-        /// Sets up a URL control scenario for testing by creating a record with a specified or generated Currency.
+        /// Sets up a Date control scenario for testing by creating a record with a specified or generated Date.
         /// </summary>
-        /// <param name="withDate">An optional Currency Value to set in the record. If null, a random Currency will be generated.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="ICurrencyControl"/>.</returns>
+        /// <param name="withDate">An optional Date Value to set in the record. If null, a random Date will be generated.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IDateControl"/>.</returns>
         private async Task<IDate> SetupDateScenarioAsync(bool withDate = true)
         {
             var record = new RecordFaker();

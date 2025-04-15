@@ -10,7 +10,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// A control strategy for the <see cref="IDecimalNumberControl"/>.
+    /// A control strategy for the <see cref="IDateControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
     public class DateControl : PcfControl, IDateControl

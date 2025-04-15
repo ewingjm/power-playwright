@@ -1,11 +1,11 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
-    using System.Threading.Tasks;
     using Bogus;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Tests the <see cref="IFloatingPointNumber"/> PCF control class.
@@ -39,19 +39,19 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISingleLineUrl.GetValueAsync"/> returns null when the value has not been set.
+        /// Tests that <see cref="IFloatingPointNumber.GetValueAsync"/> returns null when the value has not been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var currencyControl = await this.SetupFloatScenarioAsync(withFloat: false);
+            var floatControl = await this.SetupFloatScenarioAsync(withFloat: false);
 
-            Assert.That(currencyControl.GetValueAsync, Is.Null);
+            Assert.That(floatControl.GetValueAsync, Is.Null);
         }
 
         /// <summary>
-        /// Sets up a URL control scenario for testing by creating a record with a specified or generated Float.
+        /// Sets up a Floating Number control scenario for testing by creating a record with a specified or generated Float.
         /// </summary>
         /// <param name="withFloat">An optional Floating Number Value to set in the record. If null, a random Amount will be generated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IFloatingPointNumberControl"/>.</returns>

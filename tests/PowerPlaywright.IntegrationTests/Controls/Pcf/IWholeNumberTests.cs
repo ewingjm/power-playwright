@@ -30,7 +30,7 @@
         public async Task SetValueAsync_ReturnsValue()
         {
             var wholeNumberValue = this.faker.Random.Int(int.MinValue, int.MaxValue);
-            var wholeNumberControl = await this.SetupDecimalScenarioAsync();
+            var wholeNumberControl = await this.SetupWholeNumberScenarioAsync();
 
             await wholeNumberControl.SetValueAsync(wholeNumberValue);
 
@@ -44,17 +44,17 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var currencyControl = await this.SetupDecimalScenarioAsync(withWholeNumber: false);
+            var wholeNumberControl = await this.SetupWholeNumberScenarioAsync(withWholeNumber: false);
 
-            Assert.That(currencyControl.GetValueAsync, Is.Null);
+            Assert.That(wholeNumberControl.GetValueAsync, Is.Null);
         }
 
         /// <summary>
         /// Sets up a Whole Number control scenario for testing by creating a record with a specified or generated Whole Number.
         /// </summary>
-        /// <param name="withWholeNumber">An optional Currency Value to set in the record. If null, a random Whole Number will be generated.</param>
+        /// <param name="withWholeNumber">An optional Whole Number Value to set in the record. If null, a random Whole Number will be generated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IWholeNumber"/>.</returns>
-        private async Task<IWholeNumber> SetupDecimalScenarioAsync(bool withWholeNumber = true)
+        private async Task<IWholeNumber> SetupWholeNumberScenarioAsync(bool withWholeNumber = true)
         {
             var record = new RecordFaker();
 
