@@ -27,12 +27,11 @@
         /// Tests that <see cref="IDateTime.SetValueAsync(DateTime?)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Ignore("Experimental")]
         [Test]
         public async Task SetValueAsync_ReturnsValue()
         {
-            var dateValue = this.faker.Date.Recent();
-            var dateControl = await this.SetupDateTimeScenarioAsync();
+            var dateValue = DateTime.UtcNow;
+            var dateControl = await this.SetupDateTimeScenarioAsync(dateValue);
 
             await dateControl.SetValueAsync(dateValue);
 
@@ -51,7 +50,7 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var dateControl = await this.SetupDateTimeScenarioAsync(withDate: false);
+            var dateControl = await this.SetupDateTimeScenarioAsync();
 
             Assert.That(dateControl.GetValueAsync, Is.Null);
         }
@@ -61,17 +60,17 @@
         /// </summary>
         /// <param name="withDate">An optional DateTime Value to set in the record. If null, a random DateTime will be generated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IDateTimeControl"/>.</returns>
-        private async Task<IDateTime> SetupDateTimeScenarioAsync(bool withDate = true)
+        private async Task<IDateTime> SetupDateTimeScenarioAsync(DateTime? withDate = null)
         {
             var record = new RecordFaker();
 
-            if (!withDate)
+            if (!withDate.HasValue)
             {
                 record.Ignore(p => p.pp_dateandtimedateandtime);
             }
             else
             {
-                record.RuleFor(x => x.pp_dateandtimedateandtime, DateTime.Now);
+                record.RuleFor(x => x.pp_dateandtimedateandtime, withDate);
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());

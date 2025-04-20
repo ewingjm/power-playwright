@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
     using Microsoft.Playwright;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
@@ -8,6 +9,7 @@
     using PowerPlaywright.Strategies.Extensions;
     using System;
     using System.Globalization;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     //TODO: Implement Composite using the IFactory once we have the time control (Added in Issue #50).
@@ -44,11 +46,14 @@
             var dateString = await this.dateInput.InputValueAsync();
             var timeString = string.Empty;
 
-            //Handle when its null because it renders differently.
             if (await timeContainer.IsVisibleAsync())
             {
-                this.timeInput = timeContainer.Locator("input");
-                timeString = await this.timeInput.InputValueAsync();
+                timeString = await this.timeInput.Last.InputValueAsync();
+                Match match = Regex.Match(timeString, @"([01]?[0-9]|2[0-3]):[0-5][0-9]");
+                if (match.Success)
+                {
+                    timeString = match.Value;
+                }
             }
 
             if (DateTime.TryParse($"{dateString} {timeString}", CultureInfo.CurrentCulture, DateTimeStyles.None, out var dateTime))
