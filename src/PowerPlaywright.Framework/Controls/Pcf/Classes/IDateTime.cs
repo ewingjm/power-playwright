@@ -19,6 +19,6 @@
         /// Gets the value of the (Date) control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<DateTime?> GetValueAsync();
+        Task<string> GetValueAsync();
     }
 }

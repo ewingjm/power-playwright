@@ -19,10 +19,9 @@
     [PcfControlStrategy(0, 0, 0)]
     public class DateTimeControl : PcfControl, IDateTimeControl
     {
-        private ILocator dateInput;
-        private ILocator timeInput;
-        private ILocator timeContainer;
-        private ILocator dateContainer;
+        private readonly ILocator dateInput;
+        private readonly ILocator timeInput;
+        private readonly ILocator timeContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DateTimeControl"/> class.
@@ -33,22 +32,22 @@
         public DateTimeControl(string name, IAppPage appPage, IControl parent = null)
             : base(name, appPage, parent)
         {
-            this.dateContainer = this.Container.Locator($"div[data-lp-id*='MscrmControls.FieldControls.DateControl|{this.Name}.fieldControl._datecontrol']");
+            var dateContainer = this.Container.Locator($"div[data-lp-id*='MscrmControls.FieldControls.DateControl|{this.Name}.fieldControl._datecontrol']");
             this.timeContainer = this.Container.Locator($"div[data-lp-id*='MscrmControls.FieldControls.TimeControl|{this.Name}.fieldControl._timecontrol']");
 
-            this.dateInput = dateContainer.Locator("input");
-            this.timeInput = timeContainer.Locator("input");
+            this.dateInput = dateContainer.Locator("input[aria-label^='Date of Date and time']");
+            this.timeInput = timeContainer.Locator("input[aria-label^='Time of Date and time']");
         }
 
         /// <inheritdoc/>
-        public async Task<DateTime?> GetValueAsync()
+        public async Task<string> GetValueAsync()
         {
-            var dateString = await this.dateInput.InputValueAsync();
+            var dateString = await this.dateInput.InputValueOrNullAsync();
             var timeString = string.Empty;
 
             if (await timeContainer.IsVisibleAsync())
             {
-                timeString = await this.timeInput.Last.InputValueAsync();
+                timeString = await this.timeInput.InputValueOrNullAsync();
                 Match match = Regex.Match(timeString, @"([01]?[0-9]|2[0-3]):[0-5][0-9]");
                 if (match.Success)
                 {
@@ -56,12 +55,9 @@
                 }
             }
 
-            if (DateTime.TryParse($"{dateString} {timeString}", CultureInfo.CurrentCulture, DateTimeStyles.None, out var dateTime))
-            {
-                return dateTime;
-            }
+            var combined = $"{dateString} {timeString}".Trim();
 
-            return null;
+            return string.IsNullOrWhiteSpace(combined) ? null : combined;
         }
 
         /// <inheritdoc/>
