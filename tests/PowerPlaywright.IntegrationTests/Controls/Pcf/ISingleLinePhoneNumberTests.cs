@@ -62,7 +62,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
 
-            return recordPage.Form.GetControl<ISingleLinePhoneNumber>(nameof(pp_Record.pp_singlelineoftextphonenumber));
+            return recordPage.Form.GetField<ISingleLinePhoneNumber>(nameof(pp_Record.pp_singlelineoftextphonenumber)).Control;
         }
     }
 }

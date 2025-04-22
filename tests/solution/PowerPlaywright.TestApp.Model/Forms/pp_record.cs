@@ -37,7 +37,7 @@
                 /// <summary>
                 /// The toggle control.
                 /// </summary>
-                public const string Toggle = "pp_yesno";
+                public const string Toggle = "pp_yesno1";
 
                 /// <summary>
                 /// The Information form tabs.

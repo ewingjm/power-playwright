@@ -62,7 +62,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
 
-            return recordPage.Form.GetControl<ISingleLineEmail>(nameof(pp_Record.pp_singlelineoftextemail));
+            return recordPage.Form.GetField<ISingleLineEmail>(nameof(pp_Record.pp_singlelineoftextemail)).Control;
         }
     }
 }

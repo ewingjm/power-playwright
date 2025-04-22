@@ -20,7 +20,7 @@ public class ModelDrivenAppPageTests : AppPageTests<IModelDrivenAppPage>
     /// <param name="propertyName">The property.</param>
     /// <param name="controlName">The control name (optional).</param>
     [Test]
-    [TestCase<ISiteMapControl>(nameof(IModelDrivenAppPage.SiteMap))]
+    [TestCase<ISiteMap>(nameof(IModelDrivenAppPage.SiteMap))]
     [TestCase<IClientApi>(nameof(IModelDrivenAppPage.ClientApi))]
     public new void ControlProperty_Always_ReturnsControlInstantiatedByControlFactory<TControlType>(
         string propertyName, string? controlName = null)

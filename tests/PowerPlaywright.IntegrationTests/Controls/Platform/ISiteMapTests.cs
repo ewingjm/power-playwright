@@ -8,11 +8,11 @@
     using PowerPlaywright.TestApp.Model.App;
 
     /// <summary>
-    /// Tests for the <see cref="SiteMapControl"/> control.
+    /// Tests for the <see cref="SiteMap"/> control.
     /// </summary>
-    public partial class ISiteMapControlTests : IntegrationTests
+    public partial class ISiteMapTests : IntegrationTests
     {
-        private ISiteMapControl siteMapControl;
+        private ISiteMap siteMapControl;
 
         /// <summary>
         /// Sets up the read-only grid.
@@ -25,7 +25,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISiteMapControl.OpenPageAsync{TPage}(string, string, string)"/> opens a page correctly.
+        /// Tests that <see cref="ISiteMap.OpenPageAsync{TPage}(string, string, string)"/> opens a page correctly.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -40,7 +40,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISiteMapControl.OpenPageAsync{TPage}(string, string, string)"/> throws a <see cref="NotFoundException"/> if the page doesn't exist.
+        /// Tests that <see cref="ISiteMap.OpenPageAsync{TPage}(string, string, string)"/> throws a <see cref="NotFoundException"/> if the page doesn't exist.
         /// </summary>
         [Test]
         public void OpenPageAsync_PageDoesNotExist_ThrowsNotFoundException()
@@ -52,7 +52,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISiteMapControl.OpenPageAsync{TPage}(string, string, string)"/> throws a <see cref="NotFoundException"/> if the group doesn't exist.
+        /// Tests that <see cref="ISiteMap.OpenPageAsync{TPage}(string, string, string)"/> throws a <see cref="NotFoundException"/> if the group doesn't exist.
         /// </summary>
         [Test]
         public void OpenPageAsync_GroupDoesNotExist_ThrowsNotFoundException()
@@ -64,7 +64,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISiteMapControl.OpenPageAsync{TPage}(string, string, string)"/> throws a <see cref="NotFoundException"/> if the group doesn't exist.
+        /// Tests that <see cref="ISiteMap.OpenPageAsync{TPage}(string, string, string)"/> throws a <see cref="NotFoundException"/> if the group doesn't exist.
         /// </summary>
         [Test]
         public void OpenPageAsync_AreaDoesNotExist_ThrowsNotFoundException()
