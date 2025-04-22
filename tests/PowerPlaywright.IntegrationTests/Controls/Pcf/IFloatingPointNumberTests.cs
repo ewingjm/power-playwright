@@ -1,11 +1,11 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
+    using System.Threading.Tasks;
     using Bogus;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Tests the <see cref="IFloatingPointNumber"/> PCF control class.

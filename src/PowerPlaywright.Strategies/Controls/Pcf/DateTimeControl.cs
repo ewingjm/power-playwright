@@ -12,7 +12,6 @@
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
-    //TODO: Implement Composite using the IFactory once we have the time control (Added in Issue #50).
     /// <summary>
     /// A control strategy for the <see cref="IDateTimeControl"/>.
     /// </summary>
