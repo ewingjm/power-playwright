@@ -21,7 +21,7 @@ namespace PowerPlaywright.Pages
         }
 
         /// <inheritdoc/>
-        public ISiteMapControl SiteMap => this.GetControl<ISiteMapControl>();
+        public ISiteMap SiteMap => this.GetControl<ISiteMap>();
 
         /// <inheritdoc/>
         public IClientApi ClientApi => this.GetControl<IClientApi>();

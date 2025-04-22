@@ -10,6 +10,6 @@
         /// <summary>
         /// Gets the form.
         /// </summary>
-        IMainFormControl Form { get; }
+        IMainForm Form { get; }
     }
 }

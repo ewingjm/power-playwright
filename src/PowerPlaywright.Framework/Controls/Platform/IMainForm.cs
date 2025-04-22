@@ -8,7 +8,7 @@
     /// An interface representing a form.
     /// </summary>
     [PlatformControl]
-    public interface IMainFormControl : IPlatformControl
+    public interface IMainForm : IPlatformControl
     {
         /// <summary>
         /// Opens a tab on the form.
@@ -24,12 +24,19 @@
         Task<string> GetActiveTabAsync();
 
         /// <summary>
-        /// Gets a control on the form.
+        /// Gets a field on the form.
         /// </summary>
-        /// <typeparam name="TControl">The control type.</typeparam>
         /// <param name="name">The control name.</param>
         /// <returns>The control.</returns>
-        TControl GetControl<TControl>(string name)
-            where TControl : IPcfControl;
+        IFormField GetField(string name);
+
+        /// <summary>
+        /// Gets a field on the form with a known PCF control or control class type.
+        /// </summary>
+        /// <typeparam name="TPcfControl">The PCF control type.</typeparam>
+        /// <param name="name">The control name.</param>
+        /// <returns>The control.</returns>
+        IFormField<TPcfControl> GetField<TPcfControl>(string name)
+            where TPcfControl : IPcfControl;
     }
 }

@@ -64,7 +64,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(withRecord.Generate());
 
-            return recordPage.Form.GetControl<IReadOnlyGrid>(pp_Record.Forms.Information.RelatedRecordsSubgrid);
+            return recordPage.Form.GetField<IReadOnlyGrid>(pp_Record.Forms.Information.RelatedRecordsSubgrid).Control;
         }
     }
 }
