@@ -43,7 +43,7 @@
         public async Task<string> GetValueAsync()
         {
             var dateString = await this.dateInput.InputValueOrNullAsync();
-            var timeString = string.Empty;
+            var timeString = String.Empty;
 
             if (await timeContainer.IsVisibleAsync())
             {
@@ -55,9 +55,12 @@
                 }
             }
 
-            var combined = $"{dateString} {timeString}".Trim();
+            if (String.IsNullOrEmpty(dateString) || String.IsNullOrEmpty(timeString))
+            {
+                return null;
+            }
 
-            return string.IsNullOrWhiteSpace(combined) ? null : combined;
+            return $"{dateString} {timeString}";
         }
 
         /// <inheritdoc/>

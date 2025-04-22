@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
+    using System.Globalization;
     using System.Threading.Tasks;
     using Bogus;
     using PowerPlaywright.Framework.Controls.Pcf;
@@ -12,17 +13,6 @@
     /// </summary>
     public class IDateTimeTests : IntegrationTests
     {
-        private Faker faker;
-
-        /// <summary>
-        /// Sets up the Datetime control.
-        /// </summary>
-        [SetUp]
-        public void Setup()
-        {
-            this.faker = new Faker();
-        }
-
         /// <summary>
         /// Tests that <see cref="IDateTime.SetValueAsync(DateTime?)"/> sets the value.
         /// </summary>
@@ -35,7 +25,9 @@
 
             await dateControl.SetValueAsync(dateValue);
 
-            Assert.That(dateControl.GetValueAsync(), Is.Not.Null);
+            var expected = $"{dateValue.ToShortDateString()} {dateValue.ToShortTimeString()}";
+
+            Assert.That(await dateControl.GetValueAsync(), Is.EqualTo(expected));
         }
 
         /// <summary>
@@ -69,6 +61,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
+
             return recordPage.Form.GetControl<IDateTime>(nameof(pp_Record.pp_dateandtimedateandtime));
         }
     }
