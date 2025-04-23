@@ -65,7 +65,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetControl<IDate>(nameof(pp_Record.pp_dateandtimedateonly));
+            return recordPage.Form.GetField<IDate>(nameof(pp_Record.pp_dateandtimedateonly)).Control;
         }
     }
 }

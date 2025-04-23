@@ -65,7 +65,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetControl<IDecimalNumber>(nameof(pp_Record.pp_decimal));
+            return recordPage.Form.GetField<IDecimalNumber>(nameof(pp_Record.pp_decimal)).Control;
         }
     }
 }
