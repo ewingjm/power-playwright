@@ -28,13 +28,14 @@
         /// <param name="appPage">The app page.</param>
         /// <param name="controlFactory">The control factory.</param>
         /// <param name="name">The control name.</param>
+        /// <param name="overrideName">Used when the data-control-id is not matching the field name on rare occassions.</param>
         /// <param name="parent">The parent control.</param>
-        public FormField(IControlFactory controlFactory, IAppPage appPage, string name, IControl parent = null)
+        public FormField(IControlFactory controlFactory, IAppPage appPage, string name, IControl parent = null, string overrideName = null)
             : base(appPage, parent)
         {
             this.controlFactory = controlFactory;
-            this.formField = this.controlFactory.CreateInstance<IFormField>(this.AppPage, name, parent);
-            this.control = this.controlFactory.CreateInstance<TPcfControl>(this.AppPage, name, this);
+            this.formField = this.controlFactory.CreateInstance<IFormField>(this.AppPage, name, parent, overrideName);
+            this.control = this.controlFactory.CreateInstance<TPcfControl>(this.AppPage, name, this, overrideName);
         }
 
         /// <inheritdoc/>

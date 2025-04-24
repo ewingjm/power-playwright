@@ -136,7 +136,7 @@
         }
 
         /// <inheritdoc/>
-        public TControl CreateInstance<TControl>(IAppPage appPage, string name = null, IControl parent = null)
+        public TControl CreateInstance<TControl>(IAppPage appPage, string name = null, IControl parent = null, string overrideName = null)
             where TControl : IControl
         {
             if (appPage is null)
@@ -155,7 +155,7 @@
             var strategyType = this.GetStrategyType(controlType);
             this.logger.LogTrace("Found strategy type {strategyType}.", strategyType);
 
-            var parameters = GetStrategyTypeParameters(appPage, name, parent);
+            var parameters = GetStrategyTypeParameters(appPage, name, parent, overrideName);
             this.logger.LogTrace("Parameters: {parameters}.", string.Join(", ", parameters));
 
             var strategy = (TControl)ActivatorUtilities.CreateInstance(
@@ -184,13 +184,18 @@
             return typeof(IControlRedirector<IControl>).IsAssignableFrom(t) && t.IsClass && t.IsVisible && !t.IsAbstract;
         }
 
-        private static object[] GetStrategyTypeParameters(IAppPage appPage, string name, IControl parent)
+        private static object[] GetStrategyTypeParameters(IAppPage appPage, string name, IControl parent, string nameoverride)
         {
             var parameters = new List<object> { appPage };
 
             if (name != null)
             {
                 parameters.Add(name);
+            }
+
+            if (nameoverride != null)
+            {
+                parameters.Add(nameoverride);
             }
 
             if (parent != null)

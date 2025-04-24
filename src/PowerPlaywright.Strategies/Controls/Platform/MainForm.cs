@@ -1,7 +1,5 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
-    using System;
-    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -10,6 +8,8 @@
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using System;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// A main form.
@@ -42,16 +42,16 @@
         }
 
         /// <inheritdoc/>
-        public IFormField GetField(string name)
+        public IFormField GetField(string name, string overrideName = null)
         {
-            return this.controlFactory.CreateInstance<IFormField>(this.AppPage, name, this);
+            return this.controlFactory.CreateInstance<IFormField>(this.AppPage, name, this, overrideName);
         }
 
         /// <inheritdoc/>
-        public IFormField<TControl> GetField<TControl>(string name)
+        public IFormField<TControl> GetField<TControl>(string name, string overrideName = null)
             where TControl : IPcfControl
         {
-            return this.controlFactory.CreateInstance<IFormField<TControl>>(this.AppPage, name, this);
+            return this.controlFactory.CreateInstance<IFormField<TControl>>(this.AppPage, name, this, overrideName);
         }
 
         /// <inheritdoc/>

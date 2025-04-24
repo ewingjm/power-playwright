@@ -15,9 +15,9 @@
     public class FormField : Control, IFormField
     {
         private readonly string name;
+        private readonly string overrideName;
 
         private readonly ILocator label;
-        private readonly ILocator dataSetHostContainer;
         private readonly ILocator dataSetLabel;
 
         /// <summary>
@@ -26,14 +26,16 @@
         /// <param name="appPage">The app page.</param>
         /// <param name="name">The control name.</param>
         /// <param name="parent">The parent control.</param>
-        public FormField(IAppPage appPage, string name, IControl parent = null)
+        /// <param name="overrideName">The control name locator override</param>
+        public FormField(IAppPage appPage, string name, IControl parent = null, string overrideName = null)
             : base(appPage, parent)
         {
             this.name = name;
+            this.overrideName = overrideName;
 
             this.label = this.Container.Locator("label[id*='field-label']");
-            this.dataSetHostContainer = this.Container.Locator("div[data-id='DataSetHostContainer']");
-            this.dataSetLabel = this.dataSetHostContainer.Locator("h3");
+            var dataSetHostContainer = this.Container.Locator("div[data-id='DataSetHostContainer']");
+            this.dataSetLabel = dataSetHostContainer.Locator("h3");
         }
 
         /// <inheritdoc/>
@@ -68,6 +70,10 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
+            if (this.overrideName != null)
+            {
+                return context.Locator($"div[data-control-name='{this.overrideName}']");
+            }
             return context.Locator($"div[data-control-name='{this.name}']");
         }
     }
