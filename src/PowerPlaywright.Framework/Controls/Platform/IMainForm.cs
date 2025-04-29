@@ -27,18 +27,16 @@
         /// Gets a field on the form.
         /// </summary>
         /// <param name="name">The control name.</param>
-        /// <param name="overrideName">The control name when the form does not match the default naming.</param>
         /// <returns>The control.</returns>
-        IFormField GetField(string name, string overrideName = null);
+        IFormField GetField(string name);
 
         /// <summary>
         /// Gets a field on the form with a known PCF control or control class type.
         /// </summary>
         /// <typeparam name="TPcfControl">The PCF control type.</typeparam>
         /// <param name="name">The control name.</param>
-        /// <param name="overrideName"></param>
         /// <returns>The control.</returns>
-        IFormField<TPcfControl> GetField<TPcfControl>(string name, string overrideName = null)
+        IFormField<TPcfControl> GetField<TPcfControl>(string name)
             where TPcfControl : IPcfControl;
     }
 }

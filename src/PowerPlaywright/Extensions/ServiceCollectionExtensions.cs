@@ -79,6 +79,11 @@
         /// <returns></returns>
         public static IServiceCollection AddAdditionalPageObjectAssemblies(this IServiceCollection services, IEnumerable<PageObjectAssemblyConfiguration> pageObjectAssemblies)
         {
+            if (pageObjectAssemblies == null)
+            {
+                return services;
+            }
+
             foreach (var pageObjectAssembly in pageObjectAssemblies)
             {
                 services.AddSingleton<IAssemblyProvider>(new LocalAssemblyProvider(pageObjectAssembly.Path));
