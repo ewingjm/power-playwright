@@ -14,7 +14,6 @@
         /// <typeparam name="TControl">The control interface.</typeparam>
         /// <param name="page">The page.</param>
         /// <param name="name">An optional control name.</param>
-        /// In rare occasions controls bound multiple times on a form get indexed with a numeric suffix. </param>
         /// <param name="parent">An optional parent control.</param>
         /// <returns>The concrete implementation.</returns>
         TControl CreateInstance<TControl>(IAppPage page, string name = null, IControl parent = null)
