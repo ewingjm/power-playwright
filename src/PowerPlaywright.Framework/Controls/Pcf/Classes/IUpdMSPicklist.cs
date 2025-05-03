@@ -19,20 +19,7 @@
         /// Gets the value of the multi select picklist.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<List<string>> GetValueAsync();
-
-        /// <summary>
-        /// Sets the value of the multi select picklist.
-        /// </summary>
-        /// <param name="optionValues">The value.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SetByNumericValueAsync(List<int> optionValues);
-
-        /// <summary>
-        /// Gets the value of the multi select picklist.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<List<int>> GetNumericValuesAsync();
+        Task<Dictionary<int, string>> GetValueAsync();
 
         /// <summary>
         /// Selects all the values of the multi select picklist.

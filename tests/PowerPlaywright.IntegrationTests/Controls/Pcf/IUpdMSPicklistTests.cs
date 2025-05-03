@@ -18,10 +18,15 @@
         public async Task SetValueAsync_ReturnsValue()
         {
             var multiSelectPicklist = await this.SetupMultiChoicesScenarioAsync();
-            var expectedValues = new List<string> { "Choice A", "Choice C" };
+
+            var expectedValues = new Dictionary<int, string>
+            {
+                { (int)pp_record_pp_choices.ChoiceA, "Choice A" },
+                { (int)pp_record_pp_choices.ChoiceC, "Choice C" },
+            };
 
             // Act
-            await multiSelectPicklist.SetValueAsync(expectedValues);
+            await multiSelectPicklist.SetValueAsync(expectedValues.Select(x => x.Value).ToList());
             var actualSelectedValues = await multiSelectPicklist.GetValueAsync();
 
             // Assert
@@ -36,29 +41,17 @@
         public async Task SelectAllAsync_ReturnsValue()
         {
             var multiSelectPicklist = await this.SetupMultiChoicesScenarioAsync();
-            var expectedValues = new List<string> { "Choice A", "Choice B", "Choice C" };
+
+            var expectedValues = new Dictionary<int, string>
+            {
+                { (int)pp_record_pp_choices.ChoiceA, "Choice A" },
+                { (int)pp_record_pp_choices.ChoiceB, "Choice B" },
+                { (int)pp_record_pp_choices.ChoiceC, "Choice C" },
+            };
 
             // Act
             await multiSelectPicklist.SelectAllAsync();
             var actualSelectedValues = await multiSelectPicklist.GetValueAsync();
-
-            // Assert
-            Assert.That(actualSelectedValues, Is.EquivalentTo(expectedValues));
-        }
-
-        /// <summary>
-        /// Tests that <see cref="IUpdMSPicklist.SelectAllAsync()"/> sets the value.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task SelectAllNumericAsync_ReturnsValue()
-        {
-            var multiSelectPicklist = await this.SetupMultiChoicesScenarioAsync();
-            var expectedValues = new List<int> { (int)pp_record_pp_choices.ChoiceA, (int)pp_record_pp_choices.ChoiceB, (int)pp_record_pp_choices.ChoiceC };
-
-            // Act
-            await multiSelectPicklist.SelectAllAsync();
-            var actualSelectedValues = await multiSelectPicklist.GetNumericValuesAsync();
 
             // Assert
             Assert.That(actualSelectedValues, Is.EquivalentTo(expectedValues));
