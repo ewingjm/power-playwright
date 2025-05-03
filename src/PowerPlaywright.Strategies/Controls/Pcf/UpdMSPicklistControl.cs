@@ -65,10 +65,7 @@
         {
             await this.Page.WaitForAppIdleAsync();
             await this.Container.ClickAsync();
-
-            await toggleMenu.HoverAsync();
-            await toggleMenu.ScrollIntoViewIfNeededAsync();
-            await toggleMenu.ClickAsync();
+            await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
 
             var selectAllCheckBox = this.Container.GetByText("Select All");
             await selectAllCheckBox.ClickAsync();
@@ -79,19 +76,12 @@
         {
             await this.Page.WaitForAppIdleAsync();
             await this.Container.ClickAsync();
-
-            await toggleMenu.HoverAsync();
-            await toggleMenu.ScrollIntoViewIfNeededAsync();
-            await toggleMenu.ClickAsync();
+            await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
 
             foreach (var optionValue in optionValues)
             {
                 var el = this.Container.GetByTitle(optionValue);
-
-                if (await el.IsVisibleAsync())
-                {
-                    await el.ClickAsync();
-                }
+                await el.ClickIfVisibleAsync();
             }
         }
 
