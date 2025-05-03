@@ -24,11 +24,6 @@
         /// <inheritdoc/>
         protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
         {
-            if (redirectionInfo.ActiveReleaseChannel == (int)ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
-            {
-                return null;
-            }
-
             return typeof(IUpdMSPicklistControl);
         }
     }

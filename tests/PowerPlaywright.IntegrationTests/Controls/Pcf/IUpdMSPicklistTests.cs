@@ -1,51 +1,67 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
-    using System.Threading.Tasks;
-    using Bogus;
-    using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Tests the <see cref="IUpdMSPicklist"/> PCF control class.
     /// </summary>
     public class IUpdMSPicklistTests : IntegrationTests
     {
-        private Faker faker;
-
         /// <summary>
-        /// Sets up the Multi Select Picklist control.
-        /// </summary>
-        [SetUp]
-        public void Setup()
-        {
-            this.faker = new Faker();
-        }
-
-        /// <summary>
-        /// Tests that <see cref="IUpdMSPicklist.SetValueAsync(int?[])"/> sets the value.
+        /// Tests that <see cref="IUpdMSPicklist.SetValueAsync(List{string})"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task SetValueAsync_ReturnsValue()
         {
-            int[]? values = Enum.GetValues(typeof(pp_record_pp_choices))
-                   .Cast<int>()
-                   .ToArray();
+            var multiSelectPicklist = await this.SetupMultiChoicesScenarioAsync();
+            var expectedValues = new List<string> { "Choice A", "Choice C" };
 
-            var choices = new List<pp_record_pp_choices>()
-            {
-                 pp_record_pp_choices.ChoiceA,
-                 pp_record_pp_choices.ChoiceB,
-                 pp_record_pp_choices.ChoiceC,
-            };
+            // Act
+            await multiSelectPicklist.SetValueAsync(expectedValues);
+            var actualSelectedValues = await multiSelectPicklist.GetValueAsync();
 
-            var multiSelectPicklist = await this.SetupMultiChoicesScenarioAsync(choices);
+            // Assert
+            Assert.That(actualSelectedValues, Is.EquivalentTo(expectedValues));
+        }
 
-            await multiSelectPicklist.SetValueAsync(values);
+        /// <summary>
+        /// Tests that <see cref="IUpdMSPicklist.SelectAllAsync()"/> sets the value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SelectAllAsync_ReturnsValue()
+        {
+            var multiSelectPicklist = await this.SetupMultiChoicesScenarioAsync();
+            var expectedValues = new List<string> { "Choice A", "Choice B", "Choice C" };
 
-            Assert.That(multiSelectPicklist.GetValueAsync, Is.EqualTo(values));
+            // Act
+            await multiSelectPicklist.SelectAllAsync();
+            var actualSelectedValues = await multiSelectPicklist.GetValueAsync();
+
+            // Assert
+            Assert.That(actualSelectedValues, Is.EquivalentTo(expectedValues));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IUpdMSPicklist.SelectAllAsync()"/> sets the value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SelectAllNumericAsync_ReturnsValue()
+        {
+            var multiSelectPicklist = await this.SetupMultiChoicesScenarioAsync();
+            var expectedValues = new List<int> { (int)pp_record_pp_choices.ChoiceA, (int)pp_record_pp_choices.ChoiceB, (int)pp_record_pp_choices.ChoiceC };
+
+            // Act
+            await multiSelectPicklist.SelectAllAsync();
+            var actualSelectedValues = await multiSelectPicklist.GetNumericValuesAsync();
+
+            // Assert
+            Assert.That(actualSelectedValues, Is.EquivalentTo(expectedValues));
         }
 
         /// <summary>

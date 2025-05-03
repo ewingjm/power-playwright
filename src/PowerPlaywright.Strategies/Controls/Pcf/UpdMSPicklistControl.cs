@@ -10,6 +10,7 @@
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Framework.Controls;
     using System.Linq;
+    using PowerPlaywright.Framework.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="IUpdMSPicklistControl"/>.
@@ -17,6 +18,8 @@
     [PcfControlStrategy(0, 0, 0)]
     public class UpdMSPicklistControl : PcfControl, IUpdMSPicklistControl
     {
+        private readonly ILocator toggleMenu;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdMSPicklistControl"/> class.
         /// </summary>
@@ -25,34 +28,93 @@
         /// <param name="parent">The parent control.</param>
         public UpdMSPicklistControl(string name, IAppPage appPage, IControl parent = null) : base(name, appPage, parent)
         {
+            this.toggleMenu = this.Container.Locator("button[aria-label='Toggle menu']");
         }
 
         /// <inheritdoc/>
-        public Task<int?[]> GetValueAsync()
+        public async Task<List<int>> GetNumericValuesAsync()
         {
-            return null;
-            //var fieldValue = Xrm.Page.getAttribute("pp_choices").getValue();
-            //console.log(fieldValue);
+            var liElements = await this.Container.Locator("ul").First.Locator("li").AllAsync();
+
+            if (liElements == null || liElements.Count == 0)
+                return new List<int>();
+
+            var dataValues = await Task.WhenAll(
+                liElements.Select(async li =>
+                {
+                    var valueStr = await li.GetAttributeAsync("data-value");
+                    return int.TryParse(valueStr, out var number) ? number : (int?)null;
+                })
+            );
+
+            return dataValues.Where(v => v.HasValue).Select(v => v.Value).ToList();
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(int[] optionValues)
+        public async Task<List<string>> GetValueAsync()
         {
-            await AppPage.Page.EvaluateAsync(@"(fieldName, optionValues) => {
-        const attribute = Xrm.Page.getAttribute(fieldName);
-        if (!attribute) {
-            console.error(`Field '${fieldName}' not found.`);
-            throw new Error(`Field '${fieldName}' not found.`);
+            var liElements = await this.Container.Locator("ul").First.Locator("li").AllAsync();
+
+            if (liElements == null || liElements.Count == 0)
+                return null;
+
+            var dataValues = await Task.WhenAll(
+                liElements.Select(async li =>
+                {
+                    var span = li.Locator("span").First;
+                    return await span.InnerTextAsync();
+                })
+            );
+
+            var result = dataValues.Where(v => !string.IsNullOrWhiteSpace(v)).ToList();
+
+            return result.Any() ? result : null;
         }
-        attribute.setValue(optionValues);  // Must be array of integers for multi-select
-        attribute.fireOnChange();
-    }", new object[] { this.Name, optionValues });
+
+        /// <inheritdoc/>
+        public async Task SelectAllAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+            await this.Container.ClickAsync();
+
+            await toggleMenu.HoverAsync();
+            await toggleMenu.ScrollIntoViewIfNeededAsync();
+            await toggleMenu.ClickAsync();
+
+            var selectAllCheckBox = this.Container.GetByText("Select All");
+            await selectAllCheckBox.ClickAsync();
+        }
+
+        public Task SetByNumericValueAsync(List<int> optionValues)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public async Task SetValueAsync(List<string> optionValues)
+        {
+            await this.Page.WaitForAppIdleAsync();
+            await this.Container.ClickAsync();
+
+            await toggleMenu.HoverAsync();
+            await toggleMenu.ScrollIntoViewIfNeededAsync();
+            await toggleMenu.ClickAsync();
+
+            foreach (var optionValue in optionValues)
+            {
+                var el = this.Container.GetByTitle(optionValue);
+
+                if (await el.IsVisibleAsync())
+                {
+                    await el.ClickAsync();
+                }
+            }
         }
 
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"div[data-lp-id*='MscrmControls.MultiSelectPicklist.UpdMSPicklistControl|{this.Name}.fieldControl|']");
+            return context.Locator($"div[data-id*='{this.Name}.fieldControl_container']");
         }
     }
 }
