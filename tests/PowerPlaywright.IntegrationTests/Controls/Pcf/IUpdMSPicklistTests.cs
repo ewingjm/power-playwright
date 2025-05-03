@@ -70,9 +70,9 @@
         }
 
         /// <summary>
-        /// Sets up a Multi Select Picklist control scenario for testing by creating a record with a specified or generated URL.
+        /// Sets up a Multi Select Picklist control scenario for testing by creating a record with a specified or generated multiple choices.
         /// </summary>
-        /// <param name="withChoices">An optional URL string to set in the record. If null, Random choices be generated.</param>
+        /// <param name="withChoices">An optional multiple choices value to set in the record. If null, Random choices be generated.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IUpdMSPicklist"/>.</returns>
         private async Task<IUpdMSPicklist> SetupMultiChoicesScenarioAsync(IEnumerable<pp_record_pp_choices>? withChoices = null)
         {
