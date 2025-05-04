@@ -2,13 +2,12 @@
 {
     using System.Threading.Tasks;
     using Bogus;
-    using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests the <see cref="ISingleLineUrl"/> PCF control class.
+    /// Tests the <see cref="IOptionSet"/> PCF control class.
     /// </summary>
     public class IOptionSetTests : IntegrationTests
     {
