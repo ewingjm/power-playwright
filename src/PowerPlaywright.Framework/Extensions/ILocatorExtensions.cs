@@ -31,6 +31,10 @@
 
                 await locator.ClickAsync();
             }
+            else
+            {
+                throw new PowerPlaywrightException($"Unable to click the expected element with locator {locator} as it was not visible");
+            }
         }
     }
 }
