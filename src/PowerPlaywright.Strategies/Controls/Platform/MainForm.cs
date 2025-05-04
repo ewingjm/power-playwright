@@ -42,16 +42,16 @@
         }
 
         /// <inheritdoc/>
-        public IFormField GetField(string name, string overrideName = null)
+        public IFormField GetField(string name)
         {
-            return this.controlFactory.CreateInstance<IFormField>(this.AppPage, name, this, overrideName);
+            return this.controlFactory.CreateInstance<IFormField>(this.AppPage, name, this);
         }
 
         /// <inheritdoc/>
-        public IFormField<TControl> GetField<TControl>(string name, string overrideName = null)
+        public IFormField<TControl> GetField<TControl>(string name)
             where TControl : IPcfControl
         {
-            return this.controlFactory.CreateInstance<IFormField<TControl>>(this.AppPage, name, this, overrideName);
+            return this.controlFactory.CreateInstance<IFormField<TControl>>(this.AppPage, name, this);
         }
 
         /// <inheritdoc/>

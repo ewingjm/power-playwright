@@ -64,7 +64,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField<IWholeNumber>(nameof(pp_Record.pp_wholenumbernone), $"{nameof(pp_Record.pp_wholenumbernone)}1").Control;
+            return recordPage.Form.GetField<IWholeNumber>($"{nameof(pp_Record.pp_wholenumbernone)}1").Control;
         }
     }
 }
