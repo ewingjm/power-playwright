@@ -55,6 +55,41 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="IOptionSet.GetValueAsync"/> sets the value with either the default or the passed in value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_YesNo_When_Yes_Returns_Yes()
+        {
+            var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync(true);
+            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("Yes"));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IOptionSet.GetValueAsync"/> returns null when the value has not been set.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_YesNo_When_No_Returns_No()
+        {
+            var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync(false);
+
+            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("No"));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IOptionSet.GetValueAsync"/> returns null when the value has not been set.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_YesNo_DoesNotContainValue_ReturnsNo()
+        {
+            var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync();
+
+            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("No"));
+        }
+
+        /// <summary>
         /// Sets up a OptionSet (Single value) control scenario for testing by creating a record with a specified or generated choices.
         /// </summary>
         /// <param name="withOptionSet">An optional choice value to set in the record. If null, it will leave the choice null.</param>
@@ -75,6 +110,29 @@
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
 
             return recordPage.Form.GetField<IOptionSet>(nameof(pp_Record.pp_choice)).Control;
+        }
+
+        /// <summary>
+        /// Sets up a OptionSet (Yes /  No) control scenario for testing by creating a record with a specified or generated choices.
+        /// </summary>
+        /// <param name="withOptionSet">An optional Yes / No value to set in the record. If null, it will leave the choice null resulting in No being returned.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IOptionSet"/>.</returns>
+        private async Task<IOptionSet> SetupOptionSetYesNoScenarioAsync(bool? withOptionSet = null)
+        {
+            var record = new RecordFaker();
+
+            if (withOptionSet is not null)
+            {
+                record.RuleFor(x => x.pp_yesno, withOptionSet);
+            }
+            else
+            {
+                record.Ignore(x => x.pp_yesno);
+            }
+
+            var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
+
+            return recordPage.Form.GetField<IOptionSet>(nameof(pp_Record.pp_yesno)).Control;
         }
     }
 }
