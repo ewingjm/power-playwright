@@ -6,9 +6,6 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -43,14 +40,16 @@
         {
             await this.Page.WaitForAppIdleAsync();
             await this.Container.ClickAsync();
+
             await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
 
-            var option = this.Page.Locator("div[role='option']").Filter(new LocatorFilterOptions
-            {
-                HasTextString = optionValue
-            }).First;
+            await this.Page.WaitForAppIdleAsync();
 
-            await option.ClickIfVisibleAsync();
+            var option = this.Page.GetByRole(AriaRole.Option, new PageGetByRoleOptions { Name = optionValue });
+            await option.ScrollIntoViewIfNeededAsync();
+            await option.HoverAsync();
+
+            await option.ClickIfVisibleAsync(true, true);
         }
 
         /// <inheritdoc/>

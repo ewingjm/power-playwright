@@ -23,7 +23,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IOptionSet.SetValueAsync(string)"/> sets the value with either the default or the passed in value.
+        /// Tests that <see cref="IOptionSet.GetValueAsync"/> Gets the value with either the default or the passed in value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         /// <param name="choiceText">Choice Text to assert against.</param>
@@ -43,6 +43,48 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="IOptionSet.SetValueAsync(string)"/> Gets the value with either the default or the passed in value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_ContainsValueReplacesValue()
+        {
+            var optionSetControl = await this.SetupOptionSetScenarioAsync(pp_record_pp_choice.ChoiceA);
+
+            await optionSetControl.SetValueAsync("Choice C");
+
+            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("Choice C"));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IOptionSet.SetValueAsync(string)"/> sets the value with either the default or the passed in value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_YesNo_ReturnsValue()
+        {
+            var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync();
+
+            await optionSetControl.SetValueAsync("Yes");
+
+            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("Yes"));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IOptionSet.SetValueAsync(string)"/> sets the value with either the default or the passed in value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_Choice_ReturnsValue()
+        {
+            var optionSetControl = await this.SetupOptionSetScenarioAsync();
+
+            await optionSetControl.SetValueAsync("Choice B");
+
+            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("Choice B"));
+        }
+
+        /// <summary>
         /// Tests that <see cref="IOptionSet.GetValueAsync"/> returns null when the value has not been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
@@ -59,7 +101,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetValueAsync_YesNo_When_Yes_Returns_Yes()
+        public async Task GetValueAsync_YesNo_Returns_Yes()
         {
             var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync(true);
             Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("Yes"));
@@ -68,23 +110,13 @@
         /// <summary>
         /// Tests that <see cref="IOptionSet.GetValueAsync"/> returns null when the value has not been set.
         /// </summary>
+        /// <param name="value">An optional value to set in the record. If null, it will leave the value null resulting in No being returned.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task GetValueAsync_YesNo_When_No_Returns_No()
+        [TestCase(false)]
+        [TestCase(null)]
+        public async Task GetValueAsync_YesNo_ReturnsNo(bool? value)
         {
-            var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync(false);
-
-            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("No"));
-        }
-
-        /// <summary>
-        /// Tests that <see cref="IOptionSet.GetValueAsync"/> returns null when the value has not been set.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task GetValueAsync_YesNo_DoesNotContainValue_ReturnsNo()
-        {
-            var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync();
+            var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync(value);
 
             Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("No"));
         }
