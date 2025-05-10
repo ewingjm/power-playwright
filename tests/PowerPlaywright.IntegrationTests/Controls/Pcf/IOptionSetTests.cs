@@ -11,17 +11,6 @@
     /// </summary>
     public class IOptionSetTests : IntegrationTests
     {
-        private Faker faker;
-
-        /// <summary>
-        /// Sets up the optionset control.
-        /// </summary>
-        [SetUp]
-        public void Setup()
-        {
-            this.faker = new Faker();
-        }
-
         /// <summary>
         /// Tests that <see cref="IOptionSet.GetValueAsync"/> Gets the value with either the default or the passed in value.
         /// </summary>
