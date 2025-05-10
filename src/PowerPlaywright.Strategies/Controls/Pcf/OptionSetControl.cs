@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
     using Microsoft.Playwright;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
@@ -43,9 +44,22 @@
 
             await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
 
-            await this.Page.WaitForAppIdleAsync();
+            var flyoutDiv = this.Page.Locator("div[id^='fluent-listbox']").First;
 
-            var option = this.Page.GetByRole(AriaRole.Option, new PageGetByRoleOptions { Name = optionValue });
+            for (int attempt = 1; attempt <= 10; attempt++)
+            {
+                if (await flyoutDiv.IsVisibleAsync())
+                    break;
+
+                if (attempt == 10)
+                    throw new PowerPlaywrightException("Unable to locate the optionset flyout after 10 attempts.");
+
+                await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
+            }
+
+            //Gets the last one as the flyout is at the end of the dom
+            var option = this.Page.GetByRole(AriaRole.Option, new PageGetByRoleOptions { Name = optionValue }).Last;
+
             await option.ScrollIntoViewIfNeededAsync();
             await option.HoverAsync();
 

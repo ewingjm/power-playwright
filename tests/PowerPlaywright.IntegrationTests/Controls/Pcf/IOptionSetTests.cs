@@ -59,15 +59,17 @@
         /// <summary>
         /// Tests that <see cref="IOptionSet.SetValueAsync(string)"/> sets the value with either the default or the passed in value.
         /// </summary>
+        /// <param name="yesNoValue">Passes in the value to set and assert against.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task SetValueAsync_YesNo_ReturnsValue()
+        [TestCase("Yes")]
+        [TestCase("No")]
+        public async Task SetValueAsync_YesNo_ReturnsValue(string yesNoValue)
         {
             var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync();
 
-            await optionSetControl.SetValueAsync("Yes");
+            await optionSetControl.SetValueAsync(yesNoValue);
 
-            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("Yes"));
+            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo(yesNoValue));
         }
 
         /// <summary>
