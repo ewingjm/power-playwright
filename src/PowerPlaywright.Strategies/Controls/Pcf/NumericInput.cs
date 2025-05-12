@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
     using Microsoft.Playwright;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
@@ -13,7 +14,7 @@
     /// A control strategy for the <see cref="INumericInput"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class NumericInput : PcfControl, INumericInput
+    public class NumericInput : PcfControlInternal, INumericInput
     {
         private readonly ILocator numericInput;
 
@@ -22,9 +23,10 @@
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
+        /// <param name="infoProvider">The info provider.</param>
         /// <param name="parent">The parent control.</param>
-        public NumericInput(string name, IAppPage appPage, IControl parent = null)
-            : base(name, appPage, parent)
+        public NumericInput(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
+            : base(name, appPage, infoProvider, parent)
         {
             this.numericInput = this.Container.Locator("input");
         }
@@ -75,12 +77,6 @@
         public async Task SetValueAsync(double? value)
         {
             await this.numericInput.FillAsync(value.ToString());
-        }
-
-        /// <inheritdoc/>
-        protected override ILocator GetRoot(ILocator context)
-        {
-            return context.Locator($"//div[contains(@data-lp-id,'PowerApps.CoreControls.NumericInput|')]");
         }
     }
 }

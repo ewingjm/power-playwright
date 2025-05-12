@@ -8,7 +8,6 @@
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
     using System;
-    using System.Globalization;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
@@ -16,7 +15,7 @@
     /// A control strategy for the <see cref="IDateTimeControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class DateTimeControl : PcfControl, IDateTimeControl
+    public class DateTimeControl : PcfControlInternal, IDateTimeControl
     {
         private readonly ILocator dateInput;
         private readonly ILocator timeInput;
@@ -27,9 +26,10 @@
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
+        /// <param name="infoProvider">The info provider.</param>
         /// <param name="parent">The parent control.</param>
-        public DateTimeControl(string name, IAppPage appPage, IControl parent = null)
-            : base(name, appPage, parent)
+        public DateTimeControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
+            : base(name, appPage, infoProvider, parent)
         {
             var dateContainer = this.Container.Locator($"div[data-lp-id*='MscrmControls.FieldControls.DateControl|{this.Name}.fieldControl._datecontrol']");
             this.timeContainer = this.Container.Locator($"div[data-lp-id*='MscrmControls.FieldControls.TimeControl|{this.Name}.fieldControl._timecontrol']");
@@ -69,12 +69,6 @@
             var timeTask = this.timeInput.FillAsync(value.Value.ToShortTimeString());
 
             await Task.WhenAll(dateTask, timeTask);
-        }
-
-        /// <inheritdoc/>
-        protected override ILocator GetRoot(ILocator context)
-        {
-            return context.Locator($"div[data-lp-id*='MscrmControls.FieldControls.DateTimeControl|{this.Name}.fieldControl']");
         }
     }
 }

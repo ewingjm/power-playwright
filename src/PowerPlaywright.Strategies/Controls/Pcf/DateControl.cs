@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
     using Microsoft.Playwright;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
@@ -13,7 +14,7 @@
     /// A control strategy for the <see cref="IDateControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class DateControl : PcfControl, IDateControl
+    public class DateControl : PcfControlInternal, IDateControl
     {
         private readonly ILocator input;
 
@@ -22,9 +23,10 @@
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
+        /// <param name="infoProvider">The info provider.</param>
         /// <param name="parent">The parent control.</param>
-        public DateControl(string name, IAppPage appPage, IControl parent = null)
-            : base(name, appPage, parent)
+        public DateControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
+            : base(name, appPage, infoProvider, parent)
         {
             this.input = this.Container.Locator("input");
         }
@@ -39,12 +41,6 @@
         public async Task SetValueAsync(DateTime? value)
         {
             await this.input.FillAsync(value.ToString());
-        }
-
-        /// <inheritdoc/>
-        protected override ILocator GetRoot(ILocator context)
-        {
-            return context.Locator($"div[data-lp-id*='MscrmControls.FieldControls.DateControl|{this.Name}.fieldControl._datecontrol']");
         }
     }
 }
