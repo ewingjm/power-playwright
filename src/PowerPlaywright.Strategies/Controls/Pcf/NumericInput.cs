@@ -80,7 +80,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"//div[contains(@data-lp-id,'PowerApps.CoreControls.NumericInput|{this.Name}.fieldControl')]");
+            return context.Locator($"//div[contains(@data-lp-id,'PowerApps.CoreControls.NumericInput|')]");
         }
     }
 }
