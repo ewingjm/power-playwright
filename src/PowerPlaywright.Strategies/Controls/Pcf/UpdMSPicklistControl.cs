@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
     using Microsoft.Playwright;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
@@ -14,7 +15,7 @@
     /// A control strategy for the <see cref="IUpdMSPicklistControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class UpdMSPicklistControl : PcfControl, IUpdMSPicklistControl
+    public class UpdMSPicklistControl : PcfControlInternal, IUpdMSPicklistControl
     {
         private readonly ILocator toggleMenu;
 
@@ -23,8 +24,9 @@
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
+        /// <param name="infoProvider"></param>
         /// <param name="parent">The parent control.</param>
-        public UpdMSPicklistControl(string name, IAppPage appPage, IControl parent = null) : base(name, appPage, parent)
+        public UpdMSPicklistControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null) : base(name, appPage, infoProvider, parent)
         {
             this.toggleMenu = this.Container.Locator("button[aria-label='Toggle menu']");
         }
@@ -83,12 +85,6 @@
                 var el = this.Container.GetByTitle(optionValue);
                 await el.ClickIfVisibleAsync();
             }
-        }
-
-        /// <inheritdoc/>
-        protected override ILocator GetRoot(ILocator context)
-        {
-            return context.Locator($"div[data-id*='{this.Name}.fieldControl_container']");
         }
     }
 }

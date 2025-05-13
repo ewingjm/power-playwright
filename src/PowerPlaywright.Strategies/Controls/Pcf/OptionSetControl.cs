@@ -13,7 +13,7 @@
     /// A control strategy for the <see cref="IOptionSetControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class OptionSetControl : PcfControl, IOptionSetControl
+    public class OptionSetControl : PcfControlInternal, IOptionSetControl
     {
         private readonly ILocator toggleMenu;
 
@@ -22,8 +22,9 @@
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
+        /// <param name="infoProvider"></param>
         /// <param name="parent">The parent control.</param>
-        public OptionSetControl(string name, IAppPage appPage, IControl parent = null) : base(name, appPage, parent)
+        public OptionSetControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null) : base(name, appPage, infoProvider, parent)
         {
             this.toggleMenu = this.Container.Locator("button[role='combobox']");
         }
@@ -64,12 +65,6 @@
             await option.HoverAsync();
 
             await option.ClickIfVisibleAsync(true, true);
-        }
-
-        /// <inheritdoc/>
-        protected override ILocator GetRoot(ILocator context)
-        {
-            return context.Locator($"div[data-lp-id*='PowerApps.CoreControls.OptionSetControl|{this.Name}.fieldControl|']");
         }
     }
 }
