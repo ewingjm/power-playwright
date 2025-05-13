@@ -15,7 +15,7 @@
     [PcfControlStrategy(0, 0, 0)]
     public class ActionInput : PcfControlInternal, IActionInput
     {
-        private readonly ILocator urlInput;
+        private readonly ILocator controlInput;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ActionInput"/> class.
@@ -27,19 +27,19 @@
         public ActionInput(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
-            this.urlInput = this.Container.Locator("input");
+            this.controlInput = this.Container.Locator("input");
         }
 
         /// <inheritdoc/>
         public async Task<string> GetValueAsync()
         {
-            return await this.urlInput.InputValueOrNullAsync();
+            return await this.controlInput.InputValueOrNullAsync();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(string value)
         {
-            await this.urlInput.FillAsync(value);
+            await this.controlInput.FillAsync(value);
         }
     }
 }
