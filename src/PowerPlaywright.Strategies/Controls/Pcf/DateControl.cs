@@ -1,45 +1,46 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
-    using System.Threading.Tasks;
     using Microsoft.Playwright;
-    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
-    using PowerPlaywright.Framework.Controls.Pcf;
-    using PowerPlaywright.Framework.Pages;
-    using PowerPlaywright.Framework.Controls;
-    using PowerPlaywright.Strategies.Extensions;
     using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls;
+    using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
+    using System;
+    using System.Threading.Tasks;
 
     /// <summary>
-    /// A control strategy for the <see cref="ITickerSymbolControl"/>.
+    /// A control strategy for the <see cref="IDateControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class TickerSymbolControl : PcfControlInternal, ITickerSymbolControl
+    public class DateControl : PcfControlInternal, IDateControl
     {
         private readonly ILocator input;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TickerSymbolControl"/> class.
+        /// Initializes a new instance of the <see cref="DateControl"/> class.
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="parent">The parent control.</param>
-        public TickerSymbolControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
+        public DateControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
             this.input = this.Container.Locator("input");
         }
 
         /// <inheritdoc/>
-        public async Task<string> GetValueAsync()
+        public async Task<DateTime?> GetValueAsync()
         {
-            return await this.input.InputValueOrNullAsync();
+            return await this.input.InputValueOrNullAsync<DateTime?>();
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(string value)
+        public async Task SetValueAsync(DateTime? value)
         {
-            await this.input.FillAsync(value);
+            await this.input.FillAsync(value.ToString());
         }
     }
 }
