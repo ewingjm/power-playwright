@@ -48,22 +48,6 @@
         /// <summary>
         /// Tests that <see cref="IOptionSet.SetValueAsync(string)"/> sets the value with either the default or the passed in value.
         /// </summary>
-        /// <param name="yesNoValue">Passes in the value to set and assert against.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [TestCase("Yes")]
-        [TestCase("No")]
-        public async Task SetValueAsync_YesNo_ReturnsValue(string yesNoValue)
-        {
-            var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync();
-
-            await optionSetControl.SetValueAsync(yesNoValue);
-
-            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo(yesNoValue));
-        }
-
-        /// <summary>
-        /// Tests that <see cref="IOptionSet.SetValueAsync(string)"/> sets the value with either the default or the passed in value.
-        /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task SetValueAsync_Choice_ReturnsValue()
@@ -99,6 +83,22 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="IOptionSet.SetValueAsync(string)"/> sets the value with either the default or the passed in value.
+        /// </summary>
+        /// <param name="yesNoValue">Passes in the value to set and assert against.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestCase("Yes")]
+        [TestCase("No")]
+        public async Task SetValueAsync_YesNo_ReturnsValue(string yesNoValue)
+        {
+            var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync();
+
+            await optionSetControl.SetValueAsync(yesNoValue);
+
+            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo(yesNoValue));
+        }
+
+        /// <summary>
         /// Tests that <see cref="IOptionSet.GetValueAsync"/> returns null when the value has not been set.
         /// </summary>
         /// <param name="value">An optional value to set in the record. If null, it will leave the value null resulting in No being returned.</param>
@@ -110,6 +110,44 @@
             var optionSetControl = await this.SetupOptionSetYesNoScenarioAsync(value);
 
             Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("No"));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IOptionSet.GetValueAsync"/> returns null when the value has not been set.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_Timezone_Returns_Value()
+        {
+            var optionSetControl = await this.SetupOptionSetTimeZoneScenarioAsync(85);
+
+            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo("(GMT+00:00) Dublin, Edinburgh, Lisbon, London"));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IOptionSet.GetValueAsync"/> returns null when the value has not been set.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_DoesNotContain_Timezone_Value_ReturnsNull()
+        {
+            var optionSetControl = await this.SetupOptionSetTimeZoneScenarioAsync();
+
+            Assert.That(optionSetControl.GetValueAsync, Is.Null);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IOptionSet.SetValueAsync(string)"/> sets the value with either the default or the passed in value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_Timezone_ReturnsValue()
+        {
+            var optionSetControl = await this.SetupOptionSetTimeZoneScenarioAsync();
+            var timezoneString = "(GMT + 00:00) Dublin, Edinburgh, Lisbon, London";
+            await optionSetControl.SetValueAsync(timezoneString);
+
+            Assert.That(optionSetControl.GetValueAsync, Is.EqualTo(timezoneString));
         }
 
         /// <summary>
@@ -156,6 +194,29 @@
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
 
             return recordPage.Form.GetField<IOptionSet>(nameof(pp_Record.pp_yesno)).Control;
+        }
+
+        /// <summary>
+        /// Sets up a OptionSet (Timezone) control scenario for testing by creating a record with a specified or generated choices.
+        /// </summary>
+        /// <param name="withOptionSet">An optional timezoneString value to set in the record. If null, it will leave the choice null resulting in No being returned.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IOptionSet"/>.</returns>
+        private async Task<IOptionSet> SetupOptionSetTimeZoneScenarioAsync(int? withOptionSet = null)
+        {
+            var record = new RecordFaker();
+
+            if (withOptionSet is not null)
+            {
+                record.RuleFor(x => x.pp_wholenumbertimezone, withOptionSet);
+            }
+            else
+            {
+                record.Ignore(x => x.pp_wholenumbertimezone);
+            }
+
+            var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
+
+            return recordPage.Form.GetField<IOptionSet>(nameof(pp_Record.pp_wholenumbertimezone)).Control;
         }
     }
 }
