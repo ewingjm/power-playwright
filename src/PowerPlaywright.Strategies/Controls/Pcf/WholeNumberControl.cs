@@ -10,36 +10,36 @@
     using PowerPlaywright.Framework;
 
     /// <summary>
-    /// A control strategy for the <see cref="IUrlControl"/>.
+    /// A control strategy for the <see cref="IWholeNumberControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class UrlControl : PcfControlInternal, IUrlControl
+    public class WholeNumberControl : PcfControlInternal, IWholeNumberControl
     {
-        private readonly ILocator urlInput;
+        private readonly ILocator input;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UrlControl"/> class.
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
-        /// <param name="infoProvider"> The info provider.</param>
+        /// <param name="infoProvider">The info provider.</param>
         /// <param name="parent">The parent control.</param>
-        public UrlControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
+        public WholeNumberControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
-            this.urlInput = this.Container.Locator("input");
+            this.input = this.Container.Locator("input");
         }
 
         /// <inheritdoc/>
-        public async Task<string> GetValueAsync()
+        public async Task<int?> GetValueAsync()
         {
-            return await this.urlInput.InputValueOrNullAsync();
+            return await this.input.InputValueOrNullAsync<int?>();
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(string value)
+        public async Task SetValueAsync(int? value)
         {
-            await this.urlInput.FillAsync(value);
+            await this.input.FillAsync(value.ToString());
         }
     }
 }
