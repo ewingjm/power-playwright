@@ -34,6 +34,8 @@
         /// <inheritdoc/>
         public async Task<Dictionary<int, string>> GetValueAsync()
         {
+            await this.Container.WaitForAsync();
+
             var liElements = await this.Container.Locator("ul").First.Locator("li").AllAsync();
 
             if (liElements == null || liElements.Count == 0)
@@ -65,8 +67,7 @@
         /// <inheritdoc/>
         public async Task SelectAllAsync()
         {
-            await this.Page.WaitForAppIdleAsync();
-            await this.Container.ClickAsync();
+            await this.Container.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
             await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
 
             var selectAllCheckBox = this.Container.GetByText("Select All");
@@ -76,8 +77,7 @@
         /// <inheritdoc/>
         public async Task SetValueAsync(List<string> optionValues)
         {
-            await this.Page.WaitForAppIdleAsync();
-            await this.Container.ClickAsync();
+            await this.Container.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
             await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
 
             foreach (var optionValue in optionValues)
@@ -85,6 +85,16 @@
                 var el = this.Container.GetByTitle(optionValue);
                 await el.ClickIfVisibleAsync();
             }
+        }
+
+        /// <summary>
+        /// Overrides the GetRoot when data-lp-id of the MultiselectPicklist is not available until an option is selected.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator($"div[data-id*='{this.Name}.fieldControl_container']");
         }
     }
 }
