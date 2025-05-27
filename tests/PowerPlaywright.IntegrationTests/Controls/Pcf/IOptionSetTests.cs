@@ -144,7 +144,7 @@
         public async Task SetValueAsync_Timezone_ReturnsValue()
         {
             var optionSetControl = await this.SetupOptionSetTimeZoneScenarioAsync();
-            var timezoneString = "(GMT + 00:00) Dublin, Edinburgh, Lisbon, London";
+            var timezoneString = "(GMT+00:00) Dublin, Edinburgh, Lisbon, London";
             await optionSetControl.SetValueAsync(timezoneString);
 
             Assert.That(optionSetControl.GetValueAsync, Is.EqualTo(timezoneString));
