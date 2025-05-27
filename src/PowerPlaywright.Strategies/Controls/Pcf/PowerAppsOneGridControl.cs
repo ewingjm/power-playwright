@@ -45,10 +45,12 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
+            await rowsContainer.WaitForAsync();
+
             var row = this.GetRow(index);
             if (!await row.IsVisibleAsync())
             {
-                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
+                throw new PowerPlaywrightException($"The provided index '{index}' is out of range for subgrid {Name}");
             }
 
             await row.DblClickAsync();

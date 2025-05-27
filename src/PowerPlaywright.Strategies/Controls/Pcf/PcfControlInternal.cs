@@ -69,7 +69,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"//div[(starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}') or starts-with(@data-lp-id, '{this.GetControlId()}')) and contains(@data-lp-id, '.fieldControl')]");
+            return context.Locator($"//div[(starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}') or starts-with(@data-lp-id, '{this.GetControlId()}'))]");
         }
     }
 }

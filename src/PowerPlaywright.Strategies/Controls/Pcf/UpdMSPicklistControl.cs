@@ -67,17 +67,13 @@
         /// <inheritdoc/>
         public async Task SelectAllAsync()
         {
-            await this.Container.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
             await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
-
-            var selectAllCheckBox = this.Container.GetByText("Select All");
-            await selectAllCheckBox.ClickAsync();
+            await Container.GetByText("Select All").ClickAsync();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(List<string> optionValues)
         {
-            await this.Container.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
             await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
 
             foreach (var optionValue in optionValues)
