@@ -56,7 +56,7 @@
 
             await this.passwordInput.FillAsync(password);
             await this.nextButton.ClickAsync();
-            await this.staySignedInButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+            await this.staySignedInButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
 
             if (await this.staySignedInButton.IsVisibleAsync())
             {

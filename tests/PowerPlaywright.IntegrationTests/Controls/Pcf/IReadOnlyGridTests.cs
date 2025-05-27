@@ -4,6 +4,7 @@
     using Bogus;
     using Microsoft.Xrm.Sdk;
     using Microsoft.Xrm.Sdk.Messages;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
@@ -36,7 +37,7 @@
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: null);
 
-            Assert.ThrowsAsync<IndexOutOfRangeException>(() => gridControl.OpenRecordAsync(1));
+            Assert.ThrowsAsync<PowerPlaywrightException>(() => gridControl.OpenRecordAsync(1));
         }
 
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
