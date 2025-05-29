@@ -5,6 +5,7 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using System.Threading.Tasks;
@@ -65,6 +66,16 @@
             await option.HoverAsync();
 
             await option.ClickIfVisibleAsync(true, true);
+        }
+
+        Task IYesNo.SetValueAsync(bool value)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        Task<bool> IYesNo.GetValueAsync()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

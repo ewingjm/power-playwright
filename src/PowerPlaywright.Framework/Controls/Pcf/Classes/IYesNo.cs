@@ -1,24 +1,23 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Pcf.Classes
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     /// <summary>
-    /// OptionSet control class.
+    /// Yes/No control class.
     /// </summary>
-    public interface IOptionSet : IPcfControl
+    public interface IYesNo : IPcfControl
     {
         /// <summary>
-        /// Sets the value of the single select optionset.
+        /// Sets the value of the Yes/No control.
         /// </summary>
-        /// <param name="optionValue">The value.</param>
+        /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SetValueAsync(string optionValue);
+        Task SetValueAsync(bool value);
 
         /// <summary>
-        /// Gets the value of the single select optionset.
+        /// Gets the value of the Yes/No control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<string> GetValueAsync();
+        Task<bool> GetValueAsync();
     }
 }

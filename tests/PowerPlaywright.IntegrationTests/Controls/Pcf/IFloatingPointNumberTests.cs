@@ -2,7 +2,6 @@
 {
     using System.Threading.Tasks;
     using Bogus;
-    using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
@@ -15,27 +14,12 @@
         private Faker faker;
 
         /// <summary>
-        /// Sets up the floating point number control.
+        /// Sets up the test dependencies.
         /// </summary>
         [SetUp]
         public void Setup()
         {
             this.faker = new Faker();
-        }
-
-        /// <summary>
-        /// Tests that <see cref="IFloatingPointNumber.SetValueAsync(double?)"/> sets the value.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task SetValueAsync_ReturnsValue()
-        {
-            var floatAmount = this.faker.Random.Double(1.0, 100.0);
-            var floatControl = await this.SetupFloatScenarioAsync();
-
-            await floatControl.SetValueAsync(floatAmount);
-
-            Assert.That(floatControl.GetValueAsync, Is.EqualTo(floatAmount));
         }
 
         /// <summary>
@@ -45,23 +29,71 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var floatControl = await this.SetupFloatScenarioAsync(withFloat: false);
+            var floatingPointControl = await this.SetupFloatingPointScenarioAsync(withNoValue: true);
 
-            Assert.That(floatControl.GetValueAsync, Is.Null);
+            Assert.That(floatingPointControl.GetValueAsync, Is.Null);
         }
 
         /// <summary>
-        /// Sets up a Floating Number control scenario for testing by creating a record with a specified or generated Float.
+        /// Tests that <see cref="IFloatingPointNumber.GetValueAsync"/> returns the value when the value has been set.
         /// </summary>
-        /// <param name="withFloat">An optional Floating Number Value to set in the record. If null, a random Amount will be generated.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IFloatingPointNumberControl"/>.</returns>
-        private async Task<IFloatingPointNumber> SetupFloatScenarioAsync(bool withFloat = true)
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_ContainsValue_ReturnsValue()
+        {
+            var expectedValue = this.faker.Random.Double();
+            var floatingPointControl = await this.SetupFloatingPointScenarioAsync(withValue: expectedValue);
+
+            Assert.That(floatingPointControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IFloatingPointNumber.SetValueAsync(double?)"/> sets the value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_DoesNotContainValue_SetsValue()
+        {
+            var floatingPointControl = await this.SetupFloatingPointScenarioAsync(withNoValue: true);
+            var expectedValue = this.faker.Random.Double();
+
+            await floatingPointControl.SetValueAsync(expectedValue);
+
+            Assert.That(floatingPointControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IFloatingPointNumber.SetValueAsync(double?)"/> replaces the value when the control already contains a value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_ContainsValue_ReplacesValue()
+        {
+            var floatingPointControl = await this.SetupFloatingPointScenarioAsync();
+            var expectedValue = this.faker.Random.Double();
+
+            await floatingPointControl.SetValueAsync(expectedValue);
+
+            Assert.That(floatingPointControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Sets up a floating-point control scenario for testing by creating a record with a specified or generated value.
+        /// </summary>
+        /// <param name="withValue">An optional value to set in the record. If null, a random value will be generated.</param>
+        /// <param name="withNoValue">Whether to set the choice to null. Defaults to false.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IFloatingPointNumber"/>.</returns>
+        private async Task<IFloatingPointNumber> SetupFloatingPointScenarioAsync(double? withValue = null, bool withNoValue = false)
         {
             var record = new RecordFaker();
 
-            if (!withFloat)
+            if (withNoValue)
             {
-                record.Ignore(p => p.pp_float);
+                record.RuleFor(x => x.pp_float, f => null);
+            }
+            else if (withValue is not null)
+            {
+                record.RuleFor(x => x.pp_float, withValue);
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());

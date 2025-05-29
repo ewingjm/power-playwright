@@ -1,6 +1,5 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
-    using System.Globalization;
     using System.Threading.Tasks;
     using Bogus;
     using PowerPlaywright.Framework.Controls.Pcf;
@@ -13,22 +12,15 @@
     /// </summary>
     public class IDateTimeTests : IntegrationTests
     {
+        private Faker faker;
+
         /// <summary>
-        /// Tests that <see cref="IDateTime.SetValueAsync(DateTime?)"/> sets the value. Currently we do not know the dateformat of the dataverse instance so we can eventually get the
-        /// locale and then parse it that way, for now we return a string and allow the consumer to parse it as needed.
+        /// Sets up the test dependencies.
         /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task SetValueAsync_ReturnsValue()
+        [SetUp]
+        public void Setup()
         {
-            var dateValue = DateTime.UtcNow;
-            var dateControl = await this.SetupDateTimeScenarioAsync(dateValue);
-
-            await dateControl.SetValueAsync(dateValue);
-
-            var actual = await dateControl.GetValueAsync();
-
-            Assert.That(actual, Is.Not.Null);
+            this.faker = new Faker();
         }
 
         /// <summary>
@@ -38,31 +30,74 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var dateControl = await this.SetupDateTimeScenarioAsync();
+            var dateTimeControl = await this.SetupDateTimeScenarioAsync(withNoValue: true);
 
-            Assert.That(dateControl.GetValueAsync, Is.Null);
+            Assert.That(dateTimeControl.GetValueAsync, Is.Null);
         }
 
         /// <summary>
-        /// Sets up a URL control scenario for testing by creating a record with a specified or generated DateTime.
+        /// Tests that <see cref="IDateTime.GetValueAsync"/> returns the value when the value has been set.
         /// </summary>
-        /// <param name="withDate">An optional DateTime Value to set in the record. If null, a random DateTime will be generated.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IDateTimeControl"/>.</returns>
-        private async Task<IDateTime> SetupDateTimeScenarioAsync(DateTime? withDate = null)
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_ContainsValue_ReturnsValue()
+        {
+            var expectedValue = this.faker.Date.Recent().ToUniversalTime();
+            var dateTimeControl = await this.SetupDateTimeScenarioAsync(withValue: expectedValue);
+
+            Assert.That(dateTimeControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IDateTime.SetValueAsync(DateTime?)"/> sets the value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_DoesNotContainValue_SetsValue()
+        {
+            var dateTimeControl = await this.SetupDateTimeScenarioAsync(withNoValue: true);
+            var expectedValue = this.faker.Date.Recent().ToUniversalTime();
+
+            await dateTimeControl.SetValueAsync(expectedValue);
+
+            Assert.That(dateTimeControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IDateTime.SetValueAsync(DateTime?)"/> replaces the value when the control already contains a value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_ContainsValue_ReplacesValue()
+        {
+            var dateTimeControl = await this.SetupDateTimeScenarioAsync();
+            var expectedValue = this.faker.Date.Recent().ToUniversalTime();
+
+            await dateTimeControl.SetValueAsync(expectedValue);
+
+            Assert.That(dateTimeControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Sets up a DateTime control scenario for testing by creating a record with a specified or generated value.
+        /// </summary>
+        /// <param name="withValue">An optional value to set in the record. If null, a random value will be generated.</param>
+        /// <param name="withNoValue">Whether to set the choice to null. Defaults to false.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IDateControl"/>.</returns>
+        private async Task<IDateTime> SetupDateTimeScenarioAsync(DateTime? withValue = null, bool withNoValue = false)
         {
             var record = new RecordFaker();
 
-            if (!withDate.HasValue)
+            if (withNoValue)
             {
-                record.Ignore(p => p.pp_dateandtimedateandtime);
+                record.RuleFor(x => x.pp_dateandtimedateandtime, f => null);
             }
-            else
+            else if (withValue is not null)
             {
-                record.RuleFor(x => x.pp_dateandtimedateandtime, withDate);
+                record.RuleFor(x => x.pp_dateandtimedateandtime, withValue);
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-
             return recordPage.Form.GetField<IDateTime>(nameof(pp_Record.pp_dateandtimedateandtime)).Control;
         }
     }

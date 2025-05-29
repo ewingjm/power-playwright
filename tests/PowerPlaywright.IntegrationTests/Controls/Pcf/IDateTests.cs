@@ -15,27 +15,12 @@
         private Faker faker;
 
         /// <summary>
-        /// Sets up the Date control.
+        /// Sets up the test dependencies.
         /// </summary>
         [SetUp]
         public void Setup()
         {
             this.faker = new Faker();
-        }
-
-        /// <summary>
-        /// Tests that <see cref="IDate.SetValueAsync(DateTime?)"/> sets the value.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task SetValueAsync_ReturnsValue()
-        {
-            var dateValue = this.faker.Date.Recent().Date;
-            var dateControl = await this.SetupDateScenarioAsync();
-
-            await dateControl.SetValueAsync(dateValue);
-
-            Assert.That(dateControl.GetValueAsync, Is.EqualTo(dateValue));
         }
 
         /// <summary>
@@ -45,23 +30,71 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var dateControl = await this.SetupDateScenarioAsync(withDate: false);
+            var dateControl = await this.SetupDateScenarioAsync(withNoValue: true);
 
             Assert.That(dateControl.GetValueAsync, Is.Null);
         }
 
         /// <summary>
-        /// Sets up a Date control scenario for testing by creating a record with a specified or generated Date.
+        /// Tests that <see cref="IDate.GetValueAsync"/> returns the value when the value has been set.
         /// </summary>
-        /// <param name="withDate">An optional Date Value to set in the record. If null, a random Date will be generated.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_ContainsValue_ReturnsValue()
+        {
+            var expectedValue = this.faker.Date.Recent().ToUniversalTime().Date;
+            var dateControl = await this.SetupDateScenarioAsync(withValue: expectedValue);
+
+            Assert.That(dateControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IDate.SetValueAsync(DateTime?)"/> sets the value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_DoesNotContainValue_SetsValue()
+        {
+            var dateControl = await this.SetupDateScenarioAsync(withNoValue: true);
+            var expectedValue = this.faker.Date.Recent().ToUniversalTime().Date;
+
+            await dateControl.SetValueAsync(expectedValue);
+
+            Assert.That(dateControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IDate.SetValueAsync(DateTime?)"/> replaces the value when the control already contains a value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_ContainsValue_ReplacesValue()
+        {
+            var dateControl = await this.SetupDateScenarioAsync();
+            var expectedValue = this.faker.Date.Recent().ToUniversalTime().Date;
+
+            await dateControl.SetValueAsync(expectedValue);
+
+            Assert.That(dateControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Sets up a Date control scenario for testing by creating a record with a specified or generated value.
+        /// </summary>
+        /// <param name="withValue">An optional value to set in the record. If null, a random value will be generated.</param>
+        /// <param name="withNoValue">Whether to set the choice to null. Defaults to false.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IDateControl"/>.</returns>
-        private async Task<IDate> SetupDateScenarioAsync(bool withDate = true)
+        private async Task<IDate> SetupDateScenarioAsync(DateTime? withValue = null, bool withNoValue = false)
         {
             var record = new RecordFaker();
 
-            if (!withDate)
+            if (withNoValue)
             {
-                record.Ignore(p => p.pp_dateandtimedateonly);
+                record.RuleFor(x => x.pp_dateandtimedateonly, f => null);
+            }
+            else if (withValue is not null)
+            {
+                record.RuleFor(x => x.pp_dateandtimedateonly, withValue);
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());

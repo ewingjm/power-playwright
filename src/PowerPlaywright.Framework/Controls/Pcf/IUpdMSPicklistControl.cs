@@ -7,7 +7,7 @@
     /// An interface for the MscrmControls.MultiSelectPicklist.UpdMSPicklistControl control.
     /// </summary>
     [PcfControl("MscrmControls.MultiSelectPicklist.UpdMSPicklistControl")]
-    public interface IUpdMSPicklistControl : IUpdMSPicklist
+    public interface IUpdMSPicklistControl : IChoices
     {
     }
 }

@@ -7,16 +7,16 @@
     using System;
 
     /// <summary>
-    /// Redirects requests for an <see cref="IOptionSet"/> control.
+    /// Redirects requests for an <see cref="IDecimalNumber"/> control.
     /// </summary>
-    public class OptionSetRedirector : ControlRedirector<IOptionSet>
+    public class DecimalNumberRedirector : ControlRedirector<IDecimalNumber>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SingleLineUrlRedirector"/> class.
+        /// Initializes a new instance of the <see cref="IDecimalNumber"/> class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public OptionSetRedirector(IRedirectionInfoProvider infoProvider, ILogger<SingleLineUrlRedirector> logger)
+        public DecimalNumberRedirector(IRedirectionInfoProvider infoProvider, ILogger<DecimalNumberRedirector> logger)
             : base(infoProvider, logger)
         {
         }
@@ -24,7 +24,12 @@
         /// <inheritdoc/>
         protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
         {
-            return typeof(IOptionSetControl);
+            if (redirectionInfo.ActiveReleaseChannel == (int)ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
+            {
+                return typeof(IDecimalNumberControl);
+            }
+
+            return typeof(INumericInput);
         }
     }
 }

@@ -26,13 +26,14 @@
         /// <param name="appPage">The app page.</param>
         /// <param name="infoProvider"></param>
         /// <param name="parent">The parent control.</param>
-        public UpdMSPicklistControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null) : base(name, appPage, infoProvider, parent)
+        public UpdMSPicklistControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
+            : base(name, appPage, infoProvider, parent)
         {
             this.toggleMenu = this.Container.Locator("button[aria-label='Toggle menu']");
         }
 
         /// <inheritdoc/>
-        public async Task<Dictionary<int, string>> GetValueAsync()
+        public async Task<IEnumerable<string>> GetValueAsync()
         {
             await this.Container.WaitForAsync();
 
@@ -61,7 +62,7 @@
                 .Where(kvp => !kvp.Equals(default(KeyValuePair<int, string>)))
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-            return result.Count > 0 ? result : null;
+            return result.Values.Count != 0 ? result.Values : null;
         }
 
         /// <inheritdoc/>
@@ -72,7 +73,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(List<string> optionValues)
+        public async Task SetValueAsync(IEnumerable<string> optionValues)
         {
             await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
 
@@ -83,14 +84,10 @@
             }
         }
 
-        /// <summary>
-        /// Overrides the GetRoot when data-lp-id of the MultiselectPicklist is not available until an option is selected.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"div[data-id*='{this.Name}.fieldControl_container']");
+            return base.GetRoot(context).Or(context.Locator($"div[data-id='{this.Name}.fieldControl_container']"));
         }
     }
 }

@@ -15,7 +15,7 @@
         Task SetValueAsync(int? value);
 
         /// <summary>
-        /// Gets the value of the Whole Number control.
+        /// Gets the value of the whole number control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<int?> GetValueAsync();

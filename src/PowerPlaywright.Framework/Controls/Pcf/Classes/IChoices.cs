@@ -4,25 +4,25 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Picklist (Choices) control class.
+    /// Choices control class.
     /// </summary>
-    public interface IUpdMSPicklist : IPcfControl
+    public interface IChoices : IPcfControl
     {
         /// <summary>
-        /// Sets the value of the multi select picklist.
+        /// Sets the value of the choices control.
         /// </summary>
-        /// <param name="optionValues">The value.</param>
+        /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SetValueAsync(List<string> optionValues);
+        Task SetValueAsync(IEnumerable<string> value);
 
         /// <summary>
-        /// Gets the value of the multi select picklist.
+        /// Gets the value of the choices control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<Dictionary<int, string>> GetValueAsync();
+        Task<IEnumerable<string>> GetValueAsync();
 
         /// <summary>
-        /// Selects all the values of the multi select picklist.
+        /// Selects all the values of the choices control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task SelectAllAsync();

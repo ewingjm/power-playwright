@@ -7,7 +7,7 @@
     /// An interface for the PowerApps.CoreControls.OptionSetControl control.
     /// </summary>
     [PcfControl("PowerApps.CoreControls.OptionSetControl")]
-    public interface IOptionSetControl : IOptionSet
+    public interface IOptionSetControl : IChoice, IYesNo
     {
     }
 }

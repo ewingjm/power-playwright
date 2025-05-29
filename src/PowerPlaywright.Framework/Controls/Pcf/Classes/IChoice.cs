@@ -3,19 +3,19 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Single-line text (phone) control class.
+    /// Choice control class.
     /// </summary>
-    public interface ISingleLinePhoneNumber : IPcfControl
+    public interface IChoice : IPcfControl
     {
         /// <summary>
-        /// Sets the value of the single-line text (phone) control.
+        /// Sets the value of the choice control.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task SetValueAsync(string value);
 
         /// <summary>
-        /// Gets the value of the single-line text (phone) control.
+        /// Gets the value of the choice control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<string> GetValueAsync();

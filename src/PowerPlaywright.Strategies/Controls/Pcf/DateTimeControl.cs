@@ -39,10 +39,10 @@
         }
 
         /// <inheritdoc/>
-        public async Task<string> GetValueAsync()
+        public async Task<DateTime?> GetValueAsync()
         {
             var dateString = await this.dateInput.InputValueOrNullAsync();
-            var timeString = String.Empty;
+            var timeString = string.Empty;
 
             if (await timeContainer.IsVisibleAsync())
             {
@@ -54,12 +54,17 @@
                 }
             }
 
-            if (String.IsNullOrEmpty(dateString) || String.IsNullOrEmpty(timeString))
+            if (string.IsNullOrEmpty(dateString) || string.IsNullOrEmpty(timeString))
             {
                 return null;
             }
 
-            return $"{dateString} {timeString}";
+            if (DateTime.TryParse($"{dateString} {timeString}", out var dateTime))
+            {
+                return dateTime;
+            }
+
+            return null;
         }
 
         /// <inheritdoc/>

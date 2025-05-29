@@ -14,27 +14,12 @@
         private Faker faker;
 
         /// <summary>
-        /// Sets up the whole number control.
+        /// Sets up the test dependencies.
         /// </summary>
         [SetUp]
         public void Setup()
         {
             this.faker = new Faker();
-        }
-
-        /// <summary>
-        /// Tests that <see cref="IWholeNumber.SetValueAsync(int?)"/> sets the value.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task SetValueAsync_ReturnsValue()
-        {
-            var wholeNumberValue = this.faker.Random.Int(int.MinValue, int.MaxValue);
-            var wholeNumberControl = await this.SetupWholeNumberScenarioAsync();
-
-            await wholeNumberControl.SetValueAsync(wholeNumberValue);
-
-            Assert.That(wholeNumberControl.GetValueAsync, Is.EqualTo(wholeNumberValue));
         }
 
         /// <summary>
@@ -44,27 +29,75 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var wholeNumberControl = await this.SetupWholeNumberScenarioAsync(withWholeNumber: false);
+            var wholeNumberControl = await this.SetupWholeNumberScenarioAsync(withNoValue: true);
 
             Assert.That(wholeNumberControl.GetValueAsync, Is.Null);
         }
 
         /// <summary>
-        /// Sets up a Whole Number control scenario for testing by creating a record with a specified or generated Whole Number.
+        /// Tests that <see cref="IWholeNumber.GetValueAsync"/> returns the value when the value has been set.
         /// </summary>
-        /// <param name="withWholeNumber">An optional Whole Number Value to set in the record. If null, a random Whole Number will be generated.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_ContainsValue_ReturnsValue()
+        {
+            var expectedValue = this.faker.Random.Number();
+            var wholeNumberControl = await this.SetupWholeNumberScenarioAsync(withValue: expectedValue);
+
+            Assert.That(wholeNumberControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IWholeNumber.SetValueAsync(int?)"/> sets the value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_DoesNotContainValue_SetsValue()
+        {
+            var wholeNumberControl = await this.SetupWholeNumberScenarioAsync(withNoValue: true);
+            var expectedValue = this.faker.Random.Number();
+
+            await wholeNumberControl.SetValueAsync(expectedValue);
+
+            Assert.That(wholeNumberControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IWholeNumber.SetValueAsync(int?)"/> replaces the value when the control already contains a value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_ContainsValue_ReplacesValue()
+        {
+            var wholeNumberControl = await this.SetupWholeNumberScenarioAsync();
+            var expectedValue = this.faker.Random.Number();
+
+            await wholeNumberControl.SetValueAsync(expectedValue);
+
+            Assert.That(wholeNumberControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Sets up a control scenario for testing by creating a record with a specified or generated value.
+        /// </summary>
+        /// <param name="withValue">An optional value to set in the record. If null, a random value will be generated.</param>
+        /// <param name="withNoValue">Whether to set the choice to null. Defaults to false.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IWholeNumber"/>.</returns>
-        private async Task<IWholeNumber> SetupWholeNumberScenarioAsync(bool withWholeNumber = true)
+        private async Task<IWholeNumber> SetupWholeNumberScenarioAsync(int? withValue = null, bool withNoValue = false)
         {
             var record = new RecordFaker();
 
-            if (!withWholeNumber)
+            if (withNoValue)
             {
-                record.Ignore(p => p.pp_wholenumbernone);
+                record.RuleFor(x => x.pp_wholenumbernone, f => null!);
+            }
+            else if (withValue is not null)
+            {
+                record.RuleFor(x => x.pp_wholenumbernone, withValue);
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField<IWholeNumber>(pp_Record.Forms.Information.WholeNumberNone).Control;
+            return recordPage.Form.GetField<IWholeNumber>(nameof(pp_Record.pp_wholenumbernone)).Control;
         }
     }
 }

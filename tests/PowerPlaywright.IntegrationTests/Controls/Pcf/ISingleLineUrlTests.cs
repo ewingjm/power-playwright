@@ -2,7 +2,6 @@
 {
     using System.Threading.Tasks;
     using Bogus;
-    using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
@@ -15,27 +14,12 @@
         private Faker faker;
 
         /// <summary>
-        /// Sets up the url control.
+        /// Sets up the test dependencies.
         /// </summary>
         [SetUp]
         public void Setup()
         {
             this.faker = new Faker();
-        }
-
-        /// <summary>
-        /// Tests that <see cref="ISingleLineUrl.SetValueAsync(string)"/> sets the value.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task SetValueAsync_ReturnsValue()
-        {
-            var url = this.faker.Internet.Url();
-            var urlControl = await this.SetupUrlScenarioAsync();
-
-            await urlControl.SetValueAsync(url);
-
-            Assert.That(urlControl.GetValueAsync, Is.EqualTo(url));
         }
 
         /// <summary>
@@ -45,23 +29,74 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var urlControl = await this.SetupUrlScenarioAsync(withUrl: string.Empty);
+            var singleLineUrlControl = await this.SetupSingleLineUrlScenarioAsync(withNoValue: true);
 
-            Assert.That(urlControl.GetValueAsync, Is.Null);
+            Assert.That(singleLineUrlControl.GetValueAsync, Is.Null);
         }
 
         /// <summary>
-        /// Sets up a URL control scenario for testing by creating a record with a specified or generated URL.
+        /// Tests that <see cref="ISingleLineUrl.GetValueAsync"/> returns the value when the value has been set.
         /// </summary>
-        /// <param name="withUrl">An optional URL string to set in the record. If null, a random URL will be generated.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IUrlControl"/>.</returns>
-        private async Task<ISingleLineUrl> SetupUrlScenarioAsync(string? withUrl = null)
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_ContainsValue_ReturnsValue()
+        {
+            var expectedValue = this.faker.Internet.Url();
+            var singleLineUrlControl = await this.SetupSingleLineUrlScenarioAsync(withValue: expectedValue);
+
+            Assert.That(singleLineUrlControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="ISingleLineUrl.SetValueAsync(string)"/> sets the value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_DoesNotContainValue_SetsValue()
+        {
+            var singleLineUrlControl = await this.SetupSingleLineUrlScenarioAsync(withNoValue: true);
+            var expectedValue = this.faker.Internet.Url();
+
+            await singleLineUrlControl.SetValueAsync(expectedValue);
+
+            Assert.That(singleLineUrlControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="ISingleLineUrl.SetValueAsync(string)"/> replaces the value when the control already contains a value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_ContainsValue_ReplacesValue()
+        {
+            var singleLineUrlControl = await this.SetupSingleLineUrlScenarioAsync();
+            var expectedValue = this.faker.Internet.Url();
+
+            await singleLineUrlControl.SetValueAsync(expectedValue);
+
+            Assert.That(singleLineUrlControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Sets up a control scenario for testing by creating a record with a specified or generated value.
+        /// </summary>
+        /// <param name="withValue">An optional value to set in the record. If null, a random value will be generated.</param>
+        /// <param name="withNoValue">Whether to set the choice to null. Defaults to false.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="ISingleLineUrl"/>.</returns>
+        private async Task<ISingleLineUrl> SetupSingleLineUrlScenarioAsync(string? withValue = null, bool withNoValue = false)
         {
             var record = new RecordFaker();
-            record.RuleFor(x => x.pp_singlelineoftexturl, f => withUrl ?? f.Internet.Url());
+
+            if (withNoValue)
+            {
+                record.RuleFor(x => x.pp_singlelineoftexturl, f => null!);
+            }
+            else if (withValue is not null)
+            {
+                record.RuleFor(x => x.pp_singlelineoftexturl, withValue);
+            }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-
             return recordPage.Form.GetField<ISingleLineUrl>(nameof(pp_Record.pp_singlelineoftexturl)).Control;
         }
     }
