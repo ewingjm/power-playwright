@@ -7,8 +7,10 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -17,7 +19,10 @@
     [PcfControlStrategy(0, 0, 0)]
     public class UpdMSPicklistControl : PcfControlInternal, IUpdMSPicklistControl
     {
-        private readonly ILocator toggleMenu;
+        private readonly ILocator comboxBox;
+        private readonly ILocator buttonToggleMenu;
+        private readonly ILocator checkboxSelectAllItems;
+        private readonly ILocator textBox;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdMSPicklistControl"/> class.
@@ -29,64 +34,90 @@
         public UpdMSPicklistControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
-            this.toggleMenu = this.Container.Locator("button[aria-label='Toggle menu']");
+            this.comboxBox = this.Container.GetByRole(AriaRole.Combobox);
+            this.buttonToggleMenu = this.comboxBox.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Toggle menu" });
+            this.checkboxSelectAllItems = this.Container.GetByText("Select all");
+            this.textBox = this.Container.GetByRole(AriaRole.Textbox);
         }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<string>> GetValueAsync()
         {
-            await this.Container.WaitForAsync();
+            await this.Page.WaitForAppIdleAsync();
 
-            var liElements = await this.Container.Locator("ul").First.Locator("li").AllAsync();
+            var label = await this.textBox.GetLabelAsync();
 
-            if (liElements == null || liElements.Count == 0)
+            var match = Regex.Match(label, "Selected:(.+)");
+            if (!match.Success)
+            {
                 return null;
+            }
 
-            var keyValuePairs = await Task.WhenAll(
-                liElements.Select(async li =>
-                {
-                    var span = li.Locator("span").First;
-                    var dataValueStr = await li.GetAttributeAsync("data-value");
-                    var text = await span.InnerTextAsync();
-
-                    if (int.TryParse(dataValueStr, out int dataValue) && !string.IsNullOrWhiteSpace(text))
-                    {
-                        return new KeyValuePair<int, string>(dataValue, text);
-                    }
-
-                    return default;
-                })
-            );
-
-            var result = keyValuePairs
-                .Where(kvp => !kvp.Equals(default(KeyValuePair<int, string>)))
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-            return result.Values.Count != 0 ? result.Values : null;
+            return match.Groups[1].Value.Split(',').Select(c => c.Substring(1));
         }
 
         /// <inheritdoc/>
         public async Task SelectAllAsync()
         {
-            await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
-            await Container.GetByText("Select All").ClickAsync();
+            await this.ShowListBoxAsync();
+            await this.checkboxSelectAllItems.FocusAsync();
+            await this.checkboxSelectAllItems.CheckAsync();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(IEnumerable<string> optionValues)
         {
-            await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
+            await this.ShowListBoxAsync();
+            await this.ClearExistingOptions();
 
             foreach (var optionValue in optionValues)
             {
-                var el = this.Container.GetByTitle(optionValue);
-                await el.ClickIfVisibleAsync();
+                await this.SelectOptionAsync(optionValue);
             }
+
+            await this.Page.GetByRole(AriaRole.Form).ClickAndWaitForAppIdleAsync();
+        }
+
+        private async Task ClearExistingOptions()
+        {
+            var selectedOptions = this.Container.GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Selected = true });
+
+            foreach (var selectedOption in (await selectedOptions.AllAsync()).Reverse())
+            {
+                await selectedOption.ClickAndWaitForAppIdleAsync();
+            }
+        }
+
+        private async Task SelectOptionAsync(string optionValue)
+        {
+            await this.Container
+                .GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Name = optionValue })
+                .ClickAndWaitForAppIdleAsync();
+        }
+
+        private async Task ShowListBoxAsync()
+        {
+            if (await this.comboxBox.IsVisibleAsync() && await this.comboxBox.IsExpandedAsync())
+            {
+                return;
+            }
+
+            if (await this.textBox.IsVisibleAsync())
+            {
+                await this.textBox.FocusAsync();
+            }
+            else
+            {
+                await this.comboxBox.HoverAsync();
+            }
+
+            await this.buttonToggleMenu.ClickAndWaitForAppIdleAsync();
         }
 
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
+            // The base GetRoot method does not find choices controls before they have a value.
             return base.GetRoot(context).Or(context.Locator($"div[data-id='{this.Name}.fieldControl_container']"));
         }
     }

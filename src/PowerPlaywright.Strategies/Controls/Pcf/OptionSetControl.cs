@@ -8,6 +8,7 @@
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -27,7 +28,7 @@
         /// <param name="parent">The parent control.</param>
         public OptionSetControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null) : base(name, appPage, infoProvider, parent)
         {
-            this.toggleMenu = this.Container.Locator("button[role='combobox']");
+            this.toggleMenu = this.Container.GetByRole(AriaRole.Combobox);
         }
 
         /// <inheritdoc/>
@@ -42,30 +43,11 @@
         public async Task SetValueAsync(string optionValue)
         {
             await this.Page.WaitForAppIdleAsync();
-            await this.Container.ClickAsync();
 
-            await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
+            await this.toggleMenu.ClickAndWaitForAppIdleAsync();
+            var option = await GetOptionLocatorAsync(optionValue);
 
-            var flyoutDiv = this.Page.Locator("div[id^='fluent-listbox']").First;
-
-            for (int attempt = 1; attempt <= 10; attempt++)
-            {
-                if (await flyoutDiv.IsVisibleAsync())
-                    break;
-
-                if (attempt == 10)
-                    throw new PowerPlaywrightException("Unable to locate the optionset flyout after 10 attempts.");
-
-                await toggleMenu.ClickIfVisibleAsync(hoverOver: true, scrollIntoView: true);
-            }
-
-            //Gets the last one as the flyout is at the end of the dom
-            var option = this.Page.GetByRole(AriaRole.Option, new PageGetByRoleOptions { Name = optionValue }).Last;
-
-            await option.ScrollIntoViewIfNeededAsync();
-            await option.HoverAsync();
-
-            await option.ClickIfVisibleAsync(true, true);
+            await option.ClickAndWaitForAppIdleAsync();
         }
 
         Task IYesNo.SetValueAsync(bool value)
@@ -76,6 +58,20 @@
         Task<bool> IYesNo.GetValueAsync()
         {
             throw new System.NotImplementedException();
+        }
+
+        private async Task<ILocator> GetFlyoutLocatorAsync()
+        {
+            var flyoutId = await this.toggleMenu.GetAttributeAsync(Attributes.AriaControls);
+
+            return this.Page.GetByRole(AriaRole.Listbox).And(this.Page.Locator($"#{flyoutId}"));
+        }
+
+        private async Task<ILocator> GetOptionLocatorAsync(string optionValue)
+        {
+            var flyout = await GetFlyoutLocatorAsync();
+
+            return flyout.GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Name = optionValue });
         }
     }
 }

@@ -30,7 +30,7 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var choicesControl = await this.SetupChoicesScenarioAsync(null);
+            var choicesControl = await this.SetupChoicesScenarioAsync(withNoValue: true);
 
             Assert.That(choicesControl.GetValueAsync, Is.Null);
         }
@@ -45,7 +45,7 @@
             var expectedValue = this.faker.Random.EnumValuesRange<pp_record_pp_choices>(1);
             var choicesControl = await this.SetupChoicesScenarioAsync(expectedValue);
 
-            Assert.That(choicesControl.GetValueAsync, Is.EquivalentTo(expectedValue.Select(v => v.ToDisplayName())));
+            Assert.That(choicesControl.GetValueAsync, Is.EquivalentTo(expectedValue.Select(v => v.ToDisplayName()).ToArray()));
         }
 
         /// <summary>
@@ -55,12 +55,12 @@
         [Test]
         public async Task SetValueAsync_DoesNotContainValue_SetsValue()
         {
-            var choicesControl = await this.SetupChoicesScenarioAsync([]);
-            var expectedValue = this.faker.Random.EnumValuesRange<pp_record_pp_choices>(1).Select(v => v.ToDisplayName());
+            var choicesControl = await this.SetupChoicesScenarioAsync(withNoValue: true);
+            var expectedValue = this.faker.Random.EnumValuesRange<pp_record_pp_choices>(1).Select(v => v.ToDisplayName()).ToArray();
 
             await choicesControl.SetValueAsync(expectedValue);
 
-            Assert.That(choicesControl.GetValueAsync, Is.EqualTo(expectedValue));
+            Assert.That(choicesControl.GetValueAsync, Is.EquivalentTo(expectedValue));
         }
 
         /// <summary>
@@ -71,11 +71,11 @@
         public async Task SetValueAsync_ContainsValue_ReplacesValue()
         {
             var choicesControl = await this.SetupChoicesScenarioAsync();
-            var expectedValue = this.faker.Random.EnumValuesRange<pp_record_pp_choices>(1).Select(v => v.ToDisplayName());
+            var expectedValue = this.faker.Random.EnumValuesRange<pp_record_pp_choices>(1).Select(v => v.ToDisplayName()).ToArray();
 
             await choicesControl.SetValueAsync(expectedValue);
 
-            Assert.That(choicesControl.GetValueAsync, Is.EqualTo(expectedValue));
+            Assert.That(choicesControl.GetValueAsync, Is.EquivalentTo(expectedValue));
         }
 
         /// <summary>
@@ -86,7 +86,7 @@
         public async Task SelectAllAsync_Always_SetsValueToAllValues()
         {
             var choicesControl = await this.SetupChoicesScenarioAsync();
-            var allValues = Enum.GetValues(typeof(pp_record_pp_choices)).Cast<pp_record_pp_choices>().Select(v => v.ToDisplayName());
+            var allValues = Enum.GetValues(typeof(pp_record_pp_choices)).Cast<pp_record_pp_choices>().Select(v => v.ToDisplayName()).ToArray();
 
             await choicesControl.SelectAllAsync();
 
