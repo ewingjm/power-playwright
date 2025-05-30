@@ -29,7 +29,7 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var choicesControl = await this.SetupChoicesScenarioAsync();
+            var choicesControl = await this.SetupChoicesScenarioAsync(null);
 
             Assert.That(choicesControl.GetValueAsync, Is.Null);
         }
@@ -41,7 +41,7 @@
         [Test]
         public async Task GetValueAsync_ContainsValue_ReturnsValue()
         {
-            var expectedValue = this.faker.Random.EnumValues<pp_record_pp_choices>();
+            var expectedValue = this.faker.Random.EnumValues<pp_record_pp_choices>(this.GenerateRandomChoiceAmount());
             var choicesControl = await this.SetupChoicesScenarioAsync(expectedValue);
 
             Assert.That(choicesControl.GetValueAsync, Is.EquivalentTo(expectedValue.Select(v => v.ToDisplayName())));
@@ -55,7 +55,7 @@
         public async Task SetValueAsync_DoesNotContainValue_SetsValue()
         {
             var choicesControl = await this.SetupChoicesScenarioAsync([]);
-            var expectedValue = this.faker.Random.EnumValues<pp_record_pp_choices>().Select(v => v.ToDisplayName());
+            var expectedValue = this.faker.Random.EnumValues<pp_record_pp_choices>(this.GenerateRandomChoiceAmount()).Select(v => v.ToDisplayName());
 
             await choicesControl.SetValueAsync(expectedValue);
 
@@ -70,7 +70,7 @@
         public async Task SetValueAsync_ContainsValue_ReplacesValue()
         {
             var choicesControl = await this.SetupChoicesScenarioAsync();
-            var expectedValue = this.faker.Random.EnumValues<pp_record_pp_choices>().Select(v => v.ToDisplayName());
+            var expectedValue = this.faker.Random.EnumValues<pp_record_pp_choices>(this.GenerateRandomChoiceAmount()).Select(v => v.ToDisplayName());
 
             await choicesControl.SetValueAsync(expectedValue);
 
@@ -100,15 +100,21 @@
         private async Task<IChoices> SetupChoicesScenarioAsync(IEnumerable<pp_record_pp_choices>? withChoices = null)
         {
             var record = new RecordFaker();
-
-            if (withChoices != null)
-            {
-                record.RuleFor(x => x.pp_choices, withChoices);
-            }
+            record.RuleFor(x => x.pp_choices, withChoices);
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
 
             return recordPage.Form.GetField<IChoices>(nameof(pp_Record.pp_choices)).Control;
+        }
+
+        /// <summary>
+        /// Generates a random number for the enumerated pp_choices ensuring there is always one element as faker can sometimes generate empty lists.
+        /// This method will ensure it always generates at least one element.
+        /// </summary>
+        /// <returns>int.</returns>
+        private int GenerateRandomChoiceAmount()
+        {
+            return new Random().Next(1, Enum.GetValues(typeof(pp_record_pp_choices)).Length);
         }
     }
 }
