@@ -41,7 +41,7 @@
         [Test]
         public async Task GetValueAsync_ContainsValue_ReturnsValue()
         {
-            var expectedValue = this.faker.Random.Decimal();
+            var expectedValue = this.GetRandomDecimal();
             var decimalControl = await this.SetupDecimalScenarioAsync(withValue: expectedValue);
 
             Assert.That(decimalControl.GetValueAsync, Is.EqualTo(expectedValue));
@@ -55,7 +55,7 @@
         public async Task SetValueAsync_DoesNotContainValue_SetsValue()
         {
             var decimalControl = await this.SetupDecimalScenarioAsync(withNoValue: true);
-            var expectedValue = this.faker.Random.Decimal();
+            var expectedValue = this.GetRandomDecimal();
 
             await decimalControl.SetValueAsync(expectedValue);
 
@@ -70,11 +70,16 @@
         public async Task SetValueAsync_ContainsValue_ReplacesValue()
         {
             var decimalControl = await this.SetupDecimalScenarioAsync();
-            var expectedValue = this.faker.Random.Decimal();
+            var expectedValue = this.GetRandomDecimal();
 
             await decimalControl.SetValueAsync(expectedValue);
 
             Assert.That(decimalControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        private decimal GetRandomDecimal()
+        {
+            return Math.Round(this.faker.Random.Decimal(), 2);
         }
 
         /// <summary>
