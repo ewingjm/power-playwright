@@ -97,7 +97,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField<IWholeNumber>(nameof(pp_Record.pp_wholenumbernone)).Control;
+            return recordPage.Form.GetField<IWholeNumber>(pp_Record.Forms.Information.WholeNumberNone).Control;
         }
     }
 }
