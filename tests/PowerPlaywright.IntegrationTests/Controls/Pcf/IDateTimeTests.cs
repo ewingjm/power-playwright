@@ -4,6 +4,7 @@
     using Bogus;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
+    using PowerPlaywright.IntegrationTests.Extensions;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
 
@@ -42,7 +43,7 @@
         [Test]
         public async Task GetValueAsync_ContainsValue_ReturnsValue()
         {
-            var expectedValue = this.faker.Date.Recent().ToUniversalTime();
+            var expectedValue = this.GetRandomDateTime();
             var dateTimeControl = await this.SetupDateTimeScenarioAsync(withValue: expectedValue);
 
             Assert.That(dateTimeControl.GetValueAsync, Is.EqualTo(expectedValue));
@@ -56,7 +57,7 @@
         public async Task SetValueAsync_DoesNotContainValue_SetsValue()
         {
             var dateTimeControl = await this.SetupDateTimeScenarioAsync(withNoValue: true);
-            var expectedValue = this.faker.Date.Recent().ToUniversalTime();
+            var expectedValue = this.GetRandomDateTime();
 
             await dateTimeControl.SetValueAsync(expectedValue);
 
@@ -71,11 +72,16 @@
         public async Task SetValueAsync_ContainsValue_ReplacesValue()
         {
             var dateTimeControl = await this.SetupDateTimeScenarioAsync();
-            var expectedValue = this.faker.Date.Recent().ToUniversalTime();
+            var expectedValue = this.GetRandomDateTime();
 
             await dateTimeControl.SetValueAsync(expectedValue);
 
             Assert.That(dateTimeControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        private DateTime GetRandomDateTime()
+        {
+            return this.faker.Date.Recent().ToUniversalTime().WithoutSeconds();
         }
 
         /// <summary>

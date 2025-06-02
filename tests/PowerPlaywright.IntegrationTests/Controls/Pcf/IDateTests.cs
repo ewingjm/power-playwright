@@ -42,7 +42,7 @@
         [Test]
         public async Task GetValueAsync_ContainsValue_ReturnsValue()
         {
-            var expectedValue = this.faker.Date.Recent().ToUniversalTime().Date;
+            var expectedValue = this.GetRandomDate();
             var dateControl = await this.SetupDateScenarioAsync(withValue: expectedValue);
 
             Assert.That(dateControl.GetValueAsync, Is.EqualTo(expectedValue));
@@ -56,7 +56,7 @@
         public async Task SetValueAsync_DoesNotContainValue_SetsValue()
         {
             var dateControl = await this.SetupDateScenarioAsync(withNoValue: true);
-            var expectedValue = this.faker.Date.Recent().ToUniversalTime().Date;
+            var expectedValue = this.GetRandomDate();
 
             await dateControl.SetValueAsync(expectedValue);
 
@@ -71,11 +71,16 @@
         public async Task SetValueAsync_ContainsValue_ReplacesValue()
         {
             var dateControl = await this.SetupDateScenarioAsync();
-            var expectedValue = this.faker.Date.Recent().ToUniversalTime().Date;
+            var expectedValue = this.GetRandomDate();
 
             await dateControl.SetValueAsync(expectedValue);
 
             Assert.That(dateControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        private DateTime GetRandomDate()
+        {
+            return this.faker.Date.Recent().ToUniversalTime().Date;
         }
 
         /// <summary>
