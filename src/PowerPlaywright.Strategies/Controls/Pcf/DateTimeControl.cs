@@ -5,10 +5,10 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
     using System;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -19,7 +19,6 @@
     {
         private readonly ILocator dateInput;
         private readonly ILocator timeInput;
-        private readonly ILocator timeContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DateTimeControl"/> class.
@@ -31,49 +30,34 @@
         public DateTimeControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
-            var dateContainer = this.Container.Locator($"div[data-lp-id*='MscrmControls.FieldControls.DateControl|{this.Name}.fieldControl._datecontrol']");
-            this.timeContainer = this.Container.Locator($"div[data-lp-id*='MscrmControls.FieldControls.TimeControl|{this.Name}.fieldControl._timecontrol']");
-
-            this.dateInput = dateContainer.Locator("input[aria-label^='Date of Date and time']");
-            this.timeInput = timeContainer.Locator("input[aria-label^='Time of Date and time']");
+            this.dateInput = this.Container.GetByRole(AriaRole.Combobox, new LocatorGetByRoleOptions { Name = "Date of" });
+            this.timeInput = this.Container.GetByRole(AriaRole.Combobox, new LocatorGetByRoleOptions { Name = "Time of" });
         }
 
         /// <inheritdoc/>
         public async Task<DateTime?> GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             var dateString = await this.dateInput.InputValueOrNullAsync();
-            var timeString = string.Empty;
 
-            if (await timeContainer.IsVisibleAsync())
-            {
-                timeString = await this.timeInput.InputValueOrNullAsync();
-                Match match = Regex.Match(timeString, @"([01]?[0-9]|2[0-3]):[0-5][0-9]");
-                if (match.Success)
-                {
-                    timeString = match.Value;
-                }
-            }
-
-            if (string.IsNullOrEmpty(dateString) || string.IsNullOrEmpty(timeString))
+            if (string.IsNullOrEmpty(dateString))
             {
                 return null;
             }
 
-            if (DateTime.TryParse($"{dateString} {timeString}", out var dateTime))
-            {
-                return dateTime;
-            }
+            var timeString = await timeInput.IsVisibleAsync() ? await this.timeInput.InputValueOrNullAsync() : null;
 
-            return null;
+            return DateTime.Parse($"{dateString} {timeString}".TrimEnd());
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(DateTime? value)
         {
-            var dateTask = this.dateInput.FillAsync(value.Value.ToShortDateString());
-            var timeTask = this.timeInput.FillAsync(value.Value.ToShortTimeString());
-
-            await Task.WhenAll(dateTask, timeTask);
+            // TODO: Set current thread culture equal to the culture of the app user. Currently, this will only work if the app user culture is the same as the current culture.
+            await this.dateInput.FillAsync(value.Value.ToShortDateString());
+            await this.Container.ClickAndWaitForAppIdleAsync();
+            await this.timeInput.FillAsync(value.Value.ToShortTimeString());
         }
     }
 }
