@@ -9,6 +9,7 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
+    using System;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -50,14 +51,28 @@
             await option.ClickAndWaitForAppIdleAsync();
         }
 
-        Task IYesNo.SetValueAsync(bool value)
+        async Task IYesNo.SetValueAsync(bool value)
         {
-            throw new System.NotImplementedException();
+            await this.Page.WaitForAppIdleAsync();
+
+            await this.toggleMenu.ClickAndWaitForAppIdleAsync();
+            // TODO: Use table metadata to get true/false text values instead of relying on index.
+            var option = await GetOptionLocatorAsync(Convert.ToInt32(value));
+
+            await option.ClickAndWaitForAppIdleAsync();
         }
 
-        Task<bool> IYesNo.GetValueAsync()
+        async Task<bool> IYesNo.GetValueAsync()
         {
-            throw new System.NotImplementedException();
+            await Page.WaitForAppIdleAsync();
+
+            var value = await toggleMenu.GetAttributeAsync("value");
+            await this.toggleMenu.ClickAndWaitForAppIdleAsync();
+            // TODO: Use table metadata to get true/false text values instead of relying on index.
+            var falseOption = await GetOptionLocatorAsync(0);
+            var falseOptionText = await falseOption.TextContentAsync();
+
+            return value != falseOptionText;
         }
 
         private async Task<ILocator> GetFlyoutLocatorAsync()
@@ -72,6 +87,13 @@
             var flyout = await GetFlyoutLocatorAsync();
 
             return flyout.GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Name = optionValue });
+        }
+
+        private async Task<ILocator> GetOptionLocatorAsync(int optionIndex)
+        {
+            var flyout = await GetFlyoutLocatorAsync();
+
+            return flyout.GetByRole(AriaRole.Option).Nth(optionIndex);
         }
     }
 }
