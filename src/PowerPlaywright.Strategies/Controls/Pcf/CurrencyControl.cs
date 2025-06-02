@@ -8,6 +8,8 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Strategies.Extensions;
     using PowerPlaywright.Framework;
+    using System.Text.RegularExpressions;
+    using System;
 
     /// <summary>
     /// A control strategy for the <see cref="ICurrencyControl"/>.
@@ -33,7 +35,9 @@
         /// <inheritdoc/>
         public async Task<decimal?> GetValueAsync()
         {
-            return await this.input.InputValueOrNullAsync<decimal?>();
+            var value = await this.input.InputValueOrNullAsync<string>();
+
+            return value != null ? Convert.ToDecimal(Regex.Replace(value, @"[^\d.,]", "")) : (decimal?)null;
         }
 
         /// <inheritdoc/>
