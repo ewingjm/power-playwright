@@ -54,6 +54,7 @@
                 await this.workOrSchoolAccount.ClickAsync();
             }
 
+            await this.passwordInput.ClickAsync();
             await this.passwordInput.FillAsync(password);
             await this.nextButton.ClickAsync();
             await this.staySignedInButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
