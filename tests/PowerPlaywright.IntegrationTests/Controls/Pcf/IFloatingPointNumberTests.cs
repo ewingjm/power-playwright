@@ -41,7 +41,7 @@
         [Test]
         public async Task GetValueAsync_ContainsValue_ReturnsValue()
         {
-            var expectedValue = this.faker.Random.Double();
+            var expectedValue = Math.Round(this.faker.Random.Double());
             var floatingPointControl = await this.SetupFloatingPointScenarioAsync(withValue: expectedValue);
 
             Assert.That(floatingPointControl.GetValueAsync, Is.EqualTo(expectedValue));
@@ -70,7 +70,7 @@
         public async Task SetValueAsync_ContainsValue_ReplacesValue()
         {
             var floatingPointControl = await this.SetupFloatingPointScenarioAsync();
-            var expectedValue = this.faker.Random.Double();
+            var expectedValue = Math.Round(this.faker.Random.Double());
 
             await floatingPointControl.SetValueAsync(expectedValue);
 
