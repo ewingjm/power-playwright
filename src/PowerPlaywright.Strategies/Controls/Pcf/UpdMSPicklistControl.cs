@@ -97,17 +97,22 @@
 
         private async Task ShowListBoxAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             if (await this.comboxBox.IsVisibleAsync() && await this.comboxBox.IsExpandedAsync())
             {
+                // Already shown
                 return;
             }
 
             if (await this.textBox.IsVisibleAsync())
             {
+                // No values set.
                 await this.textBox.FocusAsync();
             }
             else
             {
+                // Values set.
                 await this.comboxBox.HoverAsync();
             }
 
