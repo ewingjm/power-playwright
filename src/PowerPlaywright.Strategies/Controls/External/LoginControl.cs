@@ -64,7 +64,7 @@
                 await this.staySignedInButton.ClickAsync();
             }
 
-            await this.Page.WaitForURLAsync("**/main.aspx*");
+            await this.Page.WaitForURLAsync("**/main.aspx*", new PageWaitForURLOptions { Timeout = 60000 });
 
             return (IModelDrivenAppPage)await this.pageFactory.CreateInstanceAsync(this.Page);
         }
