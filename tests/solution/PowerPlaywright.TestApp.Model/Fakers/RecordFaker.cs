@@ -2,6 +2,7 @@
 {
     using Bogus;
     using Microsoft.Xrm.Sdk;
+    using PowerPlaywright.TestApp.Model.Extensions;
 
     /// <summary>
     /// A faker for the <see cref="pp_Record"/> class.
@@ -14,7 +15,7 @@
         public RecordFaker()
         {
             this.RuleFor(r => r.pp_choice, f => f.PickRandom<pp_record_pp_choice>());
-            this.RuleFor(r => r.pp_choices, f => f.PickRandom(new[] { pp_record_pp_choices.ChoiceA, pp_record_pp_choices.ChoiceB, pp_record_pp_choices.ChoiceC }, 2));
+            this.RuleFor(r => r.pp_choices, f => f.Random.EnumValuesRange<pp_record_pp_choices>(1));
             this.RuleFor(r => r.pp_currency, f => new Money(f.Random.Decimal()));
             this.RuleFor(r => r.pp_dateandtimedateandtime, f => DateTime.UtcNow);
             this.RuleFor(r => r.pp_dateandtimedateonly, f => DateTime.UtcNow.Date);

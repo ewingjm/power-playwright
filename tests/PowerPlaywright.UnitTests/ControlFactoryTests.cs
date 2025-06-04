@@ -227,7 +227,15 @@ public class ControlFactoryTests
         this.assemblyProvider.GetAssembly()
             .Returns(typeof(PowerAppsOneGridControl).Assembly);
         this.serviceProvider.GetService(Arg.Is<Type>(t => t != typeof(string)))
-            .Returns(i => Substitute.For(i.Args().Cast<Type>().ToArray(), []));
+            .Returns(i => Substitute.For([.. i.Args().Cast<Type>()], []));
+        var environmentinfoProvider = Substitute.For<IEnvironmentInfoProvider>();
+        environmentinfoProvider.ControlIds
+            .Returns(new Dictionary<string, Guid>()
+            {
+                ["Microsoft.PowerApps.PowerAppsOneGrid"] = Guid.NewGuid(),
+            });
+        this.serviceProvider.GetService(typeof(IEnvironmentInfoProvider))
+            .Returns(environmentinfoProvider);
         this.strategyResolver.IsReady
             .Returns(true);
         this.strategyResolver.IsResolvable(Arg.Any<Type>())

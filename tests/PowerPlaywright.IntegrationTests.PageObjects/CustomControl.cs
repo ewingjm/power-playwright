@@ -9,7 +9,6 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
-    using PowerPlaywright.TestApp.PageObjects.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="ICustomControl"/>.
@@ -57,7 +56,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"div[data-lp-id*='{this.environmentInfo.ControlIds[typeof(ICustomControl).GetCustomAttribute<PcfControlAttribute>().Name]}|{this.Name.TrimEndNumbers()}'][data-lp-id*='.fieldControl']");
+            return context.Locator($"div[data-lp-id*='{this.environmentInfo.ControlIds[typeof(ICustomControl).GetCustomAttribute<PcfControlAttribute>().Name]}|'][data-lp-id*='.fieldControl']");
         }
     }
 }

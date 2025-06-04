@@ -2,7 +2,6 @@
 {
     using System.Threading.Tasks;
     using Bogus;
-    using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
@@ -15,27 +14,12 @@
         private Faker faker;
 
         /// <summary>
-        /// Sets up the phonenumber control.
+        /// Sets up the test dependencies.
         /// </summary>
         [SetUp]
         public void Setup()
         {
             this.faker = new Faker();
-        }
-
-        /// <summary>
-        /// Tests that <see cref="ISingleLinePhoneNumber.SetValueAsync(string)"/> sets the value.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task SetValueAsync_ReturnsValue()
-        {
-            var phoneNumber = this.faker.Phone.PhoneNumber();
-            var phoneNumberControl = await this.SetupPhoneNumberScenarioAsync();
-
-            await phoneNumberControl.SetValueAsync(phoneNumber);
-
-            Assert.That(phoneNumberControl.GetValueAsync, Is.EqualTo(phoneNumber));
         }
 
         /// <summary>
@@ -45,23 +29,74 @@
         [Test]
         public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
         {
-            var urlControl = await this.SetupPhoneNumberScenarioAsync(withPhoneNumber: string.Empty);
+            var singleLinePhoneNumberControl = await this.SetupSingleLinePhoneNumberScenarioAsync(withNoValue: true);
 
-            Assert.That(urlControl.GetValueAsync, Is.Null);
+            Assert.That(singleLinePhoneNumberControl.GetValueAsync, Is.Null);
         }
 
         /// <summary>
-        /// Sets up a Phone Number control scenario for testing by creating a record with a specified or generated Phone Number.
+        /// Tests that <see cref="ISingleLinePhoneNumber.GetValueAsync"/> returns the value when the value has been set.
         /// </summary>
-        /// <param name="withPhoneNumber">An optional Phone Number string to set in the record. If null, a random Phone Number will be generated.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_ContainsValue_ReturnsValue()
+        {
+            var expectedValue = this.faker.Phone.PhoneNumber();
+            var singleLinePhoneNumberControl = await this.SetupSingleLinePhoneNumberScenarioAsync(withValue: expectedValue);
+
+            Assert.That(singleLinePhoneNumberControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="ISingleLinePhoneNumber.SetValueAsync(string)"/> sets the value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_DoesNotContainValue_SetsValue()
+        {
+            var singleLinePhoneNumberControl = await this.SetupSingleLinePhoneNumberScenarioAsync(withNoValue: true);
+            var expectedValue = this.faker.Phone.PhoneNumber();
+
+            await singleLinePhoneNumberControl.SetValueAsync(expectedValue);
+
+            Assert.That(singleLinePhoneNumberControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="ISingleLinePhoneNumber.SetValueAsync(string)"/> replaces the value when the control already contains a value.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SetValueAsync_ContainsValue_ReplacesValue()
+        {
+            var singleLinePhoneNumberControl = await this.SetupSingleLinePhoneNumberScenarioAsync();
+            var expectedValue = this.faker.Phone.PhoneNumber();
+
+            await singleLinePhoneNumberControl.SetValueAsync(expectedValue);
+
+            Assert.That(singleLinePhoneNumberControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        /// <summary>
+        /// Sets up a control scenario for testing by creating a record with a specified or generated value.
+        /// </summary>
+        /// <param name="withValue">An optional value to set in the record. If null, a random value will be generated.</param>
+        /// <param name="withNoValue">Whether to set the choice to null. Defaults to false.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="ISingleLinePhoneNumber"/>.</returns>
-        private async Task<ISingleLinePhoneNumber> SetupPhoneNumberScenarioAsync(string? withPhoneNumber = null)
+        private async Task<ISingleLinePhoneNumber> SetupSingleLinePhoneNumberScenarioAsync(string? withValue = null, bool withNoValue = false)
         {
             var record = new RecordFaker();
-            record.RuleFor(x => x.pp_singlelineoftextphonenumber, f => withPhoneNumber ?? f.Phone.PhoneNumber());
+
+            if (withNoValue)
+            {
+                record.RuleFor(x => x.pp_singlelineoftextphonenumber, f => null!);
+            }
+            else if (withValue is not null)
+            {
+                record.RuleFor(x => x.pp_singlelineoftextphonenumber, withValue);
+            }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-
             return recordPage.Form.GetField<ISingleLinePhoneNumber>(nameof(pp_Record.pp_singlelineoftextphonenumber)).Control;
         }
     }

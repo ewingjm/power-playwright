@@ -117,13 +117,22 @@
             var isFailed = TestContext.CurrentContext.Result.Outcome == ResultState.Error ||
                 TestContext.CurrentContext.Result.Outcome == ResultState.Failure;
 
+            var path = isFailed ? Path.Combine(
+                TestContext.CurrentContext.WorkDirectory,
+                "playwright-traces",
+                $"{TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.Name}.zip") : null;
+
             await this.Context.Tracing.StopAsync(new()
             {
-                Path = isFailed ? Path.Combine(
-                    TestContext.CurrentContext.WorkDirectory,
-                    "playwright-traces",
-                    $"{TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.Name}.zip") : null,
+                Path = path,
             });
+
+            if (path is null)
+            {
+                return;
+            }
+
+            TestContext.AddTestAttachment(path, "Playwright trace");
         }
 
         /// <summary>

@@ -1,7 +1,5 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
-    using System;
-    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -10,6 +8,8 @@
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using System;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// A main form.

@@ -54,16 +54,17 @@
                 await this.workOrSchoolAccount.ClickAsync();
             }
 
+            await this.passwordInput.ClickAsync();
             await this.passwordInput.FillAsync(password);
             await this.nextButton.ClickAsync();
-            await this.staySignedInButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+            await this.staySignedInButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
 
             if (await this.staySignedInButton.IsVisibleAsync())
             {
                 await this.staySignedInButton.ClickAsync();
             }
 
-            await this.Page.WaitForURLAsync("**/main.aspx*");
+            await this.Page.WaitForURLAsync("**/main.aspx*", new PageWaitForURLOptions { Timeout = 60000 });
 
             return (IModelDrivenAppPage)await this.pageFactory.CreateInstanceAsync(this.Page);
         }

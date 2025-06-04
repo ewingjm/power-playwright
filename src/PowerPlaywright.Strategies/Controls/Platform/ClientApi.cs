@@ -7,6 +7,7 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
+    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
@@ -44,6 +45,8 @@
                         ) 
                     } ",
                 new { entityName, entityId });
+
+            await this.Page.WaitForAppIdleAsync();
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }
