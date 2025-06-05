@@ -38,8 +38,8 @@
             this.label = this.Container.Locator("label[id*='field-label']");
             this.dataSetHostContainer = this.Container.Locator("div[data-id='DataSetHostContainer']");
             this.dataSetLabel = this.dataSetHostContainer.Locator("h3");
-            this.fieldSectionItemContainer = this.Container.Locator("div[data-id*='-FieldSectionItemContainer']");
-            this.lockedIcon = this.Container.Locator("div[data-id*='-locked-icon']");
+            this.fieldSectionItemContainer = this.Container.Locator("div[data-id$='-FieldSectionItemContainer']");
+            this.lockedIcon = this.Container.Locator("div[data-id$='-locked-icon']");
         }
 
         /// <inheritdoc/>
@@ -68,7 +68,7 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            return !(await this.lockedIcon.IsVisibleAsync());
+            return await this.lockedIcon.IsVisibleAsync();
         }
 
         /// <inheritdoc/>
