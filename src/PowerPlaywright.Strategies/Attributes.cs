@@ -8,5 +8,6 @@
         internal const string AriaControls = "aria-controls";
         internal const string AriaExpanded = "aria-expanded";
         internal const string AriaLabel = "aria-label";
+        internal const string DataFieldRequirement = "data-fieldrequirement";
     }
 }

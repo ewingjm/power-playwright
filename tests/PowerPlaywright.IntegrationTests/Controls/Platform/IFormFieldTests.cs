@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
+﻿namespace PowerPlaywright.IntegrationTests.Controls.Platform
 {
     using System.Threading.Tasks;
     using Bogus;
@@ -24,6 +24,58 @@
             var control = form.GetField<ISingleLineUrl>(nameof(pp_Record.pp_singlelineoftexturl));
 
             Assert.That(control.Control, Is.Not.Null);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IFormField.IsMandatoryAsync"/> returns true if the control is mandatory.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task IsMandatoryAsync_MandatoryField_ReturnsTrue()
+        {
+            var form = await this.SetupFormScenarioAsync();
+            var control = form.GetField(nameof(pp_Record.pp_singlelineoftexttext));
+
+            Assert.That(control.IsMandatoryAsync, Is.True);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IFormField.IsMandatoryAsync"/> returns false if the control is not mandatory.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task IsMandatoryAsync_NonMandatoryField_ReturnsFalse()
+        {
+            var form = await this.SetupFormScenarioAsync();
+            var control = form.GetField(nameof(pp_Record.pp_currency));
+
+            Assert.That(control.IsMandatoryAsync, Is.False);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IFormField.IsDisabledAsync"/> returns true if the control is disabled.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task IsDisabledAsync_DisabledField_ReturnsTrue()
+        {
+            var form = await this.SetupFormScenarioAsync();
+            var control = form.GetField(nameof(pp_Record.pp_singlelineoftexttext));
+
+            Assert.That(control.IsDisabledAsync, Is.True);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IFormField.IsDisabledAsync"/> returns false if the control is not mandatory.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task IsDisabledAsync_NonDisabledField_ReturnsFalse()
+        {
+            var form = await this.SetupFormScenarioAsync();
+            var control = form.GetField(nameof(pp_Record.pp_currency));
+
+            Assert.That(control.IsMandatoryAsync, Is.False);
         }
 
         /// <summary>

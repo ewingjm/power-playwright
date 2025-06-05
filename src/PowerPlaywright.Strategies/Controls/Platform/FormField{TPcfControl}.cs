@@ -60,5 +60,17 @@
         {
             return this.formField.Container;
         }
+
+        /// <inheritdoc/>
+        public Task<bool> IsDisabledAsync()
+        {
+            return this.formField.IsDisabledAsync();
+        }
+
+        /// <inheritdoc/>
+        public Task<bool> IsMandatoryAsync()
+        {
+            return this.formField.IsMandatoryAsync();
+        }
     }
 }

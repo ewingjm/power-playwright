@@ -14,11 +14,15 @@
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class FormField : Control, IFormField
     {
+        private const string FieldRequirementLevelMandatory = "2";
+
         private readonly string name;
 
         private readonly ILocator label;
         private readonly ILocator dataSetHostContainer;
         private readonly ILocator dataSetLabel;
+        private readonly ILocator fieldSectionItemContainer;
+        private readonly ILocator lockedIcon;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FormField{TControl}"/> class.
@@ -34,6 +38,8 @@
             this.label = this.Container.Locator("label[id*='field-label']");
             this.dataSetHostContainer = this.Container.Locator("div[data-id='DataSetHostContainer']");
             this.dataSetLabel = this.dataSetHostContainer.Locator("h3");
+            this.fieldSectionItemContainer = this.Container.Locator("div[data-id*='-FieldSectionItemContainer']");
+            this.lockedIcon = this.Container.Locator("div[data-id*='-locked-icon']");
         }
 
         /// <inheritdoc/>
@@ -56,6 +62,29 @@
 
         /// <inheritdoc/>
         public string Name => this.name;
+
+        /// <inheritdoc/>
+        public async Task<bool> IsDisabledAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            return !(await this.lockedIcon.IsVisibleAsync());
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> IsMandatoryAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            if (await this.fieldSectionItemContainer.IsVisibleAsync())
+            {
+                var fieldRequirement = await this.fieldSectionItemContainer.GetAttributeAsync(Attributes.DataFieldRequirement);
+
+                return fieldRequirement == FieldRequirementLevelMandatory;
+            }
+
+            return false;
+        }
 
         /// <inheritdoc/>
         public async Task<bool> IsVisibleAsync()

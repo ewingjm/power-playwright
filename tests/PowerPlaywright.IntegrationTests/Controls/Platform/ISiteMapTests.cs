@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.IntegrationTests.Controls
+﻿namespace PowerPlaywright.IntegrationTests.Controls.Platform
 {
     using System.Text.RegularExpressions;
     using PowerPlaywright.Framework;
