@@ -101,7 +101,7 @@
             var form = await this.SetupFormScenarioAsync();
             var control = form.GetField(nameof(pp_Record.pp_singlelineoftexturl));
 
-            Assert.That(control.IsVisibleAsync, Is.True);
+            Assert.That(control.IsVisibleAsync, Is.False);
         }
 
         /// <summary>
