@@ -15,8 +15,7 @@
     [PcfControlStrategy(0, 0, 0)]
     public class TextInput : PcfControlInternal, ITextInput
     {
-        private readonly ILocator textArea;
-        private readonly ILocator textInput;
+        private readonly ILocator textbox;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TextInput"/> class.
@@ -28,32 +27,19 @@
         public TextInput(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
-            this.textArea = this.Container.Locator("textarea");
-            this.textInput = this.Container.Locator("input");
+            this.textbox = this.Container.GetByRole(AriaRole.Textbox);
         }
 
         /// <inheritdoc/>
         public async Task<string> GetValueAsync()
         {
-            if (await textArea.IsVisibleAsync())
-            {
-                return await this.textArea.InputValueOrNullAsync();
-            }
-
-            return await this.textInput.InputValueOrNullAsync();
+            return await this.textbox.InputValueOrNullAsync();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(string value)
         {
-            if (await textArea.IsVisibleAsync())
-            {
-                await this.textArea.FillAsync(value);
-            }
-            else
-            {
-                await this.textInput.FillAsync(value);
-            }
+            await this.textbox.FillAsync(value);
         }
     }
 }
