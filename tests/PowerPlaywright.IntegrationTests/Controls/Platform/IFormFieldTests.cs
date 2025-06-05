@@ -21,7 +21,7 @@
         public async Task PcfControl_Always_ReturnsPcfControlInstance()
         {
             var form = await this.SetupFormScenarioAsync();
-            var control = form.GetField<ISingleLineUrl>(pp_Record.Forms.Information.WholeNumberNone);
+            var control = form.GetField<IWholeNumber>(pp_Record.Forms.Information.WholeNumberNone);
 
             Assert.That(control.Control, Is.Not.Null);
         }
