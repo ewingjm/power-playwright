@@ -1,4 +1,4 @@
-﻿namespace PowerPlaywright.IntegrationTests.Controls
+﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
     using System.Text.RegularExpressions;
     using Bogus;

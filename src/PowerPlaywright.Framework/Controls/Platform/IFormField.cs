@@ -15,7 +15,19 @@
         string Name { get; }
 
         /// <summary>
-        /// Gets whether the control is visible.
+        /// Gets whether the control is editable.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<bool> IsDisabledAsync();
+
+        /// <summary>
+        /// Gets whether the control is mandatory.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<bool> IsMandatoryAsync();
+
+        /// <summary>
+        /// Gets whether the control is editable.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<bool> IsVisibleAsync();
