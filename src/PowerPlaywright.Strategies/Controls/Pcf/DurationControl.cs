@@ -8,7 +8,6 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Strategies.Extensions;
     using PowerPlaywright.Framework;
-    using System.Threading;
     using PowerPlaywright.Framework.Extensions;
 
     /// <summary>
