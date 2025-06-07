@@ -4,6 +4,7 @@
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
+    using System.Text.RegularExpressions;
 
     /// <summary>
     /// Tests for the <see cref="IDuration"/> control class.
@@ -28,7 +29,8 @@
         [Test]
         public async Task GetValueAsync_ContainsValue_ReturnsValue()
         {
-            var expectedValue = 5;
+            var expectedValue = this.faker.Random.Int(1, 59);
+
             var durationControl = await this.SetupDurationScenarioAsync(withValue: expectedValue);
 
             Assert.That(durationControl.GetValueAsync, Is.EqualTo($"{expectedValue} minutes"));
@@ -42,7 +44,7 @@
         public async Task SetValueAsync_DoesNotContainValue_SetsValue()
         {
             var durationControl = await this.SetupDurationScenarioAsync(withNoValue: true);
-            var expectedValue = "5 minutes";
+            var expectedValue = this.GetRandomStringDuration();
 
             await durationControl.SetValueAsync(expectedValue);
 
@@ -57,11 +59,27 @@
         public async Task SetValueAsync_ContainsValue_ReplacesValue()
         {
             var durationControl = await this.SetupDurationScenarioAsync();
-            var expectedValue = "5 minutes";
+            var expectedValue = this.GetRandomStringDuration();
 
             await durationControl.SetValueAsync(expectedValue);
 
             Assert.That(durationControl.GetValueAsync, Is.EqualTo(expectedValue));
+        }
+
+        private string GetRandomStringDuration()
+        {
+            var units = new[] { "minute", "hour", "day", "second" };
+            var unit = this.faker.PickRandom(units);
+
+            var quantity = this.faker.Random.Int(1, 59);
+
+            // Proper pluralization
+            if (quantity > 1)
+            {
+                unit += "s";
+            }
+
+            return $"{quantity} {unit}";
         }
 
         /// <summary>
