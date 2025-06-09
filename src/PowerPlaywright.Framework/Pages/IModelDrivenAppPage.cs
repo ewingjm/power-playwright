@@ -16,5 +16,10 @@
         /// Gets an object that provides client API functionality.
         /// </summary>
         IClientApi ClientApi { get; }
+
+        /// <summary>
+        /// Gets the global search control.
+        /// </summary>
+        IGlobalSearch Search { get; }
     }
 }
