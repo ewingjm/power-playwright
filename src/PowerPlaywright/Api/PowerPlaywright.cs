@@ -185,8 +185,9 @@ namespace PowerPlaywright.Api
             var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
             var versions = await nuGetPackageInstaller.GetAllVersionsAsync(StrategiesPackageId);
-            var strategiesVersion = versions
-                .FirstOrDefault(v => v.Major == assemblyVersion.Major && v.Minor == assemblyVersion.Minor && v.Patch == assemblyVersion.Revision);
+            var strategiesVersion = versions.Count() > 1
+                ? versions.FirstOrDefault(v => v.Major == assemblyVersion.Major && v.Minor == assemblyVersion.Minor && v.Patch == assemblyVersion.Revision)
+                : versions.FirstOrDefault();
 
             return strategiesVersion is null
                 ? throw new PowerPlaywrightException($"Unable to find strategies version matching '{assemblyVersion.ToString(3)}'.")
