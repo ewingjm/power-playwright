@@ -190,9 +190,9 @@ public class PowerPlaywrightTests
 
     private void MockValidDefaults()
     {
-        var powerPlaywrightMajorVersion = typeof(IPowerPlaywright).Assembly.GetName().Version!.Major;
+        var powerPlaywrightVersion = typeof(IPowerPlaywright).Assembly.GetName().Version!;
 
         this.packageInstaller.GetAllVersionsAsync(StrategiesPackageId)
-            .Returns([new NuGetVersion(powerPlaywrightMajorVersion, 0, 0)]);
+            .Returns([new NuGetVersion(powerPlaywrightVersion.Major, powerPlaywrightVersion.Minor, powerPlaywrightVersion.Revision)]);
     }
 }
