@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
@@ -21,6 +22,7 @@
         private readonly ILogger<PcfGridControl> logger;
 
         private readonly ILocator rowsContainer;
+        private readonly ILocator columnHeaders;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PcfGridControl"/> class.
@@ -38,6 +40,15 @@
             this.logger = logger;
 
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
+            this.columnHeaders = this.Container.GetByRole(AriaRole.Columnheader);
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> GetColumnNamesAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            return await this.columnHeaders.Locator("label").AllInnerTextsAsync();
         }
 
         /// <inheritdoc/>
