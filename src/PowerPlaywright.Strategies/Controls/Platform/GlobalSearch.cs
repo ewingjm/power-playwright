@@ -8,6 +8,7 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
+    using System.Data;
     using System.Threading.Tasks;
     using System.Xml.Linq;
 
@@ -26,7 +27,7 @@
         private readonly ILocator resultsContainer;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SiteMap"/> class.
+        /// Initializes a new instance of the <see cref="GlobalSearch"/> class.
         /// </summary>
         /// <param name="appPage">The app page.</param>
         /// <param name="pageFactory">The page factory.</param>
@@ -34,13 +35,9 @@
             : base(appPage)
         {
             this.pageFactory = pageFactory;
+            this.search = this.Container.GetByRole(AriaRole.Searchbox, new LocatorGetByRoleOptions { Name = "Search" });
 
-            this.search = this.Container.GetByRole(AriaRole.Searchbox, new LocatorGetByRoleOptions
-            {
-                Name = "Search"
-            });
-
-            this.searchFlyout = this.Page.Locator("[id='id-globalSearchFlyout-1']");
+            this.searchFlyout = this.Page.Locator($"#{SearchFlyout}");
             this.resultsContainer = searchFlyout.GetByRole(AriaRole.Grid);
         }
 
@@ -53,22 +50,19 @@
         /// <inheritdoc/>
         public async Task SearchAsync(string searchText)
         {
-            await this.search.FillAsync(searchText);
-            await Page.WaitForAppIdleAsync();
+            await Search(searchText);
         }
 
         /// <inheritdoc/>
-        public async Task<TPage> OpenSearchResultAsync<TPage>(int index) where TPage : IModelDrivenAppPage
+        public async Task<TPage> OpenSearchResultAsync<TPage>(string search, int index) where TPage : IModelDrivenAppPage
         {
-            //if (await IsFlyOutVisible())
-            //{
-            //}
-            //else
-            //{
-            //    throw new PowerPlaywrightException($"No search results were found in the global search");
-            //}
+            await Search(search);
 
-            return default;
+            var results = await this.searchFlyout.GetByRole(AriaRole.Button).AllAsync();
+
+            await results[index].ClickAndWaitForAppIdleAsync();
+
+            return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
         }
 
         /// <inheritdoc/>
@@ -83,12 +77,15 @@
         }
 
         /// <summary>
-        /// Indictates if the search results are visible.
+        /// Performs the search.
         /// </summary>
+        /// <param name="searchText"></param>
         /// <returns></returns>
-        public async Task<bool> IsFlyOutVisible()
+        private async Task Search(string searchText)
         {
-            return await searchFlyout.IsVisibleAsync();
+            await this.search.ClearAsync();
+            await this.search.FillAsync(searchText);
+            await Page.WaitForAppIdleAsync();
         }
     }
 }

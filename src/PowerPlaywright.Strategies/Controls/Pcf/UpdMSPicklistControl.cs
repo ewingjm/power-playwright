@@ -65,12 +65,12 @@
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(IEnumerable<string> optionValues)
+        public async Task SetValueAsync(IEnumerable<string> value)
         {
             await this.ShowListBoxAsync();
             await this.ClearExistingOptions();
 
-            foreach (var optionValue in optionValues)
+            foreach (var optionValue in value)
             {
                 await this.SelectOptionAsync(optionValue);
             }

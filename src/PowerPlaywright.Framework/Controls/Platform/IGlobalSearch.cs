@@ -21,9 +21,10 @@
         /// Opens a page.
         /// </summary>
         /// <typeparam name="TPage">The type of page to open.</typeparam>
+        /// <param name="search">The search query to search against.</param>
         /// <param name="index">The index of the result to open.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<TPage> OpenSearchResultAsync<TPage>(int index)
+        Task<TPage> OpenSearchResultAsync<TPage>(string search, int index)
             where TPage : IModelDrivenAppPage;
 
         /// <summary>
