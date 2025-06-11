@@ -24,7 +24,7 @@
         /// <inheritdoc/>
         protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
         {
-            if ((ReleaseChannel)redirectionInfo.ActiveReleaseChannel == ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
+            if (!redirectionInfo.IsNewLookEnabled)
             {
                 return typeof(IPcfGridControl);
             }
