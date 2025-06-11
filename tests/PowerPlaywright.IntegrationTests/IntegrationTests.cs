@@ -1,5 +1,8 @@
 ﻿namespace PowerPlaywright.IntegrationTests
 {
+    using System.Net.Http.Headers;
+    using System.Reflection;
+    using System.Text;
     using Azure.Core;
     using Azure.Extensions.AspNetCore.Configuration.Secrets;
     using Azure.Identity;
@@ -18,9 +21,6 @@
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.IntegrationTests.Config;
     using PowerPlaywright.TestApp.Model.Search;
-    using System.Net.Http.Headers;
-    using System.Reflection;
-    using System.Text;
 
     /// <summary>
     /// A base class for integration tests.
@@ -171,9 +171,10 @@
         /// Creates a test record and retrieves it with all columns as a strongly-typed entity.
         /// </summary>
         /// <param name="searchText">The record to create.</param>
+        /// <param name="topCount">The top number of records to return.</param>
         /// <returns>SearchQueryApiResponse.</returns>
         /// <summary/>
-        protected async Task<SearchQueryApiResponse> SearchAsync(string searchText)
+        protected async Task<SearchQueryApiResponse> PerformRelevanceSearchAsync(string searchText, int topCount = 50)
         {
             if (string.IsNullOrWhiteSpace(searchText))
             {
@@ -192,6 +193,7 @@
                 {
                     search = searchText,
                     count = true,
+                    top = topCount,
                 };
 
                 var content = new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json");

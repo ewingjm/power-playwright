@@ -68,12 +68,7 @@
         /// <inheritdoc/>
         public async Task<bool> HasResultsAsync()
         {
-            if (await searchFlyout.IsVisibleAsync())
-            {
-                return await resultsContainer.IsVisibleAsync();
-            }
-
-            return false;
+            return await resultsContainer.IsVisibleAsync();
         }
 
         /// <summary>

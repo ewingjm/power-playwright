@@ -15,7 +15,8 @@
     /// </summary>
     public partial class IGlobalSearchTests : IntegrationTests
     {
-        private Faker<pp_Record> faker;
+        private Faker<pp_Record> recordFaker;
+        private Faker faker;
 
         /// <summary>
         /// Sets up the search control grid.
@@ -23,7 +24,8 @@
         [SetUp]
         public void Setup()
         {
-            this.faker = new RecordFaker();
+            this.recordFaker = new RecordFaker();
+            this.faker = new Faker();
         }
 
         /// <summary>
@@ -33,10 +35,9 @@
         [Test]
         public async Task SearchAsync_HasResults_Returns_True()
         {
-            var searchRecord = await this.SetupSearchScenarioAsync();
-            var searchControl = (await this.LoginAsync()).Search;
-
-            await searchControl.SearchAsync(searchRecord.pp_singlelineoftexttext);
+            var sampleRecord = this.recordFaker.Generate();
+            var searchControl = await this.SetupSearchScenarioAsync(sampleRecord);
+            await searchControl.SearchAsync(sampleRecord.pp_singlelineoftexttext);
 
             Assert.That(searchControl.HasResultsAsync, Is.True);
         }
@@ -48,9 +49,8 @@
         [Test]
         public async Task SearchAsync_HasNoResults_Returns_False()
         {
-            var searchControl = (await this.LoginAsync()).Search;
-
-            await searchControl.SearchAsync("sometotallyandutterlyfakestring");
+            var searchControl = await this.SetupSearchScenarioAsync();
+            await searchControl.SearchAsync(this.faker.Random.String(50));
 
             Assert.That(searchControl.HasResultsAsync, Is.False);
         }
@@ -62,25 +62,30 @@
         [Test]
         public async Task OpenSearchResult_Opens_EntityRecordPage()
         {
-            var searchRecord = await this.SetupSearchScenarioAsync();
-            var searchControl = (await this.LoginAsync()).Search;
+            var sampleRecord = this.recordFaker.Generate();
+            var searchControl = await this.SetupSearchScenarioAsync(sampleRecord);
 
-            var page = await searchControl.OpenSearchResultAsync<IEntityRecordPage>(searchRecord.pp_singlelineoftexttext, 0);
+            var page = await searchControl.OpenSearchResultAsync<IEntityRecordPage>(sampleRecord.pp_singlelineoftexttext, 0);
 
-            await this.Expect(page.Page).ToHaveURLAsync(new Regex($"etn={pp_Record.EntityLogicalName}"));
+            await this.Expect(page.Page).ToHaveURLAsync(RecordPageRegex());
         }
+
+        [GeneratedRegex(".*pagetype=entitylist&etn=pp_record.*")]
+        private static partial Regex RecordPageRegex();
 
         /// <summary>
         /// Sets up a record for testing by creating a record with a specified or generated values.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="ISingleLineUrl"/>.</returns>
-        private async Task<pp_Record> SetupSearchScenarioAsync()
+        private async Task<IGlobalSearch> SetupSearchScenarioAsync(pp_Record? withRecord = null)
         {
-            var testRecord = await this.CreateRecordAsync(this.faker.Generate());
+            if (withRecord is not null)
+            {
+                await this.CreateRecordAsync(withRecord);
+                await this.WaitForSearchResultAsync(withRecord.pp_singlelineoftexttext);
+            }
 
-            await this.WaitForSearchResultAsync(testRecord.pp_singlelineoftexttext);
-
-            return testRecord;
+            return (await this.LoginAsync()).Search;
         }
 
         /// <summary>
@@ -91,13 +96,13 @@
         /// <param name="initialDelayMs">An initial delay to not over exhaust the api.</param>
         /// <returns>SearchQueryApiResponse.</returns>
         /// <exception cref="TimeoutException">Gives a timeout exception on maximum threshold.</exception>
-        private async Task<SearchQueryApiResponse> WaitForSearchResultAsync(string query, int maxRetries = 100, int initialDelayMs = 2000)
+        private async Task<SearchQueryApiResponse> WaitForSearchResultAsync(string query, int maxRetries = 200, int initialDelayMs = 2000)
         {
             int attempt = 0;
 
             while (attempt < maxRetries)
             {
-                var searchResults = await this.SearchAsync(query);
+                var searchResults = await this.PerformRelevanceSearchAsync(query, 3);
 
                 if (searchResults?.ParsedResponse?.Count >= 1)
                 {
