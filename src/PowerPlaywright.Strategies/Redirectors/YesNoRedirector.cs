@@ -24,6 +24,11 @@
         /// <inheritdoc/>
         protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
         {
+            if (!redirectionInfo.IsNewLookEnabled)
+            {
+                return typeof(ICheckboxControl);
+            }
+
             return typeof(IOptionSetControl);
         }
     }
