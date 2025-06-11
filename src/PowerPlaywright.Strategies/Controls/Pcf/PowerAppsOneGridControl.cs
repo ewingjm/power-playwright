@@ -1,8 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
