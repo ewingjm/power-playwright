@@ -33,7 +33,7 @@
         /// <inheritdoc/>
         public async Task<decimal?> GetValueAsync()
         {
-            return await this.input.InputValueOrNullAsync<decimal>();
+            return await this.input.InputValueOrNullAsync<decimal?>();
         }
 
         /// <inheritdoc/>
