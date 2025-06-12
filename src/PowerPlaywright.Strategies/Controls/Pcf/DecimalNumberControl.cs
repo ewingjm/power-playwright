@@ -5,6 +5,7 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
     using System.Threading.Tasks;
@@ -33,12 +34,15 @@
         /// <inheritdoc/>
         public async Task<decimal?> GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             return await this.input.InputValueOrNullAsync<decimal?>();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(decimal? value)
         {
+            await this.input.FocusAsync();
             await this.input.FillAsync(value.ToString());
         }
     }
