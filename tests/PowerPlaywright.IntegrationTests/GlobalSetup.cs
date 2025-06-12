@@ -24,13 +24,6 @@ public partial class GlobalSetup
     public async Task OneTimeSetup()
     {
         await SetupStrategiesPackage();
-        SetupCurrentCulture();
-    }
-
-    private static void SetupCurrentCulture()
-    {
-        // Explicitly setting current culture to match test users. Ideally, we should add a feature to read test user's locale settings on login.
-        CultureInfo.CurrentCulture = new CultureInfo("en-GB");
     }
 
     private static async Task SetupStrategiesPackage()
