@@ -16,7 +16,7 @@
     [PcfControlStrategy(0, 0, 0)]
     public class CustomControl : PcfControl, ICustomControl
     {
-        private readonly ILocator input;
+        private readonly ILocator toggle;
         private readonly IEnvironmentInfoProvider environmentInfo;
 
         /// <summary>
@@ -31,7 +31,7 @@
         {
             this.environmentInfo = environmentInfo;
 
-            this.input = this.Container.Locator("input");
+            this.toggle = this.Container.GetByRole(AriaRole.Switch);
         }
 
         /// <inheritdoc/>
@@ -39,7 +39,7 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            return await this.input.IsCheckedAsync();
+            return await this.toggle.IsCheckedAsync();
         }
 
         /// <inheritdoc/>
@@ -50,7 +50,7 @@
                 return;
             }
 
-            await this.input.ClickAsync();
+            await this.toggle.ClickAsync();
         }
 
         /// <inheritdoc/>
