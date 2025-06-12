@@ -5,6 +5,7 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
     using System;
@@ -34,12 +35,15 @@
         /// <inheritdoc/>
         public async Task<DateTime?> GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             return await this.input.InputValueOrNullAsync<DateTime?>();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(DateTime? value)
         {
+            await this.input.FocusAsync();
             await this.input.FillAsync(value.ToString());
         }
     }
