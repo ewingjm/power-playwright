@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.IntegrationTests;
 
+using System.Globalization;
 using System.Text.RegularExpressions;
 using NuGet.Common;
 using NuGet.Configuration;
@@ -21,6 +22,18 @@ public partial class GlobalSetup
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [OneTimeSetUp]
     public async Task OneTimeSetup()
+    {
+        await SetupStrategiesPackage();
+        SetupCurrentCulture();
+    }
+
+    private static void SetupCurrentCulture()
+    {
+        // Explicitly setting current culture to match test users. Ideally, we should add a feature to read test user's locale settings on login.
+        CultureInfo.CurrentCulture = new CultureInfo("en-GB");
+    }
+
+    private static async Task SetupStrategiesPackage()
     {
         var localFeedPath = Path.Join(TestContext.CurrentContext.TestDirectory, "packages");
 

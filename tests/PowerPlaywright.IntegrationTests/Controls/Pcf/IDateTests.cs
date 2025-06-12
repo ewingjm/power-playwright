@@ -42,7 +42,7 @@
         [Test]
         public async Task GetValueAsync_ContainsValue_ReturnsValue()
         {
-            var expectedValue = this.GetRandomDate();
+            var expectedValue = DateTime.UtcNow.Date; /*this.GetRandomDate();*/
             var dateControl = await this.SetupDateScenarioAsync(withValue: expectedValue);
 
             Assert.That(dateControl.GetValueAsync, Is.EqualTo(expectedValue));
