@@ -8,6 +8,7 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Strategies.Extensions;
     using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="IFloatingPointNumberControl"/>.
@@ -33,12 +34,15 @@
         /// <inheritdoc/>
         public async Task<double?> GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             return await this.input.InputValueOrNullAsync<double?>();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(double? value)
         {
+            await this.input.FocusAsync();
             await this.input.FillAsync(value.ToString());
         }
     }

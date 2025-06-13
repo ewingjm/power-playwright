@@ -1,12 +1,13 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Pcf
 {
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Controls.Pcf.Classes;
 
     /// <summary>
     /// An interface for the PowerApps.CoreControls.NumericInput control.
     /// </summary>
     [PcfControl("PowerApps.CoreControls.NumericInput")]
-    public interface INumericInput : ICurrencyControl, IDecimalNumberControl, IFloatingPointNumberControl, IWholeNumberControl
+    public interface INumericInput : ICurrency, IDecimalNumber, IFloatingPointNumber, IWholeNumber
     {
     }
 }

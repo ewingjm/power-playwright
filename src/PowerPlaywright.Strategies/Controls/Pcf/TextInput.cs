@@ -8,6 +8,7 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Strategies.Extensions;
     using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="ITextInput"/>.
@@ -33,12 +34,15 @@
         /// <inheritdoc/>
         public async Task<string> GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             return await this.textbox.InputValueOrNullAsync();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(string value)
         {
+            await this.textbox.FocusAsync();
             await this.textbox.FillAsync(value);
         }
     }

@@ -3,6 +3,7 @@
     using Microsoft.Playwright;
     using PowerPlaywright.Framework.Extensions;
     using System;
+    using System.Globalization;
     using System.Threading.Tasks;
 
     internal static class ILocatorExtensions
@@ -76,7 +77,7 @@
 
             return value == null
                 ? default
-                : (T)Convert.ChangeType(value, targetType);
+                : (T)Convert.ChangeType(value, targetType, CultureInfo.CurrentCulture);
         }
     }
 }
