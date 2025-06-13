@@ -68,8 +68,10 @@ jobs:
           - TEST_ENVIRONMENT_NEWLOOK_URL
           - TEST_ENVIRONMENT_OLDLOOK_URL
         include:
-          - name: new-look
-          - name: old-look
+          - test_urL: TEST_ENVIRONMENT_NEWLOOK_URL
+            name: new-look
+          - test_url: TEST_ENVIRONMENT_OLDLOOK_URL
+            name: old-look
     concurrency: 
       group: test-${{ matrix.name }}
     steps:
@@ -94,10 +96,10 @@ jobs:
         run: dotnet test tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj -c Release --logger console --logger html --results-directory TestResults --collect:"XPlat code coverage" --no-build -- NUnit.NumberOfTestWorkers=${{ vars.TEST_NUMBEROFTESTWORKERS }} Playwright.LaunchOptions.Headless=true
         env:
           POWERPLAYWRIGHT__TEST__URL:  ${{ secrets[matrix.test_url] }}
-          KEYVAULT__URL: ${{ secrets.TEST_KEYVAULT_URL}}
-          KEYVAULT__TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID}}
-          KEYVAULT__CLIENTID: ${{ secrets.TEST_KEYVAULT_CLIENTID}} 
-          KEYVAULT__CLIENTSECRET: ${{ secrets.TEST_KEYVAULT_CLIENTSECRET}} 
+          POWERPLAYWRIGHT__TEST__KEYVAULT__URL: ${{ secrets.TEST_KEYVAULT_URL}}
+          POWERPLAYWRIGHT__TEST__KEYVAULT__TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID}}
+          POWERPLAYWRIGHT__TEST__KEYVAULT__CLIENTID: ${{ secrets.TEST_KEYVAULT_CLIENTID}} 
+          POWERPLAYWRIGHT__TEST__KEYVAULT__CLIENTSECRET: ${{ secrets.TEST_KEYVAULT_CLIENTSECRET}} 
         if: ${{ always() }}
       - name: Upload integration test results
         uses: actions/upload-artifact@v4
