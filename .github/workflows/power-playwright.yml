@@ -64,16 +64,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test_url:
-          - TEST_ENVIRONMENT_NEWLOOK_URL
-          - TEST_ENVIRONMENT_OLDLOOK_URL
+        environment:
+          - new-look
+          - old-look
         include:
-          - test_urL: TEST_ENVIRONMENT_NEWLOOK_URL
-            name: new-look
-          - test_url: TEST_ENVIRONMENT_OLDLOOK_URL
-            name: old-look
+          - environment: new-look
+            secret: TEST_ENVIRONMENT_NEWLOOK_URL
+          - environment: old-look
+            secret: TEST_ENVIRONMENT_OLDLOOK_URL
     concurrency: 
-      group: test-${{ matrix.name }}
+      group: test-${{ matrix.environment }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -95,7 +95,7 @@ jobs:
         id: runTests
         run: dotnet test tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj -c Release --logger console --logger html --results-directory TestResults --collect:"XPlat code coverage" --no-build -- NUnit.NumberOfTestWorkers=${{ vars.TEST_NUMBEROFTESTWORKERS }} Playwright.LaunchOptions.Headless=true
         env:
-          POWERPLAYWRIGHT__TEST__URL:  ${{ secrets[matrix.test_url] }}
+          POWERPLAYWRIGHT__TEST__URL:  ${{ secrets[matrix.secret] }}
           POWERPLAYWRIGHT__TEST__KEYVAULT__URL: ${{ secrets.TEST_KEYVAULT_URL}}
           POWERPLAYWRIGHT__TEST__KEYVAULT__TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID}}
           POWERPLAYWRIGHT__TEST__KEYVAULT__CLIENTID: ${{ secrets.TEST_KEYVAULT_CLIENTID}} 
@@ -104,7 +104,7 @@ jobs:
       - name: Upload integration test results
         uses: actions/upload-artifact@v4
         with:
-          name: integration-test-results-${{ matrix.name }}
+          name: integration-test-results-${{ matrix.environment }}
           path: TestResults
         if: ${{ always() }}
       - name: Login to Azure
