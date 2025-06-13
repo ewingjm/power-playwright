@@ -201,7 +201,7 @@
         {
             var config = new ConfigurationBuilder()
                 .AddUserSecrets<ModelDrivenAppTests>()
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables("POWERPLAYWRIGHT:TEST");
 
             var configurationRoot = config
                 .Build();
@@ -231,10 +231,10 @@
                         });
                 }
 
-                config.AddAzureKeyVault(
-                    keyVaultConfiguration.Url,
-                    tokenCredential,
-                    new AzureKeyVaultConfigurationOptions { ReloadInterval = null });
+                config = new ConfigurationBuilder()
+                    .AddAzureKeyVault(keyVaultConfiguration.Url, tokenCredential, new AzureKeyVaultConfigurationOptions { ReloadInterval = null })
+                    .AddEnvironmentVariables("POWERPLAYWRIGHT:TEST")
+                    .AddUserSecrets<ModelDrivenAppTests>();
 
                 configurationRoot = config.Build();
             }
