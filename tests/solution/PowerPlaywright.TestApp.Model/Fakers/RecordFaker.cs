@@ -30,7 +30,7 @@
             this.RuleFor(r => r.pp_singlelineoftexttextarea, f => f.Lorem.Random.AlphaNumeric(100));
             this.RuleFor(r => r.pp_singlelineoftexttickersymbol, f => "MSFT");
             this.RuleFor(r => r.pp_singlelineoftexturl, f => f.Internet.Url());
-            this.RuleFor(r => r.pp_wholenumberduration, f => f.Random.Int(0));
+            this.RuleFor(r => r.pp_wholenumberduration, f => f.Random.Int(min: 1));
             this.RuleFor(r => r.pp_wholenumberlanguagecode, f => 1033);
             this.RuleFor(r => r.pp_wholenumbernone, f => f.Random.Int());
             this.RuleFor(r => r.pp_wholenumbertimezone, f => 0);
