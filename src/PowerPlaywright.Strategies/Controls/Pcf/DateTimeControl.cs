@@ -60,6 +60,7 @@
             await this.Container.ClickAndWaitForAppIdleAsync();
             await this.timeInput.FocusAsync();
             await this.timeInput.FillAsync(value.Value.ToShortTimeString());
+            await this.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }

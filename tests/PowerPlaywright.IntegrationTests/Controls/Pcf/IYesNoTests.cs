@@ -18,7 +18,7 @@
         [SetUp]
         public void Setup()
         {
-            this.faker = new Faker();
+            this.faker = new Faker("en_GB");
         }
 
         /// <summary>

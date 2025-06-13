@@ -44,6 +44,7 @@
         {
             await this.textbox.FocusAsync();
             await this.textbox.FillAsync(value);
+            await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }

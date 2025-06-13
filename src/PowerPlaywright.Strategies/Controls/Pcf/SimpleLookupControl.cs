@@ -9,6 +9,7 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="ISimpleLookupControl"/>.
@@ -82,7 +83,7 @@
                 throw new NotFoundException($"No records found in the {this.Name} lookup with search: {value}.");
             }
 
-            await flyoutResult.ClickAsync();
+            await flyoutResult.ClickAndWaitForAppIdleAsync();
         }
     }
 }

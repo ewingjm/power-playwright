@@ -44,6 +44,7 @@
         {
             await this.urlInput.FocusAsync();
             await this.urlInput.FillAsync(value);
+            await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }
