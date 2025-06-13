@@ -37,7 +37,7 @@
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: null);
 
-            Assert.ThrowsAsync<PowerPlaywrightException>(() => gridControl.OpenRecordAsync(1));
+            Assert.ThrowsAsync<IndexOutOfRangeException>(() => gridControl.OpenRecordAsync(1));
         }
 
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]

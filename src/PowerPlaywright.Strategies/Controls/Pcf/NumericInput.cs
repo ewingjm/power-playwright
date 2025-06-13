@@ -6,6 +6,7 @@
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
+    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
     using System;
@@ -36,6 +37,8 @@
         /// <inheritdoc/>
         async Task<decimal?> ICurrency.GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             var value = await this.numericInput.InputValueOrNullAsync<string>();
 
             return value != null ? Convert.ToDecimal(Regex.Replace(value, @"[^\d.,]", "")) : (decimal?)null;
@@ -44,42 +47,52 @@
         /// <inheritdoc/>
         async Task<decimal?> IDecimalNumber.GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             return await this.numericInput.InputValueOrNullAsync<decimal?>();
         }
 
         /// <inheritdoc/>
         async Task<double?> IFloatingPointNumber.GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             return await this.numericInput.InputValueOrNullAsync<double?>();
         }
 
         /// <inheritdoc/>
         async Task<int?> IWholeNumber.GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             return await this.numericInput.InputValueOrNullAsync<int?>();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(float? value)
         {
+            await this.numericInput.FocusAsync();
             await this.numericInput.FillAsync(value.ToString());
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(decimal? value)
         {
+            await this.numericInput.FocusAsync();
             await this.numericInput.FillAsync(value.ToString());
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(int? value)
         {
+            await this.numericInput.FocusAsync();
             await this.numericInput.FillAsync(value.ToString());
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(double? value)
         {
+            await this.numericInput.FocusAsync();
             await this.numericInput.FillAsync(value.ToString());
         }
     }

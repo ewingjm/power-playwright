@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.IntegrationTests
 {
     using System;
+    using System.Globalization;
     using System.Reflection;
     using Azure.Core;
     using Azure.Extensions.AspNetCore.Configuration.Secrets;
@@ -97,6 +98,16 @@
             });
 
             this.isTracing = true;
+        }
+
+        /// <summary>
+        /// Sets up the current culture.
+        /// </summary>
+        [SetUp]
+        public void SetupCurrentCulture()
+        {
+            // Explicitly setting current culture to match test users. Ideally, we should add a feature to read test user's locale settings on login.
+            CultureInfo.CurrentCulture = new CultureInfo("en-GB");
         }
 
         /// <summary>

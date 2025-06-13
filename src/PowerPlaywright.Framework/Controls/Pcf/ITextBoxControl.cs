@@ -4,10 +4,10 @@
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
 
     /// <summary>
-    /// An interface for the MscrmControls.FieldControls.TickerSymbol control.
+    /// An interface for the MscrmControls.FieldControls.TextBox control.
     /// </summary>
-    [PcfControl("MscrmControls.FieldControls.TickerSymbolControl")]
-    public interface ITickerSymbolControl : ISingleLineTickerSymbol
+    [PcfControl("MscrmControls.FieldControls.TextBoxControl")]
+    public interface ITextBoxControl : ISingleLineText, ISingleLineTextArea
     {
     }
 }

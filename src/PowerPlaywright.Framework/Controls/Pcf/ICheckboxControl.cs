@@ -4,10 +4,10 @@
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
 
     /// <summary>
-    /// An interface for the MscrmControls.FieldControls.TickerSymbol control.
+    /// An interface for the MscrmControls.FieldControls.CheckboxControl control.
     /// </summary>
-    [PcfControl("MscrmControls.FieldControls.TickerSymbolControl")]
-    public interface ITickerSymbolControl : ISingleLineTickerSymbol
+    [PcfControl("MscrmControls.FieldControls.CheckboxControl")]
+    public interface ICheckboxControl : IYesNo
     {
     }
 }
