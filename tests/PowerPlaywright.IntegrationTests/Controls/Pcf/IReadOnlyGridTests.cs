@@ -13,6 +13,8 @@
     /// </summary>
     public partial class IReadOnlyGridTests : IntegrationTests
     {
+        private static readonly string[] Columns = ["Name", "Created On"];
+
         /// <summary>
         /// Tests that <see cref="IReadOnlyGrid.OpenRecordAsync(int)"/> opens the record when called with an index that is in range.
         /// </summary>
@@ -37,6 +39,18 @@
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: null);
 
             Assert.ThrowsAsync<IndexOutOfRangeException>(() => gridControl.OpenRecordAsync(1));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.GetColumnNamesAsync"/> always returns all column names.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetColumnNamesAsync_Always_ReturnsAllColumnNamesInOrder()
+        {
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync();
+
+            Assert.That(gridControl.GetColumnNamesAsync, Is.EqualTo(Columns));
         }
 
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
