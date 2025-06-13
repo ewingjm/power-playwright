@@ -25,7 +25,7 @@
         /// <summary>
         /// Gets the parent control.
         /// </summary>
-        IControl IControl.Parent => this.parent;
+        public IControl Parent => this.parent;
 
         /// <summary>
         /// Gets the container.

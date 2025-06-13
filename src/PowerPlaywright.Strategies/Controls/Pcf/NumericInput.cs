@@ -95,7 +95,7 @@
         {
             await this.numericInput.FocusAsync();
             await this.numericInput.FillAsync(value);
-            await this.Container.ClickAndWaitForAppIdleAsync();
+            await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }

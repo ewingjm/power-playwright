@@ -44,7 +44,7 @@
         {
             await this.emailInput.FocusAsync();
             await this.emailInput.FillAsync(value);
-            await this.Container.ClickAndWaitForAppIdleAsync();
+            await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }

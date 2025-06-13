@@ -9,6 +9,7 @@
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
     using System;
+    using System.Globalization;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -44,8 +45,8 @@
         public async Task SetValueAsync(DateTime? value)
         {
             await this.input.FocusAsync();
-            await this.input.FillAsync(value.ToString());
-            await this.Container.ClickAndWaitForAppIdleAsync();
+            await this.input.FillAsync(value?.ToString("d", CultureInfo.CurrentCulture));
+            await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }

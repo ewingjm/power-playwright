@@ -43,7 +43,7 @@
         {
             await this.input.FocusAsync();
             await this.input.FillAsync(value);
-            await this.Container.ClickAndWaitForAppIdleAsync();
+            await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }

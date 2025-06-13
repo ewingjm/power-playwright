@@ -75,7 +75,7 @@
                 await this.SelectOptionAsync(optionValue);
             }
 
-            await this.Container.ClickAndWaitForAppIdleAsync();
+            await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
 
         private async Task ClearExistingOptions()
