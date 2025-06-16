@@ -15,6 +15,17 @@
     {
         private static readonly string[] Columns = ["Name", "Created On"];
 
+        private Faker faker;
+
+        /// <summary>
+        /// Sets up the lookup control.
+        /// </summary>
+        [SetUp]
+        public void Setup()
+        {
+            this.faker = new Faker("en_GB");
+        }
+
         /// <summary>
         /// Tests that <see cref="IReadOnlyGrid.OpenRecordAsync(int)"/> opens the record when called with an index that is in range.
         /// </summary>
@@ -45,10 +56,11 @@
         /// Tests that <see cref="IReadOnlyGrid.GetColumnNamesAsync"/> always returns all column names.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task GetColumnNamesAsync_Always_ReturnsAllColumnNamesInOrder()
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task GetColumnNamesAsync_Always_ReturnsAllColumnNamesInOrder(bool withRelatedRecords)
         {
-            var gridControl = await this.SetupReadOnlyGridScenarioAsync();
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: withRelatedRecords ? [new RelatedRecordFaker()] : null);
 
             Assert.That(gridControl.GetColumnNamesAsync, Is.EqualTo(Columns));
         }

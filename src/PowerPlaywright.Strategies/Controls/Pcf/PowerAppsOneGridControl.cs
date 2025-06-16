@@ -49,7 +49,9 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            return await this.columnHeaders.Locator("label").AllInnerTextsAsync();
+            var columnHeaders = await this.columnHeaders.AllAsync();
+
+            return await Task.WhenAll(columnHeaders.Skip(1).Select(c => c.Locator("label").InnerTextAsync()));
         }
 
         /// <inheritdoc/>
