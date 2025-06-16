@@ -94,6 +94,7 @@
         private async Task SetValueAsync(string value)
         {
             await this.numericInput.FocusAsync();
+            await this.numericInput.FillAsync(string.Empty);
             await this.numericInput.FillAsync(value);
             await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }

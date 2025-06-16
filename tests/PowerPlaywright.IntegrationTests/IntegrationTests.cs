@@ -167,7 +167,21 @@
         {
             using (var client = this.GetServiceClient())
             {
-                await client.CreateAsync(record);
+                var attempt = 0;
+                var maxRetries = 3;
+
+                while (attempt++ < maxRetries)
+                {
+                    try
+                    {
+                        await client.CreateAsync(record);
+                        break;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        await Task.Delay(500);
+                    }
+                }
             }
 
             var page = await this.LoginAsync();
