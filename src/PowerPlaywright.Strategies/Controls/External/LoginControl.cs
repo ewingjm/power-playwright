@@ -54,11 +54,14 @@
             await this.passwordInput.ClickAsync();
             await this.passwordInput.FillAsync(password);
             await this.nextButton.ClickAsync();
-            await this.staySignedInButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
 
-            if (await this.staySignedInButton.IsVisibleAsync())
+            try
             {
-                await this.staySignedInButton.ClickAsync();
+                await this.staySignedInButton.ClickAsync(new LocatorClickOptions { Timeout = 10000 });
+            }
+            catch
+            {
+                // Ignore.
             }
 
             await this.Page.WaitForURLAsync("**/main.aspx*", new PageWaitForURLOptions { Timeout = 60000 });
