@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
@@ -40,7 +41,7 @@
             this.logger = logger;
 
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
-            this.columnHeaders = this.Container.GetByRole(AriaRole.Columnheader).And(this.Container.Locator(":not(div[aria-colindex='1'])"));
+            this.columnHeaders = this.Container.GetByRole(AriaRole.Columnheader);
         }
 
         /// <inheritdoc/>
@@ -48,7 +49,9 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            return await this.columnHeaders.Locator("label").AllInnerTextsAsync();
+            var columnHeaders = await this.columnHeaders.AllAsync();
+
+            return await Task.WhenAll(columnHeaders.Skip(1).Select(c => c.Locator("label").InnerTextAsync()));
         }
 
         /// <inheritdoc/>
