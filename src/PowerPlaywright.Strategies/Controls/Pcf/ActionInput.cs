@@ -43,6 +43,7 @@
         public async Task SetValueAsync(string value)
         {
             await this.controlInput.FocusAsync();
+            await this.controlInput.FillAsync(string.Empty);
             await this.controlInput.FillAsync(value);
             await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }

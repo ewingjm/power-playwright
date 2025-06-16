@@ -56,9 +56,11 @@
         {
             // TODO: Set current thread culture equal to the culture of the app user. Currently, this will only work if the app user culture is the same as the current culture.
             await this.dateInput.FocusAsync();
+            await this.dateInput.FillAsync(string.Empty);
             await this.dateInput.FillAsync(value.Value.ToShortDateString());
             await this.Container.ClickAndWaitForAppIdleAsync();
             await this.timeInput.FocusAsync();
+            await this.timeInput.FillAsync(string.Empty);
             await this.timeInput.FillAsync(value.Value.ToShortTimeString());
             await this.Container.ClickAndWaitForAppIdleAsync();
         }
