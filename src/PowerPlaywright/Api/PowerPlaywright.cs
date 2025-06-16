@@ -186,7 +186,7 @@ namespace PowerPlaywright.Api
 
             var versions = await nuGetPackageInstaller.GetAllVersionsAsync(StrategiesPackageId);
             var strategiesVersion = versions.Count() > 1
-                ? versions.FirstOrDefault(v => v.Major == assemblyVersion.Major && v.Minor == assemblyVersion.Minor && v.Patch == assemblyVersion.Revision)
+                ? versions.FirstOrDefault(v => v.Major == assemblyVersion.Major && v.Minor == assemblyVersion.Minor && v.Patch == assemblyVersion.Build)
                 : versions.FirstOrDefault();
 
             return strategiesVersion is null
