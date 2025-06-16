@@ -40,7 +40,7 @@
             this.logger = logger;
 
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
-            this.columnHeaders = this.Container.GetByRole(AriaRole.Columnheader);
+            this.columnHeaders = this.Container.GetByRole(AriaRole.Columnheader).And(this.Container.Locator(":not(div[aria-colindex='1'])"));
         }
 
         /// <inheritdoc/>
