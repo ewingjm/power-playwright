@@ -28,6 +28,8 @@
         /// </summary>
         protected const string TestAppUniqueName = "pp_UserInterfaceDemo";
 
+        private const string EnvironmentVariablePrefix = "POWERPLAYWRIGHT:TEST:";
+
         private static readonly IEnumerator<UserConfiguration> UserEnumerator;
 
         private bool isTracing;
@@ -201,7 +203,7 @@
         {
             var config = new ConfigurationBuilder()
                 .AddUserSecrets<ModelDrivenAppTests>()
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables(EnvironmentVariablePrefix);
 
             var configurationRoot = config
                 .Build();
@@ -231,10 +233,10 @@
                         });
                 }
 
-                config.AddAzureKeyVault(
-                    keyVaultConfiguration.Url,
-                    tokenCredential,
-                    new AzureKeyVaultConfigurationOptions { ReloadInterval = null });
+                config = new ConfigurationBuilder()
+                    .AddAzureKeyVault(keyVaultConfiguration.Url, tokenCredential, new AzureKeyVaultConfigurationOptions { ReloadInterval = null })
+                    .AddEnvironmentVariables(EnvironmentVariablePrefix)
+                    .AddUserSecrets<ModelDrivenAppTests>();
 
                 configurationRoot = config.Build();
             }
