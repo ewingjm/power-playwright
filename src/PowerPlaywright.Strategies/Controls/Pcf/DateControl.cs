@@ -46,8 +46,9 @@
         {
             await this.input.FocusAsync();
             await this.input.FillAsync(string.Empty);
+            await this.Page.WaitForAppIdleAsync();
             await this.input.FillAsync(value?.ToString("d", CultureInfo.CurrentCulture));
-            await this.Parent.Container.ClickAndWaitForAppIdleAsync();
+            await this.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }
