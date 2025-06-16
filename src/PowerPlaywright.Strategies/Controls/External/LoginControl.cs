@@ -49,10 +49,7 @@
             await this.usernameInput.FillAsync(username);
             await this.nextButton.ClickAsync();
 
-            if (await this.workOrSchoolAccount.IsVisibleAsync())
-            {
-                await this.workOrSchoolAccount.ClickAsync();
-            }
+            await this.workOrSchoolAccount.Or(this.passwordInput).ClickAsync();
 
             await this.passwordInput.ClickAsync();
             await this.passwordInput.FillAsync(password);
