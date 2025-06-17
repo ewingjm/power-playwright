@@ -24,6 +24,12 @@
         Task<string> GetActiveTabAsync();
 
         /// <summary>
+        /// Gets a value indicating whether the form is disabled.
+        /// </summary>
+        /// <returns>A value indicating whether the form is disabled.</returns>
+        Task<bool> IsDisabledAsync();
+
+        /// <summary>
         /// Gets a field on the form.
         /// </summary>
         /// <param name="name">The control name.</param>
