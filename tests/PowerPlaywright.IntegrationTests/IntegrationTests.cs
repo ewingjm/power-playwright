@@ -17,6 +17,7 @@
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.IntegrationTests.Config;
+    using PowerPlaywright.TestApp.Model;
 
     /// <summary>
     /// A base class for integration tests.
@@ -169,12 +170,32 @@
             {
                 var attempt = 0;
                 var maxRetries = 3;
+                var deactivate = record.GetAttributeValue<OptionSetValue>(nameof(pp_Record.statecode))?.Value == 1;
+
+                if (deactivate)
+                {
+                    record.Attributes.Remove(nameof(pp_Record.statecode));
+                    record.Attributes.Remove(nameof(pp_Record.statuscode));
+                }
 
                 while (attempt++ < maxRetries)
                 {
                     try
                     {
                         await client.CreateAsync(record);
+
+                        if (deactivate)
+                        {
+                            await client.UpdateAsync(new Entity(record.LogicalName, record.Id)
+                            {
+                                Attributes =
+                                {
+                                    [nameof(pp_Record.statecode)] = new OptionSetValue(1),
+                                    [nameof(pp_Record.statuscode)] = new OptionSetValue(2),
+                                },
+                            });
+                        }
+
                         break;
                     }
                     catch (InvalidOperationException)

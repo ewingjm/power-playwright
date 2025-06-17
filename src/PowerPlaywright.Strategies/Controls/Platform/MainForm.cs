@@ -21,6 +21,7 @@
         private readonly IControlFactory controlFactory;
 
         private readonly ILocator tabList;
+        private readonly ILocator formReadOnlyNotification;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -33,6 +34,7 @@
             this.controlFactory = controlFactory ?? throw new ArgumentNullException(nameof(controlFactory));
 
             this.tabList = this.Container.GetByRole(AriaRole.Tablist);
+            this.formReadOnlyNotification = this.Container.Locator("#message-formReadOnlyNotification");
         }
 
         /// <inheritdoc/>
@@ -52,6 +54,14 @@
             where TControl : IPcfControl
         {
             return this.controlFactory.CreateInstance<IFormField<TControl>>(this.AppPage, name, this);
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> IsDisabledAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            return await this.formReadOnlyNotification.IsVisibleAsync();
         }
 
         /// <inheritdoc/>

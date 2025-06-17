@@ -66,6 +66,19 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="IFormField.IsDisabledAsync"/> returns true if the form is disabled.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task IsDisabledAsync_DisabledForm_ReturnsTrue()
+        {
+            var form = await this.SetupFormScenarioAsync(withEditableField: pp_Record.Forms.Information.WholeNumberNone, withDisabledRecord: true);
+            var control = form.GetField(pp_Record.Forms.Information.WholeNumberNone);
+
+            Assert.That(control.IsDisabledAsync, Is.True);
+        }
+
+        /// <summary>
         /// Tests that <see cref="IFormField.IsDisabledAsync"/> returns false if the control is not mandatory.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
@@ -139,12 +152,19 @@
         /// <param name="withMandatoryField">An optional field to set up as mandatory on the form.</param>
         /// <param name="withHiddenField">An optional field to set up as hidden on the form.</param>
         /// <param name="withVisibleField">An optional field to set up as visible on the form.</param>
+        /// <param name="withDisabledRecord">Whether or not to set up the record as disabled (e.g. inactive).</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IUrlControl"/>.</returns>
-        private async Task<IMainForm> SetupFormScenarioAsync(string? withEditableField = null, string? withDisabledField = null, string? withOptionalField = null, string? withMandatoryField = null, string? withHiddenField = null, string? withVisibleField = null)
+        private async Task<IMainForm> SetupFormScenarioAsync(string? withEditableField = null, string? withDisabledField = null, string? withOptionalField = null, string? withMandatoryField = null, string? withHiddenField = null, string? withVisibleField = null, bool withDisabledRecord = false)
         {
-            var record = new RecordFaker();
+            var recordfaker = new RecordFaker();
 
-            var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
+            if (withDisabledRecord)
+            {
+                recordfaker.RuleFor(r => r.statecode, r => pp_record_statecode.Inactive);
+                recordfaker.RuleFor(r => r.statuscode, r => pp_record_statuscode.Inactive);
+            }
+
+            var recordPage = await this.LoginAndNavigateToRecordAsync(recordfaker.Generate());
 
             if (withEditableField != null)
             {

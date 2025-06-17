@@ -68,6 +68,11 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
+            if (this.Parent is IMainForm form && await form.IsDisabledAsync())
+            {
+                return true;
+            }
+
             return await this.lockedIcon.IsVisibleAsync();
         }
 
