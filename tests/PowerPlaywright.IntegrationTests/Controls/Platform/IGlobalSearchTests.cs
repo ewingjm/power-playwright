@@ -2,6 +2,7 @@
 {
     using System.Text.RegularExpressions;
     using Bogus;
+    using Microsoft.Xrm.Sdk.Query;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Pages;
@@ -29,30 +30,31 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IGlobalSearch.SearchAsync(string)"/> performs a search correctly.
+        /// Tests that <see cref="IGlobalSearch.SuggestAsync(string, bool)"/> returns suggestions when it exists.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task SearchAsync_HasResults_Returns_True()
+        public async Task SuggestAsync_HasSuggestedResults_Returns_True()
         {
-            var sampleRecord = this.recordFaker.Generate();
+            var sampleRecord = await this.GetRandomIndexedRecord();
             var searchControl = await this.SetupSearchScenarioAsync(sampleRecord);
-            await searchControl.SearchAsync(sampleRecord.pp_singlelineoftexttext);
 
-            Assert.That(searchControl.HasResultsAsync, Is.True);
+            await searchControl.SuggestAsync(sampleRecord.pp_singlelineoftexttext);
+
+            Assert.That(searchControl.HasSuggestedResultsAsync, Is.True);
         }
 
         /// <summary>
-        /// Tests that <see cref="IGlobalSearch.SearchAsync(string)"/> performs a search correctly.
+        /// Tests that <see cref="IGlobalSearch.SuggestAsync(string, bool)"/> does not return suggestions when it does not exist.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task SearchAsync_HasNoResults_Returns_False()
+        public async Task SuggestAsync_HasSuggestedResults_Returns_False()
         {
             var searchControl = await this.SetupSearchScenarioAsync();
-            await searchControl.SearchAsync(this.faker.Random.String(50));
+            await searchControl.SuggestAsync(this.faker.Random.String(100));
 
-            Assert.That(searchControl.HasResultsAsync, Is.False);
+            Assert.That(searchControl.HasSuggestedResultsAsync, Is.False);
         }
 
         /// <summary>
@@ -60,18 +62,36 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task OpenSearchResult_Opens_EntityRecordPage()
+        public async Task OpenSuggestion_Opens_EntityRecordPage()
         {
-            var sampleRecord = this.recordFaker.Generate();
+            var sampleRecord = await this.GetRandomIndexedRecord();
             var searchControl = await this.SetupSearchScenarioAsync(sampleRecord);
 
-            var page = await searchControl.OpenSearchResultAsync<IEntityRecordPage>(sampleRecord.pp_singlelineoftexttext, 0);
+            var page = await searchControl.OpenSuggestionAsync<IEntityRecordPage>(sampleRecord.pp_singlelineoftexttext, 0);
 
             await this.Expect(page.Page).ToHaveURLAsync(RecordPageRegex());
         }
 
-        [GeneratedRegex(".*pagetype=entitylist&etn=pp_record.*")]
+        /// <summary>
+        /// Searches and Opens the record at the given index.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_Opens_SearchPage()
+        {
+            var sampleRecord = await this.GetRandomIndexedRecord();
+            var searchControl = await this.SetupSearchScenarioAsync(sampleRecord);
+
+            var page = await searchControl.SearchAsync<ISearchPage>(sampleRecord.pp_singlelineoftexttext);
+
+            await this.Expect(page.Page).ToHaveURLAsync(SearchPageRegex());
+        }
+
+        [GeneratedRegex(".*pagetype=entityrecord&etn=pp_record.*")]
         private static partial Regex RecordPageRegex();
+
+        [GeneratedRegex(".*pagetype=search.*")]
+        private static partial Regex SearchPageRegex();
 
         /// <summary>
         /// Sets up a record for testing by creating a record with a specified or generated values.
@@ -79,9 +99,8 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="ISingleLineUrl"/>.</returns>
         private async Task<IGlobalSearch> SetupSearchScenarioAsync(pp_Record? withRecord = null)
         {
-            if (withRecord is not null)
+            if (withRecord != null)
             {
-                await this.CreateRecordAsync(withRecord);
                 await this.WaitForSearchResultAsync(withRecord.pp_singlelineoftexttext);
             }
 
@@ -93,28 +112,59 @@
         /// </summary>
         /// <param name="query">The wildcared search query.</param>
         /// <param name="maxRetries">The number of retries.</param>
-        /// <param name="initialDelayMs">An initial delay to not over exhaust the api.</param>
         /// <returns>SearchQueryApiResponse.</returns>
         /// <exception cref="TimeoutException">Gives a timeout exception on maximum threshold.</exception>
-        private async Task<SearchQueryApiResponse> WaitForSearchResultAsync(string query, int maxRetries = 200, int initialDelayMs = 2000)
+        private async Task<SearchQueryApiResponse> WaitForSearchResultAsync(string query, int maxRetries = 200)
         {
             int attempt = 0;
 
             while (attempt < maxRetries)
             {
-                var searchResults = await this.PerformRelevanceSearchAsync(query, 3);
+                var searchResults = await this.SearchAsync(query, [pp_Record.EntityLogicalName], 10);
 
                 if (searchResults?.ParsedResponse?.Count >= 1)
                 {
                     return searchResults;
                 }
 
-                await Task.Delay(initialDelayMs);
-
                 attempt++;
             }
 
             throw new TimeoutException("Search results were not returned after multiple retries.");
+        }
+
+        /// <summary>
+        /// Creates a record for indexing if no records or uses a previously indexed random one to speed the tests up.
+        /// </summary>
+        /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+        private async Task<pp_Record> GetRandomIndexedRecord()
+        {
+            var query = new QueryExpression(pp_Record.EntityLogicalName)
+            {
+                ColumnSet = new ColumnSet(true),
+                TopCount = 5000,
+                Criteria = new FilterExpression
+                {
+                    FilterOperator = LogicalOperator.And,
+                    Conditions =
+                    {
+                        new ConditionExpression("statecode", ConditionOperator.Equal, 0),
+                        new ConditionExpression(nameof(pp_Record.pp_singlelineoftexttext), ConditionOperator.NotNull),
+                        new ConditionExpression(nameof(pp_Record.pp_singlelineoftexttext), ConditionOperator.NotEqual, string.Empty),
+                    },
+                },
+            };
+
+            var records = await this.RetrieveRecordsAsync(query);
+
+            if (!records.Entities.Any())
+            {
+                return await this.CreateRecordAsync(this.recordFaker.Generate());
+            }
+
+            var random = new Random();
+            int index = random.Next(records.Entities.Count);
+            return records.Entities[index].ToEntity<pp_Record>();
         }
     }
 }

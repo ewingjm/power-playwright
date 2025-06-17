@@ -1,6 +1,5 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
-    using System;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;

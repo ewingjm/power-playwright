@@ -10,6 +10,7 @@
     using PowerPlaywright.Strategies.Extensions;
     using System.Data;
     using System.Threading.Tasks;
+    using System.Transactions;
     using System.Xml.Linq;
 
     /// <summary>
@@ -48,25 +49,33 @@
         }
 
         /// <inheritdoc/>
-        public async Task SearchAsync(string searchText)
+        public async Task SuggestAsync(string searchText, bool performSearch = false)
         {
-            await Search(searchText);
+            await Search(searchText, performSearch);
         }
 
         /// <inheritdoc/>
-        public async Task<TPage> OpenSearchResultAsync<TPage>(string search, int index) where TPage : IModelDrivenAppPage
+        public async Task<TPage> SearchAsync<TPage>(string search) where TPage : IAppPage
+        {
+            await Search(search, true);
+            return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
+        }
+
+        /// <inheritdoc/>
+        public async Task<TPage> OpenSuggestionAsync<TPage>(string search, int index) where TPage : IAppPage
         {
             await Search(search);
 
             var results = await this.searchFlyout.GetByRole(AriaRole.Button).AllAsync();
 
+            await Page.WaitForAppIdleAsync();
             await results[index].ClickAndWaitForAppIdleAsync();
 
             return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
         }
 
         /// <inheritdoc/>
-        public async Task<bool> HasResultsAsync()
+        public async Task<bool> HasSuggestedResultsAsync()
         {
             return await resultsContainer.IsVisibleAsync();
         }
@@ -75,11 +84,16 @@
         /// Performs the search.
         /// </summary>
         /// <param name="searchText"></param>
+        /// <param name="performSearch"></param>
         /// <returns></returns>
-        private async Task Search(string searchText)
+        private async Task Search(string searchText, bool performSearch = false)
         {
             await this.search.ClearAsync();
             await this.search.FillAsync(searchText);
+            if (performSearch)
+            {
+                await this.search.PressAsync("Enter");
+            }
             await Page.WaitForAppIdleAsync();
         }
     }

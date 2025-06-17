@@ -11,11 +11,12 @@
     public interface IGlobalSearch : IPlatformControl
     {
         /// <summary>
-        /// Performs a relevance search.
+        /// Enters the search text within relevance search.
         /// </summary>
         /// <param name="searchText">The search text.</param>
+        /// <param name="performSearch">A flag to actually perform the search by hitting Enter.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SearchAsync(string searchText);
+        Task SuggestAsync(string searchText, bool performSearch = false);
 
         /// <summary>
         /// Opens a page.
@@ -24,13 +25,22 @@
         /// <param name="search">The search query to search against.</param>
         /// <param name="index">The index of the result to open.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<TPage> OpenSearchResultAsync<TPage>(string search, int index)
-            where TPage : IModelDrivenAppPage;
+        Task<TPage> OpenSuggestionAsync<TPage>(string search, int index)
+            where TPage : IAppPage;
+
+        /// <summary>
+        /// Opens a page.
+        /// </summary>
+        /// <typeparam name="TPage">The type of page to open.</typeparam>
+        /// <param name="search">The search query to search against.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<TPage> SearchAsync<TPage>(string search)
+            where TPage : IAppPage;
 
         /// <summary>
         /// Indicates if any results found.
         /// </summary>
         /// <returns></returns>
-        Task<bool> HasResultsAsync();
+        Task<bool> HasSuggestedResultsAsync();
     }
 }

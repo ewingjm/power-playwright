@@ -1,7 +1,6 @@
 ﻿namespace PowerPlaywright.TestApp.Model.Search
 {
     using System;
-    using System.Collections.Generic;
     using Newtonsoft.Json;
 
     /// <summary>
