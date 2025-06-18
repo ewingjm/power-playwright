@@ -1,5 +1,6 @@
 namespace PowerPlaywright.IntegrationTests.Pages
 {
+    using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Pages;
     using PowerPlaywright.TestApp.Model.App;
 
@@ -23,6 +24,16 @@ namespace PowerPlaywright.IntegrationTests.Pages
                 UserInterfaceDemo.SiteMap.AreaA.DisplayName,
                 UserInterfaceDemo.SiteMap.AreaA.GroupB.DisplayName,
                 UserInterfaceDemo.SiteMap.AreaA.GroupB.Custom);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IModelDrivenAppPage.Search"/> always exists on the page.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task Search_Always_Exists()
+        {
+            await this.Expect(this.customPage!.Search.Container).ToBeVisibleAsync();
         }
 
         /// <summary>

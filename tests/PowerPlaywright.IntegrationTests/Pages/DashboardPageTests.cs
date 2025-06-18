@@ -27,6 +27,16 @@ namespace PowerPlaywright.IntegrationTests.Pages
         }
 
         /// <summary>
+        /// Tests that <see cref="IModelDrivenAppPage.Search"/> always exists on the page.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task Search_Always_Exists()
+        {
+            await this.Expect(this.dashboardPage!.Search.Container).ToBeVisibleAsync();
+        }
+
+        /// <summary>
         /// Tests that <see cref="ModelDrivenAppPage.SiteMap"/> always exists on the page.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>

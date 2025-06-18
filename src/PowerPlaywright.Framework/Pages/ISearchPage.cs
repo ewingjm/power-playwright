@@ -8,18 +8,8 @@
     /// <summary>
     /// A model-driven app page.
     /// </summary>
-    public interface ISearchPage : IAppPage
+    public interface ISearchPage : IModelDrivenAppPage
     {
-        /// <summary>
-        /// Gets the site map control.
-        /// </summary>
-        ISiteMap SiteMap { get; }
-
-        /// <summary>
-        /// Gets an object that provides client API functionality.
-        /// </summary>
-        IClientApi ClientApi { get; }
-
         /// <summary>
         /// Opens a search tab from the results across all tables and matches.
         /// </summary>

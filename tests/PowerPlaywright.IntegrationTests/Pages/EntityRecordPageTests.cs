@@ -36,6 +36,16 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="IModelDrivenAppPage.Search"/> always exists on the page.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task Search_Always_Exists()
+        {
+            await this.Expect(this.recordPage!.Search.Container).ToBeVisibleAsync();
+        }
+
+        /// <summary>
         /// Tests that <see cref="IModelDrivenAppPage.SiteMap"/> always exists on the page.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
