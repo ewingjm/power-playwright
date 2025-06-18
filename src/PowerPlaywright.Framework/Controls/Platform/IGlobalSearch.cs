@@ -42,5 +42,19 @@
         /// </summary>
         /// <returns></returns>
         Task<bool> HasSuggestedResultsAsync();
+
+        /// <summary>
+        /// Opens a specific search tab on the search results page unless it is already selected.
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        Task<ISearchPage> OpenSearchTabAsync(string search);
+
+        /// <summary>
+        /// Opens the search result within the selected tab by its index.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        Task<IEntityRecordPage> OpenSearchTabResult(int index);
     }
 }

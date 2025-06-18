@@ -142,7 +142,7 @@
             var query = new QueryExpression(pp_Record.EntityLogicalName)
             {
                 ColumnSet = new ColumnSet(true),
-                TopCount = 5000,
+                TopCount = 500,
                 Criteria = new FilterExpression
                 {
                     FilterOperator = LogicalOperator.And,
@@ -151,6 +151,7 @@
                         new ConditionExpression("statecode", ConditionOperator.Equal, 0),
                         new ConditionExpression(nameof(pp_Record.pp_singlelineoftexttext), ConditionOperator.NotNull),
                         new ConditionExpression(nameof(pp_Record.pp_singlelineoftexttext), ConditionOperator.NotEqual, string.Empty),
+                        new ConditionExpression("createdon", ConditionOperator.LessThan, DateTime.UtcNow.AddMinutes(-10)),
                     },
                 },
             };
@@ -159,7 +160,7 @@
 
             if (!records.Entities.Any())
             {
-                return await this.CreateRecordAsync(this.recordFaker.Generate());
+                return await this.CreateAsync(this.recordFaker.Generate());
             }
 
             var random = new Random();

@@ -4,8 +4,6 @@
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Pages;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -23,23 +21,16 @@
         {
         }
 
-        //TODO
-        public async Task<ISearchPage> OpenTabAsync(string search)
+        private IGlobalSearch searchControl => this.GetControl<IGlobalSearch>();
+
+        public async Task<ISearchPage> OpenTabAsync(string tabName)
         {
-            var tabHeader = Page.GetByRole(AriaRole.Tablist);
-            var tabs = await tabHeader.GetByRole(AriaRole.Tab).AllAsync();
+            return await searchControl.OpenSearchTabAsync(tabName);
+        }
 
-            foreach (var tab in tabs)
-            {
-                var name = await tab.GetAttributeAsync("name");
-                var isSelected = await tab.GetAttributeAsync("aria-selected");
-                if (name == search && isSelected == "false")
-                {
-                    await tab.ClickAsync();
-                }
-            }
-
-            return null; // Or throw an exception if not found
+        public async Task<IEntityRecordPage> OpenResultAsync(int index)
+        {
+            return await searchControl.OpenSearchTabResult(index);
         }
     }
 }

@@ -158,7 +158,7 @@
         /// <typeparam name="TEntity">The early-bound entity type.</typeparam>
         /// <param name="record">The record to create.</param>
         /// <returns>The created record with all columns as <typeparamref name="TEntity"/>.</returns>
-        protected async Task<TEntity> CreateRecordAsync<TEntity>(TEntity record)
+        protected async Task<TEntity> CreateAsync<TEntity>(TEntity record)
             where TEntity : Entity
         {
             using (var client = this.GetServiceClient())

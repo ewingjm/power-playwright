@@ -21,10 +21,17 @@
         IClientApi ClientApi { get; }
 
         /// <summary>
-        /// Opens a specific search tab on the search results page unless it is already selected.
+        /// Opens a search tab from the results across all tables and matches.
         /// </summary>
-        /// <param name="search"></param>
+        /// <param name="tabName"></param>
         /// <returns></returns>
-        Task<ISearchPage> OpenTabAsync(string search);
+        Task<ISearchPage> OpenTabAsync(string tabName);
+
+        /// <summary>
+        /// Opens a record for the given index within the current search tab page.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        Task<IEntityRecordPage> OpenResultAsync(int index);
     }
 }

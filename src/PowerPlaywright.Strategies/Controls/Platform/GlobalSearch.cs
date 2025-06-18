@@ -8,6 +8,7 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
+    using System;
     using System.Data;
     using System.Threading.Tasks;
     using System.Transactions;
@@ -95,6 +96,44 @@
                 await this.search.PressAsync("Enter");
             }
             await Page.WaitForAppIdleAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<ISearchPage> OpenSearchTabAsync(string tabName)
+        {
+            var tabHeader = Page.GetByRole(AriaRole.Tablist);
+            var tabs = await tabHeader.GetByRole(AriaRole.Tab).AllAsync();
+
+            foreach (var tab in tabs)
+            {
+                var name = await tab.GetAttributeAsync("name");
+                var isSelected = await tab.GetAttributeAsync("aria-selected");
+                if (name == tabName && isSelected == "false")
+                {
+                    await tab.ClickAsync();
+                }
+            }
+
+            return await this.pageFactory.CreateInstanceAsync<ISearchPage>(this.Page);
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEntityRecordPage> OpenSearchTabResult(int index)
+        {
+            await Page.WaitForAppIdleAsync();
+            var rows = await Page.GetByRole(AriaRole.Row).AllAsync();
+
+            foreach (var row in rows)
+            {
+                var rowIndexAttr = await row.GetAttributeAsync("row-index");
+                if (int.TryParse(rowIndexAttr, out var rowIndex) && rowIndex == index)
+                {
+                    await row.DblClickAsync();
+                    return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
+                }
+            }
+
+            throw new InvalidOperationException($"Row with index {index} not found.");
         }
     }
 }

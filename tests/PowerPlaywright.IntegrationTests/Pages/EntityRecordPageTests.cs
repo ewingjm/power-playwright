@@ -20,10 +20,7 @@
         {
             var record = new RecordFaker().Generate();
 
-            using (var client = this.GetServiceClient())
-            {
-                await client.CreateAsync(record);
-            }
+            await this.CreateAsync(record);
 
             this.recordPage = await (await this.LoginAsync()).ClientApi.NavigateToRecordAsync(record.LogicalName, record.Id);
         }
