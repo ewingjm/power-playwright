@@ -2,9 +2,9 @@
 {
     using Bogus;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
+    using PowerPlaywright.IntegrationTests.Extensions;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
-    using System.Text.RegularExpressions;
 
     /// <summary>
     /// Tests for the <see cref="IDuration"/> control class.
@@ -23,17 +23,29 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="IDuration.GetValueAsync"/> returns null when the value has not been set.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
+        {
+            var durationControl = await this.SetupDurationScenarioAsync(withNoValue: true);
+
+            Assert.That(durationControl.GetValueAsync, Is.Null);
+        }
+
+        /// <summary>
         /// Tests that <see cref="IDuration.GetValueAsync"/> returns the value when the value has been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task GetValueAsync_ContainsValue_ReturnsValue()
         {
-            var expectedValue = this.faker.Random.Int(1, 59);
+            var expectedValue = this.faker.Random.Int(min: 1);
 
             var durationControl = await this.SetupDurationScenarioAsync(withValue: expectedValue);
 
-            Assert.That(durationControl.GetValueAsync, Is.EqualTo($"{expectedValue} minutes"));
+            Assert.That(durationControl.GetValueAsync, Is.EqualTo($"{expectedValue.ToDurationString()}"));
         }
 
         /// <summary>
@@ -44,7 +56,7 @@
         public async Task SetValueAsync_DoesNotContainValue_SetsValue()
         {
             var durationControl = await this.SetupDurationScenarioAsync(withNoValue: true);
-            var expectedValue = this.GetRandomStringDuration();
+            var expectedValue = this.GetRandomDurationString();
 
             await durationControl.SetValueAsync(expectedValue);
 
@@ -59,27 +71,16 @@
         public async Task SetValueAsync_ContainsValue_ReplacesValue()
         {
             var durationControl = await this.SetupDurationScenarioAsync();
-            var expectedValue = this.GetRandomStringDuration();
+            var expectedValue = this.GetRandomDurationString();
 
             await durationControl.SetValueAsync(expectedValue);
 
             Assert.That(durationControl.GetValueAsync, Is.EqualTo(expectedValue));
         }
 
-        private string GetRandomStringDuration()
+        private string GetRandomDurationString()
         {
-            var units = new[] { "minute", "hour", "day", "second" };
-            var unit = this.faker.PickRandom(units);
-
-            var quantity = this.faker.Random.Int(1, 59);
-
-            // Proper pluralization
-            if (quantity > 1)
-            {
-                unit += "s";
-            }
-
-            return $"{quantity} {unit}";
+            return this.faker.Random.Int(min: 1).ToDurationString();
         }
 
         /// <summary>
