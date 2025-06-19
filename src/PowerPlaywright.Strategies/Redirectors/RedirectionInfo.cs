@@ -53,6 +53,17 @@
         internal UserSettings UserSettings { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether relevance search is enabled on the instance.
+        /// </summary>
+        public bool IsRelevanceSearchEnabled
+        {
+            get
+            {
+                return this.Org.IsRelevanceSearchEnabled;
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the new look is enabled.
         /// </summary>
         public bool IsNewLookEnabled
@@ -69,7 +80,7 @@
                     return false;
                 }
 
-                if (this.User.AppToggles != null && this.UserSettings.AppTogglesTyped.ModernizationOptOut.HasValue && this.Version < Version.Parse("9.2.25031.180") )
+                if (this.User.AppToggles != null && this.UserSettings.AppTogglesTyped.ModernizationOptOut.HasValue && this.Version < Version.Parse("9.2.25031.180"))
                 {
                     return this.UserSettings.AppTogglesTyped.ModernizationOptOut.Value;
                 }
@@ -92,8 +103,10 @@
                     {
                         case ReleaseChannelOverride.SemiAnnual:
                             return (int)ReleaseChannel.SemiAnnualChannel;
+
                         case ReleaseChannelOverride.Inner:
                             return (int)ReleaseChannel.MicrosoftInnerChannel;
+
                         case ReleaseChannelOverride.Monthly:
                             return (int)ReleaseChannel.Monthly;
                     }
