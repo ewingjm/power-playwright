@@ -2,11 +2,12 @@
 {
     using System;
     using System.Globalization;
+    using System.Net.Http.Headers;
     using System.Reflection;
+    using System.Text;
     using Azure.Core;
     using Azure.Extensions.AspNetCore.Configuration.Secrets;
     using Azure.Identity;
-    using Microsoft.Crm.Sdk.Messages;
     using Microsoft.Extensions.Configuration;
     using Microsoft.PowerPlatform.Dataverse.Client;
     using Microsoft.Xrm.Sdk;
@@ -21,12 +22,8 @@
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.IntegrationTests.Config;
     using PowerPlaywright.IntegrationTests.Extensions;
-    using PowerPlaywright.TestApp.Model.Search;
-    using System.Net.Http.Headers;
-    using System.Reflection;
-    using System.Text;
-    using System.Text.RegularExpressions;
     using PowerPlaywright.TestApp.Model;
+    using PowerPlaywright.TestApp.Model.Search;
 
     /// <summary>
     /// A base class for integration tests.
