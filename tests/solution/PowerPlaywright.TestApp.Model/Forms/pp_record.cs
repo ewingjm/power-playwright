@@ -63,6 +63,11 @@
                     /// Tab B.
                     /// </summary>
                     public const string TabB = "Tab B";
+
+                    /// <summary>
+                    /// Related.
+                    /// </summary>
+                    public const string Related = "Related";
                 }
             }
         }

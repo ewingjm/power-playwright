@@ -1,5 +1,8 @@
 ﻿namespace PowerPlaywright.IntegrationTests
 {
+    using System;
+    using System.Globalization;
+    using System.Reflection;
     using Azure.Core;
     using Azure.Extensions.AspNetCore.Configuration.Secrets;
     using Azure.Identity;
@@ -23,6 +26,7 @@
     using System.Reflection;
     using System.Text;
     using System.Text.RegularExpressions;
+    using PowerPlaywright.TestApp.Model;
 
     /// <summary>
     /// A base class for integration tests.
@@ -33,6 +37,8 @@
         /// The unique name of the app used for testing.
         /// </summary>
         protected const string TestAppUniqueName = "pp_UserInterfaceDemo";
+
+        private const string EnvironmentVariablePrefix = "POWERPLAYWRIGHT:TEST:";
 
         private static readonly IEnumerator<UserConfiguration> UserEnumerator;
 
@@ -104,6 +110,16 @@
             });
 
             this.isTracing = true;
+        }
+
+        /// <summary>
+        /// Sets up the current culture.
+        /// </summary>
+        [SetUp]
+        public void SetupCurrentCulture()
+        {
+            // Explicitly setting current culture to match test users. Ideally, we should add a feature to read test user's locale settings on login.
+            CultureInfo.CurrentCulture = new CultureInfo("en-GB");
         }
 
         /// <summary>
@@ -286,7 +302,41 @@
         {
             using (var client = this.GetServiceClient())
             {
-                await client.CreateAsync(record);
+                var attempt = 0;
+                var maxRetries = 3;
+                var deactivate = record.GetAttributeValue<OptionSetValue>(nameof(pp_Record.statecode))?.Value == 1;
+
+                if (deactivate)
+                {
+                    record.Attributes.Remove(nameof(pp_Record.statecode));
+                    record.Attributes.Remove(nameof(pp_Record.statuscode));
+                }
+
+                while (attempt++ < maxRetries)
+                {
+                    try
+                    {
+                        await client.CreateAsync(record);
+
+                        if (deactivate)
+                        {
+                            await client.UpdateAsync(new Entity(record.LogicalName, record.Id)
+                            {
+                                Attributes =
+                                {
+                                    [nameof(pp_Record.statecode)] = new OptionSetValue(1),
+                                    [nameof(pp_Record.statuscode)] = new OptionSetValue(2),
+                                },
+                            });
+                        }
+
+                        break;
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        await Task.Delay(500);
+                    }
+                }
             }
 
             var page = await this.LoginAsync();
@@ -322,7 +372,7 @@
         {
             var config = new ConfigurationBuilder()
                 .AddUserSecrets<ModelDrivenAppTests>()
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables(EnvironmentVariablePrefix);
 
             var configurationRoot = config
                 .Build();
@@ -352,10 +402,10 @@
                         });
                 }
 
-                config.AddAzureKeyVault(
-                    keyVaultConfiguration.Url,
-                    tokenCredential,
-                    new AzureKeyVaultConfigurationOptions { ReloadInterval = null });
+                config = new ConfigurationBuilder()
+                    .AddAzureKeyVault(keyVaultConfiguration.Url, tokenCredential, new AzureKeyVaultConfigurationOptions { ReloadInterval = null })
+                    .AddEnvironmentVariables(EnvironmentVariablePrefix)
+                    .AddUserSecrets<ModelDrivenAppTests>();
 
                 configurationRoot = config.Build();
             }

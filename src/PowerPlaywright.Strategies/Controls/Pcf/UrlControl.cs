@@ -8,6 +8,7 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Strategies.Extensions;
     using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="IUrlControl"/>.
@@ -33,13 +34,18 @@
         /// <inheritdoc/>
         public async Task<string> GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             return await this.urlInput.InputValueOrNullAsync();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(string value)
         {
+            await this.urlInput.FocusAsync();
+            await this.urlInput.FillAsync(string.Empty);
             await this.urlInput.FillAsync(value);
+            await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }

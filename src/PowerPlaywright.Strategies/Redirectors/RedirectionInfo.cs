@@ -80,11 +80,6 @@
                     return false;
                 }
 
-                if (this.User.AppToggles != null && this.UserSettings.AppTogglesTyped.ModernizationOptOut.HasValue && this.Version < Version.Parse("9.2.25031.180"))
-                {
-                    return this.UserSettings.AppTogglesTyped.ModernizationOptOut.Value;
-                }
-
                 return true;
             }
         }

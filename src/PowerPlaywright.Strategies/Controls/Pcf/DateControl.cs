@@ -5,9 +5,11 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
     using System;
+    using System.Globalization;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -34,13 +36,19 @@
         /// <inheritdoc/>
         public async Task<DateTime?> GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             return await this.input.InputValueOrNullAsync<DateTime?>();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(DateTime? value)
         {
-            await this.input.FillAsync(value.ToString());
+            await this.input.FocusAsync();
+            await this.input.FillAsync(string.Empty);
+            await this.Page.WaitForAppIdleAsync();
+            await this.input.FillAsync(value?.ToString("d", CultureInfo.CurrentCulture));
+            await this.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }

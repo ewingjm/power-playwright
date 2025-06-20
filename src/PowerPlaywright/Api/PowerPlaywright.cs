@@ -182,17 +182,16 @@ namespace PowerPlaywright.Api
 
         private static async Task<PackageIdentity> FindBestStrategiesPackageVersionAsync(INuGetPackageInstaller nuGetPackageInstaller)
         {
-            var majorVersion = Assembly.GetExecutingAssembly().GetName().Version.Major;
+            var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
 
             var versions = await nuGetPackageInstaller.GetAllVersionsAsync(StrategiesPackageId);
+            var strategiesVersion = versions.Count() > 1
+                ? versions.FirstOrDefault(v => v.Major == assemblyVersion.Major && v.Minor == assemblyVersion.Minor && v.Patch == assemblyVersion.Build)
+                : versions.FirstOrDefault();
 
-            var matchingMajorVersions = versions.Where(v => v.Major == majorVersion);
-            var idealVersion = matchingMajorVersions.Count() > 1
-                ? matchingMajorVersions.FindBestMatch(VersionRange.Parse($"{majorVersion}.*"), v => v)
-                : matchingMajorVersions.FirstOrDefault()
-                ?? throw new PowerPlaywrightException($"Unable to find strategies version matching '{majorVersion}.*'.");
-
-            return new PackageIdentity(StrategiesPackageId, idealVersion);
+            return strategiesVersion is null
+                ? throw new PowerPlaywrightException($"Unable to find strategies version matching '{assemblyVersion.ToString(3)}'.")
+                : new PackageIdentity(StrategiesPackageId, strategiesVersion);
         }
 
         private IModelDrivenApp GetModelDrivenApp(IBrowserContext browserContext, Uri environmentUrl, string uniqueName)

@@ -138,7 +138,7 @@ public class ControlFactoryTests
     {
         var actualControl = this.controlFactory.CreateInstance<IReadOnlyGrid>(Substitute.For<IAppPage>(), "name");
 
-        Assert.That(actualControl, Is.InstanceOf<IPowerAppsOneGrid>());
+        Assert.That(actualControl, Is.InstanceOf<IReadOnlyGrid>());
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public class ControlFactoryTests
         this.strategyResolver.IsReady.Returns(false);
 
         Assert.Throws<PowerPlaywrightException>(
-            () => this.controlFactory.CreateInstance<IPowerAppsOneGrid>(Substitute.For<IAppPage>(), "name"));
+            () => this.controlFactory.CreateInstance<IPcfGridControl>(Substitute.For<IAppPage>(), "name"));
     }
 
     /// <summary>
@@ -171,16 +171,16 @@ public class ControlFactoryTests
         this.strategyResolver.IsReady.Returns(false);
         try
         {
-            this.controlFactory.CreateInstance<IPowerAppsOneGrid>(Substitute.For<IAppPage>(), "name");
+            this.controlFactory.CreateInstance<IPcfGridControl>(Substitute.For<IAppPage>(), "name");
         }
         catch (PowerPlaywrightException)
         {
             this.strategyResolver.OnReady += Raise.Event();
         }
 
-        var actualControl = this.controlFactory.CreateInstance<IPowerAppsOneGrid>(Substitute.For<IAppPage>(), "name");
+        var actualControl = this.controlFactory.CreateInstance<IPcfGridControl>(Substitute.For<IAppPage>(), "name");
 
-        Assert.That(actualControl, Is.InstanceOf(typeof(PowerAppsOneGridControl)));
+        Assert.That(actualControl, Is.InstanceOf(typeof(PcfGridControl)));
     }
 
     /// <summary>
@@ -200,7 +200,7 @@ public class ControlFactoryTests
     {
         var expectedName = "ControlName";
 
-        var actualControl = this.controlFactory.CreateInstance<IPowerAppsOneGrid>(Substitute.For<IAppPage>(), expectedName);
+        var actualControl = this.controlFactory.CreateInstance<IPcfGridControl>(Substitute.For<IAppPage>(), expectedName);
 
         Assert.That(actualControl.Name, Is.EqualTo(expectedName));
     }
@@ -213,7 +213,7 @@ public class ControlFactoryTests
     {
         var expectedParent = Substitute.For<IControl>();
 
-        var actualControl = this.controlFactory.CreateInstance<IPowerAppsOneGrid>(Substitute.For<IAppPage>(), "name", expectedParent);
+        var actualControl = this.controlFactory.CreateInstance<IPcfGridControl>(Substitute.For<IAppPage>(), "name", expectedParent);
 
         Assert.That(actualControl.Parent, Is.EqualTo(expectedParent));
     }
@@ -221,18 +221,18 @@ public class ControlFactoryTests
     private void MockValidDefaults()
     {
         this.resolvedTypes
-            .Add(typeof(IPowerAppsOneGrid), typeof(PowerAppsOneGridControl));
+            .Add(typeof(IPcfGridControl), typeof(PcfGridControl));
 
         // TODO: Refactor tests to use DynamicTypeBuilder
         this.assemblyProvider.GetAssembly()
-            .Returns(typeof(PowerAppsOneGridControl).Assembly);
+            .Returns(typeof(PcfGridControl).Assembly);
         this.serviceProvider.GetService(Arg.Is<Type>(t => t != typeof(string)))
             .Returns(i => Substitute.For([.. i.Args().Cast<Type>()], []));
         var environmentinfoProvider = Substitute.For<IEnvironmentInfoProvider>();
         environmentinfoProvider.ControlIds
             .Returns(new Dictionary<string, Guid>()
             {
-                ["Microsoft.PowerApps.PowerAppsOneGrid"] = Guid.NewGuid(),
+                ["MscrmControls.Grid.PCFGridControl"] = Guid.NewGuid(),
             });
         this.serviceProvider.GetService(typeof(IEnvironmentInfoProvider))
             .Returns(environmentinfoProvider);

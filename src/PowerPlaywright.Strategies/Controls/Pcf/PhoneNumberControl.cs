@@ -8,6 +8,7 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Strategies.Extensions;
     using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="IPhoneNumberControl"/>.
@@ -33,13 +34,17 @@
         /// <inheritdoc/>
         public async Task<string> GetValueAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
             return await this.input.InputValueOrNullAsync();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(string value)
         {
+            await this.input.FocusAsync();
+            await this.input.FillAsync(string.Empty);
             await this.input.FillAsync(value);
+            await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
@@ -20,6 +23,7 @@
         private readonly ILogger<PcfGridControl> logger;
 
         private readonly ILocator rowsContainer;
+        private readonly ILocator columnHeaders;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PowerAppsOneGridControl"/> class.
@@ -37,6 +41,17 @@
             this.logger = logger;
 
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
+            this.columnHeaders = this.Container.GetByRole(AriaRole.Columnheader);
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> GetColumnNamesAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            var columnHeaders = await this.columnHeaders.AllAsync();
+
+            return await Task.WhenAll(columnHeaders.Skip(1).Select(c => c.Locator("label").InnerTextAsync()));
         }
 
         /// <inheritdoc/>
@@ -49,7 +64,7 @@
             var row = this.GetRow(index);
             if (!await row.IsVisibleAsync())
             {
-                throw new PowerPlaywrightException($"The provided index '{index}' is out of range for subgrid {Name}");
+                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {Name}");
             }
 
             await row.DblClickAsync();

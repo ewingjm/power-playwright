@@ -24,7 +24,7 @@
         /// <inheritdoc/>
         protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
         {
-            if (redirectionInfo.ActiveReleaseChannel == (int)ReleaseChannel.SemiAnnualChannel && !redirectionInfo.IsNewLookEnabled)
+            if (!redirectionInfo.IsNewLookEnabled)
             {
                 return typeof(ICurrencyControl);
             }

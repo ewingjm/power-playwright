@@ -9,6 +9,7 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -21,6 +22,8 @@
         private readonly IControlFactory controlFactory;
 
         private readonly ILocator tabList;
+        private readonly ILocator tabs;
+        private readonly ILocator formReadOnlyNotification;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -33,12 +36,24 @@
             this.controlFactory = controlFactory ?? throw new ArgumentNullException(nameof(controlFactory));
 
             this.tabList = this.Container.GetByRole(AriaRole.Tablist);
+            this.tabs = this.tabList.GetByRole(AriaRole.Tab);
+            this.formReadOnlyNotification = this.Container.Locator("#message-formReadOnlyNotification");
         }
 
         /// <inheritdoc/>
-        public Task<string> GetActiveTabAsync()
+        public async Task<string> GetActiveTabAsync()
         {
-            return this.tabList.GetByRole(AriaRole.Tab, new LocatorGetByRoleOptions { Selected = true }).InnerTextAsync();
+            await this.Page.WaitForAppIdleAsync();
+
+            return await this.tabList.GetByRole(AriaRole.Tab, new LocatorGetByRoleOptions { Selected = true }).InnerTextAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> GetAllTabsAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            return await this.tabs.AllInnerTextsAsync();
         }
 
         /// <inheritdoc/>
@@ -52,6 +67,14 @@
             where TControl : IPcfControl
         {
             return this.controlFactory.CreateInstance<IFormField<TControl>>(this.AppPage, name, this);
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> IsDisabledAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            return await this.formReadOnlyNotification.IsVisibleAsync();
         }
 
         /// <inheritdoc/>

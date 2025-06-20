@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Platform
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
@@ -22,6 +23,18 @@
         /// </summary>
         /// <returns>The active tab label.</returns>
         Task<string> GetActiveTabAsync();
+
+        /// <summary>
+        /// Gets all visible tabs on the form.
+        /// </summary>
+        /// <returns>A collection of visible tabs on the form.</returns>
+        Task<IEnumerable<string>> GetAllTabsAsync();
+
+        /// <summary>
+        /// Gets a value indicating whether the form is disabled.
+        /// </summary>
+        /// <returns>A value indicating whether the form is disabled.</returns>
+        Task<bool> IsDisabledAsync();
 
         /// <summary>
         /// Gets a field on the form.
