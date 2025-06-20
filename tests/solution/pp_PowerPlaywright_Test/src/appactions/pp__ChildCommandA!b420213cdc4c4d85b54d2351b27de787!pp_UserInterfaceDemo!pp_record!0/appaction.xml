@@ -1,0 +1,34 @@
+<appaction uniquename="pp__ChildCommandA!b420213cdc4c4d85b54d2351b27de787!pp_UserInterfaceDemo!pp_record!0">
+  <appmoduleid>
+    <uniquename>pp_UserInterfaceDemo</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Child Command A">
+    <label description="Child Command A" languagecode="1033" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>pp_record</logicalname>
+  </contextentity>
+  <contextvalue>pp_record</contextvalue>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>ChildCommandA!b420213cdc4c4d85b54d2351b27de787</name>
+  <onclickeventformulacomponentlibraryid>
+    <name>pp_userinterfacedemodefaultcommandlibrary_dbbb9</name>
+  </onclickeventformulacomponentlibraryid>
+  <onclickeventformulacomponentname>907b3aaca9a248649ac187fa678e6b16</onclickeventformulacomponentname>
+  <onclickeventformulafunctionname>OnSelect</onclickeventformulafunctionname>
+  <onclickeventtype>1</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>pp__GroupA!23aa7a4f6ae74cd6a427fe729d380030!pp_UserInterfaceDemo!pp_record!0</uniquename>
+  </parentappactionid>
+  <sequence>10000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilitytype>0</visibilitytype>
+</appaction>
