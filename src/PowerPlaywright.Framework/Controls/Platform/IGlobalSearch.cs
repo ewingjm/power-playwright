@@ -46,9 +46,9 @@
         /// <summary>
         /// Opens a specific search tab on the search results page unless it is already selected.
         /// </summary>
-        /// <param name="search"></param>
+        /// <param name="searchTabLabel"></param>
         /// <returns></returns>
-        Task<ISearchPage> OpenSearchTabAsync(string search);
+        Task<ISearchPage> OpenSearchTabAsync(string searchTabLabel);
 
         /// <summary>
         /// Opens the search result within the selected tab by its index.

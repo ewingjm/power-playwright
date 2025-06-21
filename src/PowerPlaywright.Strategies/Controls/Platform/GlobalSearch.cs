@@ -24,6 +24,7 @@
         private const string SearchFlyout = "id-globalSearchFlyout-1";
 
         private readonly IPageFactory pageFactory;
+        private readonly ILocator clearSearchButton;
         private readonly ILocator search;
         private readonly ILocator searchFlyout;
         private readonly ILocator resultsContainer;
@@ -38,7 +39,7 @@
         {
             this.pageFactory = pageFactory;
             this.search = this.Container.GetByRole(AriaRole.Searchbox, new LocatorGetByRoleOptions { Name = "Search" });
-
+            this.clearSearchButton = Container.Locator("i[data-icon-name='Clear']");
             this.searchFlyout = this.Page.Locator($"#{SearchFlyout}");
             this.resultsContainer = searchFlyout.GetByRole(AriaRole.Grid);
         }
@@ -69,6 +70,8 @@
 
             var results = await this.searchFlyout.GetByRole(AriaRole.Button).AllAsync();
 
+            Console.WriteLine(search);
+
             await Page.WaitForAppIdleAsync();
             await results[index].ClickAndWaitForAppIdleAsync();
 
@@ -89,17 +92,23 @@
         /// <returns></returns>
         private async Task Search(string searchText, bool performSearch = false)
         {
-            await this.search.ClearAsync();
+            if (await clearSearchButton.IsVisibleAsync())
+            {
+                await clearSearchButton.ClickAndWaitForAppIdleAsync();
+            }
+
             await this.search.FillAsync(searchText);
+
             if (performSearch)
             {
                 await this.search.PressAsync("Enter");
             }
+
             await Page.WaitForAppIdleAsync();
         }
 
         /// <inheritdoc/>
-        public async Task<ISearchPage> OpenSearchTabAsync(string tabName)
+        public async Task<ISearchPage> OpenSearchTabAsync(string searchTabLabel)
         {
             var tabHeader = Page.GetByRole(AriaRole.Tablist);
             var tabs = await tabHeader.GetByRole(AriaRole.Tab).AllAsync();
@@ -108,7 +117,7 @@
             {
                 var name = await tab.GetAttributeAsync("name");
                 var isSelected = await tab.GetAttributeAsync("aria-selected");
-                if (name == tabName && isSelected == "false")
+                if (name == searchTabLabel && isSelected == "false")
                 {
                     await tab.ClickAsync();
                 }

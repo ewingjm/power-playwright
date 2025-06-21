@@ -120,7 +120,7 @@
 
             while (attempt < maxRetries)
             {
-                var searchResults = await this.SearchAsync(query, [pp_Record.EntityLogicalName], 10);
+                var searchResults = await this.SearchAsync(query, [pp_Record.EntityLogicalName], 500);
 
                 if (searchResults?.ParsedResponse?.Count >= 1)
                 {
@@ -142,7 +142,7 @@
             var query = new QueryExpression(pp_Record.EntityLogicalName)
             {
                 ColumnSet = new ColumnSet(true),
-                TopCount = 500,
+                TopCount = 100,
                 Criteria = new FilterExpression
                 {
                     FilterOperator = LogicalOperator.And,
@@ -154,6 +154,10 @@
                         new ConditionExpression("createdon", ConditionOperator.LessThan, DateTime.UtcNow.AddMinutes(-10)),
                     },
                 },
+                Orders =
+                    {
+                        new OrderExpression("createdon", OrderType.Descending),
+                    },
             };
 
             var records = await this.RetrieveRecordsAsync(query);
