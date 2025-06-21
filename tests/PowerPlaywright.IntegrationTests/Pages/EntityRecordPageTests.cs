@@ -20,10 +20,7 @@
         {
             var record = new RecordFaker().Generate();
 
-            using (var client = this.GetServiceClient())
-            {
-                await client.CreateAsync(record);
-            }
+            await this.CreateAsync(record);
 
             this.recordPage = await (await this.LoginAsync()).ClientApi.NavigateToRecordAsync(record.LogicalName, record.Id);
         }
@@ -36,6 +33,16 @@
         public async Task Form_Always_Exists()
         {
             await this.Expect(this.recordPage!.Form.Container).ToBeVisibleAsync();
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IModelDrivenAppPage.Search"/> always exists on the page.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task Search_Always_Exists()
+        {
+            await this.Expect(this.recordPage!.Search.Container).ToBeVisibleAsync();
         }
 
         /// <summary>
