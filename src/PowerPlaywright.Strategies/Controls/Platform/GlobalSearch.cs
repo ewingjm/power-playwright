@@ -15,7 +15,7 @@
     using System.Xml.Linq;
 
     /// <summary>
-    /// A global search control.
+    /// A global searchText control.
     /// </summary>
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class GlobalSearch : Control, IGlobalSearch
@@ -27,7 +27,6 @@
         private readonly ILocator clearSearchButton;
         private readonly ILocator search;
         private readonly ILocator searchFlyout;
-        private readonly ILocator resultsContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GlobalSearch"/> class.
@@ -41,7 +40,6 @@
             this.search = this.Container.GetByRole(AriaRole.Searchbox, new LocatorGetByRoleOptions { Name = "Search" });
             this.clearSearchButton = Container.Locator("i[data-icon-name='Clear']");
             this.searchFlyout = this.Page.Locator($"#{SearchFlyout}");
-            this.resultsContainer = searchFlyout.GetByRole(AriaRole.Grid);
         }
 
         /// <inheritdoc/>
@@ -64,28 +62,36 @@
         }
 
         /// <inheritdoc/>
-        public async Task<TPage> OpenSuggestionAsync<TPage>(string search, int index) where TPage : IAppPage
+        public async Task<TPage> OpenSuggestionAsync<TPage>(string searchText, int index) where TPage : IAppPage
         {
-            await Search(search);
+            await Search(searchText);
+            //await searchFlyout.WaitForAsync();
 
-            var results = await this.searchFlyout.GetByRole(AriaRole.Button).AllAsync();
+            if (await searchFlyout.IsVisibleAsync())
+            {
+                var results = await this.searchFlyout.GetByRole(AriaRole.Button).AllAsync();
 
-            Console.WriteLine(search);
+                await Page.WaitForAppIdleAsync();
+                await results[index].ClickAndWaitForAppIdleAsync();
 
-            await Page.WaitForAppIdleAsync();
-            await results[index].ClickAndWaitForAppIdleAsync();
-
-            return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
+                return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
+            }
+            else
+            {
+                throw new PowerPlaywrightException($"No search results were available to click at index {index}");
+            }
         }
 
         /// <inheritdoc/>
         public async Task<bool> HasSuggestedResultsAsync()
         {
+            await Page.WaitForAppIdleAsync();
+            var resultsContainer = searchFlyout.GetByRole(AriaRole.Grid);
             return await resultsContainer.IsVisibleAsync();
         }
 
         /// <summary>
-        /// Performs the search.
+        /// Performs the searchText.
         /// </summary>
         /// <param name="searchText"></param>
         /// <param name="performSearch"></param>
