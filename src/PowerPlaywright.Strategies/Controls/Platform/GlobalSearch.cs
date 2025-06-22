@@ -93,15 +93,16 @@
         /// <inheritdoc/>
         public async Task<TPage> OpenSuggestionAsync<TPage>(string searchText, int index) where TPage : IAppPage
         {
+            await Page.WaitForAppIdleAsync();
+
             await Search(searchText);
 
             if (!await searchFlyout.IsVisibleAsync())
             {
-                throw new PowerPlaywrightException($"Search flyout is not visible. Cannot access search results at index {index}.");
+                await searchFlyout.WaitForAsync();
             }
 
             var results = await searchFlyout.GetByRole(AriaRole.Button).AllAsync();
-            await Page.WaitForAppIdleAsync();
 
             if (index < 0 || index >= results.Count || !await results[index].IsVisibleAsync())
             {
