@@ -61,25 +61,55 @@
             return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
         }
 
+        ///// <inheritdoc/>
+        //public async Task<TPage> OpenSuggestionAsync<TPage>(string searchText, int index) where TPage : IAppPage
+        //{
+        //    await Search(searchText);
+        //    //await searchFlyout.WaitForAsync();
+
+        //    if (await searchFlyout.IsVisibleAsync())
+        //    {
+        //        var results = await this.searchFlyout.GetByRole(AriaRole.Button).AllAsync();
+
+        //        await Page.WaitForAppIdleAsync();
+
+        //        if (!await results[index].IsVisibleAsync())
+        //        {
+        //            await results[index].ClickAndWaitForAppIdleAsync();
+        //        }
+        //        else
+        //        {
+        //            throw new PowerPlaywrightException($"No search results were available to click at index {index}");
+        //        }
+
+        //        return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
+        //    }
+        //    else
+        //    {
+        //        throw new PowerPlaywrightException($"No search results were available to click at index {index}");
+        //    }
+        //}
+
         /// <inheritdoc/>
         public async Task<TPage> OpenSuggestionAsync<TPage>(string searchText, int index) where TPage : IAppPage
         {
             await Search(searchText);
-            //await searchFlyout.WaitForAsync();
 
-            if (await searchFlyout.IsVisibleAsync())
+            if (!await searchFlyout.IsVisibleAsync())
             {
-                var results = await this.searchFlyout.GetByRole(AriaRole.Button).AllAsync();
-
-                await Page.WaitForAppIdleAsync();
-                await results[index].ClickAndWaitForAppIdleAsync();
-
-                return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
+                throw new PowerPlaywrightException($"Search flyout is not visible. Cannot access search results at index {index}.");
             }
-            else
+
+            var results = await searchFlyout.GetByRole(AriaRole.Button).AllAsync();
+            await Page.WaitForAppIdleAsync();
+
+            if (index < 0 || index >= results.Count || !await results[index].IsVisibleAsync())
             {
-                throw new PowerPlaywrightException($"No search results were available to click at index {index}");
+                throw new PowerPlaywrightException($"No visible search result available to click at index {index}.");
             }
+
+            await results[index].ClickAndWaitForAppIdleAsync();
+            return await pageFactory.CreateInstanceAsync<TPage>(Page);
         }
 
         /// <inheritdoc/>
