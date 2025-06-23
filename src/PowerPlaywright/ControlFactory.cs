@@ -136,6 +136,25 @@
         }
 
         /// <inheritdoc/>
+        public Type GetRedirectedType<TControl>()
+            where TControl : IControl
+        {
+            var controlType = typeof(TControl);
+            this.logger.LogTrace("Getting redirected type of {controlType}.", controlType);
+
+            if (this.TryRedirectControlType(ref controlType))
+            {
+                this.logger.LogTrace("Type redirected to {controlType}.", controlType);
+            }
+            else
+            {
+                this.logger.LogTrace("Type not redirected.");
+            }
+
+            return controlType;
+        }
+
+        /// <inheritdoc/>
         public TControl CreateInstance<TControl>(IAppPage appPage, string name = null, IControl parent = null)
             where TControl : IControl
         {
