@@ -104,7 +104,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField<IDateTime>(nameof(pp_Record.pp_dateandtimedateandtime)).Control;
+            return recordPage.Form.GetField(nameof(pp_Record.pp_dateandtimedateandtime)).GetControl<IDateTime>();
         }
     }
 }

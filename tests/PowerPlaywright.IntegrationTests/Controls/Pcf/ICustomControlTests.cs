@@ -42,7 +42,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(faker.Generate());
 
-            return recordPage.Form.GetField<ICustomControlClass>(pp_Record.Forms.Information.Toggle).Control;
+            return recordPage.Form.GetField(pp_Record.Forms.Information.Toggle).GetControl<ICustomControlClass>();
         }
     }
 }

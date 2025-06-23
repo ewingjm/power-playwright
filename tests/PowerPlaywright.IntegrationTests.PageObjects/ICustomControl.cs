@@ -1,6 +1,5 @@
 ﻿namespace PowerPlaywright.TestApp.PageObjects
 {
-    using System.Threading.Tasks;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
 

@@ -97,7 +97,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField<ISingleLineEmail>(nameof(pp_Record.pp_singlelineoftextemail)).Control;
+            return recordPage.Form.GetField(nameof(pp_Record.pp_singlelineoftextemail)).GetControl<ISingleLineEmail>();
         }
     }
 }

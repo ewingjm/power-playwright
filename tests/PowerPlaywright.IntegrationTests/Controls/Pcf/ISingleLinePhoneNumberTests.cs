@@ -97,7 +97,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField<ISingleLinePhoneNumber>(nameof(pp_Record.pp_singlelineoftextphonenumber)).Control;
+            return recordPage.Form.GetField(nameof(pp_Record.pp_singlelineoftextphonenumber)).GetControl<ISingleLinePhoneNumber>();
         }
     }
 }

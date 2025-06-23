@@ -91,7 +91,7 @@
 
             if (withNoValue)
             {
-                record.RuleFor(p => p.pp_currency, f => null);
+                record.RuleFor(p => p.pp_currency, f => null!);
             }
             else if (withCurrency.HasValue && !withNoValue)
             {
@@ -99,7 +99,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField<ICurrency>(nameof(pp_Record.pp_currency)).Control;
+            return recordPage.Form.GetField(nameof(pp_Record.pp_currency)).GetControl<ICurrency>();
         }
     }
 }
