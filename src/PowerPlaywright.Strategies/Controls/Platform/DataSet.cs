@@ -16,6 +16,7 @@
     {
         private readonly IControlFactory controlFactory;
         private readonly string name;
+        private readonly IControl parent;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -23,11 +24,13 @@
         /// <param name="appPage">The page.</param>
         /// <param name="controlFactory">The control factory.</param>
         /// <param name="name">The name of the data set.</param>
-        public DataSet(IAppPage appPage, IControlFactory controlFactory, string name)
+        /// <param name="parent">The parent control.</param>
+        public DataSet(IAppPage appPage, IControlFactory controlFactory, string name, IControl parent = null)
             : base(appPage)
         {
             this.controlFactory = controlFactory;
             this.name = name;
+            this.parent = parent;
         }
 
         /// <inheritdoc/>
