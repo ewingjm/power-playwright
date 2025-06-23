@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
 
     /// <summary>
@@ -37,19 +37,30 @@
         Task<bool> IsDisabledAsync();
 
         /// <summary>
+        /// Gets all fields on the form.
+        /// </summary>
+        /// <returns>The field.</returns>
+        Task<IEnumerable<IField>> GetFieldsAsync();
+
+        /// <summary>
         /// Gets a field on the form.
         /// </summary>
         /// <param name="name">The control name.</param>
-        /// <returns>The control.</returns>
-        IFormField GetField(string name);
+        /// <returns>The field.</returns>
+        IField GetField(string name);
 
         /// <summary>
-        /// Gets a field on the form with a known PCF control or control class type.
+        /// Gets a quick view on the form.
         /// </summary>
-        /// <typeparam name="TPcfControl">The PCF control type.</typeparam>
-        /// <param name="name">The control name.</param>
-        /// <returns>The control.</returns>
-        IFormField<TPcfControl> GetField<TPcfControl>(string name)
-            where TPcfControl : IPcfControl;
+        /// <param name="name">The quick view name.</param>
+        /// <returns>The quick view.</returns>
+        IQuickView GetQuickView(string name);
+
+        /// <summary>
+        /// Gets a data set on the form (e.g. a grid).
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IDataSet GetDataSet(string name);
     }
 }
