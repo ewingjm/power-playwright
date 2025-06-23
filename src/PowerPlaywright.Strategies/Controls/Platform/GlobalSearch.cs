@@ -1,5 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
+    using System;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -8,11 +10,6 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
-    using System;
-    using System.Data;
-    using System.Threading.Tasks;
-    using System.Transactions;
-    using System.Xml.Linq;
 
     /// <summary>
     /// A global searchText control.
@@ -72,15 +69,19 @@
             {
                 await searchFlyout.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 10000 });
             }
-            var results = await searchFlyout.GetByRole(AriaRole.Button).AllAsync();
-            await Page.WaitForAppIdleAsync();
 
-            if (index < 0 || index >= results.Count || !await results[index].IsVisibleAsync())
+            var rowLocator = searchFlyout.GetByRole(AriaRole.Row);
+            await rowLocator.First.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+            var results = await rowLocator.AllAsync();
+
+            if (index < 0 || index >= results.Count)
             {
-                throw new PowerPlaywrightException($"No visible search result available to click at index {index}.");
+                throw new ArgumentOutOfRangeException(nameof(index), $"Index {index} is out of range. Total available results: {results.Count}.");
             }
 
-            await results[index].ClickAndWaitForAppIdleAsync();
+            var result = results[index];
+
+            await result.ClickAndWaitForAppIdleAsync();
             return await pageFactory.CreateInstanceAsync<TPage>(Page);
         }
 
@@ -88,8 +89,22 @@
         public async Task<bool> HasSuggestedResultsAsync()
         {
             await Page.WaitForAppIdleAsync();
+
             var resultsContainer = searchFlyout.GetByRole(AriaRole.Grid);
-            return await resultsContainer.IsVisibleAsync();
+            try
+            {
+                await resultsContainer.WaitForAsync(new LocatorWaitForOptions
+                {
+                    State = WaitForSelectorState.Visible,
+                    Timeout = 10000
+                });
+
+                return await resultsContainer.IsVisibleAsync();
+            }
+            catch (TimeoutException)
+            {
+                return false;
+            }
         }
 
         /// <summary>
