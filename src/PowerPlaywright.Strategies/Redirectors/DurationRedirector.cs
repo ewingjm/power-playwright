@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public DurationRedirector(IRedirectionInfoProvider infoProvider, ILogger<YesNoRedirector> logger)
+        public DurationRedirector(IRedirectionInfoProvider infoProvider, ILogger<DurationRedirector> logger)
             : base(infoProvider, logger)
         {
         }
