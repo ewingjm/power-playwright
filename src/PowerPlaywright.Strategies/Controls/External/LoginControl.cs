@@ -47,10 +47,13 @@
         public async Task<IModelDrivenAppPage> LoginAsync(string username, string password)
         {
             await this.usernameInput.FillAsync(username);
+            await this.nextButton.ScrollIntoViewIfNeededAsync();
             await this.nextButton.ClickAsync();
 
+            await this.workOrSchoolAccount.Or(this.passwordInput).ScrollIntoViewIfNeededAsync();
             await this.workOrSchoolAccount.Or(this.passwordInput).ClickAsync();
 
+            await this.passwordInput.ScrollIntoViewIfNeededAsync();
             await this.passwordInput.ClickAsync();
             await this.passwordInput.FillAsync(password);
             await this.nextButton.ClickAsync();
