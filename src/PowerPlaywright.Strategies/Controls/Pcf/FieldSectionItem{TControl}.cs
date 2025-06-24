@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
@@ -66,6 +67,12 @@
         public Task<bool> IsVisibleAsync()
         {
             return this.field.IsVisibleAsync();
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator($"//div[((starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')) and contains(@data-lp-id, '|{this.Name}|'))]");
         }
     }
 }
