@@ -65,22 +65,28 @@
         public async Task<TPage> OpenSuggestionAsync<TPage>(string searchText, int index) where TPage : IAppPage
         {
             await Page.WaitForAppIdleAsync();
-
             await Search(searchText);
 
-            if (!await searchFlyout.IsVisibleAsync())
-            {
-                await searchFlyout.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Visible, Timeout = 10000 });
-            }
-            var results = await searchFlyout.GetByRole(AriaRole.Button).AllAsync();
-            await Page.WaitForAppIdleAsync();
+            await searchFlyout.WaitForAsync();
 
-            if (index < 0 || index >= results.Count || !await results[index].IsVisibleAsync())
+            var resultsLocator = searchFlyout.GetByRole(AriaRole.Row);
+            await resultsLocator.First.WaitForAsync();
+
+            var results = await resultsLocator.AllAsync();
+
+            if (index < 0 || index >= results.Count)
             {
-                throw new PowerPlaywrightException($"No visible search result available to click at index {index}.");
+                throw new PowerPlaywrightException($"Expected at least {index + 1} results, but found {results.Count}.");
             }
 
-            await results[index].ClickAndWaitForAppIdleAsync();
+            var selectedResult = results[index];
+
+            if (!await selectedResult.IsVisibleAsync())
+            {
+                throw new PowerPlaywrightException($"Search result at index {index} is not visible.");
+            }
+
+            await selectedResult.ClickAndWaitForAppIdleAsync();
             return await pageFactory.CreateInstanceAsync<TPage>(Page);
         }
 
