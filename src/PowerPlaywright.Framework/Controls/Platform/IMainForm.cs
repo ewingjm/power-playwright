@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
 
@@ -43,9 +44,18 @@
         Task<IEnumerable<IField>> GetFieldsAsync();
 
         /// <summary>
+        /// Gets a field on the form with a known child control type.
+        /// </summary>
+        /// <typeparam name="TControl">The child control type.</typeparam>
+        /// <param name="name">The field name.</param>
+        /// <returns></returns>
+        IField<TControl> GetField<TControl>(string name)
+            where TControl : IPcfControl;
+
+        /// <summary>
         /// Gets a field on the form.
         /// </summary>
-        /// <param name="name">The control name.</param>
+        /// <param name="name">The field name.</param>
         /// <returns>The field.</returns>
         IField GetField(string name);
 

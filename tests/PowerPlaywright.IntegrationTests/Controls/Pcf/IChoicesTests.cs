@@ -114,7 +114,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
 
-            return recordPage.Form.GetField(nameof(pp_Record.pp_choices)).GetControl<IChoices>();
+            return recordPage.Form.GetField<IChoices>(nameof(pp_Record.pp_choices)).Control;
         }
     }
 }

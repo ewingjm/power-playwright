@@ -99,7 +99,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField(nameof(pp_Record.pp_currency)).GetControl<ICurrency>();
+            return recordPage.Form.GetField<ICurrency>(nameof(pp_Record.pp_currency)).Control;
         }
     }
 }

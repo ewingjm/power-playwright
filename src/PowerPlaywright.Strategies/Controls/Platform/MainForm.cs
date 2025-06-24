@@ -3,6 +3,7 @@
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
+    using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform;
@@ -89,6 +90,13 @@
         public IField GetField(string name)
         {
             return this.controlFactory.CreateInstance<IField>(this.AppPage, name, this);
+        }
+
+        /// <inheritdoc/>
+        public IField<TControl> GetField<TControl>(string name)
+            where TControl : IPcfControl
+        {
+            return this.controlFactory.CreateInstance<IField<TControl>>(this.AppPage, name, this);
         }
 
         /// <inheritdoc/>

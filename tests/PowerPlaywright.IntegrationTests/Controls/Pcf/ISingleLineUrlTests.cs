@@ -97,7 +97,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField(nameof(pp_Record.pp_singlelineoftexturl)).GetControl<ISingleLineUrl>();
+            return recordPage.Form.GetField<ISingleLineUrl>(nameof(pp_Record.pp_singlelineoftexturl)).Control;
         }
     }
 }

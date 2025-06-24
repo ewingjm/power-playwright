@@ -99,7 +99,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
 
-            return recordPage.Form.GetField(nameof(pp_Record.pp_choice)).GetControl<IChoice>();
+            return recordPage.Form.GetField<IChoice>(nameof(pp_Record.pp_choice)).Control;
         }
     }
 }

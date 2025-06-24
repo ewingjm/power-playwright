@@ -98,11 +98,34 @@
                             throw new PowerPlaywrightException($"A redirector of type {value} is already registered for {typeRedirected}. Unable to register {redirectorType}.");
                         }
 
-                        this.logger.LogTrace("Instantiating redirector of type {redirector}.", redirectorType);
-                        var redirector = (IControlRedirector<IControl>)ActivatorUtilities.CreateInstance(
-                            this.serviceProvider, redirectorType, this.redirectionInfoProvider);
+                        if (redirectorType.IsGenericTypeDefinition)
+                        {
+                            var constraints = redirectorType.GetGenericArguments().FirstOrDefault().GetGenericParameterConstraints();
 
-                        this.redirectorsMap.Add(typeRedirected, redirector);
+                            var matchingControlTypes = this.ControlTypes
+                                .Where(t => constraints.All(c => c.IsAssignableFrom(t) && !t.ContainsGenericParameters))
+                                .ToList();
+
+                            foreach (var controlType in matchingControlTypes)
+                            {
+                                var closedRedirectorType = redirectorType.MakeGenericType(controlType);
+
+                                this.logger?.LogTrace("Instantiating redirector of type {redirector}.", closedRedirectorType);
+
+                                var redirector = (IControlRedirector<IControl>)ActivatorUtilities.CreateInstance(
+                                    this.serviceProvider, closedRedirectorType, this.redirectionInfoProvider);
+
+                                this.redirectorsMap.Add(typeRedirected.GetGenericTypeDefinition().MakeGenericType(controlType), redirector);
+                            }
+                        }
+                        else
+                        {
+                            this.logger.LogTrace("Instantiating redirector of type {redirector}.", redirectorType);
+                            var redirector = (IControlRedirector<IControl>)ActivatorUtilities.CreateInstance(
+                                this.serviceProvider, redirectorType, this.redirectionInfoProvider);
+
+                            this.redirectorsMap.Add(typeRedirected, redirector);
+                        }
                     }
                 }
 

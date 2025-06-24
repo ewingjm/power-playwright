@@ -34,5 +34,12 @@
         {
             return this.controlFactory.CreateInstance<IField>(this.AppPage, name, this);
         }
+
+        /// <inheritdoc/>
+        public IField<TControl> GetField<TControl>(string name)
+            where TControl : IPcfControl
+        {
+            return this.controlFactory.CreateInstance<IField<TControl>>(this.AppPage, name, this);
+        }
     }
 }

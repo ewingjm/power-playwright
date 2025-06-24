@@ -44,9 +44,9 @@
             var relatedRecordFaker = new RelatedRecordFaker();
             relatedRecordFaker.RuleFor(r => r.pp_Name, f => expectedName);
             var quickViewControl = await this.SetupQuickViewScenarioAsync(withRelatedRecord: relatedRecordFaker);
-            var quickViewField = quickViewControl.GetField(pp_RelatedRecord.Forms.QuickViewInformation.Name);
+            var quickViewField = quickViewControl.GetField<ISingleLineText>(pp_RelatedRecord.Forms.QuickViewInformation.Name);
 
-            Assert.That(quickViewField.GetControl<ISingleLineText>().GetValueAsync, Is.EqualTo(expectedName));
+            Assert.That(quickViewField.Control.GetValueAsync, Is.EqualTo(expectedName));
         }
 
         /// <summary>

@@ -84,7 +84,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField(nameof(pp_Record.pp_yesno)).GetControl<IYesNo>();
+            return recordPage.Form.GetField<IYesNo>(nameof(pp_Record.pp_yesno)).Control;
         }
     }
 }

@@ -102,7 +102,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField(nameof(pp_Record.pp_float)).GetControl<IFloatingPointNumber>();
+            return recordPage.Form.GetField<IFloatingPointNumber>(nameof(pp_Record.pp_float)).Control;
         }
     }
 }

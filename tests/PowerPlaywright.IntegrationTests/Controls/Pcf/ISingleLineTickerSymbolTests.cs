@@ -97,7 +97,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField(nameof(pp_Record.pp_singlelineoftexttickersymbol)).GetControl<ISingleLineTickerSymbol>();
+            return recordPage.Form.GetField<ISingleLineTickerSymbol>(nameof(pp_Record.pp_singlelineoftexttickersymbol)).Control;
         }
     }
 }
