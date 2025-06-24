@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
@@ -40,6 +41,12 @@
             where TControl : IPcfControl
         {
             return this.controlFactory.CreateInstance<IField<TControl>>(this.AppPage, name, this);
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator($"//div[((starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')) and contains(@data-lp-id, '|{this.Name}|'))]");
         }
     }
 }
