@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.External
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
@@ -50,7 +51,18 @@
             await this.usernameInput.FillAsync(username);
             await this.nextButton.ClickAsync();
 
-            await this.workOrSchoolAccount.Or(this.passwordInput).WaitForAsync();
+            try
+            {
+                await this.workOrSchoolAccount.Or(this.passwordInput).WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
+            }
+            catch (TimeoutException)
+            {
+                if (await this.nextButton.IsVisibleAsync())
+                {
+                    await this.nextButton.ClickAsync();
+                }
+            }
+
             await this.workOrSchoolAccount.Or(this.passwordInput).ClickAsync();
 
             await this.passwordInput.FocusAsync();
