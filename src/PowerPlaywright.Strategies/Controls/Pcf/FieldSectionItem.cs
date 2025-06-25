@@ -9,6 +9,7 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
+    using System;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -79,8 +80,18 @@
 
             var fieldRequirement = await this.fieldSectionItemContainer.GetAttributeAsync(Attributes.DataFieldRequirement);
 
-            return (FieldRequirementLevel)int.Parse(fieldRequirement);
-
+            switch (int.Parse(fieldRequirement))
+            {
+                case 0:
+                    return FieldRequirementLevel.None;
+                case 1:
+                case 2:
+                    return FieldRequirementLevel.Required;
+                case 3:
+                    return FieldRequirementLevel.Recommended;
+                default:
+                    throw new NotImplementedException($"Unrecognised field requirement level: {fieldRequirement}");
+            }
         }
 
         /// <inheritdoc/>

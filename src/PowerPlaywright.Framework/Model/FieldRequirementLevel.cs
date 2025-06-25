@@ -8,16 +8,16 @@
         /// <summary>
         /// The field is optional.
         /// </summary>
-        None = 0,
+        None,
 
         /// <summary>
-        /// The field is mandatory.
+        /// The field is required.
         /// </summary>
-        Required = 2,
+        Required,
 
         /// <summary>
         /// The field is recommended.
         /// </summary>
-        Recommended = 3,
+        Recommended,
     }
 }
