@@ -98,7 +98,7 @@
             try
             {
                 var resultsContainer = searchFlyout.GetByRole(AriaRole.Grid);
-                await resultsContainer.WaitForAsync(new LocatorWaitForOptions { Timeout = 1000, State = WaitForSelectorState.Visible });
+                await resultsContainer.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000, State = WaitForSelectorState.Visible });
                 return await resultsContainer.IsVisibleAsync();
             }
             catch (TimeoutException)

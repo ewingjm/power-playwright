@@ -273,24 +273,6 @@
         }
 
         /// <summary>
-        /// Creates a http client for using the WebAPI.
-        /// </summary>
-        /// <param name="accessToken">The bearer token to send in the auth header.</param>
-        /// <returns>A HttpClient instance.</returns>
-        private static HttpClient CreateHttpClient(string accessToken)
-        {
-            var httpClient = new HttpClient
-            {
-                BaseAddress = new Uri($"{Configuration.Url}api/data/v9.2/"),
-            };
-
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            return httpClient;
-        }
-
-        /// <summary>
         /// Creates a record and then logs into the app and navigates to it.
         /// </summary>
         /// <param name="record">The record to create.</param>
@@ -348,6 +330,24 @@
         protected ServiceClient GetServiceClient()
         {
             return new ServiceClient(Configuration.Url, Configuration.ClientId, Configuration.ClientSecret, false);
+        }
+
+        /// <summary>
+        /// Creates a http client for using the WebAPI.
+        /// </summary>
+        /// <param name="accessToken">The bearer token to send in the auth header.</param>
+        /// <returns>A HttpClient instance.</returns>
+        private static HttpClient CreateHttpClient(string accessToken)
+        {
+            var httpClient = new HttpClient
+            {
+                BaseAddress = new Uri($"{Configuration.Url}api/data/v9.2/"),
+            };
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            return httpClient;
         }
 
         /// <summary>

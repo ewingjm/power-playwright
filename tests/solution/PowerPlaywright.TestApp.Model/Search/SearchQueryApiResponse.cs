@@ -24,7 +24,9 @@
         /// Gets the raw JSON string into a structured object model.
         /// </summary>
         [JsonIgnore]
-        public SearchQueryResponse ParsedResponse =>
-            JsonConvert.DeserializeObject<SearchQueryResponse>(this.RawResponseJson);
+        public SearchQueryResponse? ParsedResponse =>
+            string.IsNullOrWhiteSpace(this.RawResponseJson)
+                ? null
+                : JsonConvert.DeserializeObject<SearchQueryResponse>(this.RawResponseJson);
     }
 }
