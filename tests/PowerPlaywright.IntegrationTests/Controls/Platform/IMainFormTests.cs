@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.TestApp.Model;
@@ -75,11 +76,40 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="IMainForm.GetFieldsAsync"/> always returns fields on the main form (excludes header fields).
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetFieldsAsync_Always_ReturnsMainFormFields()
+        {
+            var form = await this.SetupFormScenarioAsync();
+
+            var fields = await form.GetFieldsAsync();
+
+            Assert.That(fields.ToList(), Has.Count.AtLeast(28).And.All.Not.Null);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IMainForm.GetFieldsAsync"/> always returns fields on the main form (excludes header fields).
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetFieldsAsync_Always_ReturnsQuickViewFields()
+        {
+            var form = await this.SetupFormScenarioAsync(withQuickViewRecord: true);
+
+            var fields = await form.GetFieldsAsync();
+
+            Assert.That(fields, Has.Some.Matches<IField>(f => f.Name.StartsWith("QuickViewRelatedRecord.")));
+        }
+
+        /// <summary>
         /// Sets up a form scenario.
         /// </summary>
         /// <param name="withDisabledRecord">Whether or not to set up the record as disabled (e.g. inactive).</param>
+        /// <param name="withQuickViewRecord">Whether or not to set up a related record that will display a quick view.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IUrlControl"/>.</returns>
-        private async Task<IMainForm> SetupFormScenarioAsync(bool withDisabledRecord = false)
+        private async Task<IMainForm> SetupFormScenarioAsync(bool withDisabledRecord = false, bool withQuickViewRecord = false)
         {
             var recordfaker = new RecordFaker();
 
@@ -87,6 +117,11 @@
             {
                 recordfaker.RuleFor(r => r.statecode, r => pp_record_statecode.Inactive);
                 recordfaker.RuleFor(r => r.statuscode, r => pp_record_statuscode.Inactive);
+            }
+
+            if (withQuickViewRecord)
+            {
+                recordfaker.RuleFor(r => r.pp_relatedrecord_record, f => new RelatedRecordFaker().Generate());
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(recordfaker.Generate());

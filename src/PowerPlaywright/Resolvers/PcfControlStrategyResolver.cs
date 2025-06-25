@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Reflection;
     using Microsoft.Extensions.Logging;
+    using PowerPlaywright.Extensions;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
 
@@ -55,7 +56,7 @@
             if (controlType.GetCustomAttribute<PcfControlAttribute>() is PcfControlAttribute control)
             {
                 return strategyTypes
-                    .Where(s => controlType.IsAssignableFrom(s) && !s.IsAbstract && s.IsClass && s.IsVisible)
+                    .Where(s => (controlType.IsAssignableFrom(s) || (controlType.IsGenericTypeDefinition && controlType.IsGenericAssignableFrom(s))) && !s.IsAbstract && s.IsClass && s.IsVisible)
                     .Select(s =>
                         new
                         {

@@ -9,14 +9,14 @@
     /// <summary>
     /// Redirects requests for an <see cref="IChoice"/> control.
     /// </summary>
-    public class OptionSetRedirector : ControlRedirector<IChoice>
+    public class ChoiceRedirector : ControlRedirector<IChoice>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="OptionSetRedirector"/> class.
+        /// Initializes a new instance of the <see cref="ChoiceRedirector"/> class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public OptionSetRedirector(IRedirectionInfoProvider infoProvider, ILogger<OptionSetRedirector> logger)
+        public ChoiceRedirector(IRedirectionInfoProvider infoProvider, ILogger<ChoiceRedirector> logger)
             : base(infoProvider, logger)
         {
         }

@@ -16,7 +16,6 @@ namespace PowerPlaywright.Api
     using NuGet.Packaging.Core;
     using NuGet.Protocol;
     using NuGet.Protocol.Core.Types;
-    using NuGet.Versioning;
 
     /// <summary>
     /// The entry point for Power Playwright.

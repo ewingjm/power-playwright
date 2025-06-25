@@ -1,7 +1,5 @@
 ﻿namespace PowerPlaywright.UnitTests.Redirectors
 {
-    using System.Text.Json;
-    using Bogus;
     using Microsoft.Extensions.Logging;
     using NSubstitute;
     using PowerPlaywright.Framework.Controls.Pcf;

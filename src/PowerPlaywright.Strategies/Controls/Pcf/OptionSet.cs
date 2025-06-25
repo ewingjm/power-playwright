@@ -7,8 +7,6 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
-    using PowerPlaywright.Strategies.Extensions;
-    using System;
     using System.Threading.Tasks;
 
     /// <summary>

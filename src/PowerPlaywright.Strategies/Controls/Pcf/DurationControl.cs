@@ -42,7 +42,7 @@
         {
             await input.ClearAsync();
             await this.input.FillAsync(value);
-            await AppPage.Page.WaitForAppIdleAsync();
+            await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
     }
 }

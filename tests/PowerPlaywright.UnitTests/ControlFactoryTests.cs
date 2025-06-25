@@ -218,6 +218,28 @@ public class ControlFactoryTests
         Assert.That(actualControl.Parent, Is.EqualTo(expectedParent));
     }
 
+    /// <summary>
+    /// Tests that <see cref="IControlFactory.GetRedirectedType{TControl}"/> returns the type of the control redirected to when the type is redirected in the strategy assemblies.
+    /// </summary>
+    [Test]
+    public void GetRedirectedType_TypeIsRedirected_ReturnsRedirectedType()
+    {
+        var redirectedType = this.controlFactory.GetRedirectedType<IReadOnlyGrid>();
+
+        Assert.That(redirectedType, Is.EqualTo(typeof(IPcfGridControl)));
+    }
+
+    /// <summary>
+    /// Test that <see cref="IControlFactory.GetRedirectedType{TControl}"/> returns the type of the control when the type is not redirected in the strategy assemblies."/>
+    /// </summary>
+    [Test]
+    public void GetRedirectedType_TypeIsNotRedirected_ReturnsType()
+    {
+        var redirectedType = this.controlFactory.GetRedirectedType<IPcfGridControl>();
+
+        Assert.That(redirectedType, Is.EqualTo(typeof(IPcfGridControl)));
+    }
+
     private void MockValidDefaults()
     {
         this.resolvedTypes

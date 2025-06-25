@@ -55,6 +55,7 @@
         /// <summary>
         /// Tests that <see cref="IReadOnlyGrid.GetColumnNamesAsync"/> always returns all column names.
         /// </summary>
+        /// <param name="withRelatedRecords">Whether or not to create related records.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(true)]
         [TestCase(false)]
@@ -90,7 +91,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(withRecord.Generate());
 
-            return recordPage.Form.GetField<IReadOnlyGrid>(pp_Record.Forms.Information.RelatedRecordsSubgrid).Control;
+            return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedRecordsSubgrid).GetControl<IReadOnlyGrid>();
         }
     }
 }
