@@ -94,8 +94,17 @@
         public async Task<bool> HasSuggestedResultsAsync()
         {
             await Page.WaitForAppIdleAsync();
-            var resultsContainer = searchFlyout.GetByRole(AriaRole.Grid);
-            return await resultsContainer.IsVisibleAsync();
+
+            try
+            {
+                var resultsContainer = searchFlyout.GetByRole(AriaRole.Grid);
+                await resultsContainer.WaitForAsync(new LocatorWaitForOptions { Timeout = 1000, State = WaitForSelectorState.Visible });
+                return await resultsContainer.IsVisibleAsync();
+            }
+            catch (TimeoutException)
+            {
+                return false;
+            }
         }
 
         /// <summary>
