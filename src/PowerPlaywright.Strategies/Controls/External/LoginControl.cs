@@ -36,9 +36,9 @@
             this.pageFactory = pageFactory ?? throw new System.ArgumentNullException(nameof(pageFactory));
             this.logger = logger;
 
-            this.usernameInput = this.Container.GetByRole(AriaRole.Textbox).Locator("input[type=email]");
-            this.nextButton = this.Container.GetByRole(AriaRole.Button).Locator("input[type=submit]");
-            this.passwordInput = this.Container.GetByRole(AriaRole.Textbox).Locator("input[type=password]");
+            this.usernameInput = this.Container.GetByRole(AriaRole.Textbox).And(this.Container.Locator("input[type=email]"));
+            this.nextButton = this.Container.GetByRole(AriaRole.Button).And(this.Container.Locator("input[type=submit]"));
+            this.passwordInput = this.Container.GetByRole(AriaRole.Textbox).And(this.Container.Locator("input[type=password]"));
             this.workOrSchoolAccount = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Work or school account" });
             this.staySignedInButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Yes" });
         }
