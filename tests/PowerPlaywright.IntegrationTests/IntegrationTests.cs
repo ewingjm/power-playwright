@@ -168,40 +168,26 @@
         {
             using (var client = this.GetServiceClient())
             {
-                var attempt = 0;
-                var maxRetries = 3;
-                var deactivate = record.GetAttributeValue<OptionSetValue>(nameof(pp_Record.statecode))?.Value == 1;
+                var deactivateOnCreate = record.GetAttributeValue<OptionSetValue>(nameof(pp_Record.statecode))?.Value == 1;
 
-                if (deactivate)
+                if (deactivateOnCreate)
                 {
                     record.Attributes.Remove(nameof(pp_Record.statecode));
                     record.Attributes.Remove(nameof(pp_Record.statuscode));
                 }
 
-                while (attempt++ < maxRetries)
+                var recordId = await client.CreateAsync(record);
+
+                if (deactivateOnCreate)
                 {
-                    try
+                    await client.UpdateAsync(new Entity(record.LogicalName, recordId)
                     {
-                        await client.CreateAsync(record);
-
-                        if (deactivate)
+                        Attributes =
                         {
-                            await client.UpdateAsync(new Entity(record.LogicalName, record.Id)
-                            {
-                                Attributes =
-                                {
-                                    [nameof(pp_Record.statecode)] = new OptionSetValue(1),
-                                    [nameof(pp_Record.statuscode)] = new OptionSetValue(2),
-                                },
-                            });
-                        }
-
-                        break;
-                    }
-                    catch (Exception)
-                    {
-                        await Task.Delay(500);
-                    }
+                            [nameof(pp_Record.statecode)] = new OptionSetValue(1),
+                            [nameof(pp_Record.statuscode)] = new OptionSetValue(2),
+                        },
+                    });
                 }
             }
 
@@ -216,7 +202,7 @@
         /// <returns>A service client instance.</returns>
         protected ServiceClient GetServiceClient()
         {
-            return new ServiceClient(Configuration.Url, Configuration.ClientId, Configuration.ClientSecret, false);
+            return new ServiceClient(Configuration.Url, Configuration.ClientId, Configuration.ClientSecret, true);
         }
 
         /// <summary>
