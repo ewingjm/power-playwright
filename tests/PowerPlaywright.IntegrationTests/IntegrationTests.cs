@@ -31,6 +31,7 @@
 
         private const string EnvironmentVariablePrefix = "POWERPLAYWRIGHT:TEST:";
 
+        private static readonly object UserEnumeratorLock = new();
         private static readonly IEnumerator<UserConfiguration> UserEnumerator;
 
         private bool isTracing;
@@ -211,13 +212,16 @@
         /// <returns>The user configuration.</returns>
         private static UserConfiguration GetUser()
         {
-            if (!UserEnumerator.MoveNext())
+            lock (UserEnumeratorLock)
             {
-                UserEnumerator.Reset();
-                UserEnumerator.MoveNext();
-            }
+                if (!UserEnumerator.MoveNext())
+                {
+                    UserEnumerator.Reset();
+                    UserEnumerator.MoveNext();
+                }
 
-            return UserEnumerator.Current;
+                return UserEnumerator.Current;
+            }
         }
 
         private static TestSuiteConfiguration GetConfiguration()
