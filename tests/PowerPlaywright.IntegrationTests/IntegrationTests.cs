@@ -198,7 +198,7 @@
 
                         break;
                     }
-                    catch (InvalidOperationException)
+                    catch (Exception)
                     {
                         await Task.Delay(500);
                     }
