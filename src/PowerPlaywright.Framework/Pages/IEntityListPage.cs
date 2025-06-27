@@ -1,6 +1,6 @@
 ﻿namespace PowerPlaywright.Framework.Pages
 {
-    using PowerPlaywright.Framework.Controls.Pcf.Classes;
+    using PowerPlaywright.Framework.Controls.Platform;
 
     /// <summary>
     /// An entity list page.
@@ -10,6 +10,6 @@
         /// <summary>
         /// Gets the grid.
         /// </summary>
-        IReadOnlyGrid Grid { get; }
+        IDataSet DataSet { get; }
     }
 }

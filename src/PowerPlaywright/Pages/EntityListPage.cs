@@ -3,7 +3,7 @@
     using System;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
-    using PowerPlaywright.Framework.Controls.Pcf.Classes;
+    using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
@@ -25,7 +25,6 @@
             this.platformReference = platformReference ?? throw new ArgumentNullException(nameof(platformReference));
         }
 
-        /// <inheritdoc/>
-        public IReadOnlyGrid Grid => this.GetControl<IReadOnlyGrid>(this.platformReference.EntityListPageGridControlName);
+        public IDataSet DataSet => this.GetControl<IDataSet>(string.Empty);
     }
 }

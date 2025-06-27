@@ -7,6 +7,7 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Pages;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="QuickForm"/>.
@@ -41,6 +42,12 @@
             where TControl : IPcfControl
         {
             return this.controlFactory.CreateInstance<IField<TControl>>(this.AppPage, $"{this.Name}.{name}", this);
+        }
+
+        /// <inheritdoc/>
+        public Task<bool> IsVisibleAsync()
+        {
+            return this.Container.IsVisibleAsync();
         }
 
         /// <inheritdoc/>

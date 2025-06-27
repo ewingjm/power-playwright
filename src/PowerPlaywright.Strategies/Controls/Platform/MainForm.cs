@@ -112,6 +112,13 @@
         }
 
         /// <inheritdoc/>
+        public IDataSet<TControl> GetDataSet<TControl>(string name)
+            where TControl : IPcfControl
+        {
+            return this.controlFactory.CreateInstance<IDataSet<TControl>>(this.AppPage, name, this);
+        }
+
+        /// <inheritdoc/>
         public async Task<bool> IsDisabledAsync()
         {
             await this.Page.WaitForAppIdleAsync();

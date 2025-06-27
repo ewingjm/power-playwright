@@ -62,7 +62,7 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
     /// <param name="propertyName">The property.</param>
     /// <param name="controlName">The control name (optional).</param>
     [Test]
-    [TestCase<IReadOnlyGrid>([nameof(IEntityListPage.Grid), GridControlName])]
+    [TestCase<IReadOnlyGrid>([nameof(IEntityListPage.DataSet), GridControlName])]
     public new void ControlProperty_Always_ReturnsControlInstantiatedByControlFactory<TControlType>(
         string propertyName, string? controlName = null)
         where TControlType : class, IControl

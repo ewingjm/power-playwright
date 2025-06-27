@@ -6,24 +6,21 @@
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
-    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
-    using PowerPlaywright.Strategies.Extensions;
-    using System;
     using System.Threading.Tasks;
 
     /// <summary>
     /// A data set.
     /// </summary>
     [PlatformControlStrategy(0, 0, 0, 0)]
-    public class DataSet : Control, IDataSet
+    public class DataSet<TControl> : Control, IDataSet<TControl>
+        where TControl : IPcfControl
     {
         private readonly IControlFactory controlFactory;
         private readonly string name;
         private readonly IControl parent;
 
-        private readonly ILocator viewSelector;
-        private readonly ILocator viewsMenu;
+        private readonly IDataSet dataSet;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -39,55 +36,35 @@
             this.name = name;
             this.parent = parent;
 
-            this.viewSelector = this.Container.Locator("button[id*='ViewSelector']");
-            this.viewsMenu = this.Page.GetByRole(AriaRole.Menu, new PageGetByRoleOptions { Name = "Views" });
+            this.dataSet = this.controlFactory.CreateInstance<IDataSet>(this.AppPage, this.name, this.parent);
         }
+
+        /// <inheritdoc/>
+        public TControl Control => this.controlFactory.CreateInstance<TControl>(this.AppPage, this.name, this);
 
         /// <inheritdoc/>
         public TPcfControl GetControl<TPcfControl>()
             where TPcfControl : IPcfControl
         {
-            return this.controlFactory.CreateInstance<TPcfControl>(this.AppPage, this.name, this);
+            return this.dataSet.GetControl<TPcfControl>();
         }
 
         /// <inheritdoc/>
-        public async Task<bool> IsVisibleAsync()
+        public Task<bool> IsVisibleAsync()
         {
-            await this.Page.WaitForAppIdleAsync();
-
-            return await this.Container.IsVisibleAsync();
+            return this.dataSet.IsVisibleAsync();
         }
 
         /// <inheritdoc/>
-        public async Task SwitchViewAsync(string viewName)
+        public Task SwitchViewAsync(string viewName)
         {
-            await this.Page.WaitForAppIdleAsync();
-
-            try
-            {
-                await this.viewSelector.ClickAndWaitForAppIdleAsync(timeout: 1000);
-            }
-            catch (TimeoutException)
-            {
-                throw new PowerPlaywrightException("The view selector could not be found.");
-            }
-
-            try
-            {
-                await this.viewsMenu.Locator($"//button//label[text()='{(viewName.Replace("'", @"\"))}']").ClickAndWaitForAppIdleAsync(timeout: 1000);
-            }
-            catch (TimeoutException)
-            {
-                throw new PowerPlaywrightException($"The view selector does not contain the '{viewName}' view.");
-            }
+            return this.dataSet.SwitchViewAsync(viewName);
         }
 
         /// <inheritdoc/>
-        public async Task<string> GetActiveViewAsync()
+        public Task<string> GetActiveViewAsync()
         {
-            await this.Page.WaitForAppIdleAsync();
-
-            return await this.viewSelector.GetAttributeAsync(Attributes.AriaLabel);
+            return this.dataSet.GetActiveViewAsync();
         }
 
         /// <inheritdoc/>

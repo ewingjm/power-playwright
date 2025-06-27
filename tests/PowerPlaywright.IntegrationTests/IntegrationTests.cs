@@ -167,34 +167,45 @@
         /// <returns>The form.</returns>
         protected async Task<IEntityRecordPage> LoginAndNavigateToRecordAsync(Entity record)
         {
-            using (var client = this.GetServiceClient())
-            {
-                var deactivateOnCreate = record.GetAttributeValue<OptionSetValue>(nameof(pp_Record.statecode))?.Value == 1;
-
-                if (deactivateOnCreate)
-                {
-                    record.Attributes.Remove(nameof(pp_Record.statecode));
-                    record.Attributes.Remove(nameof(pp_Record.statuscode));
-                }
-
-                var recordId = await client.CreateAsync(record);
-
-                if (deactivateOnCreate)
-                {
-                    await client.UpdateAsync(new Entity(record.LogicalName, recordId)
-                    {
-                        Attributes =
-                        {
-                            [nameof(pp_Record.statecode)] = new OptionSetValue(1),
-                            [nameof(pp_Record.statuscode)] = new OptionSetValue(2),
-                        },
-                    });
-                }
-            }
+            await this.CreateRecordAsync(record);
 
             var page = await this.LoginAsync();
 
             return await page.ClientApi.NavigateToRecordAsync(record.LogicalName, record.Id);
+        }
+
+        /// <summary>
+        /// Creates a record.
+        /// </summary>
+        /// <param name="record">The record.</param>
+        /// <returns>The record ID.</returns>
+        protected async Task<EntityReference> CreateRecordAsync(Entity record)
+        {
+            using var client = this.GetServiceClient();
+
+            var deactivateOnCreate = record.GetAttributeValue<OptionSetValue>(nameof(pp_Record.statecode))?.Value == 1;
+
+            if (deactivateOnCreate)
+            {
+                record.Attributes.Remove(nameof(pp_Record.statecode));
+                record.Attributes.Remove(nameof(pp_Record.statuscode));
+            }
+
+            record.Id = await client.CreateAsync(record);
+
+            if (deactivateOnCreate)
+            {
+                await client.UpdateAsync(new Entity(record.LogicalName, record.Id)
+                {
+                    Attributes =
+                        {
+                            [nameof(pp_Record.statecode)] = new OptionSetValue(1),
+                            [nameof(pp_Record.statuscode)] = new OptionSetValue(2),
+                        },
+                });
+            }
+
+            return record.ToEntityReference();
         }
 
         /// <summary>

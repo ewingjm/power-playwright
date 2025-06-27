@@ -67,6 +67,14 @@
         IQuickView GetQuickView(string name);
 
         /// <summary>
+        /// Gets a data set on the form (e.g. a grid) with a know child control type.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IDataSet<TControl> GetDataSet<TControl>(string name)
+            where TControl : IPcfControl;
+
+        /// <summary>
         /// Gets a data set on the form (e.g. a grid).
         /// </summary>
         /// <param name="name"></param>

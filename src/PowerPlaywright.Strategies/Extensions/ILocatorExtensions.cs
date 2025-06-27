@@ -14,10 +14,11 @@
         /// Clicks the locator and waits for the application to become idle.
         /// </summary>
         /// <param name="locator">The locator.</param>
+        /// <param name="timeout">THe timeout value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        internal static async Task ClickAndWaitForAppIdleAsync(this ILocator locator)
+        internal static async Task ClickAndWaitForAppIdleAsync(this ILocator locator, int timeout = 30000)
         {
-            await locator.ClickAsync();
+            await locator.ClickAsync(new LocatorClickOptions { Timeout = timeout });
             await locator.Page.WaitForAppIdleAsync();
         }
 
