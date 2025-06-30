@@ -1,4 +1,6 @@
-﻿namespace PowerPlaywright.Framework.Controls.Pcf.Classes
+﻿using System.Threading.Tasks;
+
+namespace PowerPlaywright.Framework.Controls.Pcf.Classes
 {
     /// <summary>
     /// Quick view control class.
@@ -19,5 +21,11 @@
         /// <param name="name">The control name.</param>
         /// <returns>The control.</returns>
         IField GetField(string name);
+
+        /// <summary>
+        /// Gets whether the quick view is visible.
+        /// </summary>
+        /// <returns>A boolean indicating whether the quick view is visible.</returns>
+        Task<bool> IsVisibleAsync();
     }
 }
