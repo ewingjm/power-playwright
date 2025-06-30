@@ -16,7 +16,7 @@ using PowerPlaywright.Pages;
 public class EntityListPageTests : AppPageTests<IEntityListPage>
 {
     private const string GridControlName = "entity_control";
-
+    private const string Empty = "";
     private IPlatformReference? platformReference;
 
     /// <summary>
@@ -62,7 +62,7 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
     /// <param name="propertyName">The property.</param>
     /// <param name="controlName">The control name (optional).</param>
     [Test]
-    [TestCase<IDataSet>([nameof(IEntityListPage.DataSet), GridControlName])]
+    [TestCase<IDataSet>([nameof(IEntityListPage.DataSet), Empty])]
     public new void ControlProperty_Always_ReturnsControlInstantiatedByControlFactory<TControlType>(
         string propertyName, string? controlName = null)
         where TControlType : class, IControl
