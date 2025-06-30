@@ -31,6 +31,13 @@
       <iscustomizable>1</iscustomizable>
       <name>pp_pp_UserInterfaceDemo_canvasappid_pp_records_bf5a4</name>
     </appelement>
+    <appelement uniquename="pp_pp_UserInterfaceDemo_canvasappid_pp_userinterfacedemodefaultcommandlibrary_dbbb9">
+      <canvasappid>
+        <name>pp_userinterfacedemodefaultcommandlibrary_dbbb9</name>
+      </canvasappid>
+      <iscustomizable>1</iscustomizable>
+      <name>pp_pp_UserInterfaceDemo_canvasappid_pp_userinterfacedemodefaultcommandlibrary_dbbb9</name>
+    </appelement>
   </appelements>
   <appsettings>
     <appsetting settingdefinitionid.uniquename="AppChannel">

@@ -278,6 +278,20 @@
                       </cell>
                     </row>
                     <row>
+                      <cell locklevel="0" id="{ecb83691-9d64-410b-98de-5b814bc33668}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Related Record Quick View" languagecode="1033" />
+                        </labels>
+                        <control id="QuickViewRelatedRecord" classid="{5C5600E0-1D6E-4205-A272-BE80DA87FD42}" datafieldname="pp_relatedrecord">
+                          <parameters>
+                            <DisplayAsCustomer360Tile>false</DisplayAsCustomer360Tile>
+                            <QuickForms>&lt;QuickFormIds&gt;&lt;QuickFormId entityname="pp_relatedrecord"&gt;effb66c9-5fb5-4084-bbfc-f43b64ecbe17&lt;/QuickFormId&gt;&lt;/QuickFormIds&gt;</QuickForms>
+                            <HideQuickFormBorder>false</HideQuickFormBorder>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row>
                       <cell locklevel="0" id="{fc372fde-681d-4008-a342-73d3f60cf364}" colspan="1" rowspan="1">
                         <labels>
                           <label description="Related Record" languagecode="1033" />

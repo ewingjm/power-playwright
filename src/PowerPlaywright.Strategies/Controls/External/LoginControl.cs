@@ -1,9 +1,11 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.External
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.External;
     using PowerPlaywright.Framework.Controls.External.Attributes;
     using PowerPlaywright.Framework.Pages;
@@ -35,9 +37,9 @@
             this.pageFactory = pageFactory ?? throw new System.ArgumentNullException(nameof(pageFactory));
             this.logger = logger;
 
-            this.usernameInput = this.Container.Locator("input[type=email]");
-            this.nextButton = this.Container.Locator("input[type=submit]");
-            this.passwordInput = this.Container.Locator("input[type=password]");
+            this.usernameInput = this.Container.GetByRole(AriaRole.Textbox).And(this.Container.Locator("input[type=email]"));
+            this.nextButton = this.Container.GetByRole(AriaRole.Button).And(this.Container.Locator("input[type=submit]"));
+            this.passwordInput = this.Container.GetByRole(AriaRole.Textbox).And(this.Container.Locator("input[type=password]"));
             this.workOrSchoolAccount = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Work or school account" });
             this.staySignedInButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Yes" });
         }
@@ -45,24 +47,38 @@
         /// <inheritdoc/>
         public async Task<IModelDrivenAppPage> LoginAsync(string username, string password)
         {
+            await this.usernameInput.FocusAsync();
             await this.usernameInput.FillAsync(username);
             await this.nextButton.ClickAsync();
 
-            if (await this.workOrSchoolAccount.IsVisibleAsync())
+            try
             {
-                await this.workOrSchoolAccount.ClickAsync();
+                await this.workOrSchoolAccount.Or(this.passwordInput).WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
+            }
+            catch (TimeoutException)
+            {
+                if (await this.nextButton.IsVisibleAsync())
+                {
+                    await this.nextButton.ClickAsync();
+                }
             }
 
+            await this.workOrSchoolAccount.Or(this.passwordInput).ClickAsync();
+
+            await this.passwordInput.FocusAsync();
             await this.passwordInput.FillAsync(password);
             await this.nextButton.ClickAsync();
-            await this.staySignedInButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
 
-            if (await this.staySignedInButton.IsVisibleAsync())
+            try
             {
-                await this.staySignedInButton.ClickAsync();
+                await this.staySignedInButton.ClickAsync(new LocatorClickOptions { Timeout = 10000 });
+            }
+            catch
+            {
+                // Ignore.
             }
 
-            await this.Page.WaitForURLAsync("**/main.aspx*");
+            await this.Page.WaitForURLAsync("**/main.aspx*", new PageWaitForURLOptions { Timeout = 60000 });
 
             return (IModelDrivenAppPage)await this.pageFactory.CreateInstanceAsync(this.Page);
         }

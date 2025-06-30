@@ -21,7 +21,6 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="GlobalPackagesAssemblyProvider"/> class.
         /// </summary>
-        /// <param name="sourceRepositoryProvider">The source repository provider.</param>
         /// <param name="packageIdentity">The package identity.</param>
         /// <param name="nugetSettings">The NuGet settings.</param>
         /// <param name="logger">The logger.</param>

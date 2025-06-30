@@ -125,7 +125,7 @@ public class PlatformControlStrategyResolverTests
     [Test]
     public void Resolve_NullControlType_ThrowsArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => this.resolver.Resolve(null, [typeof(SiteMapControl)]));
+        Assert.Throws<ArgumentNullException>(() => this.resolver.Resolve(null, [typeof(SiteMap)]));
     }
 
     /// <summary>

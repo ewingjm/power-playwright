@@ -4,10 +4,12 @@
     <TargetFramework>netstandard20</TargetFramework>
     <IsPackable>false</IsPackable>
     <DebugType>portable</DebugType>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="GitVersion.MsBuild" Version="6.1.0">
+    <PackageReference Include="GitVersion.MsBuild" Version="6.2.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

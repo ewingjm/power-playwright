@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Extensions\**" />
+    <EmbeddedResource Remove="Extensions\**" />
+    <None Remove="Extensions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj" />
+    <ProjectReference Include="..\..\src\PowerPlaywright\PowerPlaywright.csproj" />
+  </ItemGroup>
+
+</Project>

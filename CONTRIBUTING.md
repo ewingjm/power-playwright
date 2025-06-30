@@ -45,7 +45,7 @@ The public interfaces that describe the API used by consumers and anything that 
 
 The implementations of the interfaces described in **PowerPlaywright.Framework**. Anything that might be impacted by platform updates (e.g., control implementations) will be located here. 
 
-The latest version of this assembly is dynamically fetched and loaded at runtime before tests execute. This ensures that tests can be kept in sync with changes in the platform.
+It is planned that, in future, the latest version of this assembly will be dynamically fetched and loaded at runtime before tests execute. This will ensure that tests can be kept in sync with changes in the platform without needing to be recompiled against a later version of Power Playwright.
 
 Any changes here **must** be non-breaking.
 

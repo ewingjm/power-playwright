@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.IntegrationTests
 {
     using System;
+    using System.Globalization;
     using System.Reflection;
     using Azure.Core;
     using Azure.Extensions.AspNetCore.Configuration.Secrets;
@@ -12,9 +13,11 @@
     using NuGet.Protocol.Core.Types;
     using NUnit.Framework.Interfaces;
     using PowerPlaywright.Api;
+    using PowerPlaywright.Config;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.IntegrationTests.Config;
+    using PowerPlaywright.TestApp.Model;
 
     /// <summary>
     /// A base class for integration tests.
@@ -26,7 +29,10 @@
         /// </summary>
         protected const string TestAppUniqueName = "pp_UserInterfaceDemo";
 
-        private static IEnumerator<UserConfiguration> userEnumerator;
+        private const string EnvironmentVariablePrefix = "POWERPLAYWRIGHT:TEST:";
+
+        private static readonly object UserEnumeratorLock = new();
+        private static readonly IEnumerator<UserConfiguration> UserEnumerator;
 
         private bool isTracing;
         private UserConfiguration? user;
@@ -36,7 +42,7 @@
         {
             Configuration = GetConfiguration();
 
-            userEnumerator = Configuration.Users.GetEnumerator();
+            UserEnumerator = Configuration.Users.GetEnumerator();
         }
 
         /// <summary>
@@ -73,7 +79,11 @@
                 .GetResourceAsync<FindPackageByIdResource>();
 
             this.powerPlaywright = await Api.PowerPlaywright.CreateInternalAsync(
-                new NuGetPackageInstaller(findPackageByIdResource, packageSource));
+                new NuGetPackageInstaller(findPackageByIdResource, packageSource),
+                new PowerPlaywrightConfiguration
+                {
+                    PageObjectAssemblies = [new() { Path = "PowerPlaywright.TestApp.PageObjects.dll" }],
+                });
         }
 
         /// <summary>
@@ -95,6 +105,16 @@
         }
 
         /// <summary>
+        /// Sets up the current culture.
+        /// </summary>
+        [SetUp]
+        public void SetupCurrentCulture()
+        {
+            // Explicitly setting current culture to match test users. Ideally, we should add a feature to read test user's locale settings on login.
+            CultureInfo.CurrentCulture = new CultureInfo("en-GB");
+        }
+
+        /// <summary>
         /// Tears down tracing for the test.
         /// </summary>
         /// <remarks>
@@ -112,13 +132,22 @@
             var isFailed = TestContext.CurrentContext.Result.Outcome == ResultState.Error ||
                 TestContext.CurrentContext.Result.Outcome == ResultState.Failure;
 
+            var path = isFailed ? Path.Combine(
+                TestContext.CurrentContext.WorkDirectory,
+                "playwright-traces",
+                $"{TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.Name}.zip") : null;
+
             await this.Context.Tracing.StopAsync(new()
             {
-                Path = isFailed ? Path.Combine(
-                    TestContext.CurrentContext.WorkDirectory,
-                    "playwright-traces",
-                    $"{TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.Name}.zip") : null,
+                Path = path,
             });
+
+            if (path is null)
+            {
+                return;
+            }
+
+            TestContext.AddTestAttachment(path, "Playwright trace");
         }
 
         /// <summary>
@@ -138,14 +167,45 @@
         /// <returns>The form.</returns>
         protected async Task<IEntityRecordPage> LoginAndNavigateToRecordAsync(Entity record)
         {
-            using (var client = this.GetServiceClient())
-            {
-                await client.CreateAsync(record);
-            }
+            await this.CreateRecordAsync(record);
 
             var page = await this.LoginAsync();
 
             return await page.ClientApi.NavigateToRecordAsync(record.LogicalName, record.Id);
+        }
+
+        /// <summary>
+        /// Creates a record.
+        /// </summary>
+        /// <param name="record">The record.</param>
+        /// <returns>The record ID.</returns>
+        protected async Task<EntityReference> CreateRecordAsync(Entity record)
+        {
+            using var client = this.GetServiceClient();
+
+            var deactivateOnCreate = record.GetAttributeValue<OptionSetValue>(nameof(pp_Record.statecode))?.Value == 1;
+
+            if (deactivateOnCreate)
+            {
+                record.Attributes.Remove(nameof(pp_Record.statecode));
+                record.Attributes.Remove(nameof(pp_Record.statuscode));
+            }
+
+            record.Id = await client.CreateAsync(record);
+
+            if (deactivateOnCreate)
+            {
+                await client.UpdateAsync(new Entity(record.LogicalName, record.Id)
+                {
+                    Attributes =
+                        {
+                            [nameof(pp_Record.statecode)] = new OptionSetValue(1),
+                            [nameof(pp_Record.statuscode)] = new OptionSetValue(2),
+                        },
+                });
+            }
+
+            return record.ToEntityReference();
         }
 
         /// <summary>
@@ -154,7 +214,7 @@
         /// <returns>A service client instance.</returns>
         protected ServiceClient GetServiceClient()
         {
-            return new ServiceClient(Configuration.Url, Configuration.ClientId, Configuration.ClientSecret, false);
+            return new ServiceClient(Configuration.Url, Configuration.ClientId, Configuration.ClientSecret, true);
         }
 
         /// <summary>
@@ -163,20 +223,23 @@
         /// <returns>The user configuration.</returns>
         private static UserConfiguration GetUser()
         {
-            if (!userEnumerator.MoveNext())
+            lock (UserEnumeratorLock)
             {
-                userEnumerator.Reset();
-                userEnumerator.MoveNext();
-            }
+                if (!UserEnumerator.MoveNext())
+                {
+                    UserEnumerator.Reset();
+                    UserEnumerator.MoveNext();
+                }
 
-            return userEnumerator.Current;
+                return UserEnumerator.Current;
+            }
         }
 
         private static TestSuiteConfiguration GetConfiguration()
         {
             var config = new ConfigurationBuilder()
                 .AddUserSecrets<ModelDrivenAppTests>()
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables(EnvironmentVariablePrefix);
 
             var configurationRoot = config
                 .Build();
@@ -206,10 +269,10 @@
                         });
                 }
 
-                config.AddAzureKeyVault(
-                    keyVaultConfiguration.Url,
-                    tokenCredential,
-                    new AzureKeyVaultConfigurationOptions { ReloadInterval = null });
+                config = new ConfigurationBuilder()
+                    .AddAzureKeyVault(keyVaultConfiguration.Url, tokenCredential, new AzureKeyVaultConfigurationOptions { ReloadInterval = null })
+                    .AddEnvironmentVariables(EnvironmentVariablePrefix)
+                    .AddUserSecrets<ModelDrivenAppTests>();
 
                 configurationRoot = config.Build();
             }

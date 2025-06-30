@@ -10,11 +10,12 @@
     /// <summary>
     /// Provides the information required for control redirection.
     /// </summary>
-    public class RedirectionInfoProvider : IRedirectionInfoProvider<RedirectionInfo>, IAppLoadInitializable
+    public class RedirectionInfoProvider : IRedirectionInfoProvider, IAppLoadInitializable
     {
         private static readonly string[] AppSettingKeys = new[] { "NewLookAlwaysOn", "NewLookOptOut", "AppChannel" };
 
-        private JsonSerializerOptions serializerOptions;
+        private readonly JsonSerializerOptions serializerOptions;
+
         private RedirectionInfo redirectionInfo;
 
         /// <summary>
@@ -22,11 +23,14 @@
         /// </summary>
         public RedirectionInfoProvider()
         {
-            this.serializerOptions = new JsonSerializerOptions();
+            this.serializerOptions = new JsonSerializerOptions()
+            {
+                PropertyNameCaseInsensitive = true
+            };
         }
 
         /// <inheritdoc/>
-        public RedirectionInfo GetRedirectionInfo()
+        public IRedirectionInfo GetRedirectionInfo()
         {
             return this.redirectionInfo;
         }
@@ -35,9 +39,15 @@
         public async Task InitializeAsync(IPage page)
         {
             this.redirectionInfo = new RedirectionInfo(
+                await this.GetVersionAsync(page),
                 await this.GetOrgSettingsAsync(page),
                 await this.GetAppSettingsAsync(page),
                 await this.GetUserSettingsAsync(page));
+        }
+
+        private async Task<Version> GetVersionAsync(IPage page)
+        {
+            return new Version(await page.EvaluateAsync<string>("Xrm.Utility.getGlobalContext().getVersion()"));
         }
 
         private async Task<OrgSettings> GetOrgSettingsAsync(IPage page)

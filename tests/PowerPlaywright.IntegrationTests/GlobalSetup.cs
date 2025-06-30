@@ -22,6 +22,11 @@ public partial class GlobalSetup
     [OneTimeSetUp]
     public async Task OneTimeSetup()
     {
+        await SetupStrategiesPackage();
+    }
+
+    private static async Task SetupStrategiesPackage()
+    {
         var localFeedPath = Path.Join(TestContext.CurrentContext.TestDirectory, "packages");
 
         if (Directory.Exists(localFeedPath))
@@ -58,6 +63,6 @@ public partial class GlobalSetup
             true);
     }
 
-    [GeneratedRegex(@"PowerPlaywright\.Strategies\.((\d\.\d\.\d)(-.*)?)(\.\d+)?\.nupkg")]
+    [GeneratedRegex(@"PowerPlaywright\.Strategies\.((\d+\.\d+\.\d+)(-.*)?)(\.\d+)?\.nupkg")]
     private static partial Regex PackageVersionRegex();
 }

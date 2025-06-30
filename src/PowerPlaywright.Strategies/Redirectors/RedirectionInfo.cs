@@ -1,22 +1,41 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
+    using PowerPlaywright.Framework.Redirectors;
+    using System;
+
     /// <summary>
     /// Runtime information used for control redirection.
     /// </summary>
-    public class RedirectionInfo
+    public class RedirectionInfo : IRedirectionInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RedirectionInfo"/> class.
         /// </summary>
+        /// <param name="version">The environment version.</param>
         /// <param name="orgSettings">The org settings.</param>
         /// <param name="appSettings">The app settings.</param>
         /// <param name="userSettings">The user settings.</param>
-        internal RedirectionInfo(OrgSettings orgSettings, AppSettings appSettings, UserSettings userSettings)
+        internal RedirectionInfo(Version version, OrgSettings orgSettings, AppSettings appSettings, UserSettings userSettings)
         {
+            this.Version = version;
             this.OrgSettings = orgSettings;
             this.AppSettings = appSettings;
             this.UserSettings = userSettings;
         }
+
+        /// <inheritdoc />
+        public IOrgSettings Org => this.OrgSettings;
+
+        /// <inheritdoc />
+        public IAppSettings App => this.AppSettings;
+
+        /// <inheritdoc />
+        public IUserSettings User => this.UserSettings;
+
+        /// <summary>
+        /// Gets the environment version.k
+        /// </summary>
+        internal Version Version { get; }
 
         /// <summary>
         /// Gets the org settings.
@@ -36,23 +55,18 @@
         /// <summary>
         /// Gets a value indicating whether the new look is enabled.
         /// </summary>
-        internal bool IsNewLookEnabled
+        public bool IsNewLookEnabled
         {
             get
             {
-                if (this.AppSettings.NewLookAlwaysOn)
+                if (this.App.NewLookAlwaysOn)
                 {
                     return true;
                 }
 
-                if (!this.AppSettings.NewLookOptOut)
+                if (!this.App.NewLookOptOut)
                 {
                     return false;
-                }
-
-                if (this.UserSettings.TryToggleSets != null && this.UserSettings.TryToggleSets.ModernizationOptOut.HasValue)
-                {
-                    return this.UserSettings.TryToggleSets.ModernizationOptOut.Value;
                 }
 
                 return true;
@@ -63,34 +77,34 @@
         /// Gets the active release channel.
         /// </summary>
         /// <returns>The active release channel.</returns>
-        internal ReleaseChannel ActiveReleaseChannel
+        public int ActiveReleaseChannel
         {
             get
             {
-                if (this.UserSettings.ReleaseChannel != ReleaseChannelOverride.None)
+                if (this.UserSettings.ReleaseChannelEnum != ReleaseChannelOverride.None)
                 {
-                    switch (this.UserSettings.ReleaseChannel)
+                    switch (this.UserSettings.ReleaseChannelEnum)
                     {
                         case ReleaseChannelOverride.SemiAnnual:
-                            return ReleaseChannel.SemiAnnualChannel;
+                            return (int)ReleaseChannel.SemiAnnualChannel;
                         case ReleaseChannelOverride.Inner:
-                            return ReleaseChannel.MicrosoftInnerChannel;
+                            return (int)ReleaseChannel.MicrosoftInnerChannel;
                         case ReleaseChannelOverride.Monthly:
-                            return ReleaseChannel.Monthly;
+                            return (int)ReleaseChannel.Monthly;
                     }
                 }
 
-                if (this.AppSettings.AppChannel != ReleaseChannel.Auto)
+                if (this.AppSettings.AppChannelEnum != ReleaseChannel.Auto)
                 {
-                    return this.AppSettings.AppChannel;
+                    return (int)this.AppSettings.AppChannelEnum;
                 }
 
-                if (this.OrgSettings.ReleaseChannel != ReleaseChannel.Auto)
+                if (this.OrgSettings.ReleaseChannelEnum != ReleaseChannel.Auto)
                 {
-                    return this.OrgSettings.ReleaseChannel;
+                    return (int)this.OrgSettings.ReleaseChannelEnum;
                 }
 
-                return ReleaseChannel.Monthly;
+                return (int)ReleaseChannel.Monthly;
             }
         }
     }

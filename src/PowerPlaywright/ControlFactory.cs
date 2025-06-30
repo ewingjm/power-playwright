@@ -20,7 +20,7 @@
 
         private readonly IEnumerable<IAssemblyProvider> assemblyProviders;
         private readonly IEnumerable<IControlStrategyResolver> strategyResolvers;
-        private readonly IRedirectionInfoProvider<object> redirectionInfoProvider;
+        private readonly IRedirectionInfoProvider redirectionInfoProvider;
         private readonly IServiceProvider serviceProvider;
         private readonly ILogger<ControlFactory> logger;
 
@@ -40,7 +40,7 @@
         public ControlFactory(
             IEnumerable<IAssemblyProvider> assemblyProviders,
             IEnumerable<IControlStrategyResolver> strategyResolvers,
-            IRedirectionInfoProvider<object> redirectionInfoProvider,
+            IRedirectionInfoProvider redirectionInfoProvider,
             IServiceProvider serviceProvider,
             ILogger<ControlFactory> logger = null)
         {
@@ -70,7 +70,7 @@
             {
                 if (this.controlTypes is null)
                 {
-                    this.controlTypes = ControlInterfaceType.Assembly.GetTypes().Where(IsControlType).ToList();
+                    this.controlTypes = ControlInterfaceType.Assembly.GetTypes().Concat(this.AssemblyTypes).Where(IsControlType).ToList();
                 }
 
                 return this.controlTypes;
@@ -98,11 +98,34 @@
                             throw new PowerPlaywrightException($"A redirector of type {value} is already registered for {typeRedirected}. Unable to register {redirectorType}.");
                         }
 
-                        this.logger.LogTrace("Instantiating redirector of type {redirector}.", redirectorType);
-                        var redirector = (IControlRedirector<IControl>)ActivatorUtilities.CreateInstance(
-                            this.serviceProvider, redirectorType, this.redirectionInfoProvider);
+                        if (redirectorType.IsGenericTypeDefinition)
+                        {
+                            var constraints = redirectorType.GetGenericArguments().FirstOrDefault().GetGenericParameterConstraints();
 
-                        this.redirectorsMap.Add(typeRedirected, redirector);
+                            var matchingControlTypes = this.ControlTypes
+                                .Where(t => constraints.All(c => c.IsAssignableFrom(t) && !t.ContainsGenericParameters))
+                                .ToList();
+
+                            foreach (var controlType in matchingControlTypes)
+                            {
+                                var closedRedirectorType = redirectorType.MakeGenericType(controlType);
+
+                                this.logger?.LogTrace("Instantiating redirector of type {redirector}.", closedRedirectorType);
+
+                                var redirector = (IControlRedirector<IControl>)ActivatorUtilities.CreateInstance(
+                                    this.serviceProvider, closedRedirectorType, this.redirectionInfoProvider);
+
+                                this.redirectorsMap.Add(typeRedirected.GetGenericTypeDefinition().MakeGenericType(controlType), redirector);
+                            }
+                        }
+                        else
+                        {
+                            this.logger.LogTrace("Instantiating redirector of type {redirector}.", redirectorType);
+                            var redirector = (IControlRedirector<IControl>)ActivatorUtilities.CreateInstance(
+                                this.serviceProvider, redirectorType, this.redirectionInfoProvider);
+
+                            this.redirectorsMap.Add(typeRedirected, redirector);
+                        }
                     }
                 }
 
@@ -133,6 +156,25 @@
 
                 return this.strategyMap;
             }
+        }
+
+        /// <inheritdoc/>
+        public Type GetRedirectedType<TControl>()
+            where TControl : IControl
+        {
+            var controlType = typeof(TControl);
+            this.logger.LogTrace("Getting redirected type of {controlType}.", controlType);
+
+            if (this.TryRedirectControlType(ref controlType))
+            {
+                this.logger.LogTrace("Type redirected to {controlType}.", controlType);
+            }
+            else
+            {
+                this.logger.LogTrace("Type not redirected.");
+            }
+
+            return controlType;
         }
 
         /// <inheritdoc/>
@@ -203,7 +245,10 @@
 
         private Type GetStrategyType(Type controlType)
         {
-            if (!this.StrategyMap.TryGetValue(controlType, out var strategyType))
+            var key = controlType.IsConstructedGenericType ?
+                controlType.GetGenericTypeDefinition() : controlType;
+
+            if (!this.StrategyMap.TryGetValue(key, out var strategyType))
             {
                 throw new PowerPlaywrightException($"Type {controlType.Name} is not a valid control interface type.");
             }
@@ -211,6 +256,11 @@
             if (strategyType is null)
             {
                 throw new PowerPlaywrightException($"Unable to find a control strategy for type {controlType.Name}.");
+            }
+
+            if (strategyType.IsGenericTypeDefinition)
+            {
+                strategyType = strategyType.MakeGenericType(controlType.GenericTypeArguments);
             }
 
             return strategyType;
