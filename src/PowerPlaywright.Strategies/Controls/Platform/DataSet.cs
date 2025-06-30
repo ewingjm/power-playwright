@@ -65,7 +65,7 @@
 
             try
             {
-                await this.viewSelector.ClickAndWaitForAppIdleAsync(timeout: 1000);
+                await this.viewSelector.ClickAndWaitForAppIdleAsync();
             }
             catch (TimeoutException)
             {
@@ -74,7 +74,7 @@
 
             try
             {
-                await this.viewsMenu.Locator($"//button//label[text()='{(viewName.Replace("'", @"\"))}']").ClickAndWaitForAppIdleAsync(timeout: 1000);
+                await this.viewsMenu.Locator($"//button//label[text()='{(viewName.Replace("'", @"\"))}']").ClickAndWaitForAppIdleAsync();
             }
             catch (TimeoutException)
             {
