@@ -57,6 +57,12 @@ namespace PowerPlaywright.Strategies.Controls.Platform
             return overflowCommands.Concat(visibleCommands).Distinct();
         }
 
+        /// <inheritdoc/>
+        public Task SelectCommand(string commandName)
+        {
+            throw new NotImplementedException();
+        }
+
         private static async Task<IEnumerable<string>> GetCommandLabels(ILocator locator)
         {
             var elements = await locator.AllAsync();
