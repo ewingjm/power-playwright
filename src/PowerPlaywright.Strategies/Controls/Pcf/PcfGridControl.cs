@@ -1,6 +1,8 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
@@ -15,28 +17,41 @@
     /// A control strategy for the <see cref="IPcfGridControl"/>.
     /// </summary>
     [PcfControlStrategy(1, 1, 148)]
-    public class PcfGridControl : PcfControl, IPcfGridControl
+    public class PcfGridControl : PcfControlInternal, IPcfGridControl
     {
         private readonly IPageFactory pageFactory;
         private readonly ILogger<PcfGridControl> logger;
 
         private readonly ILocator rowsContainer;
+        private readonly ILocator columnHeaders;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PcfGridControl"/> class.
         /// </summary>
         /// <param name="appPage">The app page.</param>
         /// <param name="name">The name given to the control.</param>
+        /// <param name="infoProvider">The info provider.</param>
         /// <param name="pageFactory">The page factory.</param>
         /// <param name="parent">The parent control.</param>
         /// <param name="logger">The logger.</param>
-        public PcfGridControl(IAppPage appPage, string name, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
-            : base(name, appPage, parent)
+        public PcfGridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
+            : base(name, appPage, infoProvider, parent)
         {
             this.pageFactory = pageFactory;
             this.logger = logger;
 
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
+            this.columnHeaders = this.Container.GetByRole(AriaRole.Columnheader);
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> GetColumnNamesAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            var columnHeaders = await this.columnHeaders.AllAsync();
+
+            return await Task.WhenAll(columnHeaders.Skip(1).Select(c => c.Locator("label").InnerTextAsync()));
         }
 
         /// <inheritdoc/>
@@ -53,12 +68,6 @@
             await row.DblClickAsync();
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
-        }
-
-        /// <inheritdoc />
-        protected override ILocator GetRoot(ILocator context)
-        {
-            return context.Locator($"div[data-lp-id*='MscrmControls.Grid.PCFGridControl|{this.Name}']");
         }
 
         private ILocator GetRow(int index)

@@ -19,7 +19,31 @@
         [SetUp]
         public void Setup()
         {
-            this.faker = new Faker();
+            this.faker = new Faker("en_GB");
+        }
+
+        /// <summary>
+        /// Tests that <see cref="ILookup.GetValueAsync"/> returns null when the lookup has not been set.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
+        {
+            var lookupControl = await this.SetupLookupScenarioAsync(withRelatedRecord: null);
+
+            Assert.That(lookupControl.GetValueAsync, Is.Null);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="ILookup.GetValueAsync"/> returns the value of the lookup when set.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_ContainsValue_ReturnsValue()
+        {
+            var lookupControl = await this.SetupLookupScenarioAsync(withRelatedRecord: this.GetNamedRelatedRecordFaker(out var relatedRecordName));
+
+            Assert.That(lookupControl.GetValueAsync, Is.EqualTo(relatedRecordName));
         }
 
         /// <summary>
@@ -65,30 +89,6 @@
             Assert.That(lookupControl.GetValueAsync, Is.EqualTo(relatableRecordName));
         }
 
-        /// <summary>
-        /// Tests that <see cref="ILookup.GetValueAsync"/> returns the value of the lookup when set.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task GetValueAsync_ContainsValue_ReturnsValue()
-        {
-            var lookupControl = await this.SetupLookupScenarioAsync(withRelatedRecord: this.GetNamedRelatedRecordFaker(out var relatedRecordName));
-
-            Assert.That(lookupControl.GetValueAsync, Is.EqualTo(relatedRecordName));
-        }
-
-        /// <summary>
-        /// Tests that <see cref="ILookup.GetValueAsync"/> returns null when the lookup has not been set.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task GetValueAsync_DoesNotContainValue_ReturnsNull()
-        {
-            var lookupControl = await this.SetupLookupScenarioAsync(withRelatedRecord: null);
-
-            Assert.That(lookupControl.GetValueAsync, Is.Null);
-        }
-
         private async Task<ILookup> SetupLookupScenarioAsync(Faker<pp_Record>? withRecord = null, Faker<pp_RelatedRecord>? withRelatedRecord = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatableRecords = null)
         {
             withRecord ??= new RecordFaker();
@@ -105,7 +105,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(withRecord.Generate());
 
-            return recordPage.Form.GetControl<ILookup>(pp_Record.Forms.Information.RelatedRecord);
+            return recordPage.Form.GetField<ILookup>(pp_Record.Forms.Information.RelatedRecord).Control;
         }
 
         private Faker<pp_RelatedRecord> GetNamedRelatedRecordFaker(out string relatedRecordName)

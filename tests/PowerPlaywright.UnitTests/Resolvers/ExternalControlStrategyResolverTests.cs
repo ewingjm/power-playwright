@@ -98,7 +98,7 @@ public class ExternalControlStrategyResolverTests
     [Test]
     public void Resolve_ControlTypeDoesNotHaveExternalControlAttribute_ThrowsPowerPlaywrightException()
     {
-        Assert.Throws<PowerPlaywrightException>(() => this.resolver.Resolve(typeof(IPowerAppsOneGridControl), [typeof(ILoginControl)]));
+        Assert.Throws<PowerPlaywrightException>(() => this.resolver.Resolve(typeof(IPowerAppsOneGrid), [typeof(ILoginControl)]));
     }
 
     /// <summary>

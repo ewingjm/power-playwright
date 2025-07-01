@@ -139,7 +139,7 @@ public class PcfControlStrategyResolverTests
     [Test]
     public void Resolve_NullStrategyTypes_ThrowsArgumentNullException()
     {
-        Assert.Throws<ArgumentNullException>(() => this.resolver.Resolve(typeof(IPowerAppsOneGridControl), null));
+        Assert.Throws<ArgumentNullException>(() => this.resolver.Resolve(typeof(IPowerAppsOneGrid), null));
     }
 
     /// <summary>
@@ -161,7 +161,7 @@ public class PcfControlStrategyResolverTests
     {
         this.environmentInfoProvider.ControlVersions.ReturnsNull<IDictionary<string, Version>>();
 
-        Assert.Throws<PowerPlaywrightException>(() => this.resolver.Resolve(typeof(IPowerAppsOneGridControl), []));
+        Assert.Throws<PowerPlaywrightException>(() => this.resolver.Resolve(typeof(IPowerAppsOneGrid), []));
     }
 
     /// <summary>
@@ -171,11 +171,11 @@ public class PcfControlStrategyResolverTests
     public void Resolve_StrategyTypesContainsPublicNonAbstractConcreteTypeWithPcfControlStrategyAttributeVersionLessThanOrEqualToEnvironmentControlVersion_ReturnsType()
     {
         var strategyVersion = this.faker.System.Version();
-        var expectedStrategyType = this.GetPcfControlStrategyTypeFor<IPowerAppsOneGridControl>(out var controlName, strategyVersion);
+        var expectedStrategyType = this.GetPcfControlStrategyTypeFor<IPowerAppsOneGrid>(out var controlName, strategyVersion);
         this.controlVersions[controlName] = strategyVersion;
         this.environmentInfoProvider.OnReady += Raise.Event();
 
-        var strategyType = this.resolver.Resolve(typeof(IPowerAppsOneGridControl), [expectedStrategyType]);
+        var strategyType = this.resolver.Resolve(typeof(IPowerAppsOneGrid), [expectedStrategyType]);
 
         Assert.That(strategyType, Is.EqualTo(expectedStrategyType));
     }
@@ -187,13 +187,13 @@ public class PcfControlStrategyResolverTests
     public void Resolve_MultipleStrategyTypesContainsPublicNonAbstractConcreteTypeWithPcfControlStrategyAttribute_ReturnsTypeWithHighestVersionLowerThanEnvironmentVersion()
     {
         var lowerStrategyVersion = this.faker.System.Version();
-        var unexpectedStrategyType = this.GetPcfControlStrategyTypeFor<IPowerAppsOneGridControl>(out var controlName, lowerStrategyVersion);
+        var unexpectedStrategyType = this.GetPcfControlStrategyTypeFor<IPowerAppsOneGrid>(out var controlName, lowerStrategyVersion);
         var higherStrategyVersion = new Version(lowerStrategyVersion.Major, lowerStrategyVersion.Minor, lowerStrategyVersion.Build + 1);
-        var expectedStrategyType = this.GetPcfControlStrategyTypeFor<IPowerAppsOneGridControl>(out _, higherStrategyVersion);
+        var expectedStrategyType = this.GetPcfControlStrategyTypeFor<IPowerAppsOneGrid>(out _, higherStrategyVersion);
         this.controlVersions[controlName] = higherStrategyVersion;
         this.environmentInfoProvider.OnReady += Raise.Event();
 
-        var strategyType = this.resolver.Resolve(typeof(IPowerAppsOneGridControl), [unexpectedStrategyType, expectedStrategyType]);
+        var strategyType = this.resolver.Resolve(typeof(IPowerAppsOneGrid), [unexpectedStrategyType, expectedStrategyType]);
 
         Assert.That(strategyType, Is.EqualTo(expectedStrategyType));
     }
@@ -206,7 +206,7 @@ public class PcfControlStrategyResolverTests
     {
         this.environmentInfoProvider.OnReady += Raise.Event();
 
-        var strategyType = this.resolver.Resolve(typeof(IPowerAppsOneGridControl), [typeof(LoginControl)]);
+        var strategyType = this.resolver.Resolve(typeof(IPowerAppsOneGrid), [typeof(LoginControl)]);
 
         Assert.That(strategyType, Is.Null);
     }

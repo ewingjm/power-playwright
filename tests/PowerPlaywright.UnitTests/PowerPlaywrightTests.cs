@@ -5,6 +5,7 @@ using NSubstitute;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using PowerPlaywright.Api;
+using PowerPlaywright.Config;
 using PowerPlaywright.Framework.Pages;
 using PowerPlaywright = PowerPlaywright.Api.PowerPlaywright;
 
@@ -18,7 +19,7 @@ public class PowerPlaywrightTests
     private const string Username = "username";
     private const string AppUniqueName = "pp_UserInterfaceDemo";
     private const string StrategiesPackageId = "PowerPlaywright.Strategies";
-    private static readonly Uri EnvironmentUrl = new Uri("https://environment.crm.dynamics.com");
+    private static readonly Uri EnvironmentUrl = new("https://environment.crm.dynamics.com");
 
     private IBrowserContext browserContext;
     private INuGetPackageInstaller packageInstaller;
@@ -37,7 +38,7 @@ public class PowerPlaywrightTests
 
         this.MockValidDefaults();
 
-        this.powerPlaywright = new PowerPlaywright(this.packageIdentity);
+        this.powerPlaywright = new PowerPlaywright(new PowerPlaywrightConfiguration { PackageIdentity = this.packageIdentity });
     }
 
     /// <summary>
@@ -143,7 +144,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(INuGetPackageInstaller)"/> method throws an <see cref="ArgumentNullException"/> when the packageInstaller parameter is <see langword="null"/>.
+    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(INuGetPackageInstaller, PowerPlaywrightConfiguration)"/> method throws an <see cref="ArgumentNullException"/> when the packageInstaller parameter is <see langword="null"/>.
     /// </summary>
     [Test]
     public void CreateInternalAsync_NullPackageInstaller_ThrowsArgumentNullException()
@@ -153,7 +154,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(INuGetPackageInstaller)"/> method returns a non-null <see cref="IPowerPlaywright"/> instance.
+    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(INuGetPackageInstaller, PowerPlaywrightConfiguration)"/> method returns a non-null <see cref="IPowerPlaywright"/> instance.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
@@ -165,7 +166,7 @@ public class PowerPlaywrightTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(INuGetPackageInstaller)"/> method selects and installs the highest package version with the same major version as the current PowerPlaywright major version when a package with a higher major version is also available.
+    /// Tests that the <see cref="PowerPlaywright.CreateInternalAsync(INuGetPackageInstaller, PowerPlaywrightConfiguration)"/> method selects and installs the highest package version with the same major version as the current PowerPlaywright major version when a package with a higher major version is also available.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
@@ -189,9 +190,9 @@ public class PowerPlaywrightTests
 
     private void MockValidDefaults()
     {
-        var powerPlaywrightMajorVersion = typeof(IPowerPlaywright).Assembly.GetName().Version!.Major;
+        var powerPlaywrightVersion = typeof(IPowerPlaywright).Assembly.GetName().Version!;
 
         this.packageInstaller.GetAllVersionsAsync(StrategiesPackageId)
-            .Returns([new NuGetVersion(powerPlaywrightMajorVersion, 0, 0)]);
+            .Returns([new NuGetVersion(powerPlaywrightVersion.Major, powerPlaywrightVersion.Minor, powerPlaywrightVersion.Revision)]);
     }
 }

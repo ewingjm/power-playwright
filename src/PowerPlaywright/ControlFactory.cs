@@ -20,7 +20,7 @@
 
         private readonly IEnumerable<IAssemblyProvider> assemblyProviders;
         private readonly IEnumerable<IControlStrategyResolver> strategyResolvers;
-        private readonly IRedirectionInfoProvider<object> redirectionInfoProvider;
+        private readonly IRedirectionInfoProvider redirectionInfoProvider;
         private readonly IServiceProvider serviceProvider;
         private readonly ILogger<ControlFactory> logger;
 
@@ -40,7 +40,7 @@
         public ControlFactory(
             IEnumerable<IAssemblyProvider> assemblyProviders,
             IEnumerable<IControlStrategyResolver> strategyResolvers,
-            IRedirectionInfoProvider<object> redirectionInfoProvider,
+            IRedirectionInfoProvider redirectionInfoProvider,
             IServiceProvider serviceProvider,
             ILogger<ControlFactory> logger = null)
         {
@@ -70,7 +70,7 @@
             {
                 if (this.controlTypes is null)
                 {
-                    this.controlTypes = ControlInterfaceType.Assembly.GetTypes().Where(IsControlType).ToList();
+                    this.controlTypes = ControlInterfaceType.Assembly.GetTypes().Concat(this.AssemblyTypes).Where(IsControlType).ToList();
                 }
 
                 return this.controlTypes;
@@ -203,7 +203,10 @@
 
         private Type GetStrategyType(Type controlType)
         {
-            if (!this.StrategyMap.TryGetValue(controlType, out var strategyType))
+            var key = controlType.IsConstructedGenericType ?
+                controlType.GetGenericTypeDefinition() : controlType;
+
+            if (!this.StrategyMap.TryGetValue(key, out var strategyType))
             {
                 throw new PowerPlaywrightException($"Type {controlType.Name} is not a valid control interface type.");
             }
@@ -211,6 +214,11 @@
             if (strategyType is null)
             {
                 throw new PowerPlaywrightException($"Unable to find a control strategy for type {controlType.Name}.");
+            }
+
+            if (strategyType.IsGenericTypeDefinition)
+            {
+                strategyType = strategyType.MakeGenericType(controlType.GenericTypeArguments);
             }
 
             return strategyType;

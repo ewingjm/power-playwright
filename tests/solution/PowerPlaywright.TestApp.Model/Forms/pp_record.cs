@@ -35,6 +35,21 @@
                 public const string RelatedRecord = "pp_relatedrecord";
 
                 /// <summary>
+                /// The toggle control.
+                /// </summary>
+                public const string Toggle = "pp_yesno1";
+
+                /// <summary>
+                /// The whole number star rating control.
+                /// </summary>
+                public const string WholeNumberNoneStarRating = "pp_wholenumbernone";
+
+                /// <summary>
+                /// The whole number control.
+                /// </summary>
+                public const string WholeNumberNone = "pp_wholenumbernone1";
+
+                /// <summary>
                 /// The Information form tabs.
                 /// </summary>
                 public static class Tabs

@@ -9,16 +9,16 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="ISimpleLookupControl"/>.
     /// </summary>
     [PcfControlStrategy(1, 0, 470)]
-    public class SimpleLookupControl : PcfControl, ISimpleLookupControl
+    public class SimpleLookupControl : PcfControlInternal, ISimpleLookupControl
     {
         private readonly ILogger<PcfGridControl> logger;
 
-        private readonly ILocator flyoutRoot;
         private readonly ILocator flyoutResults;
         private readonly ILocator flyoutNoRecordsText;
         private readonly ILocator selectedRecordListItem;
@@ -31,16 +31,17 @@
         /// </summary>
         /// <param name="appPage">The app page.</param>
         /// <param name="name">The name given to the control.</param>
+        /// <param name="infoProvider"> The info provider.</param>
         /// <param name="parent">The parent control.</param>
         /// <param name="logger">The logger.</param>
-        public SimpleLookupControl(IAppPage appPage, string name, IControl parent, ILogger<PcfGridControl> logger = null)
-            : base(name, appPage, parent)
+        public SimpleLookupControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IControl parent, ILogger<PcfGridControl> logger = null)
+            : base(name, appPage, infoProvider, parent)
         {
             this.logger = logger;
 
-            this.flyoutRoot = this.Page.Locator($"div[data-id='{this.Name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']");
-            this.flyoutNoRecordsText = this.flyoutRoot.Locator($"span[data-id='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_No_Records_Text']");
-            this.flyoutResults = this.flyoutRoot.GetByRole(AriaRole.Treeitem);
+            var flyoutRoot = this.Page.Locator($"div[data-id='{this.Name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']");
+            this.flyoutNoRecordsText = flyoutRoot.Locator($"span[data-id='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_No_Records_Text']");
+            this.flyoutResults = flyoutRoot.GetByRole(AriaRole.Treeitem);
             this.selectedRecordListItem = this.Container.Locator($"ul[data-id*='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_SelectedRecordList']").Locator("li").First;
             this.selectedRecordText = this.selectedRecordListItem.Locator($"div[data-id*='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_selected_tag_text']");
             this.selectedRecordDeleteButton = this.selectedRecordListItem.Locator($"button[data-id*='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_selected_tag_delete']");
@@ -82,13 +83,7 @@
                 throw new NotFoundException($"No records found in the {this.Name} lookup with search: {value}.");
             }
 
-            await flyoutResult.ClickAsync();
-        }
-
-        /// <inheritdoc/>
-        protected override ILocator GetRoot(ILocator context)
-        {
-            return context.Locator($"div[data-lp-id*='MscrmControls.FieldControls.SimpleLookupControl|{this.Name}.fieldControl|']");
+            await flyoutResult.ClickAndWaitForAppIdleAsync();
         }
     }
 }

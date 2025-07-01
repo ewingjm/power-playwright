@@ -115,7 +115,7 @@
                 .Returns(environmentUrl);
             this.getControlsResponse.Ok
                 .Returns(true);
-            this.page.APIRequest.GetAsync($"{environmentUrl}/api/data/v9.2/customcontrols?$select=name,version")
+            this.page.APIRequest.GetAsync($"{environmentUrl}/api/data/v9.2/customcontrols?$select=name,version,customcontrolid")
                 .Returns(this.getControlsResponse);
             this.getControlsResponse.JsonAsync()
                 .Returns((i) => Task.Run<JsonElement?>(() =>

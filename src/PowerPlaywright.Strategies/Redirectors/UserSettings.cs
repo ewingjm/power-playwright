@@ -1,22 +1,28 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
+    using PowerPlaywright.Framework.Redirectors;
+    using System.Collections.Generic;
     using System.Text.Json.Serialization;
 
     /// <summary>
     /// The user settings.
     /// </summary>
-    internal class UserSettings
+    internal class UserSettings : IUserSettings
     {
-        /// <summary>
-        /// Gets the try toggle sets.
-        /// </summary>
         [JsonInclude]
-        public AppToggles TryToggleSets { get; private set; }
+        [JsonPropertyName("appToggles")]
+        public AppToggles AppTogglesTyped { get; private set; }
 
-        /// <summary>
-        /// Gets the model app channel override.
-        /// </summary>
         [JsonInclude]
-        public ReleaseChannelOverride ReleaseChannel { get; private set; }
+        [JsonPropertyName("releaseChannel")]
+        public ReleaseChannelOverride ReleaseChannelEnum { get; private set; }
+
+        /// <inheritdoc />
+        [JsonIgnore]
+        public int ReleaseChannel => (int)ReleaseChannelEnum;
+
+        /// <inheritdoc />
+        [JsonIgnore]
+        public IDictionary<string, bool?> AppToggles => this.AppTogglesTyped.ToDictionary();
     }
 }

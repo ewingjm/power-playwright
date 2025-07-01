@@ -1,16 +1,22 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
+    using PowerPlaywright.Framework.Redirectors;
     using System.Text.Json.Serialization;
 
     /// <summary>
     /// The organization settings.
     /// </summary>
-    internal class OrgSettings
+    public class OrgSettings : IOrgSettings
     {
         /// <summary>
         /// Gets the release channel.
         /// </summary>
         [JsonInclude]
-        public ReleaseChannel ReleaseChannel { get; private set; }
+        [JsonPropertyName("releaseChannel")]
+        public ReleaseChannel ReleaseChannelEnum { get; private set; }
+
+        /// <inheritdoc/>
+        [JsonIgnore]
+        public int ReleaseChannel => (int)ReleaseChannelEnum;
     }
 }

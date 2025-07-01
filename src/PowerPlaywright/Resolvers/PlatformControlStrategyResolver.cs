@@ -55,7 +55,26 @@
             if (controlType.GetCustomAttribute<PlatformControlAttribute>() is PlatformControlAttribute control)
             {
                 return strategyTypes
-                    .Where(s => controlType.IsAssignableFrom(s) && !s.IsAbstract && s.IsClass && s.IsVisible)
+                    .Where(s =>
+                    {
+                        if (s.IsAbstract || !s.IsClass || !s.IsVisible)
+                        {
+                            return false;
+                        }
+
+
+                        if (controlType.IsAssignableFrom(s))
+                        {
+                            return true;
+                        }
+
+                        if (controlType.IsGenericTypeDefinition)
+                        {
+                            return s.GetInterfaces().Any(i => i.IsConstructedGenericType && i.GetGenericTypeDefinition() == controlType);
+                        }
+
+                        return false;
+                    })
                     .Select(s =>
                         new
                         {

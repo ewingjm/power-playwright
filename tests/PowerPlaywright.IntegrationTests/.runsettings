@@ -9,6 +9,12 @@
       <HEADED>0</HEADED>
     </EnvironmentVariables>
   </RunConfiguration>
+  <Playwright>
+    <BrowserName>chromium</BrowserName>
+    <LaunchOptions>
+      <Channel>chromium</Channel>
+    </LaunchOptions>
+  </Playwright>
   <DataCollectionRunSettings>
     <DataCollectors>
       <DataCollector friendlyName="XPlat code coverage">
