@@ -1,6 +1,5 @@
 ﻿namespace PowerPlaywright.IntegrationTests;
 
-using System.Globalization;
 using System.Text.RegularExpressions;
 using NuGet.Common;
 using NuGet.Configuration;

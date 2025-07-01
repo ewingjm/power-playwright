@@ -22,6 +22,7 @@
 
         private readonly ILocator tabList;
         private readonly ILocator formReadOnlyNotification;
+        //    private readonly ILocator commandsList;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.

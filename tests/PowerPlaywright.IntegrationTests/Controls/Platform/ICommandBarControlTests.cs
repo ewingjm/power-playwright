@@ -22,12 +22,16 @@
             this.commandBar = recordPage.CommandBar;
         }
 
+        /// <summary>
+        /// Ensures the command bar control returns the correct commands or the out of the box ones.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
         public async Task GetCommandsAsync_NoParentCommandsPassed_ReturnsLabelsOfVisibleCommands()
         {
             var commands = await this.commandBar.GetCommandsAsync();
 
-            CollectionAssert.IsSubsetOf(commands, new string[] { "Save", "Save & Close", "New", "Deactivate", "Delete", "Refresh" });
+            CollectionAssert.IsSupersetOf(commands, new string[] { "Save", "Command", "Dropdown", "Split Button", "New", "Deactivate", "Delete", "Refresh", "Check Access", "Assign" });
         }
     }
 }
