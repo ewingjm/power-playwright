@@ -13,7 +13,7 @@
     /// </summary>
     public partial class IReadOnlyGridTests : IntegrationTests
     {
-        private static readonly string[] Columns = ["Name", "Created On"];
+        private static readonly string[] Columns = ["Name", "Created On", "Created By", "Modified By", "Modified On", "Owner", "Record", "Status", "Status Reason", "Created By (Delegate)", "Modified By (Delegate)", "Owning Business Unit", "Record Created On"];
 
         private Faker faker;
 
@@ -85,7 +85,7 @@
                 await client.ExecuteAsync(
                     new CreateMultipleRequest
                     {
-                        Targets = new EntityCollection(withRelatableRecords.Select(f => f.Generate()).ToList<Entity>()),
+                        Targets = new EntityCollection([.. withRelatableRecords.Select(f => f.Generate())]),
                     });
             }
 
