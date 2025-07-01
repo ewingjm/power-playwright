@@ -18,7 +18,7 @@
           <cell name="pp_dateandtimedateonly" width="184" />
           <cell name="pp_decimal" width="100" />
           <cell name="pp_multiplelinesoftexttext" width="192" />
-          <cell name="pp_parentrecord" width="120" />
+          <cell name="pp_relatedrecord" width="120" />
           <cell name="pp_singlelineoftexttickersymbol" width="229" />
           <cell name="pp_singlelineoftextphonenumber" width="234" />
           <cell name="pp_singlelineoftextemail" width="184" />
@@ -50,7 +50,6 @@
           <attribute name="pp_dateandtimedateonly" />
           <attribute name="pp_decimal" />
           <attribute name="pp_multiplelinesoftexttext" />
-          <attribute name="pp_parentrecord" />
           <attribute name="pp_singlelineoftexttickersymbol" />
           <attribute name="pp_singlelineoftextphonenumber" />
           <attribute name="pp_singlelineoftextemail" />
