@@ -5,6 +5,7 @@
     /// </summary>
     internal class Attributes
     {
+        internal const string AriaColCount = "aria-colcount";
         internal const string AriaControls = "aria-controls";
         internal const string AriaExpanded = "aria-expanded";
         internal const string AriaLabel = "aria-label";
