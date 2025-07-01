@@ -88,7 +88,7 @@
                 throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {Name}");
             }
 
-            await row.DblClickAsync();
+            await row.DblClickAsync(new LocatorDblClickOptions { Position = new Position { X = 0, Y = 0 } });
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }
