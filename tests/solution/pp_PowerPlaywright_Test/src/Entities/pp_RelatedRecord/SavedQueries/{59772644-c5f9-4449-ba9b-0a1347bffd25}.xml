@@ -12,6 +12,17 @@
         <row name="result" id="pp_relatedrecordid">
           <cell name="pp_name" width="300" />
           <cell name="createdon" width="125" />
+          <cell name="createdby" width="104" />
+          <cell name="modifiedby" width="112" />
+          <cell name="modifiedon" width="113" />
+          <cell name="ownerid" width="100" />
+          <cell name="pp_record" width="100" />
+          <cell name="statecode" width="100" />
+          <cell name="statuscode" width="119" />
+          <cell name="createdonbehalfby" width="166" />
+          <cell name="modifiedonbehalfby" width="175" />
+          <cell name="owningbusinessunit" width="167" />
+          <cell name="overriddencreatedon" width="149" />
         </row>
       </grid>
     </layoutxml>
@@ -26,6 +37,17 @@
           <filter type="and">
             <condition attribute="statecode" operator="eq" value="0" />
           </filter>
+          <attribute name="createdby" />
+          <attribute name="modifiedby" />
+          <attribute name="modifiedon" />
+          <attribute name="ownerid" />
+          <attribute name="pp_record" />
+          <attribute name="statecode" />
+          <attribute name="statuscode" />
+          <attribute name="createdonbehalfby" />
+          <attribute name="modifiedonbehalfby" />
+          <attribute name="owningbusinessunit" />
+          <attribute name="overriddencreatedon" />
         </entity>
       </fetch>
     </fetchxml>
