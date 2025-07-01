@@ -6,7 +6,7 @@
   <RunConfiguration>
     <EnvironmentVariables>
       <PWDEBUG>0</PWDEBUG>
-      <HEADED>1</HEADED>
+      <HEADED>0</HEADED>
     </EnvironmentVariables>
   </RunConfiguration>
   <Playwright>
