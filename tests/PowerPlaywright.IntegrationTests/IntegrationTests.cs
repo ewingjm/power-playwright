@@ -31,6 +31,7 @@
 
         private const string EnvironmentVariablePrefix = "POWERPLAYWRIGHT:TEST:";
 
+        private static readonly object UserEnumeratorLock = new();
         private static readonly IEnumerator<UserConfiguration> UserEnumerator;
 
         private bool isTracing;
@@ -166,48 +167,45 @@
         /// <returns>The form.</returns>
         protected async Task<IEntityRecordPage> LoginAndNavigateToRecordAsync(Entity record)
         {
-            using (var client = this.GetServiceClient())
-            {
-                var attempt = 0;
-                var maxRetries = 3;
-                var deactivate = record.GetAttributeValue<OptionSetValue>(nameof(pp_Record.statecode))?.Value == 1;
-
-                if (deactivate)
-                {
-                    record.Attributes.Remove(nameof(pp_Record.statecode));
-                    record.Attributes.Remove(nameof(pp_Record.statuscode));
-                }
-
-                while (attempt++ < maxRetries)
-                {
-                    try
-                    {
-                        await client.CreateAsync(record);
-
-                        if (deactivate)
-                        {
-                            await client.UpdateAsync(new Entity(record.LogicalName, record.Id)
-                            {
-                                Attributes =
-                                {
-                                    [nameof(pp_Record.statecode)] = new OptionSetValue(1),
-                                    [nameof(pp_Record.statuscode)] = new OptionSetValue(2),
-                                },
-                            });
-                        }
-
-                        break;
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        await Task.Delay(500);
-                    }
-                }
-            }
+            await this.CreateRecordAsync(record);
 
             var page = await this.LoginAsync();
 
             return await page.ClientApi.NavigateToRecordAsync(record.LogicalName, record.Id);
+        }
+
+        /// <summary>
+        /// Creates a record.
+        /// </summary>
+        /// <param name="record">The record.</param>
+        /// <returns>The record ID.</returns>
+        protected async Task<EntityReference> CreateRecordAsync(Entity record)
+        {
+            using var client = this.GetServiceClient();
+
+            var deactivateOnCreate = record.GetAttributeValue<OptionSetValue>(nameof(pp_Record.statecode))?.Value == 1;
+
+            if (deactivateOnCreate)
+            {
+                record.Attributes.Remove(nameof(pp_Record.statecode));
+                record.Attributes.Remove(nameof(pp_Record.statuscode));
+            }
+
+            record.Id = await client.CreateAsync(record);
+
+            if (deactivateOnCreate)
+            {
+                await client.UpdateAsync(new Entity(record.LogicalName, record.Id)
+                {
+                    Attributes =
+                        {
+                            [nameof(pp_Record.statecode)] = new OptionSetValue(1),
+                            [nameof(pp_Record.statuscode)] = new OptionSetValue(2),
+                        },
+                });
+            }
+
+            return record.ToEntityReference();
         }
 
         /// <summary>
@@ -216,7 +214,7 @@
         /// <returns>A service client instance.</returns>
         protected ServiceClient GetServiceClient()
         {
-            return new ServiceClient(Configuration.Url, Configuration.ClientId, Configuration.ClientSecret, false);
+            return new ServiceClient(Configuration.Url, Configuration.ClientId, Configuration.ClientSecret, true);
         }
 
         /// <summary>
@@ -225,13 +223,16 @@
         /// <returns>The user configuration.</returns>
         private static UserConfiguration GetUser()
         {
-            if (!UserEnumerator.MoveNext())
+            lock (UserEnumeratorLock)
             {
-                UserEnumerator.Reset();
-                UserEnumerator.MoveNext();
-            }
+                if (!UserEnumerator.MoveNext())
+                {
+                    UserEnumerator.Reset();
+                    UserEnumerator.MoveNext();
+                }
 
-            return UserEnumerator.Current;
+                return UserEnumerator.Current;
+            }
         }
 
         private static TestSuiteConfiguration GetConfiguration()

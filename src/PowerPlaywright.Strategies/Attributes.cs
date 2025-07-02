@@ -9,5 +9,6 @@
         internal const string AriaExpanded = "aria-expanded";
         internal const string AriaLabel = "aria-label";
         internal const string DataFieldRequirement = "data-fieldrequirement";
+        internal const string DataLpId = "data-lp-id";
     }
 }

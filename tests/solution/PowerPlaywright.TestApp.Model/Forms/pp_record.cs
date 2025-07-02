@@ -50,6 +50,11 @@
                 public const string WholeNumberNone = "pp_wholenumbernone1";
 
                 /// <summary>
+                /// The quick view control.
+                /// </summary>
+                public const string QuickView = "QuickViewRelatedRecord";
+
+                /// <summary>
                 /// The Information form tabs.
                 /// </summary>
                 public static class Tabs
@@ -63,6 +68,11 @@
                     /// Tab B.
                     /// </summary>
                     public const string TabB = "Tab B";
+
+                    /// <summary>
+                    /// Related.
+                    /// </summary>
+                    public const string Related = "Related";
                 }
             }
         }

@@ -1,7 +1,9 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Platform
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
 
     /// <summary>
@@ -24,25 +26,59 @@
         Task<string> GetActiveTabAsync();
 
         /// <summary>
+        /// Gets all visible tabs on the form.
+        /// </summary>
+        /// <returns>A collection of visible tabs on the form.</returns>
+        Task<IEnumerable<string>> GetAllTabsAsync();
+
+        /// <summary>
         /// Gets a value indicating whether the form is disabled.
         /// </summary>
         /// <returns>A value indicating whether the form is disabled.</returns>
         Task<bool> IsDisabledAsync();
 
         /// <summary>
-        /// Gets a field on the form.
+        /// Gets all fields on the form.
         /// </summary>
-        /// <param name="name">The control name.</param>
-        /// <returns>The control.</returns>
-        IFormField GetField(string name);
+        /// <returns>The field.</returns>
+        Task<IEnumerable<IField>> GetFieldsAsync();
 
         /// <summary>
-        /// Gets a field on the form with a known PCF control or control class type.
+        /// Gets a field on the form with a known child control type.
         /// </summary>
-        /// <typeparam name="TPcfControl">The PCF control type.</typeparam>
-        /// <param name="name">The control name.</param>
-        /// <returns>The control.</returns>
-        IFormField<TPcfControl> GetField<TPcfControl>(string name)
-            where TPcfControl : IPcfControl;
+        /// <typeparam name="TControl">The child control type.</typeparam>
+        /// <param name="name">The field name.</param>
+        /// <returns></returns>
+        IField<TControl> GetField<TControl>(string name)
+            where TControl : IPcfControl;
+
+        /// <summary>
+        /// Gets a field on the form.
+        /// </summary>
+        /// <param name="name">The field name.</param>
+        /// <returns>The field.</returns>
+        IField GetField(string name);
+
+        /// <summary>
+        /// Gets a quick view on the form.
+        /// </summary>
+        /// <param name="name">The quick view name.</param>
+        /// <returns>The quick view.</returns>
+        IQuickView GetQuickView(string name);
+
+        /// <summary>
+        /// Gets a data set on the form (e.g. a grid) with a know child control type.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IDataSet<TControl> GetDataSet<TControl>(string name)
+            where TControl : IPcfControl;
+
+        /// <summary>
+        /// Gets a data set on the form (e.g. a grid).
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        IDataSet GetDataSet(string name);
     }
 }

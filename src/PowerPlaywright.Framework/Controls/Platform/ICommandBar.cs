@@ -1,28 +1,28 @@
-﻿using PowerPlaywright.Framework.Controls.Platform.Attributes;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace PowerPlaywright.Framework.Controls.Platform
+﻿namespace PowerPlaywright.Framework.Controls.Platform
 {
+    using PowerPlaywright.Framework.Controls.Platform.Attributes;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     /// <summary>
-    /// Implementation of the CommandBar control.
+    /// A command bar.
     /// </summary>
     [PlatformControl]
     public interface ICommandBar : IControl
     {
         /// <summary>
-        /// Gets the commands visible on the command bar.
+        /// Clicks a command.
         /// </summary>
-        /// <param name="includeOverFlowCommands">An optional flag to list the overflow commands in the form.</param>
-        /// <param name="parentCommands">An optional sequence of commands to use when checking getting nested commands.</param>
-        /// <returns></returns>
-        Task<IEnumerable<string>> GetCommandsAsync(bool includeOverFlowCommands = true, params string[] parentCommands);
+        /// <param name="command">The command.</param>
+        /// <param name="parentCommands">The parent commands (if any).</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
+        Task ClickCommandAsync(string command, params string[] parentCommands);
 
         /// <summary>
-        /// Selects the commands on the command bar.
+        /// Gets the commands visible on the command bar.
         /// </summary>
-        /// <param name="commandName">The command to execute.</param>
-        /// <returns></returns>
-        Task SelectCommand(string commandName);
+        /// <param name="parentCommands">An optional sequence of commands to use when checking getting nested commands.</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
+        Task<IEnumerable<string>> GetCommandsAsync(params string[] parentCommands);
     }
 }

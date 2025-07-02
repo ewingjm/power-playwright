@@ -60,10 +60,12 @@
             await this.Page.WaitForAppIdleAsync();
             await this.dateInput.FillAsync(value.Value.ToShortDateString());
             await this.Container.ClickAndWaitForAppIdleAsync();
+            await this.Page.Keyboard.PressAsync("Escape");
             await this.timeInput.FocusAsync();
             await this.timeInput.FillAsync(string.Empty);
             await this.timeInput.FillAsync(value.Value.ToShortTimeString());
             await this.Container.ClickAndWaitForAppIdleAsync();
+            await this.Page.Keyboard.PressAsync("Escape");
         }
     }
 }

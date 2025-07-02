@@ -19,7 +19,7 @@
         private readonly ILocator input;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UrlControl"/> class.
+        /// Initializes a new instance of the <see cref="WholeNumberControl"/> class.
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
