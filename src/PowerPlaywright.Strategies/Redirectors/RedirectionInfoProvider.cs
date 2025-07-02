@@ -54,7 +54,7 @@
         {
             var orgSettings = await page.EvaluateAsync(
                 @"async () => {
-                   var response = await Xrm.WebApi.online.retrieveMultipleRecords('organization', '?$select=releasechannel');
+                   var response = await Xrm.WebApi.online.retrieveMultipleRecords('organization', '?$select=releasechannel,isexternalsearchindexenabled');
                    return response.entities[0];
                 }");
 

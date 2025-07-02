@@ -25,5 +25,8 @@ namespace PowerPlaywright.Pages
 
         /// <inheritdoc/>
         public IClientApi ClientApi => this.GetControl<IClientApi>();
+
+        /// <inheritdoc/>
+        public IGlobalSearch Search => this.GetControl<IGlobalSearch>();
     }
 }
