@@ -11,7 +11,25 @@
       <grid name="resultset" jump="pp_singlelineoftexttext" select="1" icon="1" preview="1">
         <row name="result" id="pp_recordid">
           <cell name="pp_singlelineoftexttext" width="300" />
-          <cell name="createdon" width="125" />
+          <cell name="pp_choice" width="100" />
+          <cell name="pp_choices" width="100" />
+          <cell name="pp_currency" width="100" />
+          <cell name="pp_dateandtimedateandtime" width="207" />
+          <cell name="pp_dateandtimedateonly" width="184" />
+          <cell name="pp_decimal" width="100" />
+          <cell name="pp_multiplelinesoftexttext" width="192" />
+          <cell name="pp_parentrecord" width="120" />
+          <cell name="pp_singlelineoftexttickersymbol" width="229" />
+          <cell name="pp_singlelineoftextphonenumber" width="234" />
+          <cell name="pp_singlelineoftextemail" width="184" />
+          <cell name="pp_singlelineoftexturl" width="181" />
+          <cell name="pp_singlelineoftexttextarea" width="198" />
+          <cell name="pp_wholenumberduration" width="184" />
+          <cell name="pp_wholenumberlanguagecode" width="217" />
+          <cell name="pp_wholenumbernone" width="164" />
+          <cell name="pp_wholenumbertimezone" width="192" />
+          <cell name="pp_yesno" width="100" />
+          <cell name="pp_float" width="100" />
         </row>
       </grid>
     </layoutxml>
@@ -21,11 +39,29 @@
         <entity name="pp_record">
           <attribute name="pp_recordid" />
           <attribute name="pp_singlelineoftexttext" />
-          <attribute name="createdon" />
           <order attribute="pp_singlelineoftexttext" descending="false" />
           <filter type="and">
             <condition attribute="statecode" operator="eq" value="0" />
           </filter>
+          <attribute name="pp_choice" />
+          <attribute name="pp_choices" />
+          <attribute name="pp_currency" />
+          <attribute name="pp_dateandtimedateandtime" />
+          <attribute name="pp_dateandtimedateonly" />
+          <attribute name="pp_decimal" />
+          <attribute name="pp_multiplelinesoftexttext" />
+          <attribute name="pp_parentrecord" />
+          <attribute name="pp_singlelineoftexttickersymbol" />
+          <attribute name="pp_singlelineoftextphonenumber" />
+          <attribute name="pp_singlelineoftextemail" />
+          <attribute name="pp_singlelineoftexturl" />
+          <attribute name="pp_singlelineoftexttextarea" />
+          <attribute name="pp_wholenumberduration" />
+          <attribute name="pp_wholenumberlanguagecode" />
+          <attribute name="pp_wholenumbernone" />
+          <attribute name="pp_wholenumbertimezone" />
+          <attribute name="pp_yesno" />
+          <attribute name="pp_float" />
         </entity>
       </fetch>
     </fetchxml>

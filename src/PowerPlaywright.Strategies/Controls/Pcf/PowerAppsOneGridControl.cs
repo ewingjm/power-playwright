@@ -22,6 +22,7 @@
         private readonly IPageFactory pageFactory;
         private readonly ILogger<PcfGridControl> logger;
 
+        private readonly ILocator treeGrid;
         private readonly ILocator rowsContainer;
         private readonly ILocator columnHeaders;
 
@@ -40,8 +41,9 @@
             this.pageFactory = pageFactory;
             this.logger = logger;
 
+            this.treeGrid = this.Container.GetByRole(AriaRole.Treegrid);
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
-            this.columnHeaders = this.Container.GetByRole(AriaRole.Columnheader);
+            this.columnHeaders = this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])");
         }
 
         /// <inheritdoc/>
@@ -49,9 +51,28 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var columnHeaders = await this.columnHeaders.AllAsync();
+            var columnCount = int.Parse(await this.treeGrid.GetAttributeAsync(Attributes.AriaColCount)) - 1;
+            var rowsBoundingBox = await this.rowsContainer.BoundingBoxAsync();
+            var capturedColumns = new List<string>();
+            while (true)
+            {
+                var visibleColumns = await this.columnHeaders.AllAsync();
+                var visibleColumnLabels = await Task.WhenAll(visibleColumns.Select(c => c.Locator("label").InnerTextAsync()));
 
-            return await Task.WhenAll(columnHeaders.Skip(1).Select(c => c.Locator("label").InnerTextAsync()));
+                capturedColumns.AddRange(visibleColumnLabels.Except(capturedColumns));
+                if (capturedColumns.Count < columnCount)
+                {
+                    await this.rowsContainer.HoverAsync();
+                    await this.Page.Mouse.WheelAsync(rowsBoundingBox.Width, 0);
+                    await this.Page.WaitForAppIdleAsync();
+
+                    continue;
+                }
+
+                break;
+            }
+
+            return capturedColumns;
         }
 
         /// <inheritdoc/>
@@ -67,7 +88,7 @@
                 throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {Name}");
             }
 
-            await row.DblClickAsync();
+            await row.GetByRole(AriaRole.Gridcell).Nth(1).DblClickAsync(new LocatorDblClickOptions { Position = new Position { X = 0, Y = 0 } });
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }
