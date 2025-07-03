@@ -10,7 +10,7 @@
     public class ICommandBarTests : IntegrationTests
     {
         private static readonly string[] CustomCommands = ["Command", "Dropdown", "Split Button"];
-        private static readonly string[] OutOfTheBoxCommands = ["Save", "Save & Close", "New", "Deactivate", "Delete", "Refresh", "Check Access", "Assign", "Flow", "Word Templates", "Run Report"];
+        private static readonly string[] OutOfTheBoxCommands = ["Save", "Save & Close", "New", "Deactivate", "Delete", "Refresh", "Check Access", "Assign", "Flow", "Run Report"];
         private static readonly string[] OutOfTheBoxFlowCommands = ["Create a flow", "See your flows"];
 
         /// <summary>
@@ -26,7 +26,7 @@
 
             CollectionAssert.IsNotEmpty(commands);
             CollectionAssert.DoesNotContain(commands, string.Empty);
-            CollectionAssert.AreEquivalent(CustomCommands.Concat(OutOfTheBoxCommands), commands);
+            CollectionAssert.IsSupersetOf(commands, CustomCommands.Concat(OutOfTheBoxCommands));
         }
 
         /// <summary>

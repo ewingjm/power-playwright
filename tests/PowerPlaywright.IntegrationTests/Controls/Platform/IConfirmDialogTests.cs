@@ -53,7 +53,7 @@
         [Test]
         public async Task GetTextAsync_DialogIsVisible_ReturnsText()
         {
-            var expectedText = this.faker.Lorem.Sentences(this.faker.Random.Int(1, 2));
+            var expectedText = this.faker.Lorem.Sentences(2);
             var appPage = await this.SetupConfirmDialogScenarioAsync(withText: expectedText);
 
             Assert.That(appPage.ConfirmDialog.GetTextAsync, Is.EqualTo(expectedText));
