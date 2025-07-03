@@ -73,7 +73,8 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            return await this.text.InnerTextAsync();
+            var text = await this.text.InnerTextAsync();
+            return text.Replace("\n\n", "\n");
         }
 
         /// <inheritdoc/>
