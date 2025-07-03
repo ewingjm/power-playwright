@@ -16,5 +16,10 @@
         /// Gets an object that provides client API functionality.
         /// </summary>
         IClientApi ClientApi { get; }
+
+        /// <summary>
+        /// Gets a confirm dialog.
+        /// </summary>
+        IConfirmDialog ConfirmDialog { get; }
     }
 }

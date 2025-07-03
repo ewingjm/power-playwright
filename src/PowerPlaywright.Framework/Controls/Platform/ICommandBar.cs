@@ -1,8 +1,8 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Platform
 {
-    using PowerPlaywright.Framework.Controls.Platform.Attributes;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using PowerPlaywright.Framework.Controls.Platform.Attributes;
 
     /// <summary>
     /// A command bar.
@@ -13,10 +13,9 @@
         /// <summary>
         /// Clicks a command.
         /// </summary>
-        /// <param name="command">The command.</param>
-        /// <param name="parentCommands">The parent commands (if any).</param>
+        /// <param name="commands">The commands to click (in sequence).</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
-        Task ClickCommandAsync(string command, params string[] parentCommands);
+        Task ClickCommandAsync(params string[] commands);
 
         /// <summary>
         /// Gets the commands visible on the command bar.

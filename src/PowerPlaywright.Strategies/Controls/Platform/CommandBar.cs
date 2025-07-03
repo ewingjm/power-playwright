@@ -1,27 +1,28 @@
-﻿using Microsoft.Playwright;
-using PowerPlaywright.Framework.Controls;
-using PowerPlaywright.Framework.Controls.Platform;
-using PowerPlaywright.Framework.Controls.Platform.Attributes;
-using PowerPlaywright.Framework.Pages;
-using System.Linq;
-using System.Collections.Generic;
-using System;
-using System.Threading.Tasks;
-using PowerPlaywright.Framework.Extensions;
-using PowerPlaywright.Framework;
-
-namespace PowerPlaywright.Strategies.Controls.Platform
+﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Microsoft.Playwright;
+    using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls;
+    using PowerPlaywright.Framework.Controls.Platform;
+    using PowerPlaywright.Framework.Controls.Platform.Attributes;
+    using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
+
     /// <summary>
-    /// A command bar
+    /// A command bar.
     /// </summary>
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class CommandBar : Control, ICommandBar
     {
         private readonly ILocator commands;
-        private readonly ILocator overflowButton;
-        private readonly ILocator overflowFlyout;
-        private readonly ILocator overflowCommands;
+        private readonly ILocator overflowCommand;
+        private readonly ILocator flyout;
+        private readonly ILocator flyoutCommands;
+        private readonly ILocator flyoutLoading;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandBar"/> class.
@@ -31,10 +32,11 @@ namespace PowerPlaywright.Strategies.Controls.Platform
         public CommandBar(IAppPage appPage, IControl parent = null)
             : base(appPage, parent)
         {
-            this.commands = this.Container.Locator("button");
-            this.overflowButton = this.Container.Locator("button[data-id='OverflowButton']");
-            this.overflowFlyout = this.Page.Locator("ul[data-id='OverflowFlyout']");
-            this.overflowCommands = this.overflowFlyout.Locator("button");
+            this.commands = this.Container.Locator("[role='menuitem']:not([data-id='OverflowButton']):not([aria-hidden='true'])");
+            this.overflowCommand = this.Container.Locator("[data-id='OverflowButton']");
+            this.flyout = this.Page.GetByRole(AriaRole.Menu);
+            this.flyoutCommands = this.flyout.Locator("[role='menuitem']:not([id*='flyoutbackbutton']):not([aria-hidden='true'])");
+            this.flyoutLoading = this.flyoutCommands.Filter(new LocatorFilterOptions { HasText = "Loading..." });
         }
 
         /// <inheritdoc/>
@@ -42,171 +44,142 @@ namespace PowerPlaywright.Strategies.Controls.Platform
         {
             await this.Page.WaitForAppIdleAsync();
 
-            if (parentCommands.Length != 0)
-            {
-                var commandFlyout = await this.ExpandCommandsAsync(parentCommands);
-
-                return await this
-                    .GetFlyoutCommandsLocator(commandFlyout)
-                    .AllTextContentsAsync();
-            }
-
-            if (await IsOverflowPresentAsync())
-            {
-                await this.ExpandOverflowAsync();
-            }
-
-            var commands = await this.commands.AllTextContentsAsync();
-            var overflowCommands = await this.overflowFlyout.AllTextContentsAsync();
-
-            return commands.Concat(overflowCommands).Where(c => !string.IsNullOrEmpty(c)).ToList();
+            return parentCommands.Length == 0
+                ? await this.GetRootCommandsAsync()
+                : await this.GetNestedCommandsAsync(parentCommands);
         }
 
         /// <inheritdoc/>
-        public async Task ClickCommandAsync(string command, params string[] parentCommands)
+        public async Task ClickCommandAsync(params string[] commands)
         {
-            var commandLocator = this.GetCommandLocator(command);
+            await this.Page.WaitForAppIdleAsync();
 
-            if (parentCommands.Length != 0)
+            var parentCommands = commands.Take(commands.Length - 1);
+
+            foreach (var parentCommand in parentCommands)
             {
-                var flyout = await this.ExpandCommandsAsync(parentCommands);
-                commandLocator = this.GetFlyoutCommandLocator(command, flyout);
+                await this.ExpandCommandAsync(parentCommand);
             }
-            else if (!await this.IsCommandVisibleAsync(command) && await this.IsOverflowPresentAsync())
+
+            var command = this.commands.Or(this.flyoutCommands).Filter(new LocatorFilterOptions { HasText = commands.Last() });
+            var commandFound = await command.IsVisibleAsync();
+
+            if (!commandFound && commands.Length == 1 && await this.IsOverflowPresentAsync())
             {
                 await this.ExpandOverflowAsync();
-                commandLocator = this.GetOverflowCommandLocator(command);
+                commandFound = await command.IsVisibleAsync();
             }
 
-            if (!await commandLocator.IsVisibleAsync())
+            if (!commandFound)
             {
-                throw new NotFoundException($"Unable to find command {string.Join("/", parentCommands)}{command}.");
+                throw new PowerPlaywrightException($"The command '{commands.Last()}' is not available in the command bar.");
             }
 
-            await commandLocator.ClickAsync();
+            if (await this.IsSplitButtonCommandAsync(command))
+            {
+                command = this.GetSplitButtonMainCommand(command);
+            }
+
+            await command.ClickAndWaitForAppIdleAsync();
         }
 
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator("ul[data-lp-id*=\"commandbar-Form:\"]");
+            return context.GetByRole(AriaRole.Menubar, new LocatorGetByRoleOptions { Name = "Commands" }).First;
         }
 
-        private async Task<ILocator> ExpandCommandsAsync(string[] commands)
+        private async Task ExpandCommandAsync(string command)
         {
-            if (!commands.Any())
+            await this.Page.WaitForAppIdleAsync();
+
+            var initialCommand = this.commands.Or(this.flyoutCommands).Filter(new LocatorFilterOptions { HasText = command });
+
+            var isRootCommand = await initialCommand.IsVisibleAsync();
+            if (!isRootCommand && await this.IsOverflowPresentAsync())
             {
-                throw new ArgumentException("At least one command must be specified.", nameof(commands));
-            }
+                await this.ExpandOverflowAsync();
 
-            var rootCommand = commands.First();
-            var isOverflow = false;
-
-            if (!await IsCommandVisibleAsync(rootCommand))
-            {
-                await ExpandOverflowAsync();
-
-                if (!await IsCommandVisibleInOverflowAsync(rootCommand))
+                if (!await initialCommand.IsVisibleAsync())
                 {
-                    throw new NotFoundException($"The root command '{rootCommand}' was not found in the command bar.");
-                }
-
-                isOverflow = true;
-            }
-
-
-            var flyout = await ExpandCommandAsync(rootCommand, isOverflow: isOverflow, isChild: false);
-
-            foreach (var command in commands.Skip(1))
-            {
-                flyout = await ExpandCommandAsync(command, isOverflow: isOverflow, isChild: true);
-            }
-
-            return flyout;
-        }
-
-        private async Task<ILocator> ExpandCommandAsync(string command, bool isOverflow = false, bool isChild = false)
-        {
-            ILocator commandLocator;
-
-            if (isOverflow)
-            {
-                commandLocator = this.GetOverflowCommandLocator(command);
-            }
-            else
-            {
-                commandLocator = this.GetCommandLocator(command);
-            }
-
-            if (!await commandLocator.IsVisibleAsync())
-            {
-                throw new NotFoundException($"The command '{command}' was not found in the command bar.");
-            }
-
-            var expandLocator = commandLocator;
-
-            if (await commandLocator.First.GetAttributeAsync("aria-haspopup") == null)
-            {
-                // Split button
-                expandLocator = commandLocator.First.Locator("..").Locator("button[aria-haspopup='true']");
-
-                if (!await expandLocator.IsVisibleAsync())
-                {
-                    throw new NotSupportedException($"Failed to expand '{command}'. Command was visible but was not a dropdown or split button.");
+                    throw new PowerPlaywrightException($"The command '{initialCommand}' is not available in the command bar.");
                 }
             }
 
-            await expandLocator.ClickAsync();
-            await this.Page.WaitForAppIdleAsync();
+            if (await this.IsSplitButtonCommandAsync(initialCommand))
+            {
+                initialCommand = this.GetSplitButtonDropdownCommand(initialCommand);
+            }
 
-            var flyoutId = await expandLocator.GetAttributeAsync("aria-owns");
+            await initialCommand.ClickAndWaitForAppIdleAsync();
 
-            return this.Page.Locator($"div[id='{flyoutId}'");
+            await this.flyoutLoading.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Hidden });
         }
 
-        private async Task<bool> IsCommandVisibleInOverflowAsync(string command)
+        private async Task<IEnumerable<string>> GetRootCommandsAsync()
         {
-            await this.Page.WaitForAppIdleAsync();
+            var labels = new List<string>();
 
-            return await this.GetOverflowCommandLocator(command).IsVisibleAsync();
+            var commands = await this.commands.AllAsync();
+            labels.AddRange(await Task.WhenAll(commands.Select(this.GetCommandLabel)));
+
+            if (await this.IsOverflowPresentAsync())
+            {
+                await this.ExpandOverflowAsync();
+            }
+
+            var overflowCommands = await this.flyoutCommands.AllAsync();
+            labels.AddRange(await Task.WhenAll(overflowCommands.Select(this.GetCommandLabel)));
+
+            return labels;
         }
 
-        private async Task<bool> IsCommandVisibleAsync(string command)
+        private async Task<IEnumerable<string>> GetNestedCommandsAsync(string[] parentCommands)
         {
-            await this.Page.WaitForAppIdleAsync();
+            foreach (var parentCommand in parentCommands)
+            {
+                await this.ExpandCommandAsync(parentCommand);
+            }
 
-            return await this.GetCommandLocator(command).IsVisibleAsync();
+            var nestedCommands = await this.flyoutCommands.AllAsync();
+
+            return await Task.WhenAll(nestedCommands.Select(this.GetCommandLabel));
         }
 
         private async Task<bool> IsOverflowPresentAsync()
         {
-            return await this.overflowButton.IsVisibleAsync();
-        }
-
-        private ILocator GetFlyoutCommandLocator(string command, ILocator flyout)
-        {
-            return GetFlyoutCommandsLocator(flyout).Filter(new LocatorFilterOptions() { HasText = command });
-        }
-
-        private ILocator GetFlyoutCommandsLocator(ILocator flyout)
-        {
-            return flyout.Locator("button");
-        }
-
-        private ILocator GetOverflowCommandLocator(string command)
-        {
-            return this.overflowCommands.Filter(new LocatorFilterOptions() { HasText = command });
-        }
-
-        private ILocator GetCommandLocator(string command)
-        {
-            return this.commands.Filter(new LocatorFilterOptions { HasText = command });
+            return await this.overflowCommand.IsVisibleAsync();
         }
 
         private async Task ExpandOverflowAsync()
         {
-            await this.overflowButton.ClickAsync();
-            await this.Page.WaitForAppIdleAsync();
+            await this.overflowCommand.ClickAndWaitForAppIdleAsync();
+        }
+
+        private async Task<string> GetCommandLabel(ILocator command)
+        {
+            var label = await this.IsSplitButtonCommandAsync(command)
+                ? await this.GetSplitButtonMainCommand(command).InnerTextAsync()
+                : await command.InnerTextAsync();
+
+            return label.Trim();
+        }
+
+        private ILocator GetSplitButtonMainCommand(ILocator command)
+        {
+            return command.Locator("[role='button']:not[aria-haspopup='true']");
+        }
+
+        private ILocator GetSplitButtonDropdownCommand(ILocator command)
+        {
+            return command.Locator("[role='button'][aria-haspopup='true']");
+        }
+
+        private async Task<bool> IsSplitButtonCommandAsync(ILocator command)
+        {
+            var id = await command.GetAttributeAsync(Attributes.Id);
+
+            return id != null && id.Contains(".Menu0_splitButton");
         }
     }
 }

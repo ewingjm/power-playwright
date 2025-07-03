@@ -13,6 +13,11 @@
     public interface IMainForm : IPlatformControl
     {
         /// <summary>
+        /// Gets the command bar on the form.
+        /// </summary>
+        ICommandBar CommandBar { get; }
+
+        /// <summary>
         /// Opens a tab on the form.
         /// </summary>
         /// <param name="label">The tab label.</param>
@@ -48,7 +53,7 @@
         /// </summary>
         /// <typeparam name="TControl">The child control type.</typeparam>
         /// <param name="name">The field name.</param>
-        /// <returns></returns>
+        /// <returns>The field.</returns>
         IField<TControl> GetField<TControl>(string name)
             where TControl : IPcfControl;
 
@@ -69,16 +74,17 @@
         /// <summary>
         /// Gets a data set on the form (e.g. a grid) with a know child control type.
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <typeparam name="TControl">The type of data set.</typeparam>
+        /// <param name="name">The data set name.</param>
+        /// <returns>The data set.</returns>
         IDataSet<TControl> GetDataSet<TControl>(string name)
             where TControl : IPcfControl;
 
         /// <summary>
         /// Gets a data set on the form (e.g. a grid).
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">The data set name.</param>
+        /// <returns>The data set.</returns>
         IDataSet GetDataSet(string name);
     }
 }
