@@ -29,6 +29,7 @@
                 {
                     return true;
                 }
+
                 c = c.BaseType;
             }
 

@@ -230,7 +230,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Test that <see cref="IControlFactory.GetRedirectedType{TControl}"/> returns the type of the control when the type is not redirected in the strategy assemblies."/>
+    /// Test that <see cref="IControlFactory.GetRedirectedType{TControl}"/> returns the type of the control when the type is not redirected in the strategy assemblies."/>.
     /// </summary>
     [Test]
     public void GetRedirectedType_TypeIsNotRedirected_ReturnsType()

@@ -8,7 +8,7 @@
     public interface IDuration : IPcfControl
     {
         /// <summary>
-        /// Sets the value of the Duration control.The value must be in the following format: x minute(s)/hour(s)/day(s)
+        /// Sets the value of the Duration control.The value must be in the following format: x minute(s)/hour(s)/day(s).
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>

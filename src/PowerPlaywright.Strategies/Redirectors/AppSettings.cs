@@ -1,7 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
-    using PowerPlaywright.Framework.Redirectors;
     using System.Text.Json.Serialization;
+    using PowerPlaywright.Framework.Redirectors;
 
     /// <summary>
     /// App settings.

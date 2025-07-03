@@ -6,12 +6,12 @@
     public interface IAppSettings
     {
         /// <summary>
-        /// Gets the value of the NewLookOptOut app setting.
+        /// Gets a value indicating whether the NewLookOptOut app setting is enabled.
         /// </summary>
         bool NewLookOptOut { get; }
 
         /// <summary>
-        /// Gets the value of the NewLookAlwaysOn app setting.
+        /// Gets a value indicating whether the NewLookAlwaysOn app setting is enabled.
         /// </summary>
         bool NewLookAlwaysOn { get; }
 

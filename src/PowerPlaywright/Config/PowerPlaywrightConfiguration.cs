@@ -1,7 +1,7 @@
 ﻿namespace PowerPlaywright.Config
 {
-    using NuGet.Packaging.Core;
     using System.Collections.Generic;
+    using NuGet.Packaging.Core;
 
     /// <summary>
     /// Configuration for Power Playwright.
@@ -9,13 +9,13 @@
     public class PowerPlaywrightConfiguration
     {
         /// <summary>
-        /// The strategies package identity.
-        /// </summary>
-        internal PackageIdentity PackageIdentity { get; set; }
-
-        /// <summary>
-        /// Additional control assemblies.
+        /// Gets or sets additional control assemblies.
         /// </summary>
         public IList<PageObjectAssemblyConfiguration> PageObjectAssemblies { get; set; }
+
+        /// <summary>
+        /// Gets or sets the strategies package identity.
+        /// </summary>
+        internal PackageIdentity PackageIdentity { get; set; }
     }
 }

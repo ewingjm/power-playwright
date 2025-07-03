@@ -1,5 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
+    using System;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -9,8 +11,6 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
-    using System;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A data set.
@@ -26,7 +26,7 @@
         private readonly ILocator viewsMenu;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MainForm"/> class.
+        /// Initializes a new instance of the <see cref="DataSet"/> class.
         /// </summary>
         /// <param name="appPage">The page.</param>
         /// <param name="controlFactory">The control factory.</param>
@@ -74,7 +74,7 @@
 
             try
             {
-                await this.viewsMenu.Locator($"//button//label[text()='{(viewName.Replace("'", @"\"))}']").ClickAndWaitForAppIdleAsync();
+                await this.viewsMenu.Locator($"//button//label[text()='{viewName.Replace("'", @"\")}']").ClickAndWaitForAppIdleAsync();
             }
             catch (TimeoutException)
             {

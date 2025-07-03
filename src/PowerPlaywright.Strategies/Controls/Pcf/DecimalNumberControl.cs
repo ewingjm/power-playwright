@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -8,7 +9,6 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="IDecimalNumberControl"/>.

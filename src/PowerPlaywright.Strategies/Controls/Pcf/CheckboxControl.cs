@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -7,7 +8,6 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="IOptionSetControl"/>.
@@ -19,12 +19,12 @@
         private readonly ILocator textBox;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OptionSet"/> class.
+        /// Initializes a new instance of the <see cref="CheckboxControl"/> class.
         /// </summary>
         /// <param name="name">The control name.</param>
         /// <param name="appPage">The app page.</param>
         /// <param name="infoProvider">The info provider.</param>
-        /// <param name="parent">The parent control</param>
+        /// <param name="parent">The parent control.</param>
         public CheckboxControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
