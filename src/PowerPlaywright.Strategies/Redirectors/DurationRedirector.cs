@@ -1,10 +1,10 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
+    using System;
     using Microsoft.Extensions.Logging;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Redirectors;
-    using System;
 
     /// <summary>
     /// Redirects requests for an <see cref="IDuration"/> control.

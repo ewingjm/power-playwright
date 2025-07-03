@@ -1,7 +1,7 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Pcf.Classes
 {
-    using PowerPlaywright.Framework.Model;
     using System.Threading.Tasks;
+    using PowerPlaywright.Framework.Model;
 
     /// <summary>
     /// Field class.

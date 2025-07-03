@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -7,11 +8,11 @@
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
     using PowerPlaywright.Framework.Pages;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A data set.
     /// </summary>
+    /// <typeparam name="TControl">The control type.</typeparam>
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class DataSet<TControl> : Control, IDataSet<TControl>
         where TControl : IPcfControl
@@ -23,7 +24,7 @@
         private readonly IDataSet dataSet;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MainForm"/> class.
+        /// Initializes a new instance of the <see cref="DataSet{TControl}"/> class.
         /// </summary>
         /// <param name="appPage">The page.</param>
         /// <param name="controlFactory">The control factory.</param>

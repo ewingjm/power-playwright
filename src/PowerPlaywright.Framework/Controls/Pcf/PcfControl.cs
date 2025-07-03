@@ -17,7 +17,7 @@
         protected PcfControl(string name, IAppPage appPage, IControl parent = null)
             : base(appPage, parent)
         {
-            Name = name;
+            this.Name = name;
         }
 
         /// <summary>

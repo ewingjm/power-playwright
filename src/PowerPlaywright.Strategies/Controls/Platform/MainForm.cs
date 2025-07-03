@@ -1,5 +1,10 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -10,11 +15,6 @@
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A main form.
@@ -42,6 +42,9 @@
             this.tabs = this.tabList.GetByRole(AriaRole.Tab);
             this.formReadOnlyNotification = this.Container.Locator("#message-formReadOnlyNotification");
         }
+
+        /// <inheritdoc/>
+        public ICommandBar CommandBar => this.controlFactory.CreateCachedInstance<ICommandBar>(this.AppPage, parent: this);
 
         /// <inheritdoc/>
         public async Task<string> GetActiveTabAsync()
@@ -136,7 +139,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.GetByRole(AriaRole.Form);
+            return context.GetByRole(AriaRole.Form).First;
         }
     }
 }

@@ -13,6 +13,10 @@
 
         private Assembly assembly;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LocalAssemblyProvider"/> class.
+        /// </summary>
+        /// <param name="path">The path to the assembly.</param>
         public LocalAssemblyProvider(string path)
         {
             this.path = path ?? throw new ArgumentNullException(nameof(path));

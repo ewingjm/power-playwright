@@ -26,7 +26,7 @@
         int ActiveReleaseChannel { get; }
 
         /// <summary>
-        /// Gets whether the new look is enabled based on user, app, and org settings.
+        /// Gets a value indicating whether the new look is enabled based on user, app, and org settings.
         /// </summary>
         bool IsNewLookEnabled { get; }
     }

@@ -25,7 +25,7 @@
         {
             this.serializerOptions = new JsonSerializerOptions()
             {
-                PropertyNameCaseInsensitive = true
+                PropertyNameCaseInsensitive = true,
             };
         }
 

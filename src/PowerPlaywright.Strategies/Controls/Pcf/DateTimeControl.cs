@@ -1,5 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -8,8 +10,6 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
-    using System;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="IDateTimeControl"/>.
@@ -46,7 +46,7 @@
                 return null;
             }
 
-            var timeString = await timeInput.IsVisibleAsync() ? await this.timeInput.InputValueOrNullAsync() : null;
+            var timeString = await this.timeInput.IsVisibleAsync() ? await this.timeInput.InputValueOrNullAsync() : null;
 
             return DateTime.Parse($"{dateString} {timeString}".TrimEnd());
         }

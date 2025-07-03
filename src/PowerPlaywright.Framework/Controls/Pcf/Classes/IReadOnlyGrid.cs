@@ -19,7 +19,7 @@
         /// <summary>
         /// Gets the column names on the view.
         /// </summary>
-        /// <returns>The column names</returns>
+        /// <returns>The column names.</returns>
         Task<IEnumerable<string>> GetColumnNamesAsync();
     }
 }

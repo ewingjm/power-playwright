@@ -1,8 +1,8 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Platform
 {
+    using System.Threading.Tasks;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// An interface representing a data set.

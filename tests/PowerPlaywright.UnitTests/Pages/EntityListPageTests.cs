@@ -17,7 +17,6 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
 {
     private const string GridControlName = "entity_control";
     private const string Empty = "";
-    private IPlatformReference? platformReference;
 
     /// <summary>
     /// Tests that an <see cref="ArgumentNullException"/> is thrown if a null <see cref="IPage"/> is passed to the constructor.
@@ -25,7 +24,7 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
     [Test]
     public void Constructor_NullPage_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => new EntityListPage(null, this.ControlFactory, this.platformReference));
+        Assert.Throws<ArgumentNullException>(() => new EntityListPage(null, this.ControlFactory));
     }
 
     /// <summary>
@@ -34,16 +33,7 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
     [Test]
     public void Constructor_NullControlFactory_Throws()
     {
-        Assert.Throws<ArgumentNullException>(() => new EntityListPage(this.Page, null, this.platformReference));
-    }
-
-    /// <summary>
-    /// Tests that an <see cref="ArgumentNullException"/> is thrown if a null <see cref="IPlatformReference"/> is passed to the constructor.
-    /// </summary>
-    [Test]
-    public void Constructor_NullPlatformReference_Throws()
-    {
-        Assert.Throws<ArgumentNullException>(() => new EntityListPage(this.Page, this.ControlFactory, null));
+        Assert.Throws<ArgumentNullException>(() => new EntityListPage(this.Page, null));
     }
 
     /// <summary>
@@ -52,7 +42,7 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
     [Test]
     public void Constructor_ValidArguments_DoesNotThrow()
     {
-        Assert.DoesNotThrow(() => new EntityListPage(this.Page, this.ControlFactory, this.platformReference));
+        Assert.DoesNotThrow(() => new EntityListPage(this.Page, this.ControlFactory));
     }
 
     /// <summary>
@@ -73,12 +63,8 @@ public class EntityListPageTests : AppPageTests<IEntityListPage>
     /// <inheritdoc/>
     protected override IEntityListPage InstantiateAppPage()
     {
-        this.platformReference = Substitute.For<IPlatformReference>();
-        this.platformReference.EntityListPageGridControlName.Returns(GridControlName);
-
         return new EntityListPage(
             this.Page,
-            this.ControlFactory,
-            this.platformReference);
+            this.ControlFactory);
     }
 }

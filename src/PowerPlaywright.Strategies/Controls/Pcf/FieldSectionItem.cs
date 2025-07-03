@@ -1,5 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -9,8 +11,6 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
-    using System;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="IFieldSectionItem"/> interface.
@@ -30,7 +30,7 @@
         /// <param name="appPage">The app page.</param>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="controlFactory">The control factory.</param>
-        /// <param name="parent">The parent control</param>
+        /// <param name="parent">The parent control.</param>
         public FieldSectionItem(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControlFactory controlFactory, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
@@ -65,7 +65,7 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            return await this.lockedIcon.IsVisibleAsync() || this.Parent is IMainForm form && await form.IsDisabledAsync();
+            return await this.lockedIcon.IsVisibleAsync() || (this.Parent is IMainForm form && await form.IsDisabledAsync());
         }
 
         /// <inheritdoc/>

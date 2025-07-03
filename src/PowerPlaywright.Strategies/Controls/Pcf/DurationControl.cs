@@ -2,13 +2,13 @@
 {
     using System.Threading.Tasks;
     using Microsoft.Playwright;
-    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
-    using PowerPlaywright.Framework.Controls.Pcf;
-    using PowerPlaywright.Framework.Pages;
-    using PowerPlaywright.Framework.Controls;
-    using PowerPlaywright.Strategies.Extensions;
     using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls;
+    using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="IDurationControl"/>.
@@ -40,7 +40,7 @@
         /// <inheritdoc/>
         public async Task SetValueAsync(string value)
         {
-            await input.ClearAsync();
+            await this.input.ClearAsync();
             await this.input.FillAsync(value);
             await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }

@@ -1,5 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -9,8 +11,6 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
-    using System;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="IOptionSetControl"/>.
@@ -21,13 +21,14 @@
         private readonly ILocator toggleMenu;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UpdMSPicklistControl"/> class.
+        /// Initializes a new instance of the <see cref="OptionSetControl"/> class.
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
-        /// <param name="infoProvider"></param>
+        /// <param name="infoProvider">The environment info provider.</param>
         /// <param name="parent">The parent control.</param>
-        public OptionSetControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null) : base(name, appPage, infoProvider, parent)
+        public OptionSetControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
+            : base(name, appPage, infoProvider, parent)
         {
             this.toggleMenu = this.Container.GetByRole(AriaRole.Combobox);
         }
@@ -35,9 +36,9 @@
         /// <inheritdoc/>
         public async Task<string> GetValueAsync()
         {
-            await Page.WaitForAppIdleAsync();
+            await this.Page.WaitForAppIdleAsync();
 
-            return await toggleMenu.GetAttributeAsync("value") ?? null;
+            return await this.toggleMenu.GetAttributeAsync("value") ?? null;
         }
 
         /// <inheritdoc/>
@@ -46,30 +47,34 @@
             await this.Page.WaitForAppIdleAsync();
 
             await this.toggleMenu.ClickAndWaitForAppIdleAsync();
-            var option = await GetOptionLocatorAsync(optionValue);
+            var option = await this.GetOptionLocatorAsync(optionValue);
 
             await option.ClickAndWaitForAppIdleAsync();
         }
 
+        /// <inheritdoc/>
         async Task IYesNo.SetValueAsync(bool value)
         {
             await this.Page.WaitForAppIdleAsync();
 
             await this.toggleMenu.ClickAndWaitForAppIdleAsync();
+
             // TODO: Use table metadata to get true/false text values instead of relying on index.
-            var option = await GetOptionLocatorAsync(Convert.ToInt32(value));
+            var option = await this.GetOptionLocatorAsync(Convert.ToInt32(value));
 
             await option.ClickAndWaitForAppIdleAsync();
         }
 
+        /// <inheritdoc/>
         async Task<bool> IYesNo.GetValueAsync()
         {
-            await Page.WaitForAppIdleAsync();
+            await this.Page.WaitForAppIdleAsync();
 
-            var value = await toggleMenu.GetAttributeAsync("value");
+            var value = await this.toggleMenu.GetAttributeAsync("value");
             await this.toggleMenu.ClickAndWaitForAppIdleAsync();
+
             // TODO: Use table metadata to get true/false text values instead of relying on index.
-            var falseOption = await GetOptionLocatorAsync(0);
+            var falseOption = await this.GetOptionLocatorAsync(0);
             var falseOptionText = await falseOption.TextContentAsync();
 
             return value != falseOptionText;
@@ -84,14 +89,14 @@
 
         private async Task<ILocator> GetOptionLocatorAsync(string optionValue)
         {
-            var flyout = await GetFlyoutLocatorAsync();
+            var flyout = await this.GetFlyoutLocatorAsync();
 
             return flyout.GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Name = optionValue });
         }
 
         private async Task<ILocator> GetOptionLocatorAsync(int optionIndex)
         {
-            var flyout = await GetFlyoutLocatorAsync();
+            var flyout = await this.GetFlyoutLocatorAsync();
 
             return flyout.GetByRole(AriaRole.Option).Nth(optionIndex);
         }

@@ -73,7 +73,7 @@ namespace PowerPlaywright
                 {
                     Name = c.GetProperty("name").GetString(),
                     Version = new Version(c.GetProperty("version").GetString()),
-                    Id = c.GetProperty("customcontrolid").GetGuid()
+                    Id = c.GetProperty("customcontrolid").GetGuid(),
                 });
         }
 

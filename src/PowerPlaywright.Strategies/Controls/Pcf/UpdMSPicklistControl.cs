@@ -1,5 +1,9 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -8,10 +12,6 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="IUpdMSPicklistControl"/>.
@@ -29,7 +29,7 @@
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
-        /// <param name="infoProvider"></param>
+        /// <param name="infoProvider">The environment info provider.</param>
         /// <param name="parent">The parent control.</param>
         public UpdMSPicklistControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
@@ -78,6 +78,13 @@
             await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
 
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            // The base GetRoot method does not find choices controls before they have a value.
+            return base.GetRoot(context).Or(context.Locator($"div[data-id='{this.Name}.fieldControl_container']"));
+        }
+
         private async Task ClearExistingOptions()
         {
             var selectedOptions = this.Container.GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Selected = true });
@@ -117,13 +124,6 @@
             }
 
             await this.buttonToggleMenu.ClickAndWaitForAppIdleAsync();
-        }
-
-        /// <inheritdoc/>
-        protected override ILocator GetRoot(ILocator context)
-        {
-            // The base GetRoot method does not find choices controls before they have a value.
-            return base.GetRoot(context).Or(context.Locator($"div[data-id='{this.Name}.fieldControl_container']"));
         }
     }
 }

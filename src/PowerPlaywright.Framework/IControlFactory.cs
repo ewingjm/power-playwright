@@ -1,8 +1,8 @@
 ﻿namespace PowerPlaywright.Framework
 {
+    using System;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Pages;
-    using System;
 
     /// <summary>
     /// Instantiates a concrete implementation of a given control.
