@@ -34,17 +34,20 @@
             : base(name, appPage, infoProvider, parent)
         {
             this.controlFactory = controlFactory ?? throw new ArgumentNullException(nameof(controlFactory));
-            this.field = this.controlFactory.CreateInstance<IFieldSectionItem>(this.AppPage, this.Name, this.Parent);
+            this.field = this.controlFactory.CreateCachedInstance<IFieldSectionItem>(this.AppPage, this.Name, this.Parent);
         }
 
         /// <inheritdoc/>
-        public TControl Control => this.controlFactory.CreateCachedInstance<TControl>(this.AppPage, this.Name, this);
+        public TControl Control => this.GetControl<TControl>();
+
+        /// <inheritdoc/>
+        public FieldLocation Location => this.field.Location;
 
         /// <inheritdoc/>
         public TPcfControl GetControl<TPcfControl>()
             where TPcfControl : IPcfControl
         {
-            return this.controlFactory.CreateInstance<TPcfControl>(this.AppPage, this.Name, this);
+            return this.controlFactory.CreateCachedInstance<TPcfControl>(this.AppPage, this.Name, this);
         }
 
         /// <inheritdoc/>

@@ -9,6 +9,11 @@
     public interface IField : IPcfControl
     {
         /// <summary>
+        /// Gets the location of the field.
+        /// </summary>
+        FieldLocation Location { get; }
+
+        /// <summary>
         /// Gets a control within the field.
         /// </summary>
         /// <typeparam name="TPcfControl">The type of PCF control.</typeparam>

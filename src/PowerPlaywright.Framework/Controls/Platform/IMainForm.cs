@@ -43,10 +43,16 @@
         Task<bool> IsDisabledAsync();
 
         /// <summary>
-        /// Gets all fields on the form.
+        /// Gets all fields on the form (excluding header fields).
         /// </summary>
-        /// <returns>The field.</returns>
+        /// <returns>The fields.</returns>
         Task<IEnumerable<IField>> GetFieldsAsync();
+
+        /// <summary>
+        /// Gets all header fields on the form.
+        /// </summary>
+        /// <returns>The header fields.</returns>
+        Task<IEnumerable<IField>> GetHeaderFieldsAsync();
 
         /// <summary>
         /// Gets a field on the form with a known child control type.
@@ -74,8 +80,8 @@
         /// <summary>
         /// Gets a data set on the form (e.g. a grid) with a know child control type.
         /// </summary>
-        /// <typeparam name="TControl">The type of data set.</typeparam>
-        /// <param name="name">The data set name.</param>
+        /// <typeparam name="TControl">The control type.</typeparam>
+        /// <param name="name">The name of the data set.</param>
         /// <returns>The data set.</returns>
         IDataSet<TControl> GetDataSet<TControl>(string name)
             where TControl : IPcfControl;
@@ -83,8 +89,26 @@
         /// <summary>
         /// Gets a data set on the form (e.g. a grid).
         /// </summary>
-        /// <param name="name">The data set name.</param>
+        /// <param name="name">The name of the data set.</param>
         /// <returns>The data set.</returns>
         IDataSet GetDataSet(string name);
+
+        /// <summary>
+        /// Expands the header on the main form to enable interaction with header fields.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task ExpandHeaderAsync();
+
+        /// <summary>
+        /// Collapses the header on the main form.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task CollapseHeaderAsync();
+
+        /// <summary>
+        /// Gets a value indicating whether the header is expanded.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<bool> IsHeaderExpandedAsync();
     }
 }
