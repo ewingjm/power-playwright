@@ -56,7 +56,7 @@ public class AppPageTests : AppPageTests<IAppPage>
     }
 
     /// <summary>
-    /// Tests that the <see cref="AppPage.GetControl{TControl}"/> method always calls <see cref="IControlFactory.CreateInstance{TControl}(IAppPage, string, Framework.Controls.IControl)"/> if the control has not been previously created.
+    /// Tests that the <see cref="AppPage.GetControl{TControl}"/> method always calls <see cref="IcontrolFactory.CreateInstance{TControl}(IAppPage, string, Framework.Controls.IControl)"/> if the control has not been previously created.
     /// </summary>
     [Test]
     public void GetControl_GetControlNotPreviouslyCalledWithSameTypeAndName_ReturnsControlFromControlFactory()

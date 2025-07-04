@@ -41,10 +41,13 @@
         }
 
         /// <inheritdoc/>
+        public FieldLocation Location => this.Name.StartsWith("header_") ? FieldLocation.Header : FieldLocation.Body;
+
+        /// <inheritdoc/>
         public TPcfControl GetControl<TPcfControl>()
             where TPcfControl : IPcfControl
         {
-            return this.controlFactory.CreateInstance<TPcfControl>(this.AppPage, this.Name, this);
+            return this.controlFactory.CreateCachedInstance<TPcfControl>(this.AppPage, this.Name, this);
         }
 
         /// <inheritdoc/>
@@ -105,6 +108,11 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
+            if (this.Location == FieldLocation.Header)
+            {
+                return this.Page.Locator("#headerFieldsFlyout").Locator($"//div[((starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')) and contains(@data-lp-id, '|{this.Name}|'))]");
+            }
+
             return context.Locator($"//div[((starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')) and contains(@data-lp-id, '|{this.Name}|'))]");
         }
     }

@@ -7,6 +7,7 @@
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
+    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
@@ -37,11 +38,11 @@
             this.name = name;
             this.parent = parent;
 
-            this.dataSet = this.controlFactory.CreateInstance<IDataSet>(this.AppPage, this.name, this.parent);
+            this.dataSet = this.controlFactory.CreateCachedInstance<IDataSet>(this.AppPage, this.name, this.parent);
         }
 
         /// <inheritdoc/>
-        public TControl Control => this.controlFactory.CreateInstance<TControl>(this.AppPage, this.name, this);
+        public TControl Control => this.controlFactory.CreateCachedInstance<TControl>(this.AppPage, this.name, this);
 
         /// <inheritdoc/>
         public TPcfControl GetControl<TPcfControl>()

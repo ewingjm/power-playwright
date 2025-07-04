@@ -7,6 +7,7 @@
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
+    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
@@ -34,14 +35,14 @@
         /// <inheritdoc/>
         public IField GetField(string name)
         {
-            return this.controlFactory.CreateInstance<IField>(this.AppPage, $"{this.Name}.{name}", this);
+            return this.controlFactory.CreateCachedInstance<IField>(this.AppPage, $"{this.Name}.{name}", this);
         }
 
         /// <inheritdoc/>
         public IField<TControl> GetField<TControl>(string name)
             where TControl : IPcfControl
         {
-            return this.controlFactory.CreateInstance<IField<TControl>>(this.AppPage, $"{this.Name}.{name}", this);
+            return this.controlFactory.CreateCachedInstance<IField<TControl>>(this.AppPage, $"{this.Name}.{name}", this);
         }
 
         /// <inheritdoc/>

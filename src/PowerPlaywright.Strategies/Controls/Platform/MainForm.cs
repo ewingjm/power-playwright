@@ -15,6 +15,7 @@
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
     /// A main form.
@@ -27,6 +28,8 @@
         private readonly ILocator tabList;
         private readonly ILocator tabs;
         private readonly ILocator formReadOnlyNotification;
+        private readonly ILocator expandHeaderButton;
+        private readonly ILocator headerFieldsFlyout;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
@@ -41,6 +44,8 @@
             this.tabList = this.Container.GetByRole(AriaRole.Tablist);
             this.tabs = this.tabList.GetByRole(AriaRole.Tab);
             this.formReadOnlyNotification = this.Container.Locator("#message-formReadOnlyNotification");
+            this.expandHeaderButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "More Header Editable Fields" });
+            this.headerFieldsFlyout = this.Page.Locator("#headerFieldsFlyout");
         }
 
         /// <inheritdoc/>
@@ -67,58 +72,56 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var fieldType = this.controlFactory.GetRedirectedType<IField>();
-            var fieldControlName = fieldType.GetCustomAttribute<PcfControlAttribute>().Name;
+            return await this.GetFieldsAsync(this.Container);
+        }
 
-            var fieldLocators = await this.Container.Locator($"div[data-lp-id*='{fieldControlName}']").AllAsync();
+        /// <inheritdoc/>
+        public async Task<IEnumerable<IField>> GetHeaderFieldsAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
 
-            var lpIdTasks = fieldLocators
-                .Select(field => field.GetAttributeAsync(Attributes.DataLpId))
-                .ToArray();
+            if (!await this.expandHeaderButton.IsVisibleAsync())
+            {
+                return Enumerable.Empty<IField>();
+            }
 
-            var lpIds = await Task.WhenAll(lpIdTasks);
+            await this.ExpandHeaderAsync();
+            var headerFields = await this.GetFieldsAsync(this.headerFieldsFlyout);
+            await this.CollapseHeaderAsync();
 
-            var fields = lpIds
-                .Select(lpId =>
-                {
-                    var fieldName = lpId.Split('|')[1];
-                    return this.controlFactory.CreateInstance<IField>(this.AppPage, fieldName, this);
-                })
-                .ToList();
-
-            return fields;
+            return headerFields;
         }
 
         /// <inheritdoc/>
         public IField GetField(string name)
         {
-            return this.controlFactory.CreateInstance<IField>(this.AppPage, name, this);
+            return this.controlFactory.CreateCachedInstance<IField>(this.AppPage, name, this);
         }
 
         /// <inheritdoc/>
         public IField<TControl> GetField<TControl>(string name)
             where TControl : IPcfControl
         {
-            return this.controlFactory.CreateInstance<IField<TControl>>(this.AppPage, name, this);
+            return this.controlFactory.CreateCachedInstance<IField<TControl>>(this.AppPage, name, this);
         }
 
         /// <inheritdoc/>
         public IQuickView GetQuickView(string name)
         {
-            return this.controlFactory.CreateInstance<IQuickView>(this.AppPage, name, this);
+            return this.controlFactory.CreateCachedInstance<IQuickView>(this.AppPage, name, this);
         }
 
         /// <inheritdoc/>
         public IDataSet GetDataSet(string name)
         {
-            return this.controlFactory.CreateInstance<IDataSet>(this.AppPage, name, this);
+            return this.controlFactory.CreateCachedInstance<IDataSet>(this.AppPage, name, this);
         }
 
         /// <inheritdoc/>
         public IDataSet<TControl> GetDataSet<TControl>(string name)
             where TControl : IPcfControl
         {
-            return this.controlFactory.CreateInstance<IDataSet<TControl>>(this.AppPage, name, this);
+            return this.controlFactory.CreateCachedInstance<IDataSet<TControl>>(this.AppPage, name, this);
         }
 
         /// <inheritdoc/>
@@ -137,9 +140,65 @@
         }
 
         /// <inheritdoc/>
+        public async Task ExpandHeaderAsync()
+        {
+            if (await this.IsHeaderExpandedAsync())
+            {
+                return;
+            }
+
+            await this.expandHeaderButton.ClickAndWaitForAppIdleAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task CollapseHeaderAsync()
+        {
+            if (!await this.IsHeaderExpandedAsync())
+            {
+                return;
+            }
+
+            await this.expandHeaderButton.ClickAndWaitForAppIdleAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> IsHeaderExpandedAsync()
+        {
+            return await this.expandHeaderButton.IsExpandedAsync();
+        }
+
+        /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
             return context.GetByRole(AriaRole.Form).First;
+        }
+
+        private async Task<IEnumerable<IField>> GetFieldsAsync(ILocator context)
+        {
+            var fieldLocators = await context.Locator($"div[data-lp-id*='{this.GetFieldControlName()}']").AllAsync();
+
+            var lpIdTasks = fieldLocators
+                .Select(field => field.GetAttributeAsync(Attributes.DataLpId))
+                .ToArray();
+
+            var lpIds = await Task.WhenAll(lpIdTasks);
+
+            var fields = lpIds
+                .Select(lpId =>
+                {
+                    var fieldName = lpId.Split('|')[1];
+                    return this.controlFactory.CreateCachedInstance<IField>(this.AppPage, fieldName, this);
+                })
+                .ToList();
+
+            return fields;
+        }
+
+        private string GetFieldControlName()
+        {
+            var fieldType = this.controlFactory.GetRedirectedType<IField>();
+
+            return fieldType.GetCustomAttribute<PcfControlAttribute>().Name;
         }
     }
 }

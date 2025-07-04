@@ -47,7 +47,7 @@
         public TPcfControl GetControl<TPcfControl>()
             where TPcfControl : IPcfControl
         {
-            return this.controlFactory.CreateInstance<TPcfControl>(this.AppPage, this.name, this);
+            return this.controlFactory.CreateCachedInstance<TPcfControl>(this.AppPage, this.name, this);
         }
 
         /// <inheritdoc/>

@@ -37,7 +37,7 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var optionText = await this.selectedOption.TextContentAsync(new LocatorTextContentOptions { Timeout = 0 });
+            var optionText = await this.selectedOption.TextContentAsync();
 
             return optionText != "---" ? optionText : null;
         }
