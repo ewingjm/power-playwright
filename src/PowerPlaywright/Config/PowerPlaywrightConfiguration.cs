@@ -9,7 +9,7 @@
     public class PowerPlaywrightConfiguration
     {
         /// <summary>
-        /// Gets or sets additional control assemblies.
+        /// Gets or sets the additional control assemblies.
         /// </summary>
         public IList<PageObjectAssemblyConfiguration> PageObjectAssemblies { get; set; }
 
