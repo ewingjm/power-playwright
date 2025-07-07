@@ -20,7 +20,7 @@
         }
 
         /// <inheritdoc/>
-        protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
+        protected override Type GetTargetControlType(IRedirectionEnvironmentInfo environmentInfo, RedirectionControlInfo controlInfo)
         {
             return typeof(ICustomControl);
         }

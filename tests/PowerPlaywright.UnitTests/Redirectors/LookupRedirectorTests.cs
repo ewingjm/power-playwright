@@ -4,6 +4,7 @@
     using Microsoft.Extensions.Logging;
     using NSubstitute;
     using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Framework.Redirectors;
     using PowerPlaywright.Strategies.Redirectors;
 
@@ -13,7 +14,7 @@
     public class LookupRedirectorTests
     {
         private IRedirectionInfoProvider redirectionInfoProvider;
-        private IRedirectionInfo redirectionInfo;
+        private IRedirectionEnvironmentInfo environmentInfo;
         private Faker faker;
 
         private LookupRedirector redirector;
@@ -25,10 +26,10 @@
         public void SetUp()
         {
             this.redirectionInfoProvider = Substitute.For<IRedirectionInfoProvider>();
-            this.redirectionInfo = Substitute.For<IRedirectionInfo>();
+            this.environmentInfo = Substitute.For<IRedirectionEnvironmentInfo>();
             this.faker = new Faker();
 
-            this.redirectionInfoProvider.GetRedirectionInfo().Returns(this.redirectionInfo);
+            this.redirectionInfoProvider.GetRedirectionInfo().Returns(this.environmentInfo);
 
             this.redirector = new LookupRedirector(this.redirectionInfoProvider, Substitute.For<ILogger<LookupRedirector>>());
         }
@@ -45,10 +46,10 @@
         [TestCase(true, true, ExpectedResult = typeof(ISimpleLookupControl))]
         public Type Redirect_ModernizationOptOutSet_ReturnsCorrespondingLookupInterface(bool isNewLookEnabled, bool isSemiAnnualChannel)
         {
-            this.redirectionInfo.IsNewLookEnabled.Returns(isNewLookEnabled);
-            this.redirectionInfo.ActiveReleaseChannel.Returns(isSemiAnnualChannel ? (int)ReleaseChannel.SemiAnnualChannel : (int)this.faker.PickRandomWithout(ReleaseChannel.SemiAnnualChannel));
+            this.environmentInfo.IsNewLookEnabled.Returns(isNewLookEnabled);
+            this.environmentInfo.ActiveReleaseChannel.Returns(isSemiAnnualChannel ? (int)ReleaseChannel.SemiAnnualChannel : (int)this.faker.PickRandomWithout(ReleaseChannel.SemiAnnualChannel));
 
-            return this.redirector.Redirect();
+            return this.redirector.Redirect(new RedirectionControlInfo(Substitute.For<IAppPage>(), null, null));
         }
     }
 }

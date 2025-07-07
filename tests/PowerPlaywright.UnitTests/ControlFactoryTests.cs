@@ -23,7 +23,7 @@ using PowerPlaywright.Strategies.Redirectors;
 public class ControlFactoryTests
 {
     private Dictionary<Type, Type?> resolvedTypes;
-    private RedirectionInfo redirectionInfo;
+    private RedirectionInfo environmentInfo;
     private IAssemblyProvider assemblyProvider;
     private IControlStrategyResolver strategyResolver;
     private IRedirectionInfoProvider redirectionInfoProvider;
@@ -39,7 +39,7 @@ public class ControlFactoryTests
     public void SetUp()
     {
         this.resolvedTypes = [];
-        this.redirectionInfo = new RedirectionInfo(new Version(), new OrgSettings(), new AppSettings(), new UserSettings());
+        this.environmentInfo = new RedirectionInfo(new Version(), new OrgSettings(), new AppSettings(), new UserSettings());
 
         this.assemblyProvider = Substitute.For<IAssemblyProvider>();
         this.strategyResolver = Substitute.For<IControlStrategyResolver>();
@@ -224,7 +224,7 @@ public class ControlFactoryTests
     [Test]
     public void GetRedirectedType_TypeIsRedirected_ReturnsRedirectedType()
     {
-        var redirectedType = this.controlFactory.GetRedirectedType<IReadOnlyGrid>();
+        var redirectedType = this.controlFactory.GetRedirectedType<IReadOnlyGrid>(Substitute.For<IAppPage>());
 
         Assert.That(redirectedType, Is.EqualTo(typeof(IPcfGridControl)));
     }
@@ -235,7 +235,7 @@ public class ControlFactoryTests
     [Test]
     public void GetRedirectedType_TypeIsNotRedirected_ReturnsType()
     {
-        var redirectedType = this.controlFactory.GetRedirectedType<IPcfGridControl>();
+        var redirectedType = this.controlFactory.GetRedirectedType<IPcfGridControl>(Substitute.For<IAppPage>());
 
         Assert.That(redirectedType, Is.EqualTo(typeof(IPcfGridControl)));
     }
@@ -265,7 +265,7 @@ public class ControlFactoryTests
         this.strategyResolver.Resolve(Arg.Any<Type>(), Arg.Any<IEnumerable<Type>>())
             .Returns((i) => this.resolvedTypes.ContainsKey(i.Arg<Type>()) ? this.resolvedTypes[i.Arg<Type>()] : null);
         this.redirectionInfoProvider.GetRedirectionInfo()
-            .Returns((i) => this.redirectionInfo);
+            .Returns((i) => this.environmentInfo);
     }
 
     private class IUnrecognisedControl : IControl

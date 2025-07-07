@@ -29,7 +29,7 @@
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
-        /// <param name="infoProvider">The environment info provider.</param>
+        /// <param name="infoProvider">The info provider.</param>
         /// <param name="parent">The parent control.</param>
         public UpdMSPicklistControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)

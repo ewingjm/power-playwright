@@ -112,7 +112,7 @@
         public async Task ExpandHeader_Always_ExpandsHeader()
         {
             var form = await this.SetupFormScenarioAsync();
-            var headerField = form.GetField("header_statecode");
+            var headerField = form.GetField("header_statuscode");
 
             await form.ExpandHeaderAsync();
 
@@ -128,7 +128,7 @@
         public async Task CloseHeader_Always_CollapsesHeader()
         {
             var form = await this.SetupFormScenarioAsync();
-            var headerField = form.GetField("header_statecode");
+            var headerField = form.GetField("header_statuscode");
 
             await form.CollapseHeaderAsync();
 

@@ -196,7 +196,7 @@
 
         private string GetFieldControlName()
         {
-            var fieldType = this.controlFactory.GetRedirectedType<IField>();
+            var fieldType = this.controlFactory.GetRedirectedType<IField>(this.AppPage);
 
             return fieldType.GetCustomAttribute<PcfControlAttribute>().Name;
         }

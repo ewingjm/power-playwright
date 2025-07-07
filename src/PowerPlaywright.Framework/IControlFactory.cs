@@ -13,8 +13,11 @@
         /// Gets the type of the interface that is redirected to when a control type is requested.
         /// </summary>
         /// <typeparam name="TControl">The control interface.</typeparam>
+        /// <param name="appPage">The page.</param>
+        /// <param name="name">An optional control name.</param>
+        /// <param name="parent">An optional parent control.</param>
         /// <returns>The type of control redirected to.</returns>
-        Type GetRedirectedType<TControl>()
+        Type GetRedirectedType<TControl>(IAppPage appPage, string name = null, IControl parent = null)
             where TControl : IControl;
 
         /// <summary>
