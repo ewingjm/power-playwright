@@ -9,7 +9,7 @@
         /// Gets the name of the 'id' attribute.
         /// </summary>
         internal const string Id = "id";
-      
+
         /// <summary>
         /// Gets the name of the 'aria-colcount' attribute.
         /// </summary>

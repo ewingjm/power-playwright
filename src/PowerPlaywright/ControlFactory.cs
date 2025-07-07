@@ -159,13 +159,13 @@
         }
 
         /// <inheritdoc/>
-        public Type GetRedirectedType<TControl>()
+        public Type GetRedirectedType<TControl>(IAppPage appPage, string name = null, IControl parent = null)
             where TControl : IControl
         {
             var controlType = typeof(TControl);
             this.logger.LogTrace("Getting redirected type of {controlType}.", controlType);
 
-            if (this.TryRedirectControlType(ref controlType))
+            if (this.TryRedirectControlType(ref controlType, appPage, name, parent))
             {
                 this.logger.LogTrace("Type redirected to {controlType}.", controlType);
             }
@@ -189,7 +189,7 @@
             var controlType = typeof(TControl);
             this.logger.LogTrace("Creating an instance of {controlType}.", controlType);
 
-            if (this.TryRedirectControlType(ref controlType))
+            if (this.TryRedirectControlType(ref controlType, appPage, name, parent))
             {
                 this.logger.LogTrace("Type redirected to {controlType}.", controlType);
             }
@@ -266,11 +266,11 @@
             return strategyType;
         }
 
-        private bool TryRedirectControlType(ref Type controlType)
+        private bool TryRedirectControlType(ref Type controlType, IAppPage appPage, string name, IControl parent)
         {
             if (this.RedirectorsMap.TryGetValue(controlType, out var redirector))
             {
-                controlType = redirector.Redirect();
+                controlType = redirector.Redirect(new RedirectionControlInfo(appPage, name, parent));
 
                 return true;
             }

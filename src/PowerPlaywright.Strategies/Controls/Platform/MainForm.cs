@@ -2,14 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
     using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
-    using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
@@ -21,7 +18,7 @@
     /// A main form.
     /// </summary>
     [PlatformControlStrategy(0, 0, 0, 0)]
-    public class MainForm : Control, IMainForm
+    public class MainForm : FormControl, IMainForm
     {
         private readonly IControlFactory controlFactory;
 
@@ -29,15 +26,15 @@
         private readonly ILocator tabs;
         private readonly ILocator formReadOnlyNotification;
         private readonly ILocator expandHeaderButton;
-        private readonly ILocator headerFieldsFlyout;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainForm"/> class.
         /// </summary>
         /// <param name="appPage">The page.</param>
         /// <param name="controlFactory">The control factory.</param>
-        public MainForm(IAppPage appPage, IControlFactory controlFactory)
-            : base(appPage)
+        /// <param name="parent">The parent control.</param>
+        public MainForm(IAppPage appPage, IControlFactory controlFactory, IControl parent = null)
+            : base(appPage, controlFactory, parent)
         {
             this.controlFactory = controlFactory ?? throw new ArgumentNullException(nameof(controlFactory));
 
@@ -45,7 +42,6 @@
             this.tabs = this.tabList.GetByRole(AriaRole.Tab);
             this.formReadOnlyNotification = this.Container.Locator("#message-formReadOnlyNotification");
             this.expandHeaderButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "More Header Editable Fields" });
-            this.headerFieldsFlyout = this.Page.Locator("#headerFieldsFlyout");
         }
 
         /// <inheritdoc/>
@@ -68,28 +64,11 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<IField>> GetFieldsAsync()
+        public new async Task<IEnumerable<IField>> GetFieldsAsync()
         {
             await this.Page.WaitForAppIdleAsync();
 
-            return await this.GetFieldsAsync(this.Container);
-        }
-
-        /// <inheritdoc/>
-        public async Task<IEnumerable<IField>> GetHeaderFieldsAsync()
-        {
-            await this.Page.WaitForAppIdleAsync();
-
-            if (!await this.expandHeaderButton.IsVisibleAsync())
-            {
-                return Enumerable.Empty<IField>();
-            }
-
-            await this.ExpandHeaderAsync();
-            var headerFields = await this.GetFieldsAsync(this.headerFieldsFlyout);
-            await this.CollapseHeaderAsync();
-
-            return headerFields;
+            return await base.GetFieldsAsync();
         }
 
         /// <inheritdoc/>
@@ -140,14 +119,14 @@
         }
 
         /// <inheritdoc/>
-        public async Task ExpandHeaderAsync()
+        public async Task<IMainFormHeader> ExpandHeaderAsync()
         {
-            if (await this.IsHeaderExpandedAsync())
+            if (!await this.IsHeaderExpandedAsync())
             {
-                return;
+                await this.expandHeaderButton.ClickAndWaitForAppIdleAsync();
             }
 
-            await this.expandHeaderButton.ClickAndWaitForAppIdleAsync();
+            return this.controlFactory.CreateCachedInstance<IMainFormHeader>(this.AppPage, parent: this);
         }
 
         /// <inheritdoc/>
@@ -162,43 +141,14 @@
         }
 
         /// <inheritdoc/>
-        public async Task<bool> IsHeaderExpandedAsync()
-        {
-            return await this.expandHeaderButton.IsExpandedAsync();
-        }
-
-        /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
             return context.GetByRole(AriaRole.Form).First;
         }
 
-        private async Task<IEnumerable<IField>> GetFieldsAsync(ILocator context)
+        private async Task<bool> IsHeaderExpandedAsync()
         {
-            var fieldLocators = await context.Locator($"div[data-lp-id*='{this.GetFieldControlName()}']").AllAsync();
-
-            var lpIdTasks = fieldLocators
-                .Select(field => field.GetAttributeAsync(Attributes.DataLpId))
-                .ToArray();
-
-            var lpIds = await Task.WhenAll(lpIdTasks);
-
-            var fields = lpIds
-                .Select(lpId =>
-                {
-                    var fieldName = lpId.Split('|')[1];
-                    return this.controlFactory.CreateCachedInstance<IField>(this.AppPage, fieldName, this);
-                })
-                .ToList();
-
-            return fields;
-        }
-
-        private string GetFieldControlName()
-        {
-            var fieldType = this.controlFactory.GetRedirectedType<IField>();
-
-            return fieldType.GetCustomAttribute<PcfControlAttribute>().Name;
+            return await this.expandHeaderButton.IsExpandedAsync();
         }
     }
 }

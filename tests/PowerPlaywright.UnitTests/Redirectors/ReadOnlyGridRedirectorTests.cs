@@ -3,6 +3,7 @@
     using Microsoft.Extensions.Logging;
     using NSubstitute;
     using PowerPlaywright.Framework.Controls.Pcf;
+    using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Framework.Redirectors;
     using PowerPlaywright.Strategies.Redirectors;
 
@@ -11,7 +12,7 @@
     /// </summary>
     public class ReadOnlyGridRedirectorTests
     {
-        private IRedirectionInfo redirectionInfo;
+        private IRedirectionEnvironmentInfo environmentInfo;
         private IRedirectionInfoProvider redirectionInfoProvider;
 
         private ReadOnlyGridRedirector redirector;
@@ -22,10 +23,10 @@
         [SetUp]
         public void SetUp()
         {
-            this.redirectionInfo = Substitute.For<IRedirectionInfo>();
+            this.environmentInfo = Substitute.For<IRedirectionEnvironmentInfo>();
             this.redirectionInfoProvider = Substitute.For<IRedirectionInfoProvider>();
 
-            this.redirectionInfoProvider.GetRedirectionInfo().Returns(this.redirectionInfo);
+            this.redirectionInfoProvider.GetRedirectionInfo().Returns(this.environmentInfo);
 
             this.redirector = new ReadOnlyGridRedirector(this.redirectionInfoProvider, Substitute.For<ILogger<ReadOnlyGridRedirector>>());
         }
@@ -39,9 +40,9 @@
         [TestCase(true, ExpectedResult = typeof(IPowerAppsOneGrid))]
         public Type Redirect_RedirectionInfoSet_ReturnsCorrectControl(bool isNewLookEnabled)
         {
-            this.redirectionInfo.IsNewLookEnabled.Returns(isNewLookEnabled);
+            this.environmentInfo.IsNewLookEnabled.Returns(isNewLookEnabled);
 
-            return this.redirector.Redirect();
+            return this.redirector.Redirect(new RedirectionControlInfo(Substitute.For<IAppPage>()));
         }
     }
 }

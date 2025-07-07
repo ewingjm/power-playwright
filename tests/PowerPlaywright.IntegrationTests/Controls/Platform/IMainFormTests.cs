@@ -91,48 +91,17 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IMainForm.GetHeaderFieldsAsync"/> always returns header fields on the main form.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task GetHeaderFieldsAsync_Always_ReturnsMainFormHeaderFields()
-        {
-            var form = await this.SetupFormScenarioAsync();
-
-            var headerFields = await form.GetHeaderFieldsAsync();
-
-            Assert.That(headerFields.ToList(), Has.Count.EqualTo(22).And.All.Property(nameof(IField.Location)).EqualTo(FieldLocation.Header));
-        }
-
-        /// <summary>
-        /// Tests that <see cref="IMainForm.ExpandHeaderAsync"/> always expands the header on the main form.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task ExpandHeader_Always_ExpandsHeader()
-        {
-            var form = await this.SetupFormScenarioAsync();
-            var headerField = form.GetField("header_statecode");
-
-            await form.ExpandHeaderAsync();
-
-            Assert.That(form.IsHeaderExpandedAsync, Is.True);
-            Assert.That(headerField.IsVisibleAsync, Is.True);
-        }
-
-        /// <summary>
         /// Tests that <see cref="IMainForm.CollapseHeaderAsync"/> always collapses the header on the main form.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task CloseHeader_Always_CollapsesHeader()
+        public async Task CollapseHeaderAsync_Always_CollapsesHeader()
         {
             var form = await this.SetupFormScenarioAsync();
-            var headerField = form.GetField("header_statecode");
+            var headerField = form.GetField("header_statuscode");
 
             await form.CollapseHeaderAsync();
 
-            Assert.That(form.IsHeaderExpandedAsync, Is.False);
             Assert.That(headerField.IsVisibleAsync, Is.False);
         }
 

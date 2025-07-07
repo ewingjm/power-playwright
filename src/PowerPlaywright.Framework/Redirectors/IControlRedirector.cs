@@ -14,6 +14,7 @@
         /// Gets the control interface that controls of the provided type should be redirected to.
         /// </summary>
         /// <returns>The redirected type.</returns>
-        Type Redirect();
+        /// <param name="controlInfo">Details of the control being redirected.</param>
+        Type Redirect(RedirectionControlInfo controlInfo);
     }
 }

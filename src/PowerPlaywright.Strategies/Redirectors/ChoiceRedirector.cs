@@ -22,11 +22,13 @@
         }
 
         /// <inheritdoc/>
-        protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
+        protected override Type GetTargetControlType(IRedirectionEnvironmentInfo environmentInfo, RedirectionControlInfo controlInfo)
         {
-            if (!redirectionInfo.IsNewLookEnabled)
+            if (!environmentInfo.IsNewLookEnabled)
             {
-                return typeof(IOptionSet);
+                return controlInfo.Name == "statuscode" || controlInfo.Name == "header_statuscode" || controlInfo.Name.EndsWith(".statuscode")
+                    ? typeof(IPicklistStatusControl)
+                    : typeof(IOptionSet);
             }
 
             return typeof(IOptionSetControl);

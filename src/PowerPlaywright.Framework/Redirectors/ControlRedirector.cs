@@ -30,10 +30,10 @@
         protected ILogger Logger { get; private set; }
 
         /// <inheritdoc/>
-        public Type Redirect()
+        public Type Redirect(RedirectionControlInfo controlInfo)
         {
             this.Logger.LogTrace("Redirecting requested control type: {source}.", typeof(TSourceControl).Name);
-            var targetControl = this.GetTargetControlType(this.infoProvider.GetRedirectionInfo());
+            var targetControl = this.GetTargetControlType(this.infoProvider.GetRedirectionInfo(), controlInfo);
             this.Logger.LogTrace("Found target control type: {source}.", targetControl.Name);
 
             return targetControl;
@@ -42,8 +42,9 @@
         /// <summary>
         /// Gets the target type.
         /// </summary>
-        /// <param name="redirectionInfo">The redirection info.</param>
+        /// <param name="environmentInfo">The environment info.</param>
+        /// <param name="controlInfo">The control info.</param>
         /// <returns>The target type.</returns>
-        protected abstract Type GetTargetControlType(IRedirectionInfo redirectionInfo);
+        protected abstract Type GetTargetControlType(IRedirectionEnvironmentInfo environmentInfo, RedirectionControlInfo controlInfo);
     }
 }

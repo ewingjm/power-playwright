@@ -9,6 +9,6 @@
         /// Gets the redirection info.
         /// </summary>
         /// <returns>The redirection info.</returns>
-        IRedirectionInfo GetRedirectionInfo();
+        IRedirectionEnvironmentInfo GetRedirectionInfo();
     }
 }

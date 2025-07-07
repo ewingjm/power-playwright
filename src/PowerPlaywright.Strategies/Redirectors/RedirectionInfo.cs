@@ -6,7 +6,7 @@
     /// <summary>
     /// Runtime information used for control redirection.
     /// </summary>
-    public class RedirectionInfo : IRedirectionInfo
+    public class RedirectionInfo : IRedirectionEnvironmentInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RedirectionInfo"/> class.
@@ -89,7 +89,7 @@
         }
 
         /// <summary>
-        /// Gets the environment version.k.
+        /// Gets the environment version.
         /// </summary>
         internal Version Version { get; }
 

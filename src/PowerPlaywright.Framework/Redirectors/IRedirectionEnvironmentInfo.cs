@@ -1,9 +1,9 @@
 ﻿namespace PowerPlaywright.Framework.Redirectors
 {
     /// <summary>
-    /// Contextual information used to assist with control redirection (e.g. PCF classes to specific PCF controls).
+    /// Contextual environment information used to assist with control redirection (e.g. PCF classes to specific PCF controls).
     /// </summary>
-    public interface IRedirectionInfo
+    public interface IRedirectionEnvironmentInfo
     {
         /// <summary>
         /// Gets the org settings.
@@ -26,7 +26,7 @@
         int ActiveReleaseChannel { get; }
 
         /// <summary>
-        /// Gets a value indicating whether the new look is enabled based on user, app, and org settings.
+        /// Gets a value indicating whether new look is enabled based on user, app, and org settings.
         /// </summary>
         bool IsNewLookEnabled { get; }
     }

@@ -8,7 +8,7 @@
 
     /// <summary>
     /// Redirects requests for an <see cref="IField{TControl}"/> control.
-    /// </summary>K
+    /// </summary>
     /// <typeparam name="TControl">The control type.</typeparam>
     public class FieldRedirector<TControl> : ControlRedirector<IField<TControl>>
         where TControl : IPcfControl
@@ -24,7 +24,7 @@
         }
 
         /// <inheritdoc/>
-        protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
+        protected override Type GetTargetControlType(IRedirectionEnvironmentInfo environmentInfo, RedirectionControlInfo controlInfo)
         {
             return typeof(IFieldSectionItem<TControl>);
         }

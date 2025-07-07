@@ -16,7 +16,7 @@
 
         private readonly JsonSerializerOptions serializerOptions;
 
-        private RedirectionInfo redirectionInfo;
+        private RedirectionInfo environmentInfo;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedirectionInfoProvider"/> class.
@@ -30,15 +30,15 @@
         }
 
         /// <inheritdoc/>
-        public IRedirectionInfo GetRedirectionInfo()
+        public IRedirectionEnvironmentInfo GetRedirectionInfo()
         {
-            return this.redirectionInfo;
+            return this.environmentInfo;
         }
 
         /// <inheritdoc/>
         public async Task InitializeAsync(IPage page)
         {
-            this.redirectionInfo = new RedirectionInfo(
+            this.environmentInfo = new RedirectionInfo(
                 await this.GetVersionAsync(page),
                 await this.GetOrgSettingsAsync(page),
                 await this.GetAppSettingsAsync(page),
