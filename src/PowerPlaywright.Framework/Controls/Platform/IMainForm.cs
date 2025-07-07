@@ -49,12 +49,6 @@
         Task<IEnumerable<IField>> GetFieldsAsync();
 
         /// <summary>
-        /// Gets all header fields on the form.
-        /// </summary>
-        /// <returns>The header fields.</returns>
-        Task<IEnumerable<IField>> GetHeaderFieldsAsync();
-
-        /// <summary>
         /// Gets a field on the form with a known child control type.
         /// </summary>
         /// <typeparam name="TControl">The child control type.</typeparam>
@@ -94,21 +88,15 @@
         IDataSet GetDataSet(string name);
 
         /// <summary>
-        /// Expands the header on the main form to enable interaction with header fields.
+        /// Expands the header flyout on the main form to enable interaction with header fields.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task ExpandHeaderAsync();
+        Task<IMainFormHeader> ExpandHeaderAsync();
 
         /// <summary>
-        /// Collapses the header on the main form.
+        /// Collapses the header flyout on the main form.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task CollapseHeaderAsync();
-
-        /// <summary>
-        /// Gets a value indicating whether the header is expanded.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<bool> IsHeaderExpandedAsync();
     }
 }
