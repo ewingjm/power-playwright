@@ -77,11 +77,6 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            if (this.Location == FieldLocation.Header)
-            {
-                return this.Page.Locator("#headerFieldsFlyout").Locator($"//div[((starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')) and contains(@data-lp-id, '|{this.Name}|'))]");
-            }
-
             return context.Locator($"//div[((starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')) and contains(@data-lp-id, '|{this.Name}|'))]");
         }
     }
