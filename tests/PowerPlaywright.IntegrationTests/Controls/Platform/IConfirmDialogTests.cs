@@ -5,7 +5,7 @@
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
-    /// Tests for the <see cref="ICommandBar"/> control.
+    /// Tests for the <see cref="IConfirmDialog"/> control.
     /// </summary>
     public class IConfirmDialogTests : IntegrationTests
     {

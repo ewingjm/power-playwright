@@ -28,5 +28,8 @@ namespace PowerPlaywright.Pages
 
         /// <inheritdoc/>
         public IConfirmDialog ConfirmDialog => this.GetControl<IConfirmDialog>();
+
+        /// <inheritdoc/>
+        public IAlertDialog AlertDialog => this.GetControl<IAlertDialog>();
     }
 }
