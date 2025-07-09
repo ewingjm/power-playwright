@@ -13,7 +13,8 @@
     public class GlobalSearchRedirector : ControlRedirector<IGlobalSearch>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="YesNoRedirector"/> class.
+        /// Initializes a new instance of the <see cref="YesNoRedirector"/>
+        /// class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
