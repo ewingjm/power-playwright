@@ -13,7 +13,7 @@
     public class GlobalSearchRedirector : ControlRedirector<IGlobalSearch>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="YesNoRedirector"/>
+        /// Initializes a new instance of the <see cref="GlobalSearchRedirector"/>
         /// class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
@@ -24,9 +24,9 @@
         }
 
         /// <inheritdoc/>
-        protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
+        protected override Type GetTargetControlType(IRedirectionEnvironmentInfo environmentInfo, RedirectionControlInfo controlInfo)
         {
-            if (!redirectionInfo.IsRelevanceSearchEnabled)
+            if (!environmentInfo.IsRelevanceSearchEnabled)
             {
                 throw new PowerPlaywrightException("Relevance Search is not enabled for this environment");
             }
