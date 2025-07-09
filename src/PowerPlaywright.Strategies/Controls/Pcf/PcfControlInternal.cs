@@ -1,14 +1,14 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
+    using System.Linq;
+    using System.Reflection;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Pages;
-    using System;
-    using System.Linq;
-    using System.Reflection;
 
     /// <summary>
     /// Internal abstract class for PCF controls.
@@ -33,7 +33,7 @@
         }
 
         /// <summary>
-        /// The <see cref="PcfControlAttribute"/> applicable to this control.
+        /// Gets the <see cref="PcfControlAttribute"/> applicable to this control.
         /// </summary>
         public PcfControlAttribute PcfControlAttribute
         {
@@ -58,7 +58,7 @@
         /// <summary>
         /// Returns the control ID for the target environment.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The control ID.</returns>
         protected Guid GetControlId()
         {
             return this.infoProvider.ControlIds.TryGetValue(this.PcfControlAttribute.Name, out var controlId)
@@ -69,7 +69,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"//div[(starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}') or starts-with(@data-lp-id, '{this.GetControlId()}'))]");
+            return context.Locator($"//div[starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')]");
         }
     }
 }

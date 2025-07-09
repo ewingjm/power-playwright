@@ -1,12 +1,12 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
-    using PowerPlaywright.Framework.Redirectors;
     using System;
+    using PowerPlaywright.Framework.Redirectors;
 
     /// <summary>
     /// Runtime information used for control redirection.
     /// </summary>
-    public class RedirectionInfo : IRedirectionInfo
+    public class RedirectionInfo : IRedirectionEnvironmentInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RedirectionInfo"/> class.
@@ -31,26 +31,6 @@
 
         /// <inheritdoc />
         public IUserSettings User => this.UserSettings;
-
-        /// <summary>
-        /// Gets the environment version.k
-        /// </summary>
-        internal Version Version { get; }
-
-        /// <summary>
-        /// Gets the org settings.
-        /// </summary>
-        internal OrgSettings OrgSettings { get; private set; }
-
-        /// <summary>
-        /// Gets the app settings.
-        /// </summary>
-        internal AppSettings AppSettings { get; private set; }
-
-        /// <summary>
-        /// Gets the user settings.
-        /// </summary>
-        internal UserSettings UserSettings { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether relevance search is enabled on the instance.
@@ -120,5 +100,25 @@
                 return (int)ReleaseChannel.Monthly;
             }
         }
+
+        /// <summary>
+        /// Gets the environment version.
+        /// </summary>
+        internal Version Version { get; }
+
+        /// <summary>
+        /// Gets the org settings.
+        /// </summary>
+        internal OrgSettings OrgSettings { get; private set; }
+
+        /// <summary>
+        /// Gets the app settings.
+        /// </summary>
+        internal AppSettings AppSettings { get; private set; }
+
+        /// <summary>
+        /// Gets the user settings.
+        /// </summary>
+        internal UserSettings UserSettings { get; private set; }
     }
 }

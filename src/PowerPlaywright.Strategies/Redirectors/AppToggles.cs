@@ -16,6 +16,10 @@
         [JsonInclude]
         public bool? ModernizationOptOut { get; private set; }
 
+        /// <summary>
+        /// Converts the app toggles to a dictioanry.
+        /// </summary>
+        /// <returns>A dictionary of app toggles.</returns>
         public IDictionary<string, bool?> ToDictionary()
         {
             return typeof(AppToggles)

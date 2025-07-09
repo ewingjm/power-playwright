@@ -23,7 +23,7 @@ using PowerPlaywright.Strategies.Redirectors;
 public class ControlFactoryTests
 {
     private Dictionary<Type, Type?> resolvedTypes;
-    private RedirectionInfo redirectionInfo;
+    private RedirectionInfo environmentInfo;
     private IAssemblyProvider assemblyProvider;
     private IControlStrategyResolver strategyResolver;
     private IRedirectionInfoProvider redirectionInfoProvider;
@@ -39,7 +39,7 @@ public class ControlFactoryTests
     public void SetUp()
     {
         this.resolvedTypes = [];
-        this.redirectionInfo = new RedirectionInfo(new Version(), new OrgSettings(), new AppSettings(), new UserSettings());
+        this.environmentInfo = new RedirectionInfo(new Version(), new OrgSettings(), new AppSettings(), new UserSettings());
 
         this.assemblyProvider = Substitute.For<IAssemblyProvider>();
         this.strategyResolver = Substitute.For<IControlStrategyResolver>();
@@ -91,7 +91,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws an <see cref="ArgumentNullException"/> when the appPage is null.
+    /// Tests that the <see cref="controlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws an <see cref="ArgumentNullException"/> when the appPage is null.
     /// </summary>
     [Test]
     public void CreateInstance_NullAppPage_ThrowsArgumentNullException()
@@ -100,7 +100,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the strategyResolvers have not resolved the control type from the strategy assemblies.
+    /// /// Tests that the <see cref="controlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the strategyResolvers have not resolved the control type from the strategy assemblies.
     /// </summary>
     [Test]
     public void CreateInstance_ResolverHasNotResolvedControlTypeFromStrategyAssemblies_ThrowsPowerPlaywrightException()
@@ -114,7 +114,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method creates an instance of the resolved control type when the strategyResolvers have resolved the control type from the strategy assemblies.
+    /// Tests that the <see cref="controlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method creates an instance of the resolved control type when the strategyResolvers have resolved the control type from the strategy assemblies.
     /// </summary>
     [Test]
     public void CreateInstance_ResolverHasResolvedControlTypeFromStrategyAssemblies_CreatesInstanceForResolvedType()
@@ -131,7 +131,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method creates an instance of the redirected control type when the strategyResolvers have resolved the control type from the strategy assemblies and a control redirection is found for the control type in the strategy assemblies.
+    /// Tests that the <see cref="controlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method creates an instance of the redirected control type when the strategyResolvers have resolved the control type from the strategy assemblies and a control redirection is found for the control type in the strategy assemblies.
     /// </summary>
     [Test]
     public void CreateInstance_RedirectorFoundForControlTypeInStrategyAssemblies_CreatesInstanceForRedirectedType()
@@ -142,7 +142,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when multiple redirectors are found for the control type in the strategy assemblies.
+    /// Tests that the <see cref="controlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when multiple redirectors are found for the control type in the strategy assemblies.
     /// </summary>
     [Test]
     public void CreateInstance_MultipleRedirectorsFoundForControlTypeInStrategyAssemblies_ThrowsPowerPlaywrightException()
@@ -151,7 +151,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the strategyResolvers are not ready.
+    /// Tests that the <see cref="controlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the strategyResolvers are not ready.
     /// </summary>
     [Test]
     public void CreateInstance_ResolverNotReady_DoesNotResolve()
@@ -163,7 +163,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the strategyResolvers are not ready.
+    /// Tests that the <see cref="controlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the strategyResolvers are not ready.
     /// </summary>
     [Test]
     public void CreateInstance_ResolverReadyPostStrategyInitialisation_CreatesInstanceForResolvedType()
@@ -184,7 +184,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the control type is not found in the framework assembly.
+    /// Tests that the <see cref="controlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method throws a <see cref="PowerPlaywrightException"/> when the control type is not found in the framework assembly.
     /// </summary>
     [Test]
     public void CreateInstance_ControlTypeNotFoundInFrameworkAssemblys_ThrowsPowerPlaywrightException()
@@ -193,7 +193,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method passes the provided name as a constructor argument to the resolved control type.
+    /// Tests that the <see cref="controlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method passes the provided name as a constructor argument to the resolved control type.
     /// </summary>
     [Test]
     public void CreateInstance_NameProvided_PassesNameAsConstructorArgument()
@@ -206,7 +206,7 @@ public class ControlFactoryTests
     }
 
     /// <summary>
-    /// Tests that the <see cref="ControlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method passes the provided parent as a constructor argument to the resolved control type.
+    /// Tests that the <see cref="controlFactory.CreateInstance{TControl}(IAppPage, string, IControl)"/> method passes the provided parent as a constructor argument to the resolved control type.
     /// </summary>
     [Test]
     public void CreateInstance_ParentProvided_PassesParentAsConstructorArgument()
@@ -216,6 +216,28 @@ public class ControlFactoryTests
         var actualControl = this.controlFactory.CreateInstance<IPcfGridControl>(Substitute.For<IAppPage>(), "name", expectedParent);
 
         Assert.That(actualControl.Parent, Is.EqualTo(expectedParent));
+    }
+
+    /// <summary>
+    /// Tests that <see cref="IControlFactory.GetRedirectedType{TControl}"/> returns the type of the control redirected to when the type is redirected in the strategy assemblies.
+    /// </summary>
+    [Test]
+    public void GetRedirectedType_TypeIsRedirected_ReturnsRedirectedType()
+    {
+        var redirectedType = this.controlFactory.GetRedirectedType<IReadOnlyGrid>(Substitute.For<IAppPage>());
+
+        Assert.That(redirectedType, Is.EqualTo(typeof(IPcfGridControl)));
+    }
+
+    /// <summary>
+    /// Test that <see cref="IControlFactory.GetRedirectedType{TControl}"/> returns the type of the control when the type is not redirected in the strategy assemblies."/>.
+    /// </summary>
+    [Test]
+    public void GetRedirectedType_TypeIsNotRedirected_ReturnsType()
+    {
+        var redirectedType = this.controlFactory.GetRedirectedType<IPcfGridControl>(Substitute.For<IAppPage>());
+
+        Assert.That(redirectedType, Is.EqualTo(typeof(IPcfGridControl)));
     }
 
     private void MockValidDefaults()
@@ -243,7 +265,7 @@ public class ControlFactoryTests
         this.strategyResolver.Resolve(Arg.Any<Type>(), Arg.Any<IEnumerable<Type>>())
             .Returns((i) => this.resolvedTypes.ContainsKey(i.Arg<Type>()) ? this.resolvedTypes[i.Arg<Type>()] : null);
         this.redirectionInfoProvider.GetRedirectionInfo()
-            .Returns((i) => this.redirectionInfo);
+            .Returns((i) => this.environmentInfo);
     }
 
     private class IUnrecognisedControl : IControl

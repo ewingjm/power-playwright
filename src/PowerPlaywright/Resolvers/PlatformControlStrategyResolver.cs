@@ -62,7 +62,6 @@
                             return false;
                         }
 
-
                         if (controlType.IsAssignableFrom(s))
                         {
                             return true;

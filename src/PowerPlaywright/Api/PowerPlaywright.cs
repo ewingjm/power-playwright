@@ -16,7 +16,6 @@ namespace PowerPlaywright.Api
     using NuGet.Packaging.Core;
     using NuGet.Protocol;
     using NuGet.Protocol.Core.Types;
-    using NuGet.Versioning;
 
     /// <summary>
     /// The entry point for Power Playwright.
@@ -45,6 +44,7 @@ namespace PowerPlaywright.Api
         /// <summary>
         /// Creates an instance of Power Playwright.
         /// </summary>
+        /// <param name="configuration">The configuration.</param>
         /// <returns>A Power Playwright instance.</returns>
         public static async Task<IPowerPlaywright> CreateAsync(PowerPlaywrightConfiguration configuration = null)
         {

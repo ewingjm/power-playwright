@@ -1,7 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
-    using PowerPlaywright.Framework.Redirectors;
     using System.Text.Json.Serialization;
+    using PowerPlaywright.Framework.Redirectors;
 
     /// <summary>
     /// The organization settings.
@@ -24,6 +24,6 @@
 
         /// <inheritdoc/>
         [JsonIgnore]
-        public int ReleaseChannel => (int)ReleaseChannelEnum;
+        public int ReleaseChannel => (int)this.ReleaseChannelEnum;
     }
 }

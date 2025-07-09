@@ -1,10 +1,10 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
+    using System;
     using Microsoft.Extensions.Logging;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Redirectors;
-    using System;
 
     /// <summary>
     /// Redirects requests for an <see cref="IDate"/> control.
@@ -22,7 +22,7 @@
         }
 
         /// <inheritdoc/>
-        protected override Type GetTargetControlType(IRedirectionInfo redirectionInfo)
+        protected override Type GetTargetControlType(IRedirectionEnvironmentInfo environmentInfo, RedirectionControlInfo controlInfo)
         {
             return typeof(IDateControl);
         }

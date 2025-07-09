@@ -91,7 +91,7 @@
 
             if (withNoValue)
             {
-                record.RuleFor(p => p.pp_currency, f => null);
+                record.RuleFor(p => p.pp_currency, f => null!);
             }
             else if (withCurrency.HasValue && !withNoValue)
             {

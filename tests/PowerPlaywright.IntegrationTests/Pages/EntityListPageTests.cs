@@ -21,13 +21,13 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEntityListPage.Grid"/> always exists on the page.
+        /// Tests that <see cref="IEntityListPage.DataSet"/> always exists on the page.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task Grid_Always_Exists()
         {
-            await this.Expect(this.listPage!.Grid.Container).ToBeVisibleAsync();
+            await this.Expect(this.listPage!.DataSet.Container).ToBeVisibleAsync();
         }
 
         /// <summary>

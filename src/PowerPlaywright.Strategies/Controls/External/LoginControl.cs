@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.External
 {
+    using System;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
@@ -36,9 +37,9 @@
             this.pageFactory = pageFactory ?? throw new System.ArgumentNullException(nameof(pageFactory));
             this.logger = logger;
 
-            this.usernameInput = this.Container.Locator("input[type=email]");
-            this.nextButton = this.Container.Locator("input[type=submit]");
-            this.passwordInput = this.Container.Locator("input[type=password]");
+            this.usernameInput = this.Container.GetByRole(AriaRole.Textbox).And(this.Container.Locator("input[type=email]"));
+            this.nextButton = this.Container.GetByRole(AriaRole.Button).And(this.Container.Locator("input[type=submit]"));
+            this.passwordInput = this.Container.GetByRole(AriaRole.Textbox).And(this.Container.Locator("input[type=password]"));
             this.workOrSchoolAccount = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Work or school account" });
             this.staySignedInButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Yes" });
         }
@@ -46,12 +47,25 @@
         /// <inheritdoc/>
         public async Task<IModelDrivenAppPage> LoginAsync(string username, string password)
         {
+            await this.usernameInput.FocusAsync();
             await this.usernameInput.FillAsync(username);
             await this.nextButton.ClickAsync();
 
+            try
+            {
+                await this.workOrSchoolAccount.Or(this.passwordInput).WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
+            }
+            catch (TimeoutException)
+            {
+                if (await this.nextButton.IsVisibleAsync())
+                {
+                    await this.nextButton.ClickAsync();
+                }
+            }
+
             await this.workOrSchoolAccount.Or(this.passwordInput).ClickAsync();
 
-            await this.passwordInput.ClickAsync();
+            await this.passwordInput.FocusAsync();
             await this.passwordInput.FillAsync(password);
             await this.nextButton.ClickAsync();
 

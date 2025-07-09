@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -7,9 +8,6 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
-    using PowerPlaywright.Strategies.Extensions;
-    using System;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="IOptionSetControl"/>.
@@ -26,7 +24,7 @@
         /// <param name="name">The control name.</param>
         /// <param name="appPage">The app page.</param>
         /// <param name="infoProvider">The info provider.</param>
-        /// <param name="parent">The parent control</param>
+        /// <param name="parent">The parent control.</param>
         public OptionSet(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
@@ -39,7 +37,7 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var optionText = await this.selectedOption.TextContentAsync(new LocatorTextContentOptions { Timeout = 0 });
+            var optionText = await this.selectedOption.TextContentAsync();
 
             return optionText != "---" ? optionText : null;
         }

@@ -27,6 +27,12 @@ namespace PowerPlaywright.Pages
         public IClientApi ClientApi => this.GetControl<IClientApi>();
 
         /// <inheritdoc/>
+        public IConfirmDialog ConfirmDialog => this.GetControl<IConfirmDialog>();
+
+        /// <inheritdoc/>
+        public IAlertDialog AlertDialog => this.GetControl<IAlertDialog>();
+
+        /// <inheritdoc/>
         public IGlobalSearch Search => this.GetControl<IGlobalSearch>();
     }
 }

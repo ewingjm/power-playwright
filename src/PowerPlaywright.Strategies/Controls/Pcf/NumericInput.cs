@@ -1,5 +1,8 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -9,9 +12,6 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
-    using System;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="INumericInput"/>.
@@ -39,7 +39,7 @@
         {
             var value = await this.GetValueAsync<string>();
 
-            return value != null ? Convert.ToDecimal(Regex.Replace(value, @"[^\d.,]", "")) : (decimal?)null;
+            return value != null ? Convert.ToDecimal(Regex.Replace(value, @"[^\d.,]", string.Empty)) : (decimal?)null;
         }
 
         /// <inheritdoc/>
@@ -58,12 +58,6 @@
         async Task<int?> IWholeNumber.GetValueAsync()
         {
             return await this.GetValueAsync<int?>();
-        }
-
-        /// <inheritdoc/>
-        public async Task SetValueAsync(float? value)
-        {
-            await this.SetValueAsync(value?.ToString());
         }
 
         /// <inheritdoc/>

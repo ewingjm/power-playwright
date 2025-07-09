@@ -1,5 +1,8 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
+    using System.Globalization;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -8,9 +11,6 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
-    using System;
-    using System.Globalization;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="IDateControl"/>.
@@ -49,6 +49,7 @@
             await this.Page.WaitForAppIdleAsync();
             await this.input.FillAsync(value?.ToString("d", CultureInfo.CurrentCulture));
             await this.Container.ClickAndWaitForAppIdleAsync();
+            await this.Page.Keyboard.PressAsync("Escape");
         }
     }
 }

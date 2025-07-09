@@ -13,7 +13,7 @@
     /// </summary>
     public partial class IReadOnlyGridTests : IntegrationTests
     {
-        private static readonly string[] Columns = ["Name", "Created On"];
+        private static readonly string[] Columns = ["Name", "Created On", "Created By", "Modified By", "Modified On", "Owner", "Record", "Status", "Status Reason", "Created By (Delegate)", "Modified By (Delegate)", "Owning Business Unit", "Record Created On"];
 
         private Faker faker;
 
@@ -55,6 +55,7 @@
         /// <summary>
         /// Tests that <see cref="IReadOnlyGrid.GetColumnNamesAsync"/> always returns all column names.
         /// </summary>
+        /// <param name="withRelatedRecords">Whether or not to create related records.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(true)]
         [TestCase(false)]
@@ -84,13 +85,13 @@
                 await client.ExecuteAsync(
                     new CreateMultipleRequest
                     {
-                        Targets = new EntityCollection(withRelatableRecords.Select(f => f.Generate()).ToList<Entity>()),
+                        Targets = new EntityCollection([.. withRelatableRecords.Select(f => f.Generate())]),
                     });
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(withRecord.Generate());
 
-            return recordPage.Form.GetField<IReadOnlyGrid>(pp_Record.Forms.Information.RelatedRecordsSubgrid).Control;
+            return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedRecordsSubgrid).GetControl<IReadOnlyGrid>();
         }
     }
 }

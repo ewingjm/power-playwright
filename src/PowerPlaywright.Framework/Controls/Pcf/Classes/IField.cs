@@ -1,33 +1,40 @@
-﻿namespace PowerPlaywright.Framework.Controls.Platform
+﻿namespace PowerPlaywright.Framework.Controls.Pcf.Classes
 {
-    using PowerPlaywright.Framework.Controls.Platform.Attributes;
     using System.Threading.Tasks;
+    using PowerPlaywright.Framework.Model;
 
     /// <summary>
-    /// A form field.
+    /// Field class.
     /// </summary>
-    [PlatformControl]
-    public interface IFormField : IControl
+    public interface IField : IPcfControl
     {
         /// <summary>
-        /// Gets the name for the control.
+        /// Gets the location of the field.
         /// </summary>
-        string Name { get; }
+        FieldLocation Location { get; }
 
         /// <summary>
-        /// Gets whether the control is editable.
+        /// Gets a control within the field.
+        /// </summary>
+        /// <typeparam name="TPcfControl">The type of PCF control.</typeparam>
+        /// <returns>The PCF control.</returns>
+        TPcfControl GetControl<TPcfControl>()
+            where TPcfControl : IPcfControl;
+
+        /// <summary>
+        /// Gets whether the field is editable.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<bool> IsDisabledAsync();
 
         /// <summary>
-        /// Gets whether the control is mandatory.
+        /// Gets the field requirement level.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<bool> IsMandatoryAsync();
+        Task<FieldRequirementLevel> GetRequirementLevelAsync();
 
         /// <summary>
-        /// Gets whether the control is editable.
+        /// Gets whether the control is visible.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<bool> IsVisibleAsync();

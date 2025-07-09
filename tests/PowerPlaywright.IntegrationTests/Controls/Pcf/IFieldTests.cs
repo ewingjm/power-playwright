@@ -1,59 +1,60 @@
-﻿namespace PowerPlaywright.IntegrationTests.Controls.Platform
+﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
     using System.Threading.Tasks;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Model;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests the <see cref="IFormField{TPcfControl}"/> and <see cref="IFormField"/> platform controls.
+    /// Tests the <see cref="IField"/> control.
     /// </summary>
-    public class IFormFieldTests : IntegrationTests
+    public class IFieldTests : IntegrationTests
     {
         /// <summary>
-        /// Tests that the <see cref="IFormField{TPcfControl}.Control"/> property returns an instance of the PCF control type.
+        /// Tests that <see cref="IField.GetRequirementLevelAsync"/> returns <see cref="FieldRequirementLevel.Required"/> if the control is required.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task PcfControl_Always_ReturnsPcfControlInstance()
+        public async Task GetRequirementLevelAsync_RequiredField_ReturnsRequired()
         {
-            var form = await this.SetupFormScenarioAsync();
-            var control = form.GetField<IWholeNumber>(pp_Record.Forms.Information.WholeNumberNone);
-
-            Assert.That(control.Control, Is.Not.Null);
-        }
-
-        /// <summary>
-        /// Tests that <see cref="IFormField.IsMandatoryAsync"/> returns true if the control is mandatory.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task IsMandatoryAsync_MandatoryField_ReturnsTrue()
-        {
-            var form = await this.SetupFormScenarioAsync(withMandatoryField: pp_Record.Forms.Information.WholeNumberNone);
+            var form = await this.SetupFormScenarioAsync(withRequiredField: pp_Record.Forms.Information.WholeNumberNone);
             var control = form.GetField(pp_Record.Forms.Information.WholeNumberNone);
 
-            Assert.That(control.IsMandatoryAsync, Is.True);
+            Assert.That(control.GetRequirementLevelAsync, Is.EqualTo(FieldRequirementLevel.Required));
         }
 
         /// <summary>
-        /// Tests that <see cref="IFormField.IsMandatoryAsync"/> returns false if the control is not mandatory.
+        /// Tests that <see cref="IField.GetRequirementLevelAsync"/> returns <see cref="FieldRequirementLevel.None"/> if the control is optional.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task IsMandatoryAsync_NonMandatoryField_ReturnsFalse()
+        public async Task GetRequirementLevelAsync_OptionalField_ReturnsNone()
         {
             var form = await this.SetupFormScenarioAsync(withOptionalField: pp_Record.Forms.Information.WholeNumberNone);
             var control = form.GetField(pp_Record.Forms.Information.WholeNumberNone);
 
-            Assert.That(control.IsMandatoryAsync, Is.False);
+            Assert.That(control.GetRequirementLevelAsync, Is.EqualTo(FieldRequirementLevel.None));
         }
 
         /// <summary>
-        /// Tests that <see cref="IFormField.IsDisabledAsync"/> returns true if the control is disabled.
+        /// Tests that <see cref="IField.GetRequirementLevelAsync"/> returns <see cref="FieldRequirementLevel.Recommended"/> if the control is recommended.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetRequirementLevelAsync_RecommendedField_ReturnsRecommended()
+        {
+            var form = await this.SetupFormScenarioAsync(withRecommendedField: pp_Record.Forms.Information.WholeNumberNone);
+            var control = form.GetField(pp_Record.Forms.Information.WholeNumberNone);
+
+            Assert.That(control.GetRequirementLevelAsync, Is.EqualTo(FieldRequirementLevel.Recommended));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IField.IsDisabledAsync"/> returns true if the control is disabled.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -66,7 +67,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IFormField.IsDisabledAsync"/> returns true if the form is disabled.
+        /// Tests that <see cref="IField.IsDisabledAsync"/> returns true if the form is disabled.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -79,20 +80,20 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IFormField.IsDisabledAsync"/> returns false if the control is not mandatory.
+        /// Tests that <see cref="IField.IsDisabledAsync"/> returns false if the control is not mandatory.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task IsDisabledAsync_NonDisabledField_ReturnsFalse()
         {
-            var form = await this.SetupFormScenarioAsync(withOptionalField: pp_Record.Forms.Information.WholeNumberNone);
+            var form = await this.SetupFormScenarioAsync(withEditableField: pp_Record.Forms.Information.WholeNumberNone);
             var control = form.GetField(pp_Record.Forms.Information.WholeNumberNone);
 
-            Assert.That(control.IsMandatoryAsync, Is.False);
+            Assert.That(control.IsDisabledAsync, Is.False);
         }
 
         /// <summary>
-        /// Tests that <see cref="IFormField.IsVisibleAsync"/> returns true if the control is visible.
+        /// Tests that <see cref="IField.IsVisibleAsync"/> returns true if the control is visible.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -105,7 +106,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IFormField.IsVisibleAsync"/> returns false if the control is hidden.
+        /// Tests that <see cref="IField.IsVisibleAsync"/> returns false if the control is hidden.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [Test]
@@ -118,7 +119,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IFormField.GetLabelAsync"/> returns the label text if the label is visible.
+        /// Tests that <see cref="IField.GetLabelAsync"/> returns the label text if the label is visible.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -131,7 +132,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IFormField.GetLabelAsync"/> returns an empty string if the label is hidden.
+        /// Tests that <see cref="IField.GetLabelAsync"/> returns an empty string if the label is hidden.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -149,12 +150,13 @@
         /// <param name="withEditableField">An optional field to setup as editable on the form.</param>
         /// <param name="withDisabledField">An optional field to set up as disabled on the form.</param>
         /// <param name="withOptionalField">An optional field to set up as non-mandatory on the form.</param>
-        /// <param name="withMandatoryField">An optional field to set up as mandatory on the form.</param>
+        /// <param name="withRequiredField">An optional field to set up as mandatory on the form.</param>
+        /// <param name="withRecommendedField">An optional field to set up as recommended on the form.</param>
         /// <param name="withHiddenField">An optional field to set up as hidden on the form.</param>
         /// <param name="withVisibleField">An optional field to set up as visible on the form.</param>
         /// <param name="withDisabledRecord">Whether or not to set up the record as disabled (e.g. inactive).</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IUrlControl"/>.</returns>
-        private async Task<IMainForm> SetupFormScenarioAsync(string? withEditableField = null, string? withDisabledField = null, string? withOptionalField = null, string? withMandatoryField = null, string? withHiddenField = null, string? withVisibleField = null, bool withDisabledRecord = false)
+        private async Task<IMainForm> SetupFormScenarioAsync(string? withEditableField = null, string? withDisabledField = null, string? withOptionalField = null, string? withRequiredField = null, string? withRecommendedField = null, string? withHiddenField = null, string? withVisibleField = null, bool withDisabledRecord = false)
         {
             var recordfaker = new RecordFaker();
 
@@ -181,9 +183,14 @@
                 await recordPage.Page.EvaluateAsync("field => Xrm.Page.getControl(field).getAttribute().setRequiredLevel('none')", withOptionalField);
             }
 
-            if (withMandatoryField != null)
+            if (withRequiredField != null)
             {
-                await recordPage.Page.EvaluateAsync("field => Xrm.Page.getControl(field).getAttribute().setRequiredLevel('required')", withMandatoryField);
+                await recordPage.Page.EvaluateAsync("field => Xrm.Page.getControl(field).getAttribute().setRequiredLevel('required')", withRequiredField);
+            }
+
+            if (withRecommendedField != null)
+            {
+                await recordPage.Page.EvaluateAsync("field => Xrm.Page.getControl(field).getAttribute().setRequiredLevel('recommended')", withRecommendedField);
             }
 
             if (withHiddenField != null)

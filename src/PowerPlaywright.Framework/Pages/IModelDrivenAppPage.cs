@@ -21,5 +21,15 @@
         /// Gets the global search control.
         /// </summary>
         IGlobalSearch Search { get; }
+
+        /// <summary>
+        /// Gets a confirm dialog.
+        /// </summary>
+        IConfirmDialog ConfirmDialog { get; }
+
+        /// <summary>
+        /// Gets an alert dialog.
+        /// </summary>
+        IAlertDialog AlertDialog { get; }
     }
 }

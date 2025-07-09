@@ -1,0 +1,28 @@
+<appaction uniquename="pp__GroupB!e58b2b5c3736455394a60c4bfa29c239!pp_UserInterfaceDemo!pp_record!0">
+  <appmoduleid>
+    <uniquename>pp_UserInterfaceDemo</uniquename>
+  </appmoduleid>
+  <context>1</context>
+  <contextentity>
+    <logicalname>pp_record</logicalname>
+  </contextentity>
+  <contextvalue>pp_record</contextvalue>
+  <grouptitle default="Group B">
+    <label description="Group B" languagecode="1033" />
+  </grouptitle>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>0</location>
+  <name>GroupB!e58b2b5c3736455394a60c4bfa29c239</name>
+  <onclickeventtype>0</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>pp__Dropdown!3ec01abd360d4413a055ec8b730ca9e8!pp_UserInterfaceDemo!pp_record!0</uniquename>
+  </parentappactionid>
+  <sequence>20000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>3</type>
+</appaction>

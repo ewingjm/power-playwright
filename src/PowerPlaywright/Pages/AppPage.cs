@@ -5,6 +5,7 @@ namespace PowerPlaywright.Pages
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
+    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
@@ -52,18 +53,7 @@ namespace PowerPlaywright.Pages
         protected TControl GetControl<TControl>(string name = null)
             where TControl : IControl
         {
-            var cacheKey = (typeof(TControl), name);
-
-            if (this.controlCache.TryGetValue(cacheKey, out var control))
-            {
-                return (TControl)control;
-            }
-
-            control = this.controlFactory.CreateInstance<TControl>(this, name);
-
-            this.controlCache.Add(cacheKey, control);
-
-            return (TControl)control;
+            return this.controlFactory.CreateCachedInstance<TControl>(this, name);
         }
     }
 }

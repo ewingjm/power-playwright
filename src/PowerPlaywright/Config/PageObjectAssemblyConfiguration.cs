@@ -6,7 +6,7 @@
     public class PageObjectAssemblyConfiguration
     {
         /// <summary>
-        /// The name of the assembly.
+        /// Gets or sets the name of the assembly.
         /// </summary>
         public string Path { get; set; }
     }

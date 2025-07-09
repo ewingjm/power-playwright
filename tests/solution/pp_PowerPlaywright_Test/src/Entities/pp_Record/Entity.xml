@@ -571,7 +571,7 @@
               <Description description="" languagecode="1033" />
             </Descriptions>
             <options>
-              <option value="125600000" ExternalValue="">
+              <option value="125600000" ExternalValue="" IsHidden="0">
                 <labels>
                   <label description="Choice A" languagecode="1033" />
                 </labels>
@@ -579,7 +579,7 @@
                   <Description description="" languagecode="1033" />
                 </Descriptions>
               </option>
-              <option value="125600001" ExternalValue="">
+              <option value="125600001" ExternalValue="" IsHidden="0">
                 <labels>
                   <label description="Choice B" languagecode="1033" />
                 </labels>
@@ -587,7 +587,7 @@
                   <Description description="" languagecode="1033" />
                 </Descriptions>
               </option>
-              <option value="125600002" ExternalValue="">
+              <option value="125600002" ExternalValue="" IsHidden="0">
                 <labels>
                   <label description="Choice C" languagecode="1033" />
                 </labels>
@@ -646,7 +646,7 @@
               <Description description="" languagecode="1033" />
             </Descriptions>
             <options>
-              <option value="125600000" ExternalValue="">
+              <option value="125600000" ExternalValue="" IsHidden="0">
                 <labels>
                   <label description="Choice A" languagecode="1033" />
                 </labels>
@@ -654,7 +654,7 @@
                   <Description description="" languagecode="1033" />
                 </Descriptions>
               </option>
-              <option value="125600001" ExternalValue="">
+              <option value="125600001" ExternalValue="" IsHidden="0">
                 <labels>
                   <label description="Choice B" languagecode="1033" />
                 </labels>
@@ -662,7 +662,7 @@
                   <Description description="" languagecode="1033" />
                 </Descriptions>
               </option>
-              <option value="125600002" ExternalValue="">
+              <option value="125600002" ExternalValue="" IsHidden="0">
                 <labels>
                   <label description="Choice C" languagecode="1033" />
                 </labels>
@@ -1559,12 +1559,12 @@
               <Description description="" languagecode="1033" />
             </Descriptions>
             <options>
-              <option value="1" ExternalValue="">
+              <option value="1" ExternalValue="" IsHidden="0">
                 <labels>
                   <label description="Yes" languagecode="1033" />
                 </labels>
               </option>
-              <option value="0" ExternalValue="">
+              <option value="0" ExternalValue="" IsHidden="0">
                 <labels>
                   <label description="No" languagecode="1033" />
                 </labels>
