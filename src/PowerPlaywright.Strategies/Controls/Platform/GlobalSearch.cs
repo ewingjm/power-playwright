@@ -27,6 +27,7 @@
         private readonly ILocator clearSearchButton;
         private readonly ILocator search;
         private readonly ILocator searchFlyout;
+        private readonly ILocator resultsLocator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GlobalSearch"/> class.
@@ -40,6 +41,7 @@
             this.search = this.Container.GetByRole(AriaRole.Searchbox, new LocatorGetByRoleOptions { Name = "Search" });
             this.clearSearchButton = Container.Locator("i[data-icon-name='Clear']");
             this.searchFlyout = this.Page.Locator($"#{SearchFlyout}");
+            this.resultsLocator = searchFlyout.GetByRole(AriaRole.Row).Locator("button[data-is-focusable]");
         }
 
         /// <inheritdoc/>
@@ -68,8 +70,6 @@
             await Search(searchText);
 
             await searchFlyout.WaitForAsync();
-
-            var resultsLocator = searchFlyout.GetByRole(AriaRole.Row);
             await resultsLocator.First.WaitForAsync();
 
             var results = await resultsLocator.AllAsync();
