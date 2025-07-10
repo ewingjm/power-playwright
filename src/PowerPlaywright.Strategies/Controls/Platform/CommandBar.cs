@@ -76,7 +76,7 @@
                 await this.ExpandCommandAsync(parentCommand);
             }
 
-            var command = this.commands.Or(this.flyoutCommands).Filter(new LocatorFilterOptions { HasTextRegex = new Regex($"^{Regex.Escape(commands.Last())}$") });
+            var command = this.commands.Or(this.flyoutCommands).Filter(new LocatorFilterOptions { Has = this.Page.GetByText(commands.Last(), new PageGetByTextOptions { Exact = true }) });
             var commandFound = await command.IsVisibleAsync();
 
             if (!commandFound && commands.Length == 1 && await this.IsOverflowPresentAsync())

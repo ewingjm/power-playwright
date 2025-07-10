@@ -1,7 +1,7 @@
 ﻿namespace PowerPlaywright.Framework.Extensions
 {
     using System;
-    using System.Collections.Generic;
+    using System.Collections.Concurrent;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Pages;
 
@@ -10,11 +10,11 @@
     /// </summary>
     public static class IControlFactoryExtensions
     {
-        private static readonly Dictionary<(IAppPage, Type, string), IControl> ControlCache;
+        private static readonly ConcurrentDictionary<(IAppPage, Type, string), IControl> ControlCache;
 
         static IControlFactoryExtensions()
         {
-            ControlCache = new Dictionary<(IAppPage, Type, string), IControl>();
+            ControlCache = new ConcurrentDictionary<(IAppPage, Type, string), IControl>();
         }
 
         /// <summary>
@@ -38,7 +38,7 @@
 
             control = controlFactory.CreateInstance<TControl>(appPage, name, parent);
 
-            ControlCache.Add(cacheKey, control);
+            ControlCache.TryAdd(cacheKey, control);
 
             return (TControl)control;
         }
