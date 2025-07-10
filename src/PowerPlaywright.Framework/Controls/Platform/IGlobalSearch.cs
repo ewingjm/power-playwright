@@ -40,21 +40,21 @@
         /// <summary>
         /// Indicates if any results found.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<bool> HasSuggestedResultsAsync();
 
         /// <summary>
         /// Opens a specific search tab on the search results page unless it is already selected.
         /// </summary>
-        /// <param name="searchTabLabel"></param>
-        /// <returns></returns>
+        /// <param name="searchTabLabel">The </param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<ISearchPage> OpenSearchTabAsync(string searchTabLabel);
 
         /// <summary>
         /// Opens the search result within the selected tab by its index.
         /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
+        /// <param name="index">The index of the list to open.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<IEntityRecordPage> OpenSearchTabResult(int index);
     }
 }

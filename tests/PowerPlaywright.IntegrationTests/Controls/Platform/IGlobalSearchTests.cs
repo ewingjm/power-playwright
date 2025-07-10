@@ -87,6 +87,21 @@
             await this.Expect(page.Page).ToHaveURLAsync(SearchPageRegex());
         }
 
+        /// <summary>
+        /// Searches and Opens the record at the given index.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_Opens_Entity()
+        {
+            var sampleRecord = await this.GetRandomIndexedRecord();
+            var searchControl = await this.SetupSearchScenarioAsync(sampleRecord);
+
+            var page = await searchControl.SearchAsync<ISearchPage>(sampleRecord.pp_singlelineoftexttext);
+
+            await this.Expect(page.Page).ToHaveURLAsync(SearchPageRegex());
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_record.*")]
         private static partial Regex RecordPageRegex();
 

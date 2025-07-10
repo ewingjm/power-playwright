@@ -21,16 +21,21 @@
         {
         }
 
-        private IGlobalSearch searchControl => this.GetControl<IGlobalSearch>();
+        /// <summary>
+        /// Gets the search control.
+        /// </summary>
+        private IGlobalSearch SearchControl => this.GetControl<IGlobalSearch>();
 
+        /// <inheritdoc/>
         public async Task<ISearchPage> OpenTabAsync(string tabName)
         {
-            return await searchControl.OpenSearchTabAsync(tabName);
+            return await this.SearchControl.OpenSearchTabAsync(tabName);
         }
 
+        /// <inheritdoc/>
         public async Task<IEntityRecordPage> OpenResultAsync(int index)
         {
-            return await searchControl.OpenSearchTabResult(index);
+            return await this.SearchControl.OpenSearchTabResult(index);
         }
     }
 }
