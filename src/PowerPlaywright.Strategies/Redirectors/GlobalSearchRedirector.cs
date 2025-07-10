@@ -1,11 +1,11 @@
 ﻿namespace PowerPlaywright.Strategies.Redirectors
 {
+    using System;
     using Microsoft.Extensions.Logging;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Redirectors;
-    using System;
 
     /// <summary>
     /// Redirects requests for an <see cref="IGlobalSearch"/> control.

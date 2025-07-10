@@ -1,5 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
+    using System;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -8,11 +10,6 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
-    using System;
-    using System.Data;
-    using System.Threading.Tasks;
-    using System.Transactions;
-    using System.Xml.Linq;
 
     /// <summary>
     /// A global searchText control.
@@ -39,40 +36,36 @@
         {
             this.pageFactory = pageFactory;
             this.search = this.Container.GetByRole(AriaRole.Searchbox, new LocatorGetByRoleOptions { Name = "Search" });
-            this.clearSearchButton = Container.Locator("i[data-icon-name='Clear']");
+            this.clearSearchButton = this.Container.Locator("i[data-icon-name='Clear']");
             this.searchFlyout = this.Page.Locator($"#{SearchFlyout}");
-            this.resultsLocator = searchFlyout.GetByRole(AriaRole.Row).Locator("button[data-is-focusable]");
+            this.resultsLocator = this.searchFlyout.GetByRole(AriaRole.Row).Locator("button[data-is-focusable]");
         }
 
         /// <inheritdoc/>
-        protected override ILocator GetRoot(ILocator context)
+        public async Task SuggestAsync(string searchText)
         {
-            return context.Locator(RootLocator);
+            await this.EnterSearchText(searchText);
         }
 
         /// <inheritdoc/>
-        public async Task SuggestAsync(string searchText, bool performSearch = false)
+        public async Task<TPage> SearchAsync<TPage>(string search)
+            where TPage : IAppPage
         {
-            await Search(searchText, performSearch);
-        }
-
-        /// <inheritdoc/>
-        public async Task<TPage> SearchAsync<TPage>(string search) where TPage : IAppPage
-        {
-            await Search(search, true);
+            await this.Search(search);
             return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
         }
 
         /// <inheritdoc/>
-        public async Task<TPage> OpenSuggestionAsync<TPage>(string searchText, int index) where TPage : IAppPage
+        public async Task<TPage> OpenSuggestionAsync<TPage>(string searchText, int index)
+            where TPage : IAppPage
         {
-            await Page.WaitForAppIdleAsync();
-            await Search(searchText);
+            await this.Page.WaitForAppIdleAsync();
+            await this.EnterSearchText(searchText);
 
-            await searchFlyout.WaitForAsync();
-            await resultsLocator.First.WaitForAsync();
+            await this.searchFlyout.WaitForAsync();
+            await this.resultsLocator.First.WaitForAsync();
 
-            var results = await resultsLocator.AllAsync();
+            var results = await this.resultsLocator.AllAsync();
 
             if (index < 0 || index >= results.Count)
             {
@@ -87,17 +80,17 @@
             }
 
             await selectedResult.ClickAndWaitForAppIdleAsync();
-            return await pageFactory.CreateInstanceAsync<TPage>(Page);
+            return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
         }
 
         /// <inheritdoc/>
         public async Task<bool> HasSuggestedResultsAsync()
         {
-            await Page.WaitForAppIdleAsync();
+            await this.Page.WaitForAppIdleAsync();
 
             try
             {
-                var resultsContainer = searchFlyout.GetByRole(AriaRole.Grid);
+                var resultsContainer = this.searchFlyout.GetByRole(AriaRole.Grid);
                 await resultsContainer.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000, State = WaitForSelectorState.Visible });
                 return await resultsContainer.IsVisibleAsync();
             }
@@ -107,33 +100,10 @@
             }
         }
 
-        /// <summary>
-        /// Performs the searchText.
-        /// </summary>
-        /// <param name="searchText"></param>
-        /// <param name="performSearch"></param>
-        /// <returns></returns>
-        private async Task Search(string searchText, bool performSearch = false)
-        {
-            if (await clearSearchButton.IsVisibleAsync())
-            {
-                await clearSearchButton.ClickAndWaitForAppIdleAsync();
-            }
-
-            await this.search.FillAsync(searchText);
-
-            if (performSearch)
-            {
-                await this.search.PressAsync("Enter");
-            }
-
-            await Page.WaitForAppIdleAsync();
-        }
-
         /// <inheritdoc/>
         public async Task<ISearchPage> OpenSearchTabAsync(string searchTabLabel)
         {
-            var tabHeader = Page.GetByRole(AriaRole.Tablist);
+            var tabHeader = this.Page.GetByRole(AriaRole.Tablist);
             var tabs = await tabHeader.GetByRole(AriaRole.Tab).AllAsync();
 
             foreach (var tab in tabs)
@@ -152,8 +122,8 @@
         /// <inheritdoc/>
         public async Task<IEntityRecordPage> OpenSearchTabResult(int index)
         {
-            await Page.WaitForAppIdleAsync();
-            var rows = await Page.GetByRole(AriaRole.Row).AllAsync();
+            await this.Page.WaitForAppIdleAsync();
+            var rows = await this.Page.GetByRole(AriaRole.Row).AllAsync();
 
             foreach (var row in rows)
             {
@@ -166,6 +136,55 @@
             }
 
             throw new InvalidOperationException($"Row with index {index} not found.");
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEntityRecordPage> SearchAndOpenResultAsync(string search, string table, int index)
+        {
+            await this.Search($"{table} {search}");
+
+            await this.Page.WaitForAppIdleAsync();
+            var rows = await this.Page.GetByRole(AriaRole.Row).AllAsync();
+
+            foreach (var row in rows)
+            {
+                var rowIndexAttr = await row.GetAttributeAsync("row-index");
+                if (int.TryParse(rowIndexAttr, out var rowIndex) && rowIndex == index)
+                {
+                    await row.DblClickAsync();
+                    return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
+                }
+            }
+
+            throw new InvalidOperationException($"Row with index {index} not found.");
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator(RootLocator);
+        }
+
+        /// <summary>
+        /// Performs the searchText.
+        /// </summary>
+        /// <param name="searchText">The search Text to enter.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        private async Task Search(string searchText)
+        {
+            await this.EnterSearchText(searchText);
+            await this.search.PressAsync("Enter");
+            await this.Page.WaitForAppIdleAsync();
+        }
+
+        private async Task EnterSearchText(string searchText)
+        {
+            if (await this.clearSearchButton.IsVisibleAsync())
+            {
+                await this.clearSearchButton.ClickAndWaitForAppIdleAsync();
+            }
+
+            await this.search.FillAsync(searchText);
         }
     }
 }

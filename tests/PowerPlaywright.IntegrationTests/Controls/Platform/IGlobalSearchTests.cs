@@ -8,6 +8,7 @@
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Controls.Platform;
     using PowerPlaywright.TestApp.Model;
+    using PowerPlaywright.TestApp.Model.App;
     using PowerPlaywright.TestApp.Model.Fakers;
     using PowerPlaywright.TestApp.Model.Search;
 
@@ -88,18 +89,18 @@
         }
 
         /// <summary>
-        /// Searches and Opens the record at the given index.
+        /// Searches and Opens the record for the given entity.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task SearchAsync_Opens_Entity()
+        public async Task SearchAndOpenResultAsync_Opens_SearchPage()
         {
             var sampleRecord = await this.GetRandomIndexedRecord();
             var searchControl = await this.SetupSearchScenarioAsync(sampleRecord);
 
-            var page = await searchControl.SearchAsync<ISearchPage>(sampleRecord.pp_singlelineoftexttext);
+            var page = await searchControl.SearchAndOpenResultAsync(sampleRecord.pp_singlelineoftexttext, UserInterfaceDemo.SiteMap.AreaA.GroupA.Records, 0);
 
-            await this.Expect(page.Page).ToHaveURLAsync(SearchPageRegex());
+            await this.Expect(page.Page).ToHaveURLAsync(RecordPageRegex());
         }
 
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_record.*")]

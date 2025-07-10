@@ -31,7 +31,7 @@
         bool IsNewLookEnabled { get; }
 
         /// <summary>
-        /// Gets whether the relevance search is enabled on the instance.
+        /// Gets a value indicating whether gets whether the relevance search is enabled on the instance.
         /// </summary>
         bool IsRelevanceSearchEnabled { get; }
     }

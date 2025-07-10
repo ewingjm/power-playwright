@@ -16,7 +16,7 @@
         public ReleaseChannel ReleaseChannelEnum { get; private set; }
 
         /// <summary>
-        /// Gets the release channel.
+        /// Gets a value indicating whether gets the release channel.
         /// </summary>
         [JsonInclude]
         [JsonPropertyName("isexternalsearchindexenabled")]

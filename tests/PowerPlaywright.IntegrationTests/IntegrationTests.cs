@@ -175,12 +175,10 @@
         protected async Task<TEntity> CreateAsync<TEntity>(TEntity record)
             where TEntity : Entity
         {
-            using (var client = this.GetServiceClient())
-            {
-                var id = await client.CreateAsync(record);
-                var retrieved = await client.RetrieveAsync(record.LogicalName, id, new ColumnSet(true));
-                return retrieved.ToEntity<TEntity>();
-            }
+            using var client = this.GetServiceClient();
+            var id = await client.CreateAsync(record);
+            var retrieved = await client.RetrieveAsync(record.LogicalName, id, new ColumnSet(true));
+            return retrieved.ToEntity<TEntity>();
         }
 
         /// <summary>
@@ -224,7 +222,8 @@
 
                 queryExpression.PageInfo.PageNumber++;
                 queryExpression.PageInfo.PagingCookie = result.PagingCookie;
-            } while (true);
+            }
+            while (true);
 
             return allRecords;
         }

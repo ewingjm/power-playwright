@@ -11,7 +11,7 @@
         int ReleaseChannel { get; }
 
         /// <summary>
-        /// Gets the relevance search flag setting.
+        /// Gets a value indicating whether gets the relevance search flag setting.
         /// </summary>
         bool IsRelevanceSearchEnabled { get; }
     }

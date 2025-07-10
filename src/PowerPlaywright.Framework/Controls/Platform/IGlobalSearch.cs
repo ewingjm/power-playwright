@@ -14,9 +14,8 @@
         /// Enters the search text within relevance search.
         /// </summary>
         /// <param name="searchText">The search text.</param>
-        /// <param name="performSearch">A flag to actually perform the search by hitting Enter.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SuggestAsync(string searchText, bool performSearch = false);
+        Task SuggestAsync(string searchText);
 
         /// <summary>
         /// Opens a page.
@@ -38,23 +37,18 @@
             where TPage : IAppPage;
 
         /// <summary>
+        /// Opens a page.
+        /// </summary>
+        /// <param name="search">The search query to search against.</param>
+        /// <param name="table">The display name of the table e.g. Accounts, Contacts.</param>
+        /// <param name="index">The index of the record to Open.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<IEntityRecordPage> SearchAndOpenResultAsync(string search, string table, int index);
+
+        /// <summary>
         /// Indicates if any results found.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<bool> HasSuggestedResultsAsync();
-
-        /// <summary>
-        /// Opens a specific search tab on the search results page unless it is already selected.
-        /// </summary>
-        /// <param name="searchTabLabel">The </param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<ISearchPage> OpenSearchTabAsync(string searchTabLabel);
-
-        /// <summary>
-        /// Opens the search result within the selected tab by its index.
-        /// </summary>
-        /// <param name="index">The index of the list to open.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<IEntityRecordPage> OpenSearchTabResult(int index);
     }
 }

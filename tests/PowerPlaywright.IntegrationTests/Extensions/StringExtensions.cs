@@ -1,7 +1,7 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Extensions
 {
-    using PowerPlaywright.TestApp.Model.Search;
     using System.Text.Json;
+    using PowerPlaywright.TestApp.Model.Search;
 
     /// <summary>
     /// Extensions to the <see cref="string"/> class.
@@ -17,7 +17,7 @@
         {
             var entityList = items?
                 .Select(item => new EntityFilter { Name = item })
-                .ToList() ?? new List<EntityFilter>();
+                .ToList() ?? [];
 
             return JsonSerializer.Serialize(entityList, new JsonSerializerOptions { WriteIndented = true });
         }
