@@ -11,6 +11,11 @@
     public interface IDataSet : IControl
     {
         /// <summary>
+        /// Gets the command bar on the data set.
+        /// </summary>
+        ICommandBar CommandBar { get; }
+
+        /// <summary>
         /// Gets the control within the dataset.
         /// </summary>
         /// <typeparam name="TPcfControl">The type of PCF control.</typeparam>

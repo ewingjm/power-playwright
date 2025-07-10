@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
@@ -18,6 +19,8 @@
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class CommandBar : Control, ICommandBar
     {
+        private readonly IPageFactory pageFactory;
+
         private readonly ILocator commands;
         private readonly ILocator overflowCommand;
         private readonly ILocator flyout;
@@ -28,10 +31,13 @@
         /// Initializes a new instance of the <see cref="CommandBar"/> class.
         /// </summary>
         /// <param name="appPage">The app page.</param>
+        /// <param name="pageFactory">The page factory.</param>
         /// <param name="parent">The parent control.</param>
-        public CommandBar(IAppPage appPage, IControl parent = null)
+        public CommandBar(IAppPage appPage, IPageFactory pageFactory, IControl parent = null)
             : base(appPage, parent)
         {
+            this.pageFactory = pageFactory;
+
             this.commands = this.Container.Locator("[role='menuitem']:not([data-id='OverflowButton']):not([aria-hidden='true'])");
             this.overflowCommand = this.Container.Locator("[data-id='OverflowButton']");
             this.flyout = this.Page.GetByRole(AriaRole.Menu);
@@ -50,6 +56,15 @@
         }
 
         /// <inheritdoc/>
+        public async Task<TModelDrivenAppPage> ClickCommandAsync<TModelDrivenAppPage>(params string[] commands)
+            where TModelDrivenAppPage : IModelDrivenAppPage
+        {
+            await this.ClickCommandAsync(commands);
+
+            return await this.pageFactory.CreateInstanceAsync<TModelDrivenAppPage>(this.Page);
+        }
+
+        /// <inheritdoc/>
         public async Task ClickCommandAsync(params string[] commands)
         {
             await this.Page.WaitForAppIdleAsync();
@@ -61,7 +76,7 @@
                 await this.ExpandCommandAsync(parentCommand);
             }
 
-            var command = this.commands.Or(this.flyoutCommands).Filter(new LocatorFilterOptions { HasText = commands.Last() });
+            var command = this.commands.Or(this.flyoutCommands).Filter(new LocatorFilterOptions { HasTextRegex = new Regex($"^{Regex.Escape(commands.Last())}$") });
             var commandFound = await command.IsVisibleAsync();
 
             if (!commandFound && commands.Length == 1 && await this.IsOverflowPresentAsync())

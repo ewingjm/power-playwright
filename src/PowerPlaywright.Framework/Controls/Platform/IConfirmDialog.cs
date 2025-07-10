@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
+    using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// A confirm dialog.
@@ -20,6 +21,14 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task ConfirmAsync();
+
+        /// <summary>
+        /// Confirm the the dialog that navigates to another page.
+        /// </summary>
+        /// <typeparam name="TModelDrivenAppPage">The type of page.</typeparam>
+        /// <returns>The page.</returns>
+        Task<TModelDrivenAppPage> ConfirmAsync<TModelDrivenAppPage>()
+            where TModelDrivenAppPage : IModelDrivenAppPage;
 
         /// <summary>
         /// Cancel the action on the dialog.

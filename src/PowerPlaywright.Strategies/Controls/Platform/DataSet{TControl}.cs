@@ -42,6 +42,9 @@
         }
 
         /// <inheritdoc/>
+        public ICommandBar CommandBar => this.dataSet.CommandBar;
+
+        /// <inheritdoc/>
         public TControl Control => this.controlFactory.CreateCachedInstance<TControl>(this.AppPage, this.name, this);
 
         /// <inheritdoc/>

@@ -44,6 +44,9 @@
         }
 
         /// <inheritdoc/>
+        public ICommandBar CommandBar => this.controlFactory.CreateCachedInstance<ICommandBar>(this.AppPage, parent: this);
+
+        /// <inheritdoc/>
         public TPcfControl GetControl<TPcfControl>()
             where TPcfControl : IPcfControl
         {
