@@ -20,12 +20,10 @@
         /// <summary>
         /// Opens a page.
         /// </summary>
-        /// <typeparam name="TPage">The type of page to open.</typeparam>
         /// <param name="searchText">The search query to search against.</param>
         /// <param name="index">The index of the result to open.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<TPage> OpenSuggestionAsync<TPage>(string searchText, int index)
-            where TPage : IAppPage;
+        Task<IEntityRecordPage> OpenSuggestionAsync(string searchText, int index);
 
         /// <summary>
         /// Opens a page.

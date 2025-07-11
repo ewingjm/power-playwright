@@ -56,8 +56,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<TPage> OpenSuggestionAsync<TPage>(string searchText, int index)
-            where TPage : IAppPage
+        public async Task<IEntityRecordPage> OpenSuggestionAsync(string searchText, int index)
         {
             await this.Page.WaitForAppIdleAsync();
             await this.EnterSearchText(searchText);
@@ -80,7 +79,7 @@
             }
 
             await selectedResult.ClickAndWaitForAppIdleAsync();
-            return await this.pageFactory.CreateInstanceAsync<TPage>(this.Page);
+            return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }
 
         /// <inheritdoc/>

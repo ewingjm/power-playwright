@@ -68,7 +68,7 @@
             var sampleRecord = await this.GetRandomIndexedRecord();
             var searchControl = await this.SetupSearchScenarioAsync(sampleRecord);
 
-            var page = await searchControl.OpenSuggestionAsync<IEntityRecordPage>(sampleRecord.pp_singlelineoftexttext, 0);
+            var page = await searchControl.OpenSuggestionAsync(sampleRecord.pp_singlelineoftexttext, 0);
 
             await this.Expect(page.Page).ToHaveURLAsync(RecordPageRegex());
         }
