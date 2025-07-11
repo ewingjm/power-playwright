@@ -2,37 +2,23 @@
 {
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Pages;
-    using PowerPlaywright.TestApp.Model.Fakers;
+    using PowerPlaywright.TestApp.Model.App;
 
     /// <summary>
-    /// Tests for the <see cref="EntityListPage"/> class.
+    /// Tests for the <see cref="SearchPage"/> class.
     /// </summary>
-    public class EntityRecordPageTests : IntegrationTests
+    public class SearchPageTests : IntegrationTests
     {
-        private IEntityRecordPage? recordPage;
+        private ISearchPage searchPage;
 
         /// <summary>
-        /// Sets up the record page.
+        /// Sets up the search page.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         [SetUp]
         public async Task Setup()
         {
-            var record = new RecordFaker().Generate();
-
-            await this.CreateAsync(record);
-
-            this.recordPage = await (await this.LoginAsync()).ClientApi.NavigateToRecordAsync(record.LogicalName, record.Id);
-        }
-
-        /// <summary>
-        /// Tests that <see cref="IEntityRecordPage.Form"/> always exists on the page.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [Test]
-        public async Task Form_Always_Exists()
-        {
-            await this.Expect(this.recordPage!.Form.Container).ToBeVisibleAsync();
+            this.searchPage = await (await this.LoginAsync()).Search.SearchAsync<ISearchPage>("*");
         }
 
         /// <summary>
@@ -42,7 +28,7 @@
         [Test]
         public async Task Search_Always_Exists()
         {
-            await this.Expect(this.recordPage!.Search.Container).ToBeVisibleAsync();
+            await this.Expect(this.searchPage!.Search.Container).ToBeVisibleAsync();
         }
 
         /// <summary>
@@ -52,7 +38,7 @@
         [Test]
         public async Task SiteMap_Always_Exists()
         {
-            await this.Expect(this.recordPage!.SiteMap.Container).ToBeVisibleAsync();
+            await this.Expect(this.searchPage!.SiteMap.Container).ToBeVisibleAsync();
         }
 
         /// <summary>
@@ -61,7 +47,7 @@
         [Test]
         public void Page_Always_NotNull()
         {
-            Assert.That(this.recordPage!.Page, Is.Not.Null);
+            Assert.That(this.searchPage!.Page, Is.Not.Null);
         }
     }
 }
