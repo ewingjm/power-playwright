@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
+    using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// A command bar.
@@ -16,6 +17,15 @@
         /// <param name="commands">The commands to click (in sequence).</param>
         /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
         Task ClickCommandAsync(params string[] commands);
+
+        /// <summary>
+        /// Clicks a command that navigates to another page.
+        /// </summary>
+        /// <param name="commands">The commands to click (in sequence).</param>
+        /// <typeparam name="TModelDrivenAppPage">The type of page.</typeparam>
+        /// <returns>The page.</returns>
+        Task<TModelDrivenAppPage> ClickCommandAsync<TModelDrivenAppPage>(params string[] commands)
+            where TModelDrivenAppPage : IModelDrivenAppPage;
 
         /// <summary>
         /// Gets the commands visible on the command bar.
