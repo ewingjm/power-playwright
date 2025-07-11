@@ -5,6 +5,7 @@
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
+    using PowerPlaywright.Framework.Model;
 
     /// <summary>
     /// An interface representing a form.
@@ -98,5 +99,11 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task CollapseHeaderAsync();
+
+        /// <summary>
+        /// Gets the form notifications.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<IEnumerable<FormNotification>> GetFormNotificationsAsync();
     }
 }
