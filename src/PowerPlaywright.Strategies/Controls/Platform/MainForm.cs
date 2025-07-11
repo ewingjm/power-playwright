@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
@@ -11,6 +12,7 @@
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
     using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
 
@@ -25,6 +27,8 @@
         private readonly ILocator tabList;
         private readonly ILocator tabs;
         private readonly ILocator formReadOnlyNotification;
+        private readonly ILocator notificationWrapper;
+        private readonly ILocator notificationExpandIcon;
         private readonly ILocator expandHeaderButton;
 
         /// <summary>
@@ -41,6 +45,8 @@
             this.tabList = this.Container.GetByRole(AriaRole.Tablist);
             this.tabs = this.tabList.GetByRole(AriaRole.Tab);
             this.formReadOnlyNotification = this.Container.Locator("#message-formReadOnlyNotification");
+            this.notificationWrapper = this.Container.Locator("[data-id='notificationWrapper']");
+            this.notificationExpandIcon = this.Container.Locator("[data-id='notificationWrapper_expandIcon']");
             this.expandHeaderButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "More Header Editable Fields" });
         }
 
@@ -141,6 +147,39 @@
         }
 
         /// <inheritdoc/>
+        public async Task<IEnumerable<FormNotification>> GetFormNotificationsAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            if (!await this.notificationWrapper.IsVisibleAsync())
+            {
+                return Enumerable.Empty<FormNotification>();
+            }
+
+            if (await this.notificationExpandIcon.IsVisibleAsync() && !await this.notificationWrapper.IsExpandedAsync())
+            {
+                await this.notificationExpandIcon.ClickAndWaitForAppIdleAsync();
+            }
+
+            var notificationListRoot = this.notificationWrapper;
+            if (await this.notificationExpandIcon.IsVisibleAsync())
+            {
+                var notificationFlyoutId = await this.notificationWrapper.GetAttributeAsync(Attributes.AriaControls);
+                notificationListRoot = this.Page.Locator($"[id='{notificationFlyoutId}']");
+                await notificationListRoot.WaitForAsync();
+            }
+
+            var notificationWrappers = await notificationListRoot.Locator("[data-id='notificationList']").Locator("li").AllAsync();
+
+            var notificationTasks = notificationWrappers.Select(
+                async n => new FormNotification(
+                    await this.GetFormNotificationLevelAsync(n),
+                    await n.Locator("[data-id='warningNotification']").TextContentAsync()));
+
+            return await Task.WhenAll(notificationTasks);
+        }
+
+        /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
             return context.GetByRole(AriaRole.Form).First;
@@ -149,6 +188,47 @@
         private async Task<bool> IsHeaderExpandedAsync()
         {
             return await this.expandHeaderButton.IsExpandedAsync();
+        }
+
+        private async Task<FormNotificationLevel> GetFormNotificationLevelAsync(ILocator n)
+        {
+            var symbol = n.Locator("span.symbolFont");
+            if (await symbol.IsVisibleAsync())
+            {
+                var symbolClass = await symbol.GetAttributeAsync(Attributes.Class);
+
+                if (symbolClass.Contains("InformationIcon-symbol"))
+                {
+                    return FormNotificationLevel.Info;
+                }
+                else if (symbolClass.Contains("Warning-symbol"))
+                {
+                    return FormNotificationLevel.Warning;
+                }
+                else if (symbolClass.Contains("MarkAsLost-symbol"))
+                {
+                    return FormNotificationLevel.Error;
+                }
+            }
+            else
+            {
+                var color = await n.Locator("svg").EvaluateAsync<string>("element => window.getComputedStyle(element).color");
+
+                if (color == "rgb(36, 36, 36)")
+                {
+                    return FormNotificationLevel.Info;
+                }
+                else if (color == "rgb(143, 78, 0)")
+                {
+                    return FormNotificationLevel.Warning;
+                }
+                else if (color == "rgb(188, 47, 50)")
+                {
+                    return FormNotificationLevel.Error;
+                }
+            }
+
+            throw new PowerPlaywrightException("Unable to recognise the form notification type.");
         }
     }
 }
