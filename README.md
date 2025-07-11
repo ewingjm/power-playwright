@@ -19,7 +19,6 @@ Power Playwright makes test automation for Power Apps easier by providing a [pag
     - [Controls](#controls)
       - [Control classes](#control-classes)
       - [Custom controls](#custom-controls)
-  - [Supported Controls](#supported-controls) 
   - [Contributing](#contributing)
 
 ## Prerequisites
@@ -67,7 +66,6 @@ At the time of writing, the supported pages are:
 - Dashboard (`IDashboardPage`)
 - Custom page (`ICustomPage`)
 - Web resource (`IWebResourcePage`)
-- Search (`ISearchPage`)
 
 You should pass one of these interfaces as a type argument when calling methods that return a page.
 
@@ -122,35 +120,6 @@ PowerPlaywright.CreateAsync(
 ```
 
 For information on implementing controls, refer to [CONTRIBUTING.md](./CONTRIBUTING.md).
-
-## Current Supported Controls
-
-At the time of writing, the supported controls are:
-
-- Client Side API
-- Custom Form
-- Dashboard Form
-- Currency
-- DateTime and Date
-- Decimal
-- Duration
-- Email
-- EntityList Form
-- Entity Form
-- FloatingPoint Number
-- Forms
-- Global Search
-- Grids (And Subgrids)
-- Lookup (Entity Lookup)
-- MultiSelectOptionSet
-- OptionSet
-- Search Form
-- SiteMap
-- Telephone
-- TextInput Multiline and Singleline
-- Url
-- WholeNumber 
-- Yes/ No
 
 ## Contributing
 
