@@ -101,44 +101,6 @@
         }
 
         /// <inheritdoc/>
-        public async Task<ISearchPage> OpenSearchTabAsync(string searchTabLabel)
-        {
-            var tabHeader = this.Page.GetByRole(AriaRole.Tablist);
-            var tabs = await tabHeader.GetByRole(AriaRole.Tab).AllAsync();
-
-            foreach (var tab in tabs)
-            {
-                var name = await tab.GetAttributeAsync("name");
-                var isSelected = await tab.GetAttributeAsync("aria-selected");
-                if (name == searchTabLabel && isSelected == "false")
-                {
-                    await tab.ClickAsync();
-                }
-            }
-
-            return await this.pageFactory.CreateInstanceAsync<ISearchPage>(this.Page);
-        }
-
-        /// <inheritdoc/>
-        public async Task<IEntityRecordPage> OpenSearchTabResult(int index)
-        {
-            await this.Page.WaitForAppIdleAsync();
-            var rows = await this.Page.GetByRole(AriaRole.Row).AllAsync();
-
-            foreach (var row in rows)
-            {
-                var rowIndexAttr = await row.GetAttributeAsync("row-index");
-                if (int.TryParse(rowIndexAttr, out var rowIndex) && rowIndex == index)
-                {
-                    await row.DblClickAsync();
-                    return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
-                }
-            }
-
-            throw new InvalidOperationException($"Row with index {index} not found.");
-        }
-
-        /// <inheritdoc/>
         public async Task<IEntityRecordPage> SearchAndOpenResultAsync(string search, string table, int index)
         {
             await this.Search($"{table} {search}");
