@@ -79,7 +79,7 @@
 
         private string GenerateRandomText()
         {
-            return string.Join(" ", this.faker.Lorem.Words(5));
+            return this.faker.Lorem.Lines(4);
         }
 
         /// <summary>
