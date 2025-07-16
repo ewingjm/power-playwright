@@ -45,7 +45,7 @@
             await this.input.FocusAsync();
             await this.input.FillAsync(string.Empty);
 
-            if (value == null)
+            if (value != null)
             {
                 await this.input.FillAsync(value.ToString());
             }
