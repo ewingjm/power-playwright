@@ -73,6 +73,12 @@
             }
 
             await this.input.ScrollIntoViewIfNeededAsync();
+
+            if (value is null)
+            {
+                return;
+            }
+
             await this.input.FillAsync(value);
 
             var flyoutResult = this.flyoutResults.GetByText(value);
