@@ -44,7 +44,11 @@
         {
             await this.input.FocusAsync();
             await this.input.FillAsync(string.Empty);
-            await this.input.FillAsync(value);
+
+            if (value != null)
+            {
+                await this.input.FillAsync(value);
+            }
 
             await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }

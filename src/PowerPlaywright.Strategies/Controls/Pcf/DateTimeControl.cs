@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
     using System;
+    using System.Globalization;
     using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
@@ -58,9 +59,20 @@
             await this.dateInput.FocusAsync();
             await this.dateInput.FillAsync(string.Empty);
             await this.Page.WaitForAppIdleAsync();
-            await this.dateInput.FillAsync(value.Value.ToShortDateString());
+
+            if (value != null)
+            {
+                await this.dateInput.FillAsync(value.Value.ToShortDateString());
+            }
+
             await this.Container.ClickAndWaitForAppIdleAsync();
             await this.Page.Keyboard.PressAsync("Escape");
+
+            if (value == null)
+            {
+                return;
+            }
+
             await this.timeInput.FocusAsync();
             await this.timeInput.FillAsync(string.Empty);
             await this.timeInput.FillAsync(value.Value.ToShortTimeString());
