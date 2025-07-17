@@ -10,11 +10,11 @@
     /// </summary>
     public static class IControlFactoryExtensions
     {
-        private static readonly ConcurrentDictionary<(IAppPage, Type, string), IControl> ControlCache;
+        private static readonly ConcurrentDictionary<(IAppPage, Type, IControl, string), IControl> ControlCache;
 
         static IControlFactoryExtensions()
         {
-            ControlCache = new ConcurrentDictionary<(IAppPage, Type, string), IControl>();
+            ControlCache = new ConcurrentDictionary<(IAppPage, Type, IControl, string), IControl>();
         }
 
         /// <summary>
@@ -29,7 +29,7 @@
         public static TControl CreateCachedInstance<TControl>(this IControlFactory controlFactory, IAppPage appPage, string name = null, IControl parent = null)
             where TControl : IControl
         {
-            var cacheKey = (appPage, typeof(TControl), name);
+            var cacheKey = (appPage, typeof(TControl), parent, name);
 
             if (ControlCache.TryGetValue(cacheKey, out var control))
             {
