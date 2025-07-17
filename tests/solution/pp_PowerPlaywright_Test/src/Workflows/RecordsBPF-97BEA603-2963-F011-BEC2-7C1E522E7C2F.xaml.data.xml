@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Workflow WorkflowId="{97bea603-2963-f011-bec2-7c1e522e7c2f}" Name="Records BPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <XamlFileName>/Workflows/RecordsBPF-97BEA603-2963-F011-BEC2-7C1E522E7C2F.xaml</XamlFileName>
+  <Type>1</Type>
+  <Subprocess>0</Subprocess>
+  <Category>4</Category>
+  <Mode>0</Mode>
+  <Scope>4</Scope>
+  <OnDemand>0</OnDemand>
+  <TriggerOnCreate>1</TriggerOnCreate>
+  <TriggerOnDelete>0</TriggerOnDelete>
+  <AsyncAutodelete>0</AsyncAutodelete>
+  <SyncWorkflowLogOnFailure>0</SyncWorkflowLogOnFailure>
+  <StateCode>1</StateCode>
+  <StatusCode>2</StatusCode>
+  <processorder>100</processorder>
+  <RunAs>1</RunAs>
+  <UniqueName>pp_recordsbpf</UniqueName>
+  <IsTransacted>1</IsTransacted>
+  <IntroducedVersion>1.0.0.0</IntroducedVersion>
+  <IsCustomizable>1</IsCustomizable>
+  <BusinessProcessType>0</BusinessProcessType>
+  <IsCustomProcessingStepAllowedForOtherPublishers>1</IsCustomProcessingStepAllowedForOtherPublishers>
+  <ProcessTriggerScope>1</ProcessTriggerScope>
+  <ModernFlowType>0</ModernFlowType>
+  <PrimaryEntity>pp_Record</PrimaryEntity>
+  <LocalizedNames>
+    <LocalizedName languagecode="1033" description="Records BPF" />
+  </LocalizedNames>
+  <labels>
+    <steplabels id="{ace114f8-80b6-459c-ae30-e4cae0850d7c}">
+      <label languagecode="1033" description="New Stage" />
+    </steplabels>
+    <steplabels id="{47e00dad-0b48-4e85-85cf-79bdaa01ce73}">
+      <label languagecode="1033" description="Gather" />
+    </steplabels>
+    <steplabels id="{04cda73a-e645-4406-b453-15382ef62893}">
+      <label languagecode="1033" description="Process" />
+    </steplabels>
+    <steplabels id="{096eae50-7a35-4eef-9f09-d0a9e1a6d241}">
+      <label languagecode="1033" description="Single line of text (URL)" />
+    </steplabels>
+    <steplabels id="{48945d0f-fa9e-43cc-9263-ef7a2decda1d}">
+      <label languagecode="1033" description="Complete" />
+    </steplabels>
+    <steplabels id="{36909e45-5659-40a4-af33-c350535bb314}">
+      <label languagecode="1033" description="Complete" />
+    </steplabels>
+  </labels>
+</Workflow>

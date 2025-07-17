@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<forms xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <systemform>
+    <formid>{b45105ca-4f9e-4e8b-99b6-e00997693e2c}</formid>
+    <IntroducedVersion>1.0</IntroducedVersion>
+    <FormPresentation>1</FormPresentation>
+    <FormActivationState>1</FormActivationState>
+    <form>
+      <tabs>
+        <tab verticallayout="true" id="{ace114f8-80b6-459c-ae30-e4cae0850d7c}" name="StageStep3" locklevel="0" expanded="true" visible="false" labelid="{aeae899f-1cdb-47d8-ae3a-439bbdd51c53}">
+          <labels>
+            <label description="New Stage" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{60298ae1-722f-3ae1-c9d1-ef66296c0bbf}" name="StageStep3_section1" labelid="{d17a7f19-44f5-41f5-8df8-a3b095021984}">
+                  <labels>
+                    <label description="New Stage" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{47e00dad-0b48-4e85-85cf-79bdaa01ce73}" showlabel="true" visible="true" labelid="{33e4d109-1738-483a-9929-810227aef338}">
+                        <labels>
+                          <label description="Gather" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_pp_record_pp_recordsbpf:pp_bpf_new" classid="{4273edbd-ac1d-40d3-9fb2-095c621b552d}" datafieldname="pp_bpf_new" disabled="false" relationship="bpf_pp_record_pp_recordsbpf" isrequired="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{04cda73a-e645-4406-b453-15382ef62893}" name="StageStep7" locklevel="0" expanded="true" visible="false" labelid="{9f80102b-7698-4bfc-b818-1d662906bc0a}">
+          <labels>
+            <label description="Process" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{2d745595-262d-f112-6bff-ec5eee070247}" name="StageStep7_section1" labelid="{910352b3-0936-4fc9-aaf5-e5e585bbf841}">
+                  <labels>
+                    <label description="Process" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{096eae50-7a35-4eef-9f09-d0a9e1a6d241}" showlabel="true" visible="true" labelid="{ac564461-d958-4a6b-b8af-22a5caad4e67}">
+                        <labels>
+                          <label description="Single line of text (URL)" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_pp_record_pp_recordsbpf:pp_bpf_process" classid="{71716b6c-711e-476c-8ab8-5d11542bfb47}" datafieldname="pp_bpf_process" disabled="false" relationship="bpf_pp_record_pp_recordsbpf" isrequired="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+        <tab verticallayout="true" id="{48945d0f-fa9e-43cc-9263-ef7a2decda1d}" name="StageStep11" locklevel="0" expanded="true" visible="false" labelid="{9c98089a-0494-429d-9480-fb758f7ff037}">
+          <labels>
+            <label description="Complete" languagecode="1033" />
+          </labels>
+          <columns>
+            <column width="100%">
+              <sections>
+                <section showbar="false" columns="1" id="{e19a8bcf-9da6-7372-0757-6688f557ac1c}" name="StageStep11_section1" labelid="{2eab4482-65e4-4d31-b953-ab0197361d88}">
+                  <labels>
+                    <label description="Complete" languagecode="1033" />
+                  </labels>
+                  <rows>
+                    <row>
+                      <cell id="{36909e45-5659-40a4-af33-c350535bb314}" showlabel="true" visible="true" labelid="{8e9054b9-6201-4c12-89ba-b98d34b884db}">
+                        <labels>
+                          <label description="Complete" languagecode="1033" />
+                        </labels>
+                        <control id="bpf_pp_record_pp_recordsbpf:pp_bpf_complete" classid="{67fac785-cd58-4f9f-abb3-4b7ddc6ed5ed}" datafieldname="pp_bpf_complete" disabled="false" relationship="bpf_pp_record_pp_recordsbpf" isrequired="false" />
+                      </cell>
+                    </row>
+                  </rows>
+                </section>
+              </sections>
+            </column>
+          </columns>
+        </tab>
+      </tabs>
+    </form>
+    <IsCustomizable>1</IsCustomizable>
+    <CanBeDeleted>1</CanBeDeleted>
+    <LocalizedNames>
+      <LocalizedName description="Information" languagecode="1033" />
+    </LocalizedNames>
+    <Descriptions>
+      <Description description="A form for this entity." languagecode="1033" />
+    </Descriptions>
+  </systemform>
+</forms>
