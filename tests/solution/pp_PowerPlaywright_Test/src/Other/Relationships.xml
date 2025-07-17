@@ -1,14 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <EntityRelationships xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EntityRelationship Name="bpf_pp_record_pp_recordsbpf" />
   <EntityRelationship Name="business_unit_pp_record" />
   <EntityRelationship Name="business_unit_pp_relatedrecord" />
   <EntityRelationship Name="FileAttachment_pp_Record_pp_file" />
   <EntityRelationship Name="lk_pp_record_createdby" />
   <EntityRelationship Name="lk_pp_record_modifiedby" />
+  <EntityRelationship Name="lk_pp_recordsbpf_activestageid" />
+  <EntityRelationship Name="lk_pp_recordsbpf_createdby" />
+  <EntityRelationship Name="lk_pp_recordsbpf_modifiedby" />
+  <EntityRelationship Name="lk_pp_recordsbpf_processid" />
   <EntityRelationship Name="lk_pp_relatedrecord_createdby" />
   <EntityRelationship Name="lk_pp_relatedrecord_modifiedby" />
+  <EntityRelationship Name="organization_pp_recordsbpf" />
   <EntityRelationship Name="owner_pp_record" />
   <EntityRelationship Name="owner_pp_relatedrecord" />
+  <EntityRelationship Name="pp_record_ParentRecord_pp_record" />
   <EntityRelationship Name="pp_Record_RelatedRecord" />
   <EntityRelationship Name="pp_relatedrecord_record" />
   <EntityRelationship Name="team_pp_record" />

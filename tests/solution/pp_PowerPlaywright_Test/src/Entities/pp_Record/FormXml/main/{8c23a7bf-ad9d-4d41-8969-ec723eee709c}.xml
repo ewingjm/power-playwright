@@ -270,6 +270,27 @@
                   <rows>
                     <row />
                     <row>
+                      <cell id="{5c3e6f16-e186-45ed-814a-791f583bccba}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Parent Record" languagecode="1033" />
+                        </labels>
+                        <control id="pp_parentrecord" classid="{270BD3DB-D9AF-4782-9025-509E298DEC0A}" datafieldname="pp_parentrecord" disabled="false" />
+                      </cell>
+                    </row>
+                    <row>
+                      <cell locklevel="0" id="{58df8435-072d-4003-a0f3-5ad4112e13f9}" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Parent Record Quick View" languagecode="1033" />
+                        </labels>
+                        <control id="QuickViewParentRecord" classid="{5C5600E0-1D6E-4205-A272-BE80DA87FD42}" datafieldname="pp_parentrecord">
+                          <parameters>
+                            <DisplayAsCustomer360Tile>false</DisplayAsCustomer360Tile>
+                            <QuickForms>&lt;QuickFormIds&gt;&lt;QuickFormId entityname="pp_record"&gt;24183c6e-7163-4afe-af35-20e3f0cd6fa8&lt;/QuickFormId&gt;&lt;/QuickFormIds&gt;</QuickForms>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row>
                       <cell id="{e1b67ee9-b8aa-4044-9083-1e171f644639}" locklevel="0" colspan="1" rowspan="1">
                         <labels>
                           <label description="Related Record" languagecode="1033" />
