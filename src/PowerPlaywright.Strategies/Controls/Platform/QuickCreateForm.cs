@@ -64,13 +64,13 @@
         }
 
         /// <inheritdoc/>
-        public async Task Cancel()
+        public async Task CancelAsync()
         {
             await this.cancelButton.ClickAndWaitForAppIdleAsync();
         }
 
         /// <inheritdoc/>
-        public async Task SaveAndClose()
+        public async Task SaveAndCloseAsync()
         {
             await this.saveAndCloseButton.ClickAndWaitForAppIdleAsync();
         }

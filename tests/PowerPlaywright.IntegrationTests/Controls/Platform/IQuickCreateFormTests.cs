@@ -6,6 +6,7 @@
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Model;
+    using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
 
@@ -29,7 +30,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IQuickCreateForm.Cancel"/> always cancels the quick create.
+        /// Tests that <see cref="IQuickCreateForm.CancelAsync"/> always cancels the quick create.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -37,7 +38,7 @@
         {
             var quickCreate = await this.SetupQuickCreateFormScenarioAsync();
 
-            await quickCreate.Cancel();
+            await quickCreate.CancelAsync();
 
             Assert.That(await quickCreate.Container.IsVisibleAsync(), Is.False);
         }
@@ -78,15 +79,33 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="IQuickCreateForm.CancelAsync"/> cancels the quick create form when it is open.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SaveAndClose_QuickCreateOpen_PopulatesLookup()
+        {
+            var recordPage = await this.SetupRecordPageScenarioAsync();
+            var lookup = recordPage.Form.GetField<ILookup>(pp_Record.Forms.Information.RelatedRecord);
+            var quickCreate = await lookup.Control.NewViaQuickCreateAsync();
+            var expectedName = nameof(this.SaveAndClose_QuickCreateOpen_PopulatesLookup);
+
+            await quickCreate
+                .GetField<ISingleLineText>(pp_RelatedRecord.Forms.QuickViewInformation.Name).Control
+                .SetValueAsync(expectedName);
+            await quickCreate.SaveAndCloseAsync();
+
+            Assert.That(await lookup.Control.GetValueAsync(), Is.EqualTo(expectedName));
+        }
+
+        /// <summary>
         /// Sets up a quick create form scenario.
         /// </summary>
         /// <param name="withNotifications">Optional notifications to add to the form.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IUrlControl"/>.</returns>
         private async Task<IQuickCreateForm> SetupQuickCreateFormScenarioAsync(FormNotification[]? withNotifications = null)
         {
-            var recordfaker = new RecordFaker();
-
-            var recordPage = await this.LoginAndNavigateToRecordAsync(recordfaker.Generate());
+            var recordPage = await this.SetupRecordPageScenarioAsync();
 
             var quickCreate = await recordPage.Form.GetField<ILookup>(pp_Record.Forms.Information.RelatedRecord).Control.NewViaQuickCreateAsync();
 
@@ -107,6 +126,13 @@
             }
 
             return quickCreate;
+        }
+
+        private Task<IEntityRecordPage> SetupRecordPageScenarioAsync()
+        {
+            var recordfaker = new RecordFaker();
+
+            return this.LoginAndNavigateToRecordAsync(recordfaker.Generate());
         }
     }
 }

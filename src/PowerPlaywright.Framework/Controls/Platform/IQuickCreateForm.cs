@@ -46,12 +46,12 @@
         /// Cancels the quick create.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task Cancel();
+        Task CancelAsync();
 
         /// <summary>
         /// Save and close the quick create.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SaveAndClose();
+        Task SaveAndCloseAsync();
     }
 }
