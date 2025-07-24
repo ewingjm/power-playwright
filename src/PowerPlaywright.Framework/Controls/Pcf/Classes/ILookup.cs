@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Pcf.Classes
 {
     using System.Threading.Tasks;
+    using PowerPlaywright.Framework.Controls.Platform;
 
     /// <summary>
     /// Lookup control class.
@@ -19,5 +20,11 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<string> GetValueAsync();
+
+        /// <summary>
+        /// Creates a new record for the lookup via quick create.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<IQuickCreateForm> NewViaQuickCreateAsync();
     }
 }

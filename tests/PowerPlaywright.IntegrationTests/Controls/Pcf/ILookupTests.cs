@@ -89,6 +89,20 @@
             Assert.That(lookupControl.GetValueAsync, Is.EqualTo(relatableRecordName));
         }
 
+        /// <summary>
+        /// Tests that <see cref="ILookup.NewViaQuickCreateAsync"/> opens the quick create form for the lookup control when quick create is enabled.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task NewFromQuickCreateAync_QuickCreateEnabled_QuickCreateFormIsVisible()
+        {
+            var lookup = await this.SetupLookupScenarioAsync();
+
+            var quickCreate = await lookup.NewViaQuickCreateAsync();
+
+            Assert.That(await quickCreate.Container.IsVisibleAsync(), Is.True);
+        }
+
         private async Task<ILookup> SetupLookupScenarioAsync(Faker<pp_Record>? withRecord = null, Faker<pp_RelatedRecord>? withRelatedRecord = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatableRecords = null)
         {
             withRecord ??= new RecordFaker();
