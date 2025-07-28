@@ -40,7 +40,7 @@
             this.parent = parent;
 
             this.viewSelector = this.Container.Locator("button[id*='ViewSelector']");
-            this.viewsMenu = this.Page.GetByRole(AriaRole.Menu, new PageGetByRoleOptions { Name = "Views" });
+            this.viewsMenu = this.Page.GetByRole(AriaRole.Menu, new PageGetByRoleOptions { Name = "Views" }).Or(this.Page.GetByRole(AriaRole.Menu, new PageGetByRoleOptions { Name = "View Options" }));
         }
 
         /// <inheritdoc/>
@@ -77,7 +77,10 @@
 
             try
             {
-                await this.viewsMenu.Locator($"//button//label[text()='{viewName.Replace("'", @"\")}']").ClickAndWaitForAppIdleAsync();
+                await this.viewsMenu
+                    .GetByRole(AriaRole.Menuitemradio)
+                    .Filter(new LocatorFilterOptions { Has = this.Page.GetByText(viewName, new PageGetByTextOptions { Exact = true }) })
+                    .ClickAndWaitForAppIdleAsync();
             }
             catch (TimeoutException)
             {
