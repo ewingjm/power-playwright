@@ -25,7 +25,7 @@
         private ILoginControl LoginControl => this.GetControl<ILoginControl>();
 
         /// <inheritdoc/>
-        public async Task<IModelDrivenAppPage> LoginAsync(string username, string password)
+        public async Task<IModelDrivenAppPage> LoginAsync(string username, string password, string totpSecret = null)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -37,7 +37,7 @@
                 throw new ArgumentException($"'{nameof(password)}' cannot be null or empty.", nameof(password));
             }
 
-            var homePage = await this.LoginControl.LoginAsync(username, password);
+            var homePage = await this.LoginControl.LoginAsync(username, password, totpSecret);
 
             return homePage;
         }

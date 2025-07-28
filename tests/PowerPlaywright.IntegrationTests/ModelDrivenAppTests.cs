@@ -15,7 +15,7 @@ public partial class ModelDrivenAppTests : IntegrationTests
     public async Task LoginAsync_ValidParameters_LogsInToApp()
     {
         var appPage = await this.PowerPlaywright
-            .LaunchAppAsync(this.Context, Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password);
+            .LaunchAppAsync(this.Context, Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password, this.User.TOTPSecret);
 
         await this.Expect(appPage.Page).ToHaveURLAsync(MainPageRegex());
     }
