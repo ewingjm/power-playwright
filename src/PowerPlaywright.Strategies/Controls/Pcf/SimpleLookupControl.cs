@@ -96,7 +96,7 @@
 
             await this.input.FillAsync(value);
 
-            var flyoutResult = this.flyoutResults.GetByText(value);
+            var flyoutResult = this.flyoutResults.GetByText(value, new LocatorGetByTextOptions { Exact = true }).First;
             await flyoutResult.Or(this.flyoutNoRecordsText).WaitForAsync();
 
             if (!await flyoutResult.IsVisibleAsync())
