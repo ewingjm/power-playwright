@@ -39,6 +39,19 @@
         }
 
         /// <summary>
+        /// Returns the value returned by <see cref="ILocator.TextContentAsync(LocatorTextContentOptions)"/> but transforms placeholder values (e.g. '---') to null.
+        /// </summary>
+        /// <param name="locator">The locator.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        internal static async Task<string> TextContentOrNullAsync(this ILocator locator, LocatorTextContentOptions options = null)
+        {
+            var value = await locator.TextContentAsync(options);
+
+            return string.IsNullOrEmpty(value) || value == PowerAppsInputPlaceholderValue ? null : value;
+        }
+
+        /// <summary>
         /// Returns the value returned by <see cref="ILocator.InputValueAsync(LocatorInputValueOptions)"/> but transforms placeholder values (e.g. '---') to null.
         /// </summary>
         /// <typeparam name="T">The type of value.</typeparam>

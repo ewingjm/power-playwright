@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
@@ -44,6 +45,14 @@
         public async Task<IEnumerable<string>> GetValueAsync()
         {
             await this.Page.WaitForAppIdleAsync();
+
+            if (!await this.textBox.IsVisibleAsync())
+            {
+                // Inactive record.
+                var text = await this.Container.Locator("div.msos-viewmode-text").TextContentOrNullAsync();
+
+                return text?.Split(new string[] { ", " }, StringSplitOptions.None).ToList();
+            }
 
             var label = await this.textBox.GetLabelAsync();
 

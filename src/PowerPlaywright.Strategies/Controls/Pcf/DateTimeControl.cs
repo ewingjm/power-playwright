@@ -31,8 +31,8 @@
         public DateTimeControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
-            this.dateInput = this.Container.GetByRole(AriaRole.Combobox, new LocatorGetByRoleOptions { Name = "Date of" });
-            this.timeInput = this.Container.GetByRole(AriaRole.Combobox, new LocatorGetByRoleOptions { Name = "Time of" });
+            this.dateInput = this.Container.Locator("input[aria-label^='Date of']");
+            this.timeInput = this.Container.Locator("input[aria-label^='Time of']");
         }
 
         /// <inheritdoc/>
