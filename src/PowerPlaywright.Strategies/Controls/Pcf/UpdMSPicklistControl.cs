@@ -107,7 +107,7 @@
         private async Task SelectOptionAsync(string optionValue)
         {
             await this.Container
-                .GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Name = optionValue })
+                .GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Name = optionValue, Exact = true })
                 .ClickAndWaitForAppIdleAsync();
         }
 
