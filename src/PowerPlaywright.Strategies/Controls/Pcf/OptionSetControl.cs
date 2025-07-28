@@ -106,7 +106,7 @@
         {
             var flyout = await this.GetFlyoutLocatorAsync();
 
-            return flyout.GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Name = optionValue });
+            return flyout.GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Name = optionValue, Exact = true });
         }
 
         private async Task<ILocator> GetOptionLocatorAsync(int optionIndex)
