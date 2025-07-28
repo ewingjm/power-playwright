@@ -30,7 +30,7 @@
         public OptionSetControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
-            this.toggleMenu = this.Container.GetByRole(AriaRole.Combobox);
+            this.toggleMenu = this.Container.GetByRole(AriaRole.Combobox).Or(this.Container.GetByRole(AriaRole.Textbox));
         }
 
         /// <inheritdoc/>
@@ -66,18 +66,33 @@
         }
 
         /// <inheritdoc/>
+        /// <remarks>TODO: Use table metadata to get true/false text values.</remarks>
         async Task<bool> IYesNo.GetValueAsync()
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var value = await this.toggleMenu.GetAttributeAsync("value");
+            var textValue = await this.toggleMenu.GetAttributeAsync("value") ?? null;
+
+            if (!await this.Container.GetByRole(AriaRole.Combobox).IsVisibleAsync())
+            {
+                // Inactive record
+                switch (textValue)
+                {
+                    case "Yes":
+                        return true;
+                    case "No":
+                        return false;
+                    default:
+                        throw new PowerPlaywrightException("Yes/No fields with custom labels are not currently supported.");
+                }
+            }
+
             await this.toggleMenu.ClickAndWaitForAppIdleAsync();
 
-            // TODO: Use table metadata to get true/false text values instead of relying on index.
             var falseOption = await this.GetOptionLocatorAsync(0);
             var falseOptionText = await falseOption.TextContentAsync();
 
-            return value != falseOptionText;
+            return textValue != falseOptionText;
         }
 
         private async Task<ILocator> GetFlyoutLocatorAsync()
