@@ -43,7 +43,7 @@
 
             this.treeGrid = this.Container.GetByRole(AriaRole.Treegrid);
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
-            this.columnHeaders = this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])");
+            this.columnHeaders = this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) });
         }
 
         /// <inheritdoc/>
