@@ -81,7 +81,7 @@
 
             if (!commandFound && commands.Length == 1 && await this.IsOverflowPresentAsync())
             {
-                await this.ExpandOverflowAsync();
+                await this.ToggleOverflowAsync();
                 commandFound = await command.IsVisibleAsync();
             }
 
@@ -113,7 +113,7 @@
             var isRootCommand = await initialCommand.IsVisibleAsync();
             if (!isRootCommand && await this.IsOverflowPresentAsync())
             {
-                await this.ExpandOverflowAsync();
+                await this.ToggleOverflowAsync();
 
                 if (!await initialCommand.IsVisibleAsync())
                 {
@@ -140,11 +140,13 @@
 
             if (await this.IsOverflowPresentAsync())
             {
-                await this.ExpandOverflowAsync();
+                await this.ToggleOverflowAsync();
             }
 
             var overflowCommands = await this.flyoutCommands.AllAsync();
             labels.AddRange(await Task.WhenAll(overflowCommands.Select(this.GetCommandLabel)));
+
+            await this.Page.Keyboard.PressAsync("Escape");
 
             return labels;
         }
@@ -158,7 +160,11 @@
 
             var nestedCommands = await this.flyoutCommands.AllAsync();
 
-            return await Task.WhenAll(nestedCommands.Select(this.GetCommandLabel));
+            var commands = await Task.WhenAll(nestedCommands.Select(this.GetCommandLabel));
+
+            await this.Page.Keyboard.PressAsync("Escape");
+
+            return commands;
         }
 
         private async Task<bool> IsOverflowPresentAsync()
@@ -166,7 +172,7 @@
             return await this.overflowCommand.IsVisibleAsync();
         }
 
-        private async Task ExpandOverflowAsync()
+        private async Task ToggleOverflowAsync()
         {
             await this.overflowCommand.ClickAndWaitForAppIdleAsync();
         }
