@@ -1,7 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.External
 {
     using System;
-    using System.Diagnostics;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
@@ -76,12 +75,19 @@
 
             if (totpSecret != null)
             {
-                var totp = new Totp( totpSecret.DecodeAsBase32String());
-                await this.workOrSchoolAccount.Or(this.otpInput).ClickAsync();
+                var totp = new Totp(totpSecret.DecodeAsBase32String());
 
-                await this.otpInput.FocusAsync();
-                await this.otpInput.FillAsync(totp.ComputeTotp());
-                await this.nextButton.ClickAsync();
+                try
+                {
+                    await this.otpInput.ClickAsync(new LocatorClickOptions { Timeout = 10000 });
+                    await this.otpInput.FocusAsync();
+                    await this.otpInput.FillAsync(totp.ComputeTotp());
+                    await this.nextButton.ClickAsync();
+                }
+                catch (TimeoutException)
+                {
+                    // Swallow. MFA may not be configured.
+                }
             }
 
             try
