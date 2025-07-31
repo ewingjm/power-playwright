@@ -18,8 +18,9 @@ namespace PowerPlaywright.Api
         /// <param name="uniqueName">The unique name of the app.</param>
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>
+        /// <param name="totpSecret">The secret if TOTP is configured.</param>
         /// <returns>The app.</returns>
-        Task<IModelDrivenAppPage> LaunchAppAsync(IBrowserContext browserContext, Uri environmentUrl, string uniqueName, string username, string password);
+        Task<IModelDrivenAppPage> LaunchAppAsync(IBrowserContext browserContext, Uri environmentUrl, string uniqueName, string username, string password, string totpSecret = null);
 
         /// <summary>
         /// Launches a model-driven app.
@@ -30,8 +31,9 @@ namespace PowerPlaywright.Api
         /// <param name="uniqueName">The unique name of the app.</param>
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>
+        /// <param name="totpSecret">The secret if TOTP is configured.</param>
         /// <returns>The app.</returns>
-        Task<TModelDrivenAppPage> LaunchAppAsync<TModelDrivenAppPage>(IBrowserContext browserContext, Uri environmentUrl, string uniqueName, string username, string password)
+        Task<TModelDrivenAppPage> LaunchAppAsync<TModelDrivenAppPage>(IBrowserContext browserContext, Uri environmentUrl, string uniqueName, string username, string password, string totpSecret = null)
             where TModelDrivenAppPage : IModelDrivenAppPage;
     }
 }

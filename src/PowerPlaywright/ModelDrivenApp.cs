@@ -52,11 +52,12 @@ namespace PowerPlaywright
         /// <typeparam name="TModelDrivenAppPage">The expected home page type.</typeparam>
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>
+        /// <param name="totpSecret">The secret if TOTP is configured.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public async Task<TModelDrivenAppPage> LoginAsync<TModelDrivenAppPage>(string username, string password)
+        public async Task<TModelDrivenAppPage> LoginAsync<TModelDrivenAppPage>(string username, string password, string totpSecret = null)
             where TModelDrivenAppPage : IModelDrivenAppPage
         {
-            var page = await this.LoginAsync(username, password);
+            var page = await this.LoginAsync(username, password, totpSecret);
 
             if (page is TModelDrivenAppPage p)
             {
@@ -71,8 +72,9 @@ namespace PowerPlaywright
         /// </summary>
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>
+        /// <param name="totpSecret">The secret if TOTP is configured.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        public async Task<IModelDrivenAppPage> LoginAsync(string username, string password)
+        public async Task<IModelDrivenAppPage> LoginAsync(string username, string password, string totpSecret = null)
         {
             if (string.IsNullOrEmpty(username))
             {
@@ -99,7 +101,7 @@ namespace PowerPlaywright
             // TODO: Implement cookie based login
             if (currentPage is ILoginPage loginPage)
             {
-                homePage = await loginPage.LoginAsync(username, password);
+                homePage = await loginPage.LoginAsync(username, password, totpSecret);
             }
             else
             {

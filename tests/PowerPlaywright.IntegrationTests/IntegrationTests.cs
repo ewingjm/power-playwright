@@ -157,7 +157,7 @@
         protected Task<IModelDrivenAppPage> LoginAsync()
         {
             return this.powerPlaywright.LaunchAppAsync(
-                this.Context, Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password);
+                this.Context, Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password, this.User.TOTPSecret);
         }
 
         /// <summary>

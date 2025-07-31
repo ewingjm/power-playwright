@@ -16,6 +16,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         /// <param name="username">The username.</param>
         /// <param name="password">The password.</param>
-        Task<IModelDrivenAppPage> LoginAsync(string username, string password);
+        /// <param name="totpSecret">The secret for TOTP if configured.</param>
+        Task<IModelDrivenAppPage> LoginAsync(string username, string password, string totpSecret = null);
     }
 }
