@@ -31,5 +31,8 @@ namespace PowerPlaywright.Pages
 
         /// <inheritdoc/>
         public IAlertDialog AlertDialog => this.GetControl<IAlertDialog>();
+
+        /// <inheritdoc/>
+        public IGlobalSearch Search => this.GetControl<IGlobalSearch>();
     }
 }
