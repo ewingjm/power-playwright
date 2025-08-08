@@ -32,7 +32,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task CloseAsync()
+        public async Task CancelAsync()
         {
             await this.Page.WaitForAppIdleAsync();
 

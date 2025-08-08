@@ -1,14 +1,20 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Platform
 {
     using System.Threading.Tasks;
+    using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
 
     /// <summary>
-    /// An error dialog.
+    /// A lookup dialog.
     /// </summary>
     [PlatformControl]
-    public interface IErrorDialog : IPlatformControl
+    public interface ILookupDialog : IPlatformControl
     {
+        /// <summary>
+        /// Gets the lookup.
+        /// </summary>
+        ILookup Lookup { get; }
+
         /// <summary>
         /// Gets whether the dialog is visible.
         /// </summary>
@@ -16,15 +22,15 @@
         Task<bool> IsVisibleAsync();
 
         /// <summary>
-        /// Closes the error dialog.
+        /// Closes the dialog.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task CancelAsync();
 
         /// <summary>
-        /// Gets the text of the error dialog.
+        /// Saves the dialog.
         /// </summary>
-        /// <returns>The text of the dialog.</returns>
-        Task<string> GetTextAsync();
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task SaveAsync();
     }
 }
