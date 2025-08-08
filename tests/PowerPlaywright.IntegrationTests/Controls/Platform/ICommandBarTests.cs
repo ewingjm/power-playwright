@@ -133,6 +133,22 @@
             Assert.That(await listPage.DataSet.IsVisibleAsync(), Is.True);
         }
 
+        /// <summary>
+        /// Tests that the <see cref="ICommandBar.ClickCommandAsync{TModelDrivenAppPage}(string[])"/> method clicks a command when parent commands are passed and the command is visible.
+        /// </summary>
+        /// <param name="parentType">The type of parent control.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ClickCommandWithDialogAsync_ControlTypePassed_ReturnsInstanceOfControl()
+        {
+            var page = await this.SetupCommandBarScenarioAsync();
+            var commandBar = page.Form.CommandBar;
+
+            var lookupDialog = await commandBar.ClickCommandWithDialogAsync<ILookupDialog>("Add Existing Related Record");
+
+            Assert.That(await lookupDialog.IsVisibleAsync(), Is.True);
+        }
+
         private ICommandBar GetCommandBarByParentType(Type parentType, IEntityRecordPage page)
         {
             return parentType == typeof(IMainForm)
