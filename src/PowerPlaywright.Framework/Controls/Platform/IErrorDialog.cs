@@ -19,7 +19,7 @@
         /// Closes the error dialog.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task CancelAsync();
+        Task CloseAsync();
 
         /// <summary>
         /// Gets the text of the error dialog.
