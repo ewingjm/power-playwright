@@ -142,7 +142,7 @@
         public async Task ClickCommandWithDialogAsync_ControlTypePassed_ReturnsInstanceOfControl()
         {
             var page = await this.SetupCommandBarScenarioAsync();
-            var commandBar = page.Form.CommandBar;
+            var commandBar = this.GetCommandBarByParentType(typeof(IDataSet), page);
 
             var lookupDialog = await commandBar.ClickCommandWithDialogAsync<ILookupDialog>("Add Existing Related Record");
 
