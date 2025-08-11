@@ -1,6 +1,5 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Platform
 {
-    using Bogus;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.TestApp.Model;
@@ -24,7 +23,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IErrorDialog.CancelAsync"/> closes the dialog when it is visible.
+        /// Tests that <see cref="IErrorDialog.CloseAsync"/> closes the dialog when it is visible.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -32,7 +31,7 @@
         {
             var errorDialog = await this.SetupErrorDialogScenarioAsync();
 
-            await errorDialog.CancelAsync();
+            await errorDialog.CloseAsync();
 
             Assert.That(await errorDialog.IsVisibleAsync(), Is.False);
         }
