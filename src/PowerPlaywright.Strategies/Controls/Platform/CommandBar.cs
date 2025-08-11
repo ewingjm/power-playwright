@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
@@ -20,6 +19,7 @@
     public class CommandBar : Control, ICommandBar
     {
         private readonly IPageFactory pageFactory;
+        private readonly IControlFactory controlFactory;
 
         private readonly ILocator commands;
         private readonly ILocator overflowCommand;
@@ -32,12 +32,13 @@
         /// </summary>
         /// <param name="appPage">The app page.</param>
         /// <param name="pageFactory">The page factory.</param>
+        /// <param name="controlFactory">The control factory.</param>
         /// <param name="parent">The parent control.</param>
-        public CommandBar(IAppPage appPage, IPageFactory pageFactory, IControl parent = null)
+        public CommandBar(IAppPage appPage, IPageFactory pageFactory, IControlFactory controlFactory, IControl parent = null)
             : base(appPage, parent)
         {
             this.pageFactory = pageFactory;
-
+            this.controlFactory = controlFactory;
             this.commands = this.Container.Locator("[role='menuitem']:not([data-id='OverflowButton']):not([aria-hidden='true'])");
             this.overflowCommand = this.Container.Locator("[data-id='OverflowButton']");
             this.flyout = this.Page.GetByRole(AriaRole.Menu);
@@ -96,6 +97,15 @@
             }
 
             await command.ClickAndWaitForAppIdleAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<TControl> ClickCommandWithDialogAsync<TControl>(params string[] commands)
+            where TControl : IControl
+        {
+            await this.ClickCommandAsync(commands);
+
+            return this.controlFactory.CreateCachedInstance<TControl>(this.AppPage);
         }
 
         /// <inheritdoc/>

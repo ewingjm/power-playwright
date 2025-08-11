@@ -21,10 +21,10 @@
         private readonly IControlFactory controlFactory;
         private readonly ILogger<PcfGridControl> logger;
 
-        private readonly ILocator flyoutRoot;
-        private readonly ILocator flyoutResults;
-        private readonly ILocator flyoutNoRecordsText;
-        private readonly ILocator flyoutNewButton;
+        private readonly ILocator resultsRoot;
+        private readonly ILocator results;
+        private readonly ILocator noRecordsText;
+        private readonly ILocator newButton;
         private readonly ILocator selectedRecordListItem;
         private readonly ILocator selectedRecordText;
         private readonly ILocator selectedRecordDeleteButton;
@@ -45,11 +45,11 @@
             this.controlFactory = controlFactory;
             this.logger = logger;
 
-            this.flyoutRoot = this.Page.Locator($"div[data-id='{this.Name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']");
-            this.flyoutNoRecordsText = this.flyoutRoot.Locator($"span[data-id*='_No_Records_Text']");
-            this.flyoutResults = this.flyoutRoot.GetByRole(AriaRole.Treeitem);
-            this.flyoutNewButton = this.flyoutRoot.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "New", Exact = true });
-            this.selectedRecordListItem = this.Container.Locator($"ul[data-id*='_SelectedRecordList']").Locator("li").First;
+            this.resultsRoot = this.Page.Locator($"div[data-id='{this.Name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']").Or(this.Container.GetByRole(AriaRole.Tree, new LocatorGetByRoleOptions { Name = "Lookup results", Exact = true }));
+            this.noRecordsText = this.resultsRoot.Locator($"span[data-id*='_No_Records_Text']");
+            this.results = this.resultsRoot.GetByRole(AriaRole.Treeitem);
+            this.newButton = this.resultsRoot.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "New", Exact = true });
+            this.selectedRecordListItem = this.Container.Locator($"ul[data-id*='_SelectedRecordList']").Or(this.Container.Locator("div[id*='_RecordList']").GetByRole(AriaRole.List)).GetByRole(AriaRole.Listitem).First;
             this.selectedRecordText = this.selectedRecordListItem.Locator($"div[data-id*='_selected_tag_text']");
             this.selectedRecordDeleteButton = this.selectedRecordListItem.Locator($"button[data-id*='_selected_tag_delete']");
             this.input = this.Container.Locator("input");
@@ -75,7 +75,7 @@
 
             await this.ClearExistingValue();
             await this.input.ClickAndWaitForAppIdleAsync();
-            await this.flyoutNewButton.ClickAndWaitForAppIdleAsync();
+            await this.newButton.ClickAndWaitForAppIdleAsync();
 
             return this.controlFactory.CreateCachedInstance<IQuickCreateForm>(this.AppPage, parent: this);
         }
@@ -96,8 +96,8 @@
 
             await this.input.FillAsync(value);
 
-            var flyoutResult = this.flyoutResults.GetByText(value, new LocatorGetByTextOptions { Exact = true }).First;
-            await flyoutResult.Or(this.flyoutNoRecordsText).WaitForAsync();
+            var flyoutResult = this.results.GetByText(value, new LocatorGetByTextOptions { Exact = true }).First;
+            await flyoutResult.Or(this.noRecordsText).WaitForAsync();
 
             if (!await flyoutResult.IsVisibleAsync())
             {

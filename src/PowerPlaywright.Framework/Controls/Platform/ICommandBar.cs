@@ -28,6 +28,15 @@
             where TModelDrivenAppPage : IModelDrivenAppPage;
 
         /// <summary>
+        /// Clicks a command that opens a dialog on the page.
+        /// </summary>
+        /// <param name="commands">The commands to click (in sequence).</param>
+        /// <typeparam name="TControl">The type of dialog.</typeparam>
+        /// <returns>The page.</returns>
+        Task<TControl> ClickCommandWithDialogAsync<TControl>(params string[] commands)
+            where TControl : IControl;
+
+        /// <summary>
         /// Gets the commands visible on the command bar.
         /// </summary>
         /// <param name="parentCommands">An optional sequence of commands to use when checking getting nested commands.</param>

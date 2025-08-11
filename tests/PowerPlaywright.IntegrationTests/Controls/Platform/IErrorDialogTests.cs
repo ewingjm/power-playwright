@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IErrorDialog.CloseAsync"/> closes the dialog when it is visible.
+        /// Tests that <see cref="IErrorDialog.CancelAsync"/> closes the dialog when it is visible.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -32,7 +32,7 @@
         {
             var errorDialog = await this.SetupErrorDialogScenarioAsync();
 
-            await errorDialog.CloseAsync();
+            await errorDialog.CancelAsync();
 
             Assert.That(await errorDialog.IsVisibleAsync(), Is.False);
         }
