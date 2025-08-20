@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
@@ -89,6 +90,20 @@
             await row.GetByRole(AriaRole.Gridcell).Nth(1).DblClickAsync(new LocatorDblClickOptions { Position = new Position { X = 0, Y = 0 } });
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
+        }
+
+        /// <inheritdoc/>
+        public async Task<int> GetTotalRowCountAsync()
+        {
+            var statusText = await this.Container.Locator("span[class*='statusContainer-'] div[role='status']").TextContentAsync();
+
+            var match = Regex.Match(statusText, @"of\s+(\d+)");
+            if (!match.Success)
+            {
+                throw new PowerPlaywrightException($"Unable to get total row count from status text: {statusText}.");
+            }
+
+            return int.Parse(match.Groups[1].Value);
         }
 
         private ILocator GetRow(int index)

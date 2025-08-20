@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
@@ -73,6 +74,20 @@
             }
 
             return capturedColumns;
+        }
+
+        /// <inheritdoc/>
+        public async Task<int> GetTotalRowCountAsync()
+        {
+            var statusText = await this.Container.Locator("span[class*='statusTextContainer-']").TextContentAsync();
+
+            var match = Regex.Match(statusText, @"Rows:\s+(\d+)");
+            if (!match.Success)
+            {
+                throw new PowerPlaywrightException($"Unable to get total row count from status text: {statusText}.");
+            }
+
+            return int.Parse(match.Groups[1].Value);
         }
 
         /// <inheritdoc/>
