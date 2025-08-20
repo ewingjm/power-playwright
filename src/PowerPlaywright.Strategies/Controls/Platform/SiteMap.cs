@@ -1,5 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
@@ -8,6 +10,7 @@
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
     /// A sitemap control.
@@ -47,8 +50,6 @@
                 await this.OpenAreaAsync(area);
             }
 
-            await this.Page.WaitForAppIdleAsync();
-
             var pageItem = this.GetPageLocator(group, page);
             if (!await pageItem.IsVisibleAsync())
             {
@@ -62,6 +63,46 @@
         }
 
         /// <inheritdoc/>
+        public async Task<IEnumerable<string>> GetAreasAsync()
+        {
+            await this.areaSwitcher.ClickAndWaitForAppIdleAsync();
+
+            var areas = await this.areaSwitcherFlyout.GetByRole(AriaRole.Menuitemradio).AllTextContentsAsync();
+
+            await this.areaSwitcher.ClickAndWaitForAppIdleAsync();
+
+            return areas;
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> GetGroupsAsync(string area)
+        {
+            if (!await this.IsAreaActiveAsync(area))
+            {
+                await this.OpenAreaAsync(area);
+            }
+
+            var groupHeaders = await this.Container.GetByRole(AriaRole.Heading, new LocatorGetByRoleOptions { Level = 3 }).AllTextContentsAsync();
+
+            return groupHeaders.Select(h => h.TrimStart(' '));
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> GetPagesAsync(string area, string group = null)
+        {
+            if (!await this.IsAreaActiveAsync(area))
+            {
+                await this.OpenAreaAsync(area);
+            }
+
+            var root = group != null ? this.GetGroupLocator(group) : this.Container.GetByRole(AriaRole.Treeitem);
+
+            var pages = await root.GetByRole(AriaRole.Treeitem).AllAsync();
+
+            return await Task.WhenAll(pages.Select(p => p.GetAttributeAsync(Attributes.AriaLabel)));
+        }
+
+        /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
             return context.Locator(RootLocator);
@@ -69,8 +110,7 @@
 
         private async Task OpenAreaAsync(string area)
         {
-            await this.areaSwitcher.ClickAsync();
-            await this.Page.WaitForAppIdleAsync();
+            await this.areaSwitcher.ClickAndWaitForAppIdleAsync();
 
             var areaFlyoutItem = this.areaSwitcherFlyout.GetByRole(AriaRole.Menuitemradio, new LocatorGetByRoleOptions { Name = area });
 
@@ -79,7 +119,7 @@
                 throw new NotFoundException($"Unable to find an area named {area} on the sitemap area switcher flyout.");
             }
 
-            await areaFlyoutItem.ClickAsync();
+            await areaFlyoutItem.ClickAndWaitForAppIdleAsync();
         }
 
         private async Task<bool> IsAreaActiveAsync(string area)
