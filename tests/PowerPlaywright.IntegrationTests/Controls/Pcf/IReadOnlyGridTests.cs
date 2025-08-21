@@ -66,6 +66,21 @@
             Assert.That(gridControl.GetColumnNamesAsync, Is.EqualTo(Columns));
         }
 
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.GetTotalRowCountAsync"/> always returns the total number of rows.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetTotalRowCountAsync_Always_ReturnsTotalRowCount()
+        {
+            var expectedTotalRowCount = this.faker.Random.Int(0, 2);
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            var rowCount = await gridControl.GetTotalRowCountAsync();
+
+            Assert.That(rowCount, Is.EqualTo(expectedTotalRowCount));
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 
@@ -73,7 +88,7 @@
         {
             withRecord ??= new RecordFaker();
 
-            if (withRelatedRecords != null)
+            if (withRelatedRecords != null && withRelatedRecords.Any())
             {
                 withRecord.RuleFor(r => r.pp_Record_RelatedRecord, f => withRelatedRecords?.Select(f => f.Generate()));
             }

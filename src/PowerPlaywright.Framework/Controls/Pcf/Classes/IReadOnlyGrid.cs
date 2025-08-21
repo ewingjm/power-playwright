@@ -21,5 +21,11 @@
         /// </summary>
         /// <returns>The column names.</returns>
         Task<IEnumerable<string>> GetColumnNamesAsync();
+
+        /// <summary>
+        /// Gets the total number of rows across all pages.
+        /// </summary>
+        /// <returns>The total number of rows.</returns>
+        Task<int> GetTotalRowCountAsync();
     }
 }
