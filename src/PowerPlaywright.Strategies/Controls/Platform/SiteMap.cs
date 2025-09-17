@@ -112,7 +112,7 @@
         {
             await this.areaSwitcher.ClickAndWaitForAppIdleAsync();
 
-            var areaFlyoutItem = this.areaSwitcherFlyout.GetByRole(AriaRole.Menuitemradio, new LocatorGetByRoleOptions { Name = area });
+            var areaFlyoutItem = this.areaSwitcherFlyout.GetByRole(AriaRole.Menuitemradio, new LocatorGetByRoleOptions { Name = area, Exact = true });
 
             if (!await areaFlyoutItem.IsVisibleAsync())
             {
@@ -138,13 +138,13 @@
 
         private ILocator GetGroupLocator(string group)
         {
-            return this.Container.GetByRole(AriaRole.Group, new LocatorGetByRoleOptions() { Name = group });
+            return this.Container.GetByRole(AriaRole.Group, new LocatorGetByRoleOptions() { Name = group, Exact = true });
         }
 
         private ILocator GetPageLocator(string group, string page)
         {
             return this.GetGroupLocator(group)
-                .GetByRole(AriaRole.Treeitem, new LocatorGetByRoleOptions { Name = page });
+                .GetByRole(AriaRole.Treeitem, new LocatorGetByRoleOptions { Name = page, Exact = true });
         }
     }
 }
