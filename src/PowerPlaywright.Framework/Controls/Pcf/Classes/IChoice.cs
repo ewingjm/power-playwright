@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Pcf.Classes
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -19,5 +20,11 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<string> GetValueAsync();
+
+        /// <summary>
+        /// Gets all available values of the choice control.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<IEnumerable<string>> GetAllValuesAsync();
     }
 }

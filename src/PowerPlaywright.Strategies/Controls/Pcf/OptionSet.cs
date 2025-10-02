@@ -1,5 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
@@ -40,6 +42,27 @@
             var optionText = await this.selectedOption.TextContentAsync();
 
             return optionText != "---" ? optionText : null;
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> GetAllValuesAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            // Check if the control is inactive or the flyout is not rendered
+            var flyoutId = await this.toggleMenu.GetAttributeAsync(Attributes.AriaControls);
+            if (string.IsNullOrWhiteSpace(flyoutId))
+            {
+                throw new PowerPlaywrightException("Unable to retrieve options: the record may be inactive or the control is not interactive.");
+            }
+
+            var optionSetOptions = this.toggleMenu.GetByRole(AriaRole.Option);
+            var allOptionsIncSelect = await optionSetOptions.AllTextContentsAsync();
+            var allOptionsNoSelect = allOptionsIncSelect
+                .Where(o => !string.IsNullOrWhiteSpace(o) && o != "---")
+                .Select(o => o.Trim());
+
+            return allOptionsNoSelect;
         }
 
         /// <inheritdoc/>

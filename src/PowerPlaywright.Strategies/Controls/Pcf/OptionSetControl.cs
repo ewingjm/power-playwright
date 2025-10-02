@@ -1,6 +1,8 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
@@ -95,6 +97,27 @@
             return textValue != falseOptionText;
         }
 
+        /// <inheritdoc/>
+        public async Task<IEnumerable<string>> GetAllValuesAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+            await this.toggleMenu.ClickAndWaitForAppIdleAsync();
+
+            var flyoutId = await this.toggleMenu.GetAttributeAsync(Attributes.AriaControls);
+            if (flyoutId == null)
+            {
+                throw new PowerPlaywrightException($"Unable to get all options for the option set.");
+            }
+
+            var optionSetLocator = await this.GetOptionsLocatorAsync();
+            var allOptionsIncSelect = await optionSetLocator.AllTextContentsAsync();
+            var allOptionsNoSelect = allOptionsIncSelect
+                .Where(o => !string.IsNullOrWhiteSpace(o) && o != "--Select--")
+                .Select(o => o.Trim());
+
+            return allOptionsNoSelect;
+        }
+
         private async Task<ILocator> GetFlyoutLocatorAsync()
         {
             var flyoutId = await this.toggleMenu.GetAttributeAsync(Attributes.AriaControls);
@@ -107,6 +130,13 @@
             var flyout = await this.GetFlyoutLocatorAsync();
 
             return flyout.GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Name = optionValue, Exact = true });
+        }
+
+        private async Task<ILocator> GetOptionsLocatorAsync()
+        {
+            var flyout = await this.GetFlyoutLocatorAsync();
+
+            return flyout.GetByRole(AriaRole.Option);
         }
 
         private async Task<ILocator> GetOptionLocatorAsync(int optionIndex)
