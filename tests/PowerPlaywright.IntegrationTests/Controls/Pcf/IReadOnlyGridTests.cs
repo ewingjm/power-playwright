@@ -81,6 +81,47 @@
             Assert.That(rowCount, Is.EqualTo(expectedTotalRowCount));
         }
 
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleAllRowsAsync"/> sets the expected state.
+        /// </summary>
+        /// <param name="expectedState">The expected checkbox state.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task ToggleAllRows_Always_SetsExpectedStateForAllRows(bool expectedState)
+        {
+            var expectedTotalRowCount = this.faker.Random.Int(1, 4);
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleAllRowsAsync(expectedState);
+
+            var actualRowStates = await gridControl.GetRowSelectionStatesAsync();
+
+            Assert.That(actualRowStates, Is.All.EqualTo(expectedState).And.Exactly(expectedTotalRowCount).Items);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleAllRowsAsync"/> does not change any row states when there are no rows in the grid.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleAllRows_NoRowsInGrid_ShouldNotChangeRowStates()
+        {
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
+
+            await gridControl.ToggleAllRowsAsync(select: true);
+
+            var actualRowCount = await gridControl.GetTotalRowCountAsync();
+            var actualRowStates = await gridControl.GetRowSelectionStatesAsync();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(actualRowCount, Is.EqualTo(0));
+                Assert.That(actualRowStates, Is.Empty);
+            });
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 
