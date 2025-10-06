@@ -27,5 +27,18 @@
         /// </summary>
         /// <returns>The total number of rows.</returns>
         Task<int> GetTotalRowCountAsync();
+
+        /// <summary>
+        /// Toggles all rows within the grid to the specified state.
+        /// </summary>
+        /// <param name="select">Disired state of the checkbox.</param>
+        /// <returns>true if the checkbox state is checked; otherwise false.</returns>
+        Task ToggleAllRowsAsync(bool select = true);
+
+        /// <summary>
+        /// Gets the selection states of all rows within the grid.
+        /// </summary>
+        /// <returns>The row selection states.</returns>
+        Task<IEnumerable<bool>> GetRowSelectionStatesAsync();
     }
 }
