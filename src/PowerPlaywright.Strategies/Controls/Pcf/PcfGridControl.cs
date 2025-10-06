@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
@@ -104,6 +105,55 @@
             }
 
             return int.Parse(match.Groups[1].Value);
+        }
+
+        /// <inheritdoc/>
+        public async Task ToggleAllRowsAsync(bool select = true)
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            await this.rowsContainer.WaitForAsync();
+
+            var totalRowCount = await this.GetTotalRowCountAsync();
+            if (totalRowCount == 0)
+            {
+                this.logger?.LogInformation("There are no rows in the grid to select.");
+                return;
+            }
+
+            var toggleCheckBox = this.Page.Locator("div[class='ag-header-cell-comp-wrapper'] div[class*='ms-Checkbox-checkbox'] i[class*='ms-Checkbox-checkmark']");
+            if (toggleCheckBox == null)
+            {
+                throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
+            }
+
+            var currentState = await toggleCheckBox.IsCheckedAsync();
+            if (currentState == select)
+            {
+                this.logger?.LogInformation("All rows are already in the expected state.");
+                return;
+            }
+
+            await toggleCheckBox.ClickAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<bool>> GetRowSelectionStatesAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            await this.rowsContainer.WaitForAsync();
+
+            var rowCheckBoxes = this.rowsContainer.Locator("div[class*='ms-Checkbox-checkbox'] i[class*='ms-Checkbox-checkmark']");
+            var totalCheckBoxCount = await rowCheckBoxes.CountAsync();
+            var states = new List<bool>(totalCheckBoxCount);
+
+            for (int i = 0; i < totalCheckBoxCount; i++)
+            {
+                states.Add(await rowCheckBoxes.Nth(i).IsCheckedAsync());
+            }
+
+            return states;
         }
 
         private ILocator GetRow(int index)

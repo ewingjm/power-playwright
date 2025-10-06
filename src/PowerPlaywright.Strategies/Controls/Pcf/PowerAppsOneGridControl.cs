@@ -108,6 +108,41 @@
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }
 
+        /// <inheritdoc/>
+        public async Task ToggleAllRowsAsync(bool select = true)
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            await this.rowsContainer.WaitForAsync();
+
+            var totalRowCount = await this.GetTotalRowCountAsync();
+            if (totalRowCount == 0)
+            {
+                this.logger?.LogInformation("There are no rows in the grid to select.");
+                return;
+            }
+
+            var toggleCheckBox = this.Page.Locator("div[class='ag-header-cell-comp-wrapper'] div[class*='ms-Checkbox-checkbox'] i[class*='ms-Checkbox-checkmark']");
+            if (toggleCheckBox == null)
+            {
+                throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
+            }
+
+            var currentState = await toggleCheckBox.IsCheckedAsync();
+            if (currentState == select)
+            {
+                this.logger?.LogInformation("All rows are already in the expected state.");
+                return;
+            }
+
+            await toggleCheckBox.ClickAsync();
+        }
+
+        public Task<IEnumerable<bool>> GetRowSelectionStatesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         private ILocator GetRow(int index)
         {
             return this.rowsContainer.Locator($"div[role='row'][row-index='{index}']");
