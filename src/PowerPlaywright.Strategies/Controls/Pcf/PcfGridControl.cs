@@ -27,6 +27,7 @@
         private readonly ILocator treeGrid;
         private readonly ILocator rowsContainer;
         private readonly ILocator columnHeaders;
+        private readonly ILocator gridHeaderContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PcfGridControl"/> class.
@@ -46,6 +47,7 @@
             this.treeGrid = this.Container.GetByRole(AriaRole.Treegrid);
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
             this.columnHeaders = this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])");
+            this.gridHeaderContainer = this.Container.Locator("div[class='ag-header-container']");
         }
 
         /// <inheritdoc/>
@@ -121,7 +123,7 @@
                 return;
             }
 
-            var toggleCheckBox = this.Page.Locator("div[class='ag-header-cell-comp-wrapper'] div[class*='ms-Checkbox-checkbox'] i[class*='ms-Checkbox-checkmark']");
+            var toggleCheckBox = this.gridHeaderContainer.Locator("div[class*='ms-Checkbox-checkbox'] i[class*='ms-Checkbox-checkmark']");
             if (toggleCheckBox == null)
             {
                 throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
