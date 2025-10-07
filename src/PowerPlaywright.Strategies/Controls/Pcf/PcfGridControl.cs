@@ -134,6 +134,8 @@
             }
 
             await toggleCheckBox.Locator("..").ClickAsync();
+
+            await this.Page.WaitForAppIdleAsync();
         }
 
         /// <inheritdoc/>
