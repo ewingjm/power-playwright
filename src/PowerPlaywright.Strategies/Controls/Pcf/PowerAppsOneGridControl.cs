@@ -46,7 +46,7 @@
             this.treeGrid = this.Container.GetByRole(AriaRole.Treegrid);
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
             this.columnHeaders = this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) });
-            this.gridHeaderContainer = this.Container.Locator("div[class='ag-header-container']");
+            this.gridHeaderContainer = this.Container.GetByRole(AriaRole.Rowgroup).Filter(new LocatorFilterOptions { Has = this.Page.GetByRole(AriaRole.Columnheader) });
         }
 
         /// <inheritdoc/>
@@ -122,7 +122,7 @@
                 return;
             }
 
-            var toggleCheckBox = this.gridHeaderContainer.Locator("div[class*='ms-Checkbox-checkbox'] i[class*='ms-Checkbox-checkmark']");
+            var toggleCheckBox = this.gridHeaderContainer.GetByRole(AriaRole.Checkbox, new LocatorGetByRoleOptions { Name = "Toggle selection of all rows" });
             if (toggleCheckBox == null)
             {
                 throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
@@ -135,25 +135,20 @@
                 return;
             }
 
-            await toggleCheckBox.ClickAsync();
+            await toggleCheckBox.Locator("..").ClickAsync();
         }
 
-        public async Task<IEnumerable<bool>> GetRowSelectionStatesAsync()
+        /// <inheritdoc/>
+        public async Task<int> GetSelectedRowCount()
         {
-            await this.Page.WaitForAppIdleAsync();
+            var pattern = @"Selected:\s*(\d+)";
 
-            await this.rowsContainer.WaitForAsync();
+            var allTextContents = await this.Container.Locator("span[class*='statusTextContainer-']").AllTextContentsAsync();
 
-            var rowCheckBoxes = this.rowsContainer.Locator("div[class*='ms-Checkbox-checkbox'] i[class*='ms-Checkbox-checkmark']");
-            var totalCheckBoxCount = await rowCheckBoxes.CountAsync();
-            var states = new List<bool>(totalCheckBoxCount);
-
-            for (int i = 0; i < totalCheckBoxCount; i++)
-            {
-                states.Add(await rowCheckBoxes.Nth(i).IsCheckedAsync());
-            }
-
-            return states;
+            return allTextContents.Select(st => Regex.Match(st, pattern, RegexOptions.CultureInvariant))
+                .Where(m => m.Success)
+                .Select(m => int.Parse(m.Groups[1].Value))
+                .FirstOrDefault();
         }
 
         private ILocator GetRow(int index)

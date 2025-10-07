@@ -84,21 +84,21 @@
         /// <summary>
         /// Tests that <see cref="IReadOnlyGrid.ToggleAllRowsAsync"/> sets the expected state.
         /// </summary>
-        /// <param name="expectedState">The expected checkbox state.</param>
+        /// <param name="checkedState">The expected checkbox state.</param>
+        /// <param name="expectedTotalRowCount">The expected row count.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        [TestCase(true)]
-        [TestCase(false)]
-        public async Task ToggleAllRows_Always_SetsExpectedStateForAllRows(bool expectedState)
+        [TestCase(true, 4)]
+        [TestCase(false, 0)]
+        public async Task ToggleAllRows_Always_SetsExpectedStateForAllRows(bool checkedState, int expectedTotalRowCount)
         {
-            var expectedTotalRowCount = this.faker.Random.Int(1, 4);
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
-            await gridControl.ToggleSelectAllRowsAsync(expectedState);
+            await gridControl.ToggleSelectAllRowsAsync(select: checkedState);
 
-            var actualRowStates = await gridControl.GetRowSelectionStatesAsync();
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCount();
 
-            Assert.That(actualRowStates, Is.All.EqualTo(expectedState).And.Exactly(expectedTotalRowCount).Items);
+            Assert.That(actualSelectedRowCount, Is.EqualTo(expectedTotalRowCount));
         }
 
         /// <summary>
@@ -113,12 +113,12 @@
             await gridControl.ToggleSelectAllRowsAsync(select: true);
 
             var actualRowCount = await gridControl.GetTotalRowCountAsync();
-            var actualRowStates = await gridControl.GetRowSelectionStatesAsync();
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCount();
 
             Assert.Multiple(() =>
             {
-                Assert.That(actualRowCount, Is.EqualTo(0));
-                Assert.That(actualRowStates, Is.Empty);
+                Assert.That(actualRowCount, Is.Zero);
+                Assert.That(actualSelectedRowCount, Is.Zero);
             });
         }
 

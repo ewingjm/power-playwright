@@ -36,9 +36,9 @@
         Task ToggleSelectAllRowsAsync(bool select = true);
 
         /// <summary>
-        /// Gets the selection states of all rows within the grid.
+        /// Gets the number of selected rows in the grid.
         /// </summary>
-        /// <returns>The row selection states.</returns>
-        Task<IEnumerable<bool>> GetRowSelectionStatesAsync();
+        /// <returns>The total number of rows.</returns>
+        Task<int> GetSelectedRowCount();
     }
 }
