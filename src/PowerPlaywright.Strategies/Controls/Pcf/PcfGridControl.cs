@@ -113,8 +113,6 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            await this.rowsContainer.WaitForAsync();
-
             var totalRowCount = await this.GetTotalRowCountAsync();
             if (totalRowCount == 0)
             {
