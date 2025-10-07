@@ -104,9 +104,9 @@
             await this.toggleMenu.ClickAndWaitForAppIdleAsync();
 
             var flyoutId = await this.toggleMenu.GetAttributeAsync(Attributes.AriaControls);
-            if (flyoutId == null)
+            if (string.IsNullOrWhiteSpace(flyoutId))
             {
-                throw new PowerPlaywrightException($"Unable to get all options for the option set.");
+                throw new PowerPlaywrightException("Unable to retrieve the available options because the option set control is not editable.");
             }
 
             var optionSetLocator = await this.GetOptionsLocatorAsync();

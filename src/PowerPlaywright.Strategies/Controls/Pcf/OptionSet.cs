@@ -48,12 +48,10 @@
         public async Task<IEnumerable<string>> GetAllValuesAsync()
         {
             await this.Page.WaitForAppIdleAsync();
-
-            // Check if the control is inactive or the flyout is not rendered
-            var flyoutId = await this.toggleMenu.GetAttributeAsync(Attributes.AriaControls);
-            if (string.IsNullOrWhiteSpace(flyoutId))
+            var isEditable = await this.toggleMenu.IsEditableAsync();
+            if (!isEditable)
             {
-                throw new PowerPlaywrightException("Unable to retrieve options: the record may be inactive or the control is not interactive.");
+                throw new PowerPlaywrightException("Unable to retrieve the available options because the option set control is not editable.");
             }
 
             var optionSetOptions = this.toggleMenu.GetByRole(AriaRole.Option);

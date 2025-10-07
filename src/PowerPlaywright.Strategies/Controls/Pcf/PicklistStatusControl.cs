@@ -59,17 +59,14 @@
         public async Task<IEnumerable<string>> GetAllValuesAsync()
         {
             await this.button.ClickAndWaitForAppIdleAsync();
-
-            // Check if the control is interactive
             var listBoxId = await this.button.GetAttributeAsync(Attributes.AriaControls);
             if (string.IsNullOrWhiteSpace(listBoxId))
             {
-                throw new PowerPlaywrightException("Unable to retrieve options: the record may be inactive or the control is not interactive.");
+                throw new PowerPlaywrightException("Unable to retrieve the available options because the option set control is not editable.");
             }
 
             var listBox = this.Page.Locator($"[id='{listBoxId}']");
             var options = listBox.GetByRole(AriaRole.Option);
-
             var allOptions = await options.AllTextContentsAsync();
 
             return allOptions
