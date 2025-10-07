@@ -32,7 +32,7 @@
         /// Toggles all rows within the grid to the specified state.
         /// </summary>
         /// <param name="select">Desired state of the checkbox.</param>
-        /// <returns>true if the checkbox state is checked; otherwise false.</returns>
+        /// <returns>A <see cref="Task"/> representing an asynchronous operation.</returns>
         Task ToggleSelectAllRowsAsync(bool select = true);
 
         /// <summary>
