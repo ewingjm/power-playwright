@@ -109,7 +109,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task ToggleAllRowsAsync(bool select = true)
+        public async Task ToggleSelectAllRowsAsync(bool select = true)
         {
             await this.Page.WaitForAppIdleAsync();
 

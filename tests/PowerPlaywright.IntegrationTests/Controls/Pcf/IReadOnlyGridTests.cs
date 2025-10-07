@@ -94,7 +94,7 @@
             var expectedTotalRowCount = this.faker.Random.Int(1, 4);
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
-            await gridControl.ToggleAllRowsAsync(expectedState);
+            await gridControl.ToggleSelectAllRowsAsync(expectedState);
 
             var actualRowStates = await gridControl.GetRowSelectionStatesAsync();
 
@@ -110,7 +110,7 @@
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
 
-            await gridControl.ToggleAllRowsAsync(select: true);
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
 
             var actualRowCount = await gridControl.GetTotalRowCountAsync();
             var actualRowStates = await gridControl.GetRowSelectionStatesAsync();
