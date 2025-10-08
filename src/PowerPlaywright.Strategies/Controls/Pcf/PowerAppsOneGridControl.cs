@@ -83,13 +83,13 @@
         public async Task<int> GetTotalRowCountAsync()
         {
             var pattern = @"Rows:\s+(\d+)";
-            var allTextContents = await this.Container.Locator("span[class*='statusTextContainer-']").AllTextContentsAsync();
-            var match = allTextContents.Select(st => Regex.Match(st, pattern, RegexOptions.CultureInvariant))
+            var statusTextContainers = await this.Container.Locator("span[class*='statusTextContainer-']").AllTextContentsAsync();
+            var match = statusTextContainers.Select(st => Regex.Match(st, pattern, RegexOptions.CultureInvariant))
                 .FirstOrDefault(m => m.Success);
 
             if (match == null)
             {
-                throw new PowerPlaywrightException($"Unable to get total row count from status text: {string.Join(" ", allTextContents)}.");
+                throw new PowerPlaywrightException($"Unable to get total row count from status text: {string.Join(" ", statusTextContainers)}.");
             }
 
             return int.Parse(match.Groups[1].Value);
@@ -145,10 +145,9 @@
         public async Task<int> GetSelectedRowCountAsync()
         {
             var pattern = @"Selected:\s*(\d+)";
+            var statusTextContainers = await this.Container.Locator("span[class*='statusTextContainer-']").AllTextContentsAsync();
 
-            var allTextContents = await this.Container.Locator("span[class*='statusTextContainer-']").AllTextContentsAsync();
-
-            return allTextContents.Select(st => Regex.Match(st, pattern, RegexOptions.CultureInvariant))
+            return statusTextContainers.Select(st => Regex.Match(st, pattern, RegexOptions.CultureInvariant))
                 .Where(m => m.Success)
                 .Select(m => int.Parse(m.Groups[1].Value))
                 .FirstOrDefault();
