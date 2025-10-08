@@ -39,6 +39,6 @@
         /// Gets the number of selected rows in the grid.
         /// </summary>
         /// <returns>The total number of rows.</returns>
-        Task<int> GetSelectedRowCount();
+        Task<int> GetSelectedRowCountAsync();
     }
 }

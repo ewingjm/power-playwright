@@ -140,7 +140,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<int> GetSelectedRowCount()
+        public async Task<int> GetSelectedRowCountAsync()
         {
             var pattern = @"Selected:\s*(\d+)";
 

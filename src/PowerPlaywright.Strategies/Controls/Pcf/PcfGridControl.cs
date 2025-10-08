@@ -138,11 +138,12 @@
         }
 
         /// <inheritdoc/>
-        public async Task<int> GetSelectedRowCount()
+        public async Task<int> GetSelectedRowCountAsync()
         {
+            var pattern = @"\((\d+)\s+Selected\)";
             var statusText = await this.Container.Locator("span[class*='statusContainer-'] div[role='status']").TextContentAsync();
 
-            var match = Regex.Match(statusText, @"\((\d+)\s+Selected\)");
+            var match = Regex.Match(statusText, pattern);
 
             return match.Success ? int.Parse(match.Groups[1].Value) : 0;
         }
