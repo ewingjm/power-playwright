@@ -82,12 +82,14 @@
         /// <inheritdoc/>
         public async Task<int> GetTotalRowCountAsync()
         {
-            var statusText = await this.Container.Locator("span[class*='statusTextContainer-']").TextContentAsync();
+            var pattern = @"Rows:\s+(\d+)";
+            var allTextContents = await this.Container.Locator("span[class*='statusTextContainer-']").AllTextContentsAsync();
+            var match = allTextContents.Select(st => Regex.Match(st, pattern, RegexOptions.CultureInvariant))
+                .FirstOrDefault(m => m.Success);
 
-            var match = Regex.Match(statusText, @"Rows:\s+(\d+)");
-            if (!match.Success)
+            if (match == null)
             {
-                throw new PowerPlaywrightException($"Unable to get total row count from status text: {statusText}.");
+                throw new PowerPlaywrightException($"Unable to get total row count from status text: {string.Join(" ", allTextContents)}.");
             }
 
             return int.Parse(match.Groups[1].Value);
