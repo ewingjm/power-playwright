@@ -82,23 +82,38 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IReadOnlyGrid.ToggleAllRowsAsync"/> sets the expected state.
+        /// Tests that <see cref="IReadOnlyGrid.ToggleAllRowsAsync"/> sets the expected state to checked.
         /// </summary>
-        /// <param name="checkedState">The expected checkbox state.</param>
-        /// <param name="expectedTotalRowCount">The expected row count.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        [TestCase(true, 4)]
-        [TestCase(false, 0)]
-        public async Task ToggleAllRows_Always_SetsExpectedStateForAllRows(bool checkedState, int expectedTotalRowCount)
+        public async Task ToggleAllRows_NoRowsSelected_SelectsAllRows()
         {
+            var expectedTotalRowCount = 4;
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
-            await gridControl.ToggleSelectAllRowsAsync(select: checkedState);
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
 
-            var actualSelectedRowCount = await gridControl.GetSelectedRowCount();
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
 
             Assert.That(actualSelectedRowCount, Is.EqualTo(expectedTotalRowCount));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleAllRowsAsync"/> sets the expected state to unchecked.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleAllRows_RowsSelected_DeselectsAllRows()
+        {
+            var expectedTotalRowCount = 4;
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+            await gridControl.ToggleSelectAllRowsAsync(select: false);
+
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.EqualTo(0));
         }
 
         /// <summary>
@@ -106,20 +121,31 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task ToggleAllRows_NoRowsInGrid_ShouldNotChangeRowStates()
+        public async Task ToggleAllRows_EmptyResultSet_SelectsNoRows()
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
 
             await gridControl.ToggleSelectAllRowsAsync(select: true);
 
-            var actualRowCount = await gridControl.GetTotalRowCountAsync();
-            var actualSelectedRowCount = await gridControl.GetSelectedRowCount();
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(actualRowCount, Is.Zero);
-                Assert.That(actualSelectedRowCount, Is.Zero);
-            });
+            Assert.That(actualSelectedRowCount, Is.Zero);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.GetSelectedRowCountAsync"/> returns the number of selected rows.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetSelectedRowCount_RowsSelected_ReturnsCountOfSelectedRows()
+        {
+            var expectedTotalRowCount = this.faker.Random.Int(1, 4);
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.EqualTo(expectedTotalRowCount));
         }
 
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
