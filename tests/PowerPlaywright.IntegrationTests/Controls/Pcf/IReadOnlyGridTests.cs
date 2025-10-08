@@ -81,6 +81,73 @@
             Assert.That(rowCount, Is.EqualTo(expectedTotalRowCount));
         }
 
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleAllRowsAsync"/> sets the expected state to checked.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleAllRows_NoRowsSelected_SelectsAllRows()
+        {
+            var expectedTotalRowCount = 4;
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.EqualTo(expectedTotalRowCount));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleAllRowsAsync"/> sets the expected state to unchecked.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleAllRows_RowsSelected_DeselectsAllRows()
+        {
+            var expectedTotalRowCount = 4;
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+            await gridControl.ToggleSelectAllRowsAsync(select: false);
+
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.EqualTo(0));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleAllRowsAsync"/> does not change any row states when there are no rows in the grid.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleAllRows_EmptyResultSet_SelectsNoRows()
+        {
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.Zero);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.GetSelectedRowCountAsync"/> returns the number of selected rows.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetSelectedRowCount_RowsSelected_ReturnsCountOfSelectedRows()
+        {
+            var expectedTotalRowCount = this.faker.Random.Int(1, 4);
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.EqualTo(expectedTotalRowCount));
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 

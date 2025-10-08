@@ -13,6 +13,7 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="IPowerAppsOneGrid"/>.
@@ -26,6 +27,7 @@
         private readonly ILocator treeGrid;
         private readonly ILocator rowsContainer;
         private readonly ILocator columnHeaders;
+        private readonly ILocator gridHeaderContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PowerAppsOneGridControl"/> class.
@@ -45,6 +47,7 @@
             this.treeGrid = this.Container.GetByRole(AriaRole.Treegrid);
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
             this.columnHeaders = this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) });
+            this.gridHeaderContainer = this.Container.GetByRole(AriaRole.Rowgroup).Filter(new LocatorFilterOptions { Has = this.Page.GetByRole(AriaRole.Columnheader) });
         }
 
         /// <inheritdoc/>
@@ -79,12 +82,14 @@
         /// <inheritdoc/>
         public async Task<int> GetTotalRowCountAsync()
         {
-            var statusText = await this.Container.Locator("span[class*='statusTextContainer-']").TextContentAsync();
+            var pattern = @"Rows:\s+(\d+)";
+            var statusTextContainers = await this.Container.Locator("span[class*='statusTextContainer-']").AllTextContentsAsync();
+            var match = statusTextContainers.Select(st => Regex.Match(st, pattern, RegexOptions.CultureInvariant))
+                .FirstOrDefault(m => m.Success);
 
-            var match = Regex.Match(statusText, @"Rows:\s+(\d+)");
-            if (!match.Success)
+            if (match == null)
             {
-                throw new PowerPlaywrightException($"Unable to get total row count from status text: {statusText}.");
+                throw new PowerPlaywrightException($"Unable to get total row count from status text: {string.Join(" ", statusTextContainers)}.");
             }
 
             return int.Parse(match.Groups[1].Value);
@@ -106,6 +111,46 @@
             await row.GetByRole(AriaRole.Gridcell).Nth(1).DblClickAsync(new LocatorDblClickOptions { Position = new Position { X = 0, Y = 0 } });
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
+        }
+
+        /// <inheritdoc/>
+        public async Task ToggleSelectAllRowsAsync(bool select = true)
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            var totalRowCount = await this.GetTotalRowCountAsync();
+            if (totalRowCount == 0)
+            {
+                this.logger?.LogInformation("There are no rows in the grid to select.");
+                return;
+            }
+
+            var toggleCheckBox = this.gridHeaderContainer.GetByRole(AriaRole.Checkbox, new LocatorGetByRoleOptions { Name = "Toggle selection of all rows" });
+            if (toggleCheckBox == null)
+            {
+                throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
+            }
+
+            var currentState = await toggleCheckBox.IsCheckedAsync();
+            if (currentState == select)
+            {
+                this.logger?.LogInformation("All rows are already in the expected state.");
+                return;
+            }
+
+            await toggleCheckBox.Locator("..").ClickAndWaitForAppIdleAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<int> GetSelectedRowCountAsync()
+        {
+            var pattern = @"Selected:\s*(\d+)";
+            var statusTextContainers = await this.Container.Locator("span[class*='statusTextContainer-']").AllTextContentsAsync();
+
+            return statusTextContainers.Select(st => Regex.Match(st, pattern, RegexOptions.CultureInvariant))
+                .Where(m => m.Success)
+                .Select(m => int.Parse(m.Groups[1].Value))
+                .FirstOrDefault();
         }
 
         private ILocator GetRow(int index)

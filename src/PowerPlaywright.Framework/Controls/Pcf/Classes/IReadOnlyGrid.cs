@@ -27,5 +27,18 @@
         /// </summary>
         /// <returns>The total number of rows.</returns>
         Task<int> GetTotalRowCountAsync();
+
+        /// <summary>
+        /// Toggles all rows within the grid to the specified state.
+        /// </summary>
+        /// <param name="select">Desired state of the checkbox.</param>
+        /// <returns>A <see cref="Task"/> representing an asynchronous operation.</returns>
+        Task ToggleSelectAllRowsAsync(bool select = true);
+
+        /// <summary>
+        /// Gets the number of selected rows in the grid.
+        /// </summary>
+        /// <returns>The total number of rows.</returns>
+        Task<int> GetSelectedRowCountAsync();
     }
 }

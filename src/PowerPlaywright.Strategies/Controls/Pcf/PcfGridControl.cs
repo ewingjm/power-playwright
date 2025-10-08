@@ -13,6 +13,7 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="IPcfGridControl"/>.
@@ -26,6 +27,7 @@
         private readonly ILocator treeGrid;
         private readonly ILocator rowsContainer;
         private readonly ILocator columnHeaders;
+        private readonly ILocator gridHeaderContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PcfGridControl"/> class.
@@ -45,6 +47,7 @@
             this.treeGrid = this.Container.GetByRole(AriaRole.Treegrid);
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
             this.columnHeaders = this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])");
+            this.gridHeaderContainer = this.Container.GetByRole(AriaRole.Rowgroup).Filter(new LocatorFilterOptions { Has = this.Page.GetByRole(AriaRole.Columnheader) });
         }
 
         /// <inheritdoc/>
@@ -104,6 +107,45 @@
             }
 
             return int.Parse(match.Groups[1].Value);
+        }
+
+        /// <inheritdoc/>
+        public async Task ToggleSelectAllRowsAsync(bool select = true)
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            var totalRowCount = await this.GetTotalRowCountAsync();
+            if (totalRowCount == 0)
+            {
+                this.logger?.LogInformation("There are no rows in the grid to select.");
+                return;
+            }
+
+            var toggleCheckBox = this.gridHeaderContainer.GetByRole(AriaRole.Checkbox, new LocatorGetByRoleOptions { Name = "Toggle selection of all rows" });
+            if (toggleCheckBox == null)
+            {
+                throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
+            }
+
+            var currentState = await toggleCheckBox.IsCheckedAsync();
+            if (currentState == select)
+            {
+                this.logger?.LogInformation("All rows are already in the expected state.");
+                return;
+            }
+
+            await toggleCheckBox.Locator("..").ClickAndWaitForAppIdleAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<int> GetSelectedRowCountAsync()
+        {
+            var pattern = @"\((\d+)\s+Selected\)";
+            var statusText = await this.Container.Locator("span[class*='statusContainer-'] div[role='status']").TextContentAsync();
+
+            var match = Regex.Match(statusText, pattern);
+
+            return match.Success ? int.Parse(match.Groups[1].Value) : 0;
         }
 
         private ILocator GetRow(int index)
