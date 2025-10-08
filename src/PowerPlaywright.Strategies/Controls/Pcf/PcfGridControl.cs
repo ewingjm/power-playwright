@@ -13,6 +13,7 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="IPcfGridControl"/>.
@@ -133,9 +134,7 @@
                 return;
             }
 
-            await toggleCheckBox.Locator("..").ClickAsync();
-
-            await this.Page.WaitForAppIdleAsync();
+            await toggleCheckBox.Locator("..").ClickAndWaitForAppIdleAsync();
         }
 
         /// <inheritdoc/>
