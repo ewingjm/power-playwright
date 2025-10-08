@@ -75,7 +75,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetAllValuesAsync_InactiveRecord_ThrowsException()
+        public async Task GetAllOptionsAsync_DisabledField_ThrowsException()
         {
             var choiceControl = await this.SetupChoiceScenarioAsync(withDisabledRecord: true);
 
