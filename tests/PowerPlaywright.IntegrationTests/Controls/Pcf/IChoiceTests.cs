@@ -56,7 +56,7 @@
         [Test]
         public async Task GetAllOptionsAsync_ActiveRecord_ReturnsOptions()
         {
-            var expectedValues = Enum.GetValues<pp_record_pp_choice>().Select(v => v.ToString());
+            var expectedValues = new string[] { "Choice A", "Choice B", "Choice C" };
             var choiceControl = await this.SetupChoiceScenarioAsync();
             var output = await choiceControl.GetAllOptionsAsync();
 
