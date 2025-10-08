@@ -45,7 +45,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<string>> GetAllValuesAsync()
+        public async Task<IEnumerable<string>> GetAllOptionsAsync()
         {
             await this.Page.WaitForAppIdleAsync();
             var isEditable = await this.toggleMenu.IsEditableAsync();

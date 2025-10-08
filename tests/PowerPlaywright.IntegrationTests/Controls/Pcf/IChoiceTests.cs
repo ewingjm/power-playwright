@@ -50,20 +50,21 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IChoice.GetAllValuesAsync"/> returns the value when the value has been set.
+        /// Tests that <see cref="IChoice.GetAllOptionsAsync"/> returns the value when the value has been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task GetAllOptionsAsync_ActiveRecord_ReturnsOptions()
         {
             var expectedValues = Enum.GetValues<pp_record_pp_choice>().Select(v => v.ToString());
-            var output = await choiceControl.GetAllValuesAsync();
+            var choiceControl = await this.SetupChoiceScenarioAsync();
+            var output = await choiceControl.GetAllOptionsAsync();
 
             Assert.That(output, Is.EqualTo(expectedValues));
         }
 
         /// <summary>
-        /// Tests that <see cref="IChoice.GetAllValuesAsync"/> returns an exception if the record is inactive or the field is disabled as all option set values can't be read.
+        /// Tests that <see cref="IChoice.GetAllOptionsAsync"/> returns an exception if the record is inactive or the field is disabled as all option set values can't be read.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -72,7 +73,7 @@
             var choiceControl = await this.SetupChoiceScenarioAsync(withDisabledRecord: true);
 
             Assert.ThrowsAsync<PowerPlaywrightException>(
-                () => choiceControl.GetAllValuesAsync());
+                () => choiceControl.GetAllOptionsAsync());
         }
 
         /// <summary>

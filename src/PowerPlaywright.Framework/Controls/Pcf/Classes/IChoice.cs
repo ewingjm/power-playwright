@@ -22,9 +22,9 @@
         Task<string> GetValueAsync();
 
         /// <summary>
-        /// Gets all available values of the choice control.
+        /// Gets all available options of the choice control.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<IEnumerable<string>> GetAllValuesAsync();
+        Task<IEnumerable<string>> GetAllOptionsAsync();
     }
 }

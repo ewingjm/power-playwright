@@ -56,7 +56,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<string>> GetAllValuesAsync()
+        public async Task<IEnumerable<string>> GetAllOptionsAsync()
         {
             await this.button.ClickAndWaitForAppIdleAsync();
             var listBoxId = await this.button.GetAttributeAsync(Attributes.AriaControls);
