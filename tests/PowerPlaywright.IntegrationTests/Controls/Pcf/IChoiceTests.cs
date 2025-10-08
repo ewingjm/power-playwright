@@ -54,7 +54,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetAllValuesAsync_ContainsValue_ReturnsValues()
+        public async Task GetAllOptionsAsync_ActiveRecord_ReturnsOptions()
         {
             var allChoicesEnum = Enum.GetValues(typeof(pp_record_pp_choice));
             var expectedValues = new List<string>();
