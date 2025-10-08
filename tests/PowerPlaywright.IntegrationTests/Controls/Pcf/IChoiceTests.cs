@@ -56,15 +56,7 @@
         [Test]
         public async Task GetAllOptionsAsync_ActiveRecord_ReturnsOptions()
         {
-            var allChoicesEnum = Enum.GetValues(typeof(pp_record_pp_choice));
-            var expectedValues = new List<string>();
-            foreach (pp_record_pp_choice value in allChoicesEnum)
-            {
-                expectedValues.Add(value.ToDisplayName());
-            }
-
-            var choiceControl = await this.SetupChoiceScenarioAsync();
-
+            var expectedValues = Enum.GetValues<pp_record_pp_choice>().Select(v => v.ToString());
             var output = await choiceControl.GetAllValuesAsync();
 
             Assert.That(output, Is.EqualTo(expectedValues));
