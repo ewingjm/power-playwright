@@ -71,7 +71,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IChoice.GetAllValuesAsync"/> returns an exception if the record is inactive as all option set values can't be read.
+        /// Tests that <see cref="IChoice.GetAllValuesAsync"/> returns an exception if the record is inactive or the field is disabled as all option set values can't be read.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
