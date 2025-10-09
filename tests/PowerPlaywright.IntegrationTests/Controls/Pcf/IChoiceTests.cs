@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using Bogus;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.IntegrationTests.Extensions;
     using PowerPlaywright.TestApp.Model;
@@ -46,6 +47,33 @@
             var choiceControl = await this.SetupChoiceScenarioAsync(expectedValue);
 
             Assert.That(choiceControl.GetValueAsync, Is.EqualTo(expectedValue.ToDisplayName()));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IChoice.GetAllOptionsAsync"/> returns the value when the value has been set.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetAllOptionsAsync_ActiveRecord_ReturnsOptions()
+        {
+            var expectedValues = new string[] { "Choice A", "Choice B", "Choice C" };
+            var choiceControl = await this.SetupChoiceScenarioAsync();
+            var output = await choiceControl.GetAllOptionsAsync();
+
+            Assert.That(output, Is.EqualTo(expectedValues));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IChoice.GetAllOptionsAsync"/> returns an exception if the record is inactive or the field is disabled as all option set values can't be read.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetAllOptionsAsync_DisabledField_ThrowsException()
+        {
+            var choiceControl = await this.SetupChoiceScenarioAsync(withDisabledRecord: true);
+
+            Assert.ThrowsAsync<PowerPlaywrightException>(
+                () => choiceControl.GetAllOptionsAsync());
         }
 
         /// <summary>
