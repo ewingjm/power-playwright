@@ -20,6 +20,21 @@ public partial class ModelDrivenAppTests : IntegrationTests
         await this.Expect(appPage.Page).ToHaveURLAsync(MainPageRegex());
     }
 
+    /// <summary>
+    /// Tests that <see cref="ModelDrivenApp.ClientApi.OpenFormAsync"/> opens an entity form in create mode.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task OpenFormAsync_EntityLogicalName_OpensEntityFormInCreateMode()
+    {
+        var appPage = await this.PowerPlaywright
+            .LaunchAppAsync(this.Context, Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password, this.User.TOTPSecret);
+
+        var newRecordPage = await appPage.ClientApi.OpenFormAsync("pp_record");
+
+        await this.Expect(newRecordPage.Form.Container).ToBeVisibleAsync();
+    }
+
     [GeneratedRegex(@".*\/main\.aspx.*")]
     private static partial Regex MainPageRegex();
 }
