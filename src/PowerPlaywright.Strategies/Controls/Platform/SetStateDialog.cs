@@ -13,32 +13,35 @@
     /// A deactivate dialog.
     /// </summary>
     [PlatformControlStrategy(0, 0, 0, 0)]
-    public class DeactivateDialog : Control, IDeactiveDialog
+    public class SetStateDialog : Control, ISetStateDialog
     {
-        private readonly ILocator title;
-        private readonly ILocator description;
-        private readonly ILocator message;
         private readonly ILocator closeButton;
         private readonly ILocator cancelButton;
+        private readonly ILocator activateButton;
         private readonly ILocator deactivateButton;
         private readonly ILocator toggleMenu;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeactivateDialog"/> class.
+        /// Initializes a new instance of the <see cref="SetStateDialog"/> class.
         /// </summary>
         /// <param name="appPage">The app page.</param>
         /// <param name="parent">The parent control.</param>
-        public DeactivateDialog(IAppPage appPage, IControl parent = null)
+        public SetStateDialog(IAppPage appPage, IControl parent = null)
             : base(appPage, parent)
         {
-            this.title = this.Container.GetByRole(AriaRole.Heading);
-            this.description = this.Container.Locator("[data-id='description_id']");
-            this.message = this.Container.Locator("[data-id='message_id']");
-
             this.closeButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Close" });
             this.cancelButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Cancel" });
+            this.activateButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Activate" });
             this.deactivateButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Deactivate" });
             this.toggleMenu = this.Container.GetByRole(AriaRole.Combobox, new LocatorGetByRoleOptions { Name = "Status Reason" });
+        }
+
+        /// <inheritdoc/>
+        public async Task ActivateAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            await this.activateButton.ClickAndWaitForAppIdleAsync();
         }
 
         /// <inheritdoc/>
@@ -63,32 +66,6 @@
             await this.Page.WaitForAppIdleAsync();
 
             await this.deactivateButton.ClickAndWaitForAppIdleAsync();
-        }
-
-        /// <inheritdoc/>
-        public async Task<string> GetActionTextAsync()
-        {
-            await this.Page.WaitForAppIdleAsync();
-
-            var text = await this.message.InnerTextAsync();
-            return text.Replace("\n\n", "\n");
-        }
-
-        /// <inheritdoc/>
-        public async Task<string> GetTextAsync()
-        {
-            await this.Page.WaitForAppIdleAsync();
-
-            var text = await this.description.InnerTextAsync();
-            return text.Replace("\n\n", "\n");
-        }
-
-        /// <inheritdoc/>
-        public async Task<string> GetTitleAsync()
-        {
-            await this.Page.WaitForAppIdleAsync();
-
-            return await this.title.InnerTextAsync();
         }
 
         /// <inheritdoc/>
