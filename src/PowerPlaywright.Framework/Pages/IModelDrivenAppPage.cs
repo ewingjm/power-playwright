@@ -35,6 +35,6 @@
         /// <summary>
         /// Gets a deactivate dialog.
         /// </summary>
-        IDeactiveDialog DeactiveDialog { get; }
+        ISetStateDialog SetStateDialog { get; }
     }
 }

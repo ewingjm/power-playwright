@@ -36,6 +36,6 @@ namespace PowerPlaywright.Pages
         public IErrorDialog ErrorDialog => this.GetControl<IErrorDialog>();
 
         /// <inheritdoc/>
-        public IDeactiveDialog DeactiveDialog => this.GetControl<IDeactiveDialog>();
+        public ISetStateDialog SetStateDialog => this.GetControl<ISetStateDialog>();
     }
 }
