@@ -16,24 +16,6 @@
         Task<bool> IsVisibleAsync();
 
         /// <summary>
-        /// Gets the title of the dialog.
-        /// </summary>
-        /// <returns>The title of the dialog.</returns>
-        Task<string> GetTitleAsync();
-
-        /// <summary>
-        /// Gets the confirmation text of the dialog.
-        /// </summary>
-        /// <returns>The confirmation text of the dialog.</returns>
-        Task<string> GetTextAsync();
-
-        /// <summary>
-        /// Gets the informative statement of for the action the user is about to take.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<string> GetActionTextAsync();
-
-        /// <summary>
         /// Close the the dialog.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -44,5 +26,24 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task CancelAsync();
+
+        /// <summary>
+        /// Qwerty.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task ActivateAsync();
+
+        /// <summary>
+        /// Deactivate the the dialog.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task DeactivateAsync();
+
+        /// <summary>
+        /// Sets the value of the choice control.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task SetValueAsync(string value);
     }
 }
