@@ -34,5 +34,8 @@ namespace PowerPlaywright.Pages
 
         /// <inheritdoc/>
         public IErrorDialog ErrorDialog => this.GetControl<IErrorDialog>();
+
+        /// <inheritdoc/>
+        public IDeactiveDialog DeactiveDialog => this.GetControl<IDeactiveDialog>();
     }
 }
