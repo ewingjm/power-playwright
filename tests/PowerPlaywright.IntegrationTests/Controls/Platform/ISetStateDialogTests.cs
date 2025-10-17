@@ -30,9 +30,9 @@
         [Test]
         public async Task IsVisibleAsync_DialogIsVisible_ReturnsTrue()
         {
-            var deactivateDialog = await this.SetupDeactivateDialogScenarioAsync();
+            var dialog = await this.SetupDeactivateDialogScenarioAsync();
 
-            Assert.That(await deactivateDialog.IsVisibleAsync(), Is.True);
+            Assert.That(await dialog.IsVisibleAsync(), Is.True);
         }
 
         /// <summary>
@@ -40,13 +40,13 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task CloseAsync_DialogIsVisible_Closes()
+        public async Task CloseAsync_DeactivateDialogIsVisible_Closes()
         {
-            var deactivateDialog = await this.SetupDeactivateDialogScenarioAsync();
+            var dialog = await this.SetupDeactivateDialogScenarioAsync();
 
-            await deactivateDialog.CloseAsync();
+            await dialog.CloseAsync();
 
-            Assert.That(await deactivateDialog.IsVisibleAsync(), Is.False);
+            Assert.That(await dialog.IsVisibleAsync(), Is.False);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task CancelAsync_DialogIsVisible_Closes()
+        public async Task CancelAsync_DeactivateDialogIsVisible_Closes()
         {
             var dialog = await this.SetupDeactivateDialogScenarioAsync();
 
@@ -92,30 +92,30 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISetStateDialog.SetValueAsync"/> returns an exception if the record is configured with a single status reason for the given state.
+        /// Tests that <see cref="ISetStateDialog.SetStatusReasonAsync"/> returns an exception if the record is configured with a single status reason for the given state.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task SetValueAsync_SingleStatusReason_ThrowsException()
+        public async Task SetStatusReasonAsync_SingleStatusReason_ThrowsException()
         {
             var dialog = await this.SetupActivateDialogScenarioAsync();
 
             Assert.ThrowsAsync<PowerPlaywrightException>(
-                () => dialog.SetValueAsync(pp_record_statecode.Active.ToDisplayName()));
+                () => dialog.SetStatusReasonAsync(pp_record_statecode.Active.ToDisplayName()));
         }
 
         /// <summary>
-        /// Tests that <see cref="ISetStateDialog.DeactivateAsync"/> closes the dialog when it is visible.
+        /// Tests that <see cref="ISetStateDialog.SetStatusReasonAsync"/> closes the dialog when it is visible.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task SetValueAsync_ContainsValue_ReplacesValue()
+        public async Task SetStatusReasonAsync_ContainsValue_ReplacesValue()
         {
             var dialog = await this.SetupDeactivateDialogScenarioAsync();
 
             var expectedValue = pp_record_statuscode.Cancelled.ToDisplayName();
 
-            await dialog.SetValueAsync(expectedValue);
+            await dialog.SetStatusReasonAsync(expectedValue);
 
             Assert.That(await dialog.GetValueAsync(), Is.EqualTo(expectedValue));
         }

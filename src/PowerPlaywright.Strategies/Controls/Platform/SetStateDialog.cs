@@ -81,7 +81,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task SetValueAsync(string value)
+        public async Task SetStatusReasonAsync(string value)
         {
             if (!await this.toggleMenu.IsVisibleAsync())
             {

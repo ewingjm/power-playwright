@@ -40,10 +40,10 @@
         Task<string> GetValueAsync();
 
         /// <summary>
-        /// Sets the value of the choice control.
+        /// Sets the status reason value of the choice control.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SetValueAsync(string value);
+        Task SetStatusReasonAsync(string value);
     }
 }
