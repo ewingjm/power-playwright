@@ -140,6 +140,7 @@
         private async Task<ISetStateDialog> SetupActivateDialogScenarioAsync(Faker<pp_Record>? withRecord = null)
         {
             var record = withRecord ?? new Faker<pp_Record>()
+                .RuleFor(x => x.pp_singlelineoftexttext, f => string.Join(" ", f.Lorem.Random.Words(5)))
                 .RuleFor(x => x.statecode, pp_record_statecode.Inactive)
                 .RuleFor(x => x.statuscode, pp_record_statuscode.Cancelled);
 
