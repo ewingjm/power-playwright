@@ -28,16 +28,10 @@
         Task CancelAsync();
 
         /// <summary>
-        /// Invoke activate action.
+        /// Confirms the dialog action.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task ActivateAsync();
-
-        /// <summary>
-        /// Invoke deactivate action.
-        /// </summary>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task DeactivateAsync();
+        Task ConfirmAsync();
 
         /// <summary>
         /// Gets the value of the choice control.

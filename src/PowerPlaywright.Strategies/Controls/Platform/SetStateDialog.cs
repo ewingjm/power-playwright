@@ -22,8 +22,7 @@
         private readonly IChoice choice;
         private readonly ILocator closeButton;
         private readonly ILocator cancelButton;
-        private readonly ILocator activateButton;
-        private readonly ILocator deactivateButton;
+        private readonly ILocator confirmButton;
         private readonly ILocator toggleMenu;
 
         /// <summary>
@@ -39,17 +38,8 @@
 
             this.closeButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Close" });
             this.cancelButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Cancel" });
-            this.activateButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Activate" });
-            this.deactivateButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Deactivate" });
+            this.confirmButton = this.Container.Locator("[data-id='ok_id']");
             this.toggleMenu = this.Container.GetByRole(AriaRole.Combobox, new LocatorGetByRoleOptions { Name = "Status Reason" });
-        }
-
-        /// <inheritdoc/>
-        public async Task ActivateAsync()
-        {
-            await this.Page.WaitForAppIdleAsync();
-
-            await this.activateButton.ClickAndWaitForAppIdleAsync();
         }
 
         /// <inheritdoc/>
@@ -69,11 +59,11 @@
         }
 
         /// <inheritdoc/>
-        public async Task DeactivateAsync()
+        public async Task ConfirmAsync()
         {
             await this.Page.WaitForAppIdleAsync();
 
-            await this.deactivateButton.ClickAndWaitForAppIdleAsync();
+            await this.confirmButton.ClickAndWaitForAppIdleAsync();
         }
 
         /// <inheritdoc/>

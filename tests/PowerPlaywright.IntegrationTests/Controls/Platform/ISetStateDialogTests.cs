@@ -64,29 +64,29 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISetStateDialog.DeactivateAsync"/> closes the dialog when it is visible.
+        /// Tests that <see cref="ISetStateDialog.ConfirmAsync"/> closes the dialog when it is visible.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task DeactivateAsync_DialogIsVisible_Closes()
+        public async Task ConfirmAsync_DeactivateDialogIsVisible_Closes()
         {
             var dialog = await this.SetupDeactivateDialogScenarioAsync();
 
-            await dialog.DeactivateAsync();
+            await dialog.ConfirmAsync();
 
             Assert.That(await dialog.IsVisibleAsync(), Is.False);
         }
 
         /// <summary>
-        /// Tests that <see cref="ISetStateDialog.ActivateAsync"/> closes the dialog when it is visible.
+        /// Tests that <see cref="ISetStateDialog.ConfirmAsync"/> closes the activate dialog when it is visible.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task ActivateAsync_DialogIsVisible_Closes()
+        public async Task ConfirmAsync_ActivateDialogIsVisible_Closes()
         {
             var dialog = await this.SetupActivateDialogScenarioAsync();
 
-            await dialog.ActivateAsync();
+            await dialog.ConfirmAsync();
 
             Assert.That(await dialog.IsVisibleAsync(), Is.False);
         }
