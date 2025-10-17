@@ -12,6 +12,13 @@
     public interface IClientApi : IPlatformControl
     {
         /// <summary>
+        /// Opens an entity form in create mode for the given entity logical name.
+        /// </summary>
+        /// <param name="entityName">The table logical name.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<IEntityRecordPage> OpenFormAsync(string entityName);
+
+        /// <summary>
         /// Navigates to a record with the given logical name and ID.
         /// </summary>
         /// <param name="entityName">The table logical name.</param>
