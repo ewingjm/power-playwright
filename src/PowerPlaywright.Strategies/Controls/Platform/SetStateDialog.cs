@@ -17,11 +17,14 @@
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class SetStateDialog : Control, ISetStateDialog
     {
+        private const string ControlId = "status_id";
+
         private readonly IChoice choice;
         private readonly ILocator closeButton;
         private readonly ILocator cancelButton;
         private readonly ILocator activateButton;
         private readonly ILocator deactivateButton;
+        private readonly ILocator toggleMenu;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SetStateDialog"/> class.
@@ -32,12 +35,13 @@
         public SetStateDialog(IAppPage appPage, IControlFactory controlFactory, IControl parent = null)
             : base(appPage, parent)
         {
-            this.choice = controlFactory.CreateCachedInstance<IChoice>(appPage, "status_id", parent);
+            this.choice = controlFactory.CreateCachedInstance<IChoice>(appPage, ControlId);
 
             this.closeButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Close" });
             this.cancelButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Cancel" });
             this.activateButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Activate" });
             this.deactivateButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Deactivate" });
+            this.toggleMenu = this.Container.GetByRole(AriaRole.Combobox, new LocatorGetByRoleOptions { Name = "Status Reason" });
         }
 
         /// <inheritdoc/>
@@ -89,6 +93,11 @@
         /// <inheritdoc/>
         public async Task SetValueAsync(string value)
         {
+            if (!await this.toggleMenu.IsVisibleAsync())
+            {
+                throw new PowerPlaywrightException($"Could not find control with Id: '{ControlId}'.");
+            }
+
             await this.choice.SetValueAsync(value);
         }
 
