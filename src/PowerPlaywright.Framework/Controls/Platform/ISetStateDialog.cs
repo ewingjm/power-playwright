@@ -28,16 +28,22 @@
         Task CancelAsync();
 
         /// <summary>
-        /// Qwerty.
+        /// Invoke activate action.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task ActivateAsync();
 
         /// <summary>
-        /// Deactivate the the dialog.
+        /// Invoke deactivate action.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task DeactivateAsync();
+
+        /// <summary>
+        /// Gets the value of the choice control.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<string> GetValueAsync();
 
         /// <summary>
         /// Sets the value of the choice control.

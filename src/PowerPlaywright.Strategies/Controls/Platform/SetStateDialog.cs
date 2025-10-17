@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using Microsoft.Playwright;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
@@ -20,6 +21,7 @@
         private readonly ILocator activateButton;
         private readonly ILocator deactivateButton;
         private readonly ILocator toggleMenu;
+        private readonly ILocator selectedOption;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SetStateDialog"/> class.
@@ -34,6 +36,7 @@
             this.activateButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Activate" });
             this.deactivateButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Deactivate" });
             this.toggleMenu = this.Container.GetByRole(AriaRole.Combobox, new LocatorGetByRoleOptions { Name = "Status Reason" });
+            this.selectedOption = this.toggleMenu.GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Selected = true });
         }
 
         /// <inheritdoc/>
@@ -69,6 +72,16 @@
         }
 
         /// <inheritdoc/>
+        public async Task<string> GetValueAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            var optionText = await this.selectedOption.TextContentAsync();
+
+            return optionText != "---" ? optionText : null;
+        }
+
+        /// <inheritdoc/>
         public async Task<bool> IsVisibleAsync()
         {
             await this.Page.WaitForAppIdleAsync();
@@ -79,6 +92,13 @@
         /// <inheritdoc/>
         public async Task SetValueAsync(string value)
         {
+            await this.Page.WaitForAppIdleAsync();
+
+            if (!await this.toggleMenu.ElementExistsAsync())
+            {
+                throw new PowerPlaywrightException("Unable to find Status Reason control.");
+            }
+
             await this.toggleMenu.SelectOptionAsync(value);
         }
 
