@@ -14,7 +14,7 @@ namespace PowerPlaywright.TestApp.Model
 	
 	
 	[System.Runtime.Serialization.DataContractAttribute()]
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("Dataverse Model Builder", "2.0.0.6")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("Dataverse Model Builder", "2.0.0.16")]
 	public enum pp_record_pp_choice
 	{
 		
@@ -29,7 +29,7 @@ namespace PowerPlaywright.TestApp.Model
 	}
 	
 	[System.Runtime.Serialization.DataContractAttribute()]
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("Dataverse Model Builder", "2.0.0.6")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("Dataverse Model Builder", "2.0.0.16")]
 	public enum pp_record_pp_choices
 	{
 		
@@ -47,7 +47,7 @@ namespace PowerPlaywright.TestApp.Model
 	/// Status of the Record
 	/// </summary>
 	[System.Runtime.Serialization.DataContractAttribute()]
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("Dataverse Model Builder", "2.0.0.6")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("Dataverse Model Builder", "2.0.0.16")]
 	public enum pp_record_statecode
 	{
 		
@@ -62,7 +62,7 @@ namespace PowerPlaywright.TestApp.Model
 	/// Reason for the status of the Record
 	/// </summary>
 	[System.Runtime.Serialization.DataContractAttribute()]
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("Dataverse Model Builder", "2.0.0.6")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("Dataverse Model Builder", "2.0.0.16")]
 	public enum pp_record_statuscode
 	{
 		
@@ -71,11 +71,14 @@ namespace PowerPlaywright.TestApp.Model
 		
 		[System.Runtime.Serialization.EnumMemberAttribute()]
 		Inactive = 2,
+		
+		[System.Runtime.Serialization.EnumMemberAttribute()]
+		Cancelled = 125600001,
 	}
 	
 	[System.Runtime.Serialization.DataContractAttribute()]
 	[Microsoft.Xrm.Sdk.Client.EntityLogicalNameAttribute("pp_record")]
-	[System.CodeDom.Compiler.GeneratedCodeAttribute("Dataverse Model Builder", "2.0.0.6")]
+	[System.CodeDom.Compiler.GeneratedCodeAttribute("Dataverse Model Builder", "2.0.0.16")]
 	public partial class pp_Record : Microsoft.Xrm.Sdk.Entity, System.ComponentModel.INotifyPropertyChanging, System.ComponentModel.INotifyPropertyChanged
 	{
 		
@@ -110,45 +113,6 @@ namespace PowerPlaywright.TestApp.Model
 			if ((this.PropertyChanging != null))
 			{
 				this.PropertyChanging(this, new System.ComponentModel.PropertyChangingEventArgs(propertyName));
-			}
-		}
-		
-		/// <summary>
-		/// Unique identifier for entity instances
-		/// </summary>
-		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_recordid")]
-		public System.Nullable<System.Guid> pp_RecordId
-		{
-			get
-			{
-				return this.GetAttributeValue<System.Nullable<System.Guid>>("pp_recordid");
-			}
-			set
-			{
-				this.OnPropertyChanging("pp_RecordId");
-				this.SetAttributeValue("pp_recordid", value);
-				if (value.HasValue)
-				{
-					base.Id = value.Value;
-				}
-				else
-				{
-					base.Id = System.Guid.Empty;
-				}
-				this.OnPropertyChanged("pp_RecordId");
-			}
-		}
-		
-		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_recordid")]
-		public override System.Guid Id
-		{
-			get
-			{
-				return base.Id;
-			}
-			set
-			{
-				this.pp_RecordId = value;
 			}
 		}
 		
@@ -429,17 +393,11 @@ namespace PowerPlaywright.TestApp.Model
 		}
 		
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_file")]
-		public object pp_file
+		public System.Nullable<System.Guid> pp_file
 		{
 			get
 			{
-				return this.GetAttributeValue<object>("pp_file");
-			}
-			set
-			{
-				this.OnPropertyChanging("pp_file");
-				this.SetAttributeValue("pp_file", value);
-				this.OnPropertyChanged("pp_file");
+				return this.GetAttributeValue<System.Nullable<System.Guid>>("pp_file");
 			}
 		}
 		
@@ -512,6 +470,63 @@ namespace PowerPlaywright.TestApp.Model
 				this.OnPropertyChanging("pp_multiplelinesoftexttext");
 				this.SetAttributeValue("pp_multiplelinesoftexttext", value);
 				this.OnPropertyChanged("pp_multiplelinesoftexttext");
+			}
+		}
+		
+		/// <summary>
+		/// A self-referential lookup
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_parentrecord")]
+		public Microsoft.Xrm.Sdk.EntityReference pp_ParentRecord
+		{
+			get
+			{
+				return this.GetAttributeValue<Microsoft.Xrm.Sdk.EntityReference>("pp_parentrecord");
+			}
+			set
+			{
+				this.OnPropertyChanging("pp_ParentRecord");
+				this.SetAttributeValue("pp_parentrecord", value);
+				this.OnPropertyChanged("pp_ParentRecord");
+			}
+		}
+		
+		/// <summary>
+		/// Unique identifier for entity instances
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_recordid")]
+		public System.Nullable<System.Guid> pp_RecordId
+		{
+			get
+			{
+				return this.GetAttributeValue<System.Nullable<System.Guid>>("pp_recordid");
+			}
+			set
+			{
+				this.OnPropertyChanging("pp_RecordId");
+				this.SetAttributeValue("pp_recordid", value);
+				if (value.HasValue)
+				{
+					base.Id = value.Value;
+				}
+				else
+				{
+					base.Id = System.Guid.Empty;
+				}
+				this.OnPropertyChanged("pp_RecordId");
+			}
+		}
+		
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_recordid")]
+		public override System.Guid Id
+		{
+			get
+			{
+				return base.Id;
+			}
+			set
+			{
+				this.pp_RecordId = value;
 			}
 		}
 		
@@ -798,6 +813,24 @@ namespace PowerPlaywright.TestApp.Model
 		}
 		
 		/// <summary>
+		/// 1:N pp_record_ParentRecord_pp_record
+		/// </summary>
+		[Microsoft.Xrm.Sdk.RelationshipSchemaNameAttribute("pp_record_ParentRecord_pp_record", Microsoft.Xrm.Sdk.EntityRole.Referenced)]
+		public System.Collections.Generic.IEnumerable<PowerPlaywright.TestApp.Model.pp_Record> Referencedpp_record_ParentRecord_pp_record
+		{
+			get
+			{
+				return this.GetRelatedEntities<PowerPlaywright.TestApp.Model.pp_Record>("pp_record_ParentRecord_pp_record", Microsoft.Xrm.Sdk.EntityRole.Referenced);
+			}
+			set
+			{
+				this.OnPropertyChanging("Referencedpp_record_ParentRecord_pp_record");
+				this.SetRelatedEntities<PowerPlaywright.TestApp.Model.pp_Record>("pp_record_ParentRecord_pp_record", Microsoft.Xrm.Sdk.EntityRole.Referenced, value);
+				this.OnPropertyChanged("Referencedpp_record_ParentRecord_pp_record");
+			}
+		}
+		
+		/// <summary>
 		/// 1:N pp_Record_RelatedRecord
 		/// </summary>
 		[Microsoft.Xrm.Sdk.RelationshipSchemaNameAttribute("pp_Record_RelatedRecord")]
@@ -812,6 +845,25 @@ namespace PowerPlaywright.TestApp.Model
 				this.OnPropertyChanging("pp_Record_RelatedRecord");
 				this.SetRelatedEntities<PowerPlaywright.TestApp.Model.pp_RelatedRecord>("pp_Record_RelatedRecord", null, value);
 				this.OnPropertyChanged("pp_Record_RelatedRecord");
+			}
+		}
+		
+		/// <summary>
+		/// N:1 pp_record_ParentRecord_pp_record
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_parentrecord")]
+		[Microsoft.Xrm.Sdk.RelationshipSchemaNameAttribute("pp_record_ParentRecord_pp_record", Microsoft.Xrm.Sdk.EntityRole.Referencing)]
+		public PowerPlaywright.TestApp.Model.pp_Record Referencingpp_record_ParentRecord_pp_record
+		{
+			get
+			{
+				return this.GetRelatedEntity<PowerPlaywright.TestApp.Model.pp_Record>("pp_record_ParentRecord_pp_record", Microsoft.Xrm.Sdk.EntityRole.Referencing);
+			}
+			set
+			{
+				this.OnPropertyChanging("Referencingpp_record_ParentRecord_pp_record");
+				this.SetRelatedEntity<PowerPlaywright.TestApp.Model.pp_Record>("pp_record_ParentRecord_pp_record", Microsoft.Xrm.Sdk.EntityRole.Referencing, value);
+				this.OnPropertyChanged("Referencingpp_record_ParentRecord_pp_record");
 			}
 		}
 		
