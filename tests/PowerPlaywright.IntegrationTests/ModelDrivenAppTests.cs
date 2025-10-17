@@ -1,6 +1,5 @@
 namespace PowerPlaywright.IntegrationTests;
 
-using Azure;
 using System.Text.RegularExpressions;
 using System.Web;
 
