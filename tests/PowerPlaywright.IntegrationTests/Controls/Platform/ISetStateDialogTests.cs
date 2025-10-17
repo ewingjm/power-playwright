@@ -28,7 +28,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task IsVisibleAsync_DialogIsVisible_ReturnsTrue()
+        public async Task IsVisibleAsync_DeactivateDialogIsVisible_ReturnsTrue()
         {
             var dialog = await this.SetupDeactivateDialogScenarioAsync();
 
@@ -78,7 +78,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ISetStateDialog.ConfirmAsync"/> closes the activate dialog when it is visible.
+        /// Tests that <see cref="ISetStateDialog.ConfirmAsync"/> closes the dialog when it is visible.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
