@@ -47,11 +47,11 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ILookup.SetValueAsync(string)"/> sets the lookup to the first search result returned when the value is entered.
+        /// Tests that <see cref="ILookup.SetValueAsync(string)"/> sets the lookup to the first matching search result (exact match) returned when the value is entered.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task SetValueAsync_SearchReturnsResults_SetsValueToFirstResult()
+        public async Task SetValueAsync_SearchReturnsResults_SetsValueToMatchingResult()
         {
             var lookupControl = await this.SetupLookupScenarioAsync(withRelatableRecords: [this.GetNamedRelatedRecordFaker(out var relatableRecordName)]);
 

@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
@@ -23,7 +24,6 @@
 
         private readonly ILocator resultsRoot;
         private readonly ILocator results;
-        private readonly ILocator noRecordsText;
         private readonly ILocator newButton;
         private readonly ILocator selectedRecordListItem;
         private readonly ILocator selectedRecordText;
@@ -45,8 +45,7 @@
             this.controlFactory = controlFactory;
             this.logger = logger;
 
-            this.resultsRoot = this.Page.Locator($"div[data-id='{this.Name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']").Or(this.Container.GetByRole(AriaRole.Tree, new LocatorGetByRoleOptions { Name = "Lookup results", Exact = true }));
-            this.noRecordsText = this.resultsRoot.Locator($"span[data-id*='_No_Records_Text']");
+            this.resultsRoot = this.Page.Locator($"div[data-id='{this.Name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']").Or(this.Page.GetByRole(AriaRole.Tree, new PageGetByRoleOptions { Name = "Lookup results", Exact = true }));
             this.results = this.resultsRoot.GetByRole(AriaRole.Treeitem);
             this.newButton = this.resultsRoot.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "New", Exact = true });
             this.selectedRecordListItem = this.Container.Locator($"ul[data-id*='_SelectedRecordList']").Or(this.Container.Locator("div[id*='_RecordList']").GetByRole(AriaRole.List)).GetByRole(AriaRole.Listitem).First;
@@ -86,7 +85,6 @@
             await this.Page.WaitForAppIdleAsync();
 
             await this.ClearExistingValue();
-
             await this.input.ScrollIntoViewIfNeededAsync();
 
             if (value is null)
@@ -95,13 +93,21 @@
             }
 
             await this.input.FillAsync(value);
+            await this.resultsRoot.WaitForAsync();
+            await this.Page.WaitForAppIdleAsync();
 
             var flyoutResult = this.results.GetByText(value, new LocatorGetByTextOptions { Exact = true }).First;
-            await flyoutResult.Or(this.noRecordsText).WaitForAsync();
 
             if (!await flyoutResult.IsVisibleAsync())
             {
-                throw new NotFoundException($"No records found in the {this.Name} lookup with search: {value}.");
+                flyoutResult = this.results
+                    .GetByText(new Regex($"{Regex.Escape(value)}( \\(Offline\\)| \\(Online\\))?"))
+                    .First;
+
+                if (!await flyoutResult.IsVisibleAsync())
+                {
+                    throw new NotFoundException($"Unable to find a value in the {this.Name} lookup with search: {value}.");
+                }
             }
 
             await flyoutResult.ClickAndWaitForAppIdleAsync();
