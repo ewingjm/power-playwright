@@ -18,9 +18,10 @@ namespace PowerPlaywright.Strategies.Controls.Platform
     public class AssignDialog : Control, IAssignDialog
     {
         private const string UserOrTeamFieldName = "rdoMe_0";
+        private const string AssignToFieldName = "rdoDefaultUser";
 
         private readonly ILookup userOrTeam;
-        private readonly ILocator assignToCombobox;
+        private readonly IYesNo assignToChoice;
         private readonly ILocator assignButton;
         private readonly ILocator cancelButton;
 
@@ -34,8 +35,8 @@ namespace PowerPlaywright.Strategies.Controls.Platform
             : base(appPage, parent)
         {
             this.userOrTeam = controlFactory.CreateCachedInstance<ILookup>(appPage, UserOrTeamFieldName, this);
+            this.assignToChoice = controlFactory.CreateCachedInstance<IYesNo>(appPage, AssignToFieldName, this);
 
-            this.assignToCombobox = this.Container.GetByRole(AriaRole.Combobox, new LocatorGetByRoleOptions { Name = "Assign to" });
             this.assignButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Assign" });
             this.cancelButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Cancel" });
         }
@@ -61,7 +62,7 @@ namespace PowerPlaywright.Strategies.Controls.Platform
         {
             await this.Page.WaitForAppIdleAsync();
 
-            await this.assignToCombobox.SelectOptionAsync(new SelectOptionValue { Label = "Me" });
+            await this.assignToChoice.SetValueAsync(false);
 
             await this.assignButton.ClickAndWaitForAppIdleAsync();
         }
@@ -71,7 +72,7 @@ namespace PowerPlaywright.Strategies.Controls.Platform
         {
             await this.Page.WaitForAppIdleAsync();
 
-            await this.assignToCombobox.SelectOptionAsync(new SelectOptionValue { Label = "User or team" });
+            await this.assignToChoice.SetValueAsync(true);
             await this.Page.WaitForAppIdleAsync();
             await this.userOrTeam.SetValueAsync(userOrTeam);
 
@@ -79,18 +80,9 @@ namespace PowerPlaywright.Strategies.Controls.Platform
         }
 
         /// <inheritdoc/>
-        public async Task<string> GetAssignToAsync()
-        {
-            await this.Page.WaitForAppIdleAsync();
-
-            var assignToValue = await this.assignToCombobox.TextContentAsync();
-            return assignToValue?.Trim();
-        }
-
-        /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator("[role='dialog']:has(h1:text-is('Assign Record')):not([aria-hidden='true'])");
+            return context.Locator("[data-id='Assign'][role='dialog']:not([aria-hidden='true'])");
         }
     }
 }

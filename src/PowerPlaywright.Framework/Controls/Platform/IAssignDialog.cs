@@ -33,11 +33,5 @@ namespace PowerPlaywright.Framework.Controls.Platform
         /// <param name="userOrTeam">The user or team name.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task AssignToUserOrTeamAsync(string userOrTeam);
-
-        /// <summary>
-        /// Gets the current assign to selection.
-        /// </summary>
-        /// <returns>The current assign to selection ("Me" or "User or team").</returns>
-        Task<string> GetAssignToAsync();
     }
 }

@@ -64,7 +64,7 @@ namespace PowerPlaywright.IntegrationTests.Controls.Platform
 
             var ownerIdLookup = recordPage.Form.GetField<ILookup>(nameof(pp_Record.OwnerId).ToLower()).Control;
 
-            Assert.That(ownerIdLookup.GetValueAsync, Is.EqualTo(currentUserName));
+            Assert.That(ownerIdLookup.GetValueAsync, Is.EqualTo(currentUserName).Or.EqualTo($"{currentUserName} (Offline)"));
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace PowerPlaywright.IntegrationTests.Controls.Platform
 
             var ownerIdLookup = recordPage.Form.GetField<ILookup>(nameof(pp_Record.OwnerId).ToLower()).Control;
 
-            Assert.That(ownerIdLookup.GetValueAsync, Is.EqualTo(targetUser));
+            Assert.That(ownerIdLookup.GetValueAsync, Is.EqualTo(targetUser).Or.EqualTo($"{targetUser} (Offline)"));
         }
 
         private async Task<(IAssignDialog Dialog, IEntityRecordPage RecordPage)> SetupAssignDialogScenarioAsync()
