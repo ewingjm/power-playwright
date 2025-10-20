@@ -22,8 +22,10 @@
         private readonly IControlFactory controlFactory;
         private readonly ILogger<PcfGridControl> logger;
 
+        private readonly ILocator flyoutRoot;
         private readonly ILocator resultsRoot;
         private readonly ILocator results;
+        private readonly ILocator noRecordsText;
         private readonly ILocator newButton;
         private readonly ILocator selectedRecordListItem;
         private readonly ILocator selectedRecordText;
@@ -45,9 +47,11 @@
             this.controlFactory = controlFactory;
             this.logger = logger;
 
-            this.resultsRoot = this.Page.Locator($"div[data-id='{this.Name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']").Or(this.Page.GetByRole(AriaRole.Tree, new PageGetByRoleOptions { Name = "Lookup results", Exact = true }));
+            this.flyoutRoot = this.Page.Locator($"div[data-id='{this.Name}.fieldControl|__flyoutRootNode_SimpleLookupControlFlyout']");
+            this.resultsRoot = this.Page.GetByRole(AriaRole.Tree, new PageGetByRoleOptions { Name = "Lookup results", Exact = true });
             this.results = this.resultsRoot.GetByRole(AriaRole.Treeitem);
-            this.newButton = this.resultsRoot.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "New", Exact = true });
+            this.noRecordsText = this.flyoutRoot.Locator($"span[data-id*='_No_Records_Text']");
+            this.newButton = this.flyoutRoot.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "New", Exact = true });
             this.selectedRecordListItem = this.Container.Locator($"ul[data-id*='_SelectedRecordList']").Or(this.Container.Locator("div[id*='_RecordList']").GetByRole(AriaRole.List)).GetByRole(AriaRole.Listitem).First;
             this.selectedRecordText = this.selectedRecordListItem.Locator($"div[data-id*='_selected_tag_text']");
             this.selectedRecordDeleteButton = this.selectedRecordListItem.Locator($"button[data-id*='_selected_tag_delete']");
@@ -93,7 +97,7 @@
             }
 
             await this.input.FillAsync(value);
-            await this.resultsRoot.WaitForAsync();
+            await this.resultsRoot.Or(this.noRecordsText).WaitForAsync();
             await this.Page.WaitForAppIdleAsync();
 
             var flyoutResult = this.results.GetByText(value, new LocatorGetByTextOptions { Exact = true }).First;
