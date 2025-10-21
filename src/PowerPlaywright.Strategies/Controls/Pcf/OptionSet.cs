@@ -67,6 +67,7 @@
         public async Task SetValueAsync(string value)
         {
             await this.toggleMenu.SelectOptionAsync(value);
+            await this.AppPage.Page.WaitForAppIdleAsync();
         }
     }
 }
