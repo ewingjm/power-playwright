@@ -180,6 +180,34 @@
             return result;
         }
 
+        /// <inheritdoc/>
+        public async Task ToggleSelectRowAsync(int index, bool select = true)
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            var row = this.GetRow(index);
+            if (!await row.IsVisibleAsync())
+            {
+                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for grid.");
+            }
+
+            var checkboxCell = row.Locator("[role='gridcell']").First;
+            var checkbox = checkboxCell.GetByRole(AriaRole.Checkbox);
+            
+            // Check if it exists first
+            if (await checkbox.CountAsync() == 0)
+            {
+                throw new PowerPlaywrightException($"Unable to find checkbox for row at index '{index}'.");
+            }
+
+            var currentState = await checkbox.IsCheckedAsync();
+
+            if (currentState != select)
+            {
+                await checkboxCell.ClickAndWaitForAppIdleAsync();
+            }
+        }
+
         private ILocator GetRow(int index)
         {
             return this.rowsContainer.Locator($"div[role='row'][row-index='{index}']");

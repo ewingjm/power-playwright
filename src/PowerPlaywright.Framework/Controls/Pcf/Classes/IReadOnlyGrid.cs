@@ -46,5 +46,13 @@
         /// </summary>
         /// <returns>The rows with column name to cell value mappings.</returns>
         Task<IEnumerable<IDictionary<string, string>>> GetRowsAsync();
+
+        /// <summary>
+        /// Toggles the selection state of a specific row.
+        /// </summary>
+        /// <param name="index">The zero-based index of the row.</param>
+        /// <param name="select">Desired state of the checkbox.</param>
+        /// <returns>A <see cref="Task"/> representing an asynchronous operation.</returns>
+        Task ToggleSelectRowAsync(int index, bool select = true);
     }
 }

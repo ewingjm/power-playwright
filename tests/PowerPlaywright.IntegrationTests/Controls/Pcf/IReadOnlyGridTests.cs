@@ -180,6 +180,51 @@
             Assert.That(rows, Is.Empty);
         }
 
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleSelectRowAsync"/> selects a specific row.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleSelectRowAsync_SelectRow_SelectsSpecificRow()
+        {
+            var expectedRowCount = 3;
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectRowAsync(1, select: true);
+
+            var selectedCount = await gridControl.GetSelectedRowCountAsync();
+            Assert.That(selectedCount, Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleSelectRowAsync"/> deselects a specific row.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleSelectRowAsync_DeselectRow_DeselectsSpecificRow()
+        {
+            var expectedRowCount = 3;
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+            await gridControl.ToggleSelectRowAsync(1, select: false);
+
+            var selectedCount = await gridControl.GetSelectedRowCountAsync();
+            Assert.That(selectedCount, Is.EqualTo(expectedRowCount - 1));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleSelectRowAsync"/> throws when index is out of range.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleSelectRowAsync_IndexOutOfRange_ThrowsIndexOutOfRangeException()
+        {
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, 2).Select(i => new RelatedRecordFaker()));
+
+            Assert.ThrowsAsync<IndexOutOfRangeException>(() => gridControl.ToggleSelectRowAsync(5, select: true));
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 
