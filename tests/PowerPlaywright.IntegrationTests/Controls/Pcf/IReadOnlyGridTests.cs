@@ -148,6 +148,38 @@
             Assert.That(actualSelectedRowCount, Is.EqualTo(expectedTotalRowCount));
         }
 
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.GetRowsAsync"/> returns row data from the currently visible page.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetRowsAsync_HasRows_ReturnsRowData()
+        {
+            var expectedRowCount = 2;
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedRowCount).Select(i => new RelatedRecordFaker()));
+
+            var rows = await gridControl.GetRowsAsync();
+            var rowList = rows.ToList();
+
+            Assert.That(rowList, Has.Count.EqualTo(expectedRowCount));
+            Assert.That(rowList[0], Has.Count.GreaterThan(0));
+            Assert.That(rowList[0].Keys, Does.Contain("Name"));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.GetRowsAsync"/> returns empty collection when grid is empty.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetRowsAsync_EmptyGrid_ReturnsEmptyCollection()
+        {
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
+
+            var rows = await gridControl.GetRowsAsync();
+
+            Assert.That(rows, Is.Empty);
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 

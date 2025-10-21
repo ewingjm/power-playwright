@@ -40,5 +40,11 @@
         /// </summary>
         /// <returns>The total number of rows.</returns>
         Task<int> GetSelectedRowCountAsync();
+
+        /// <summary>
+        /// Gets the row data from the currently visible page.
+        /// </summary>
+        /// <returns>The rows with column name to cell value mappings.</returns>
+        Task<IEnumerable<IDictionary<string, string>>> GetRowsAsync();
     }
 }
