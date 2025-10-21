@@ -4,3 +4,5 @@ obj/
 .vs/
 *.feature.cs
 TestResults/
+/.github/instructions/
+/.github/copilot-instructions.md
