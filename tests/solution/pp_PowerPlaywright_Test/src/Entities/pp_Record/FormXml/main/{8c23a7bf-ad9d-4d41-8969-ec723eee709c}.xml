@@ -20,7 +20,7 @@
                   </labels>
                   <rows>
                     <row>
-                      <cell id="{e4b2581b-478f-47ee-b231-8d6b91a5915d}" visible="false" locklevel="0">
+                      <cell id="{e4b2581b-478f-47ee-b231-8d6b91a5915d}" locklevel="0">
                         <labels>
                           <label description="Owner" languagecode="1033" />
                         </labels>
