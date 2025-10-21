@@ -118,7 +118,7 @@ namespace PowerPlaywright.Strategies.Redirectors
 }
 ```
 
-**Purpose:** Routes control class requests (e.g., `ILookup`) to specific control type (e.g., `ISimpleLookupControl`) based on environment settings.
+**Purpose:** Routes control class requests (e.g., `ILookup`) to specific control type (e.g., `ISimpleLookupControl`) based on environment settings. There may be different specific control types based on the values found in the redirection info e.g. if new look is enabled. Use the old look and new look environments to check if the rendered controls are different.
 
 **If redirector exists:** Update `GetTargetControlType()` logic to handle new control type.
 
