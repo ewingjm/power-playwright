@@ -103,6 +103,43 @@
             Assert.That(await quickCreate.Container.IsVisibleAsync(), Is.True);
         }
 
+        /// <summary>
+        /// Tests that <see cref="ILookup.GetSearchResultsAsync"/> displays a default list of related records.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetSearchResultsAsync_RelatedRecordsExist_ReturnsDefaultResults()
+        {
+            await this.CreateRecordAsync(new RelatedRecordFaker().Generate());
+
+            var lookup = await this.SetupLookupScenarioAsync();
+
+            var results = await lookup.GetSearchResultsAsync();
+
+            Assert.That(results.Count, Is.GreaterThanOrEqualTo(1));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="ILookup.GetSearchResultsAsync"/> displays a filtered list of related records for a given search criteria.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetSearchResultsAsync_RelatedRecordsExist_ReturnsFilteredResults()
+        {
+            var expectedRelatedRecordName = string.Join(" ", this.faker.Lorem.Random.Words(5));
+
+            var relatedRecord = new RelatedRecordFaker()
+                .RuleFor(x => x.pp_Name, expectedRelatedRecordName);
+
+            await this.CreateRecordAsync(relatedRecord.Generate());
+
+            var lookup = await this.SetupLookupScenarioAsync();
+
+            var results = await lookup.GetSearchResultsAsync(string.Join(" ", expectedRelatedRecordName.Split(" ").Take(2)));
+
+            Assert.That(results.Any(t => t.Contains(expectedRelatedRecordName)), Is.True);
+        }
+
         private async Task<ILookup> SetupLookupScenarioAsync(Faker<pp_Record>? withRecord = null, Faker<pp_RelatedRecord>? withRelatedRecord = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatableRecords = null)
         {
             withRecord ??= new RecordFaker();
