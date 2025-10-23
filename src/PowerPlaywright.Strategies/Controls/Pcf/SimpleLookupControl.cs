@@ -1,5 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
@@ -31,6 +33,9 @@
         private readonly ILocator selectedRecordText;
         private readonly ILocator selectedRecordDeleteButton;
         private readonly ILocator input;
+        private readonly ILocator searchButton;
+        private readonly ILocator itemContainer;
+        private readonly ILocator itemInfoContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleLookupControl"/> class.
@@ -56,6 +61,51 @@
             this.selectedRecordText = this.selectedRecordListItem.Locator($"div[data-id*='_selected_tag_text']");
             this.selectedRecordDeleteButton = this.selectedRecordListItem.Locator($"button[data-id*='_selected_tag_delete']");
             this.input = this.Container.Locator("input");
+            this.searchButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Search" });
+            this.itemContainer = this.resultsRoot.GetByRole(AriaRole.Treeitem);
+            this.itemInfoContainer = this.itemContainer.Locator($"div[data-id='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_infoContainer']");
+        }
+
+        /// <inheritdoc/>
+        public async Task<List<List<string>>> GetSearchResultsAsync(string search = "")
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                await this.input.ClickAndWaitForAppIdleAsync();
+                await this.input.FillAsync(search);
+            }
+            else
+            {
+                await this.searchButton.ClickAsync();
+            }
+
+            await this.flyoutRoot.IsVisibleAsync();
+
+            if (await this.noRecordsText.IsVisibleAsync())
+            {
+                return null;
+            }
+
+            await this.itemInfoContainer.WaitForAsync();
+
+            var itemInfo = new List<List<string>>(await this.itemContainer.CountAsync());
+
+            foreach (var item in await this.itemInfoContainer.AllAsync())
+            {
+                var spanTexts = (await item.Locator("span[data-id]").AllInnerTextsAsync())
+                    .Select(t => t.Trim())
+                    .Where(t => !string.IsNullOrWhiteSpace(t))
+                    .ToList();
+
+                if (spanTexts.Any())
+                {
+                    itemInfo.Add(spanTexts);
+                }
+            }
+
+            return itemInfo;
         }
 
         /// <inheritdoc/>
