@@ -75,6 +75,7 @@
             {
                 await this.input.ClickAndWaitForAppIdleAsync();
                 await this.input.FillAsync(search);
+                await this.itemInfoContainer.WaitForAsync();
             }
             else
             {
@@ -87,8 +88,6 @@
             {
                 return null;
             }
-
-            await this.itemInfoContainer.WaitForAsync();
 
             var itemInfo = new List<List<string>>(await this.itemContainer.CountAsync());
 
