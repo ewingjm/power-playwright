@@ -69,27 +69,24 @@
         /// <inheritdoc/>
         public async Task<List<List<string>>> GetSearchResultsAsync(string search = "")
         {
+            var itemInfo = new List<List<string>>();
+
             await this.Page.WaitForAppIdleAsync();
 
             if (!string.IsNullOrEmpty(search))
             {
-                await this.input.ClickAndWaitForAppIdleAsync();
-                await this.input.FillAsync(search);
+                await this.FillAndWaitForResults(search);
+                if (await this.noRecordsText.IsVisibleAsync())
+                {
+                    return itemInfo;
+                }
+
                 await this.itemInfoContainer.WaitForAsync();
             }
             else
             {
-                await this.searchButton.ClickAsync();
+                await this.ClickSearchAndWaitForResults();
             }
-
-            await this.flyoutRoot.IsVisibleAsync();
-
-            if (await this.noRecordsText.IsVisibleAsync())
-            {
-                return null;
-            }
-
-            var itemInfo = new List<List<string>>(await this.itemContainer.CountAsync());
 
             foreach (var item in await this.itemInfoContainer.AllAsync())
             {
@@ -173,6 +170,19 @@
                 await this.selectedRecordListItem.HoverAsync();
                 await this.selectedRecordDeleteButton.ClickAsync();
             }
+        }
+
+        private async Task FillAndWaitForResults(string search)
+        {
+            await this.input.ClickAndWaitForAppIdleAsync();
+            await this.input.FillAsync(search);
+            await this.resultsRoot.Or(this.noRecordsText).WaitForAsync();
+        }
+
+        private async Task ClickSearchAndWaitForResults()
+        {
+            await this.searchButton.ClickAsync();
+            await this.resultsRoot.And(this.flyoutRoot).IsVisibleAsync();
         }
     }
 }
