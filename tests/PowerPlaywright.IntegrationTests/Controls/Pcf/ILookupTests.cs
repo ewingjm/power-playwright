@@ -104,11 +104,11 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ILookup.GetSearchResultsAsync"/> displays a default list of related records.
+        /// Tests that <see cref="ILookup.GetSearchResultsAsync"/> displays a default list of related records given an empty search criteria.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetSearchResultsAsync_RelatedRecordsExist_ReturnsDefaultResults()
+        public async Task GetSearchResultsAsync_EmptySearchCritera_ReturnsDefaultResults()
         {
             await this.CreateRecordAsync(new RelatedRecordFaker().Generate());
 
@@ -120,11 +120,27 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="ILookup.GetSearchResultsAsync"/> no results given a search criteria that does not match.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetSearchResultsAsync_SearchCriteriaDoesNotMatch_ReturnsNoResults()
+        {
+            await this.CreateRecordAsync(new RelatedRecordFaker().Generate());
+
+            var lookup = await this.SetupLookupScenarioAsync();
+
+            var results = await lookup.GetSearchResultsAsync("unlimited credit");
+
+            Assert.That(results.Count, Is.EqualTo(0));
+        }
+
+        /// <summary>
         /// Tests that <see cref="ILookup.GetSearchResultsAsync"/> displays a filtered list of related records for a given search criteria.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetSearchResultsAsync_RelatedRecordsExist_ReturnsFilteredResults()
+        public async Task GetSearchResultsAsync_SearchCriteriaMatches_ReturnsFilteredResults()
         {
             var expectedRelatedRecordName = string.Join(" ", this.faker.Lorem.Random.Words(5));
 
