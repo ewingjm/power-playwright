@@ -36,7 +36,7 @@
         private readonly ILocator searchButton;
         private readonly ILocator itemContainer;
         private readonly ILocator itemInfoContainer;
-        private readonly ILocator isLoading;
+        private readonly ILocator loadingText;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleLookupControl"/> class.
@@ -65,7 +65,7 @@
             this.searchButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Search" });
             this.itemContainer = this.resultsRoot.GetByRole(AriaRole.Treeitem);
             this.itemInfoContainer = this.itemContainer.Locator($"div[data-id='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_infoContainer']");
-            this.isLoading = this.flyoutRoot.Locator($"span[data-id*='_Loading_Text']");
+            this.loadingText = this.flyoutRoot.Locator($"span[data-id*='_Loading_Text']");
         }
 
         /// <inheritdoc/>
@@ -196,9 +196,9 @@
 
         private async Task ResultsLoaded()
         {
-            if (await this.isLoading.IsVisibleAsync())
+            if (await this.loadingText.IsVisibleAsync())
             {
-                await this.isLoading.WaitForAsync(new LocatorWaitForOptions
+                await this.loadingText.WaitForAsync(new LocatorWaitForOptions
                 {
                     State = WaitForSelectorState.Hidden,
                 });
