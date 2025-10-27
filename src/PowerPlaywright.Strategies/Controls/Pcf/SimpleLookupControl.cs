@@ -34,7 +34,6 @@
         private readonly ILocator selectedRecordDeleteButton;
         private readonly ILocator input;
         private readonly ILocator searchButton;
-        private readonly ILocator itemContainer;
         private readonly ILocator itemInfoContainer;
         private readonly ILocator loadingText;
 
@@ -63,8 +62,7 @@
             this.selectedRecordDeleteButton = this.selectedRecordListItem.Locator($"button[data-id*='_selected_tag_delete']");
             this.input = this.Container.Locator("input");
             this.searchButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Search" });
-            this.itemContainer = this.resultsRoot.GetByRole(AriaRole.Treeitem);
-            this.itemInfoContainer = this.itemContainer.Locator($"div[data-id='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_infoContainer']");
+            this.itemInfoContainer = this.resultsRoot.GetByRole(AriaRole.Treeitem).Locator($"div[data-id='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_infoContainer']");
             this.loadingText = this.flyoutRoot.Locator($"span[data-id*='_Loading_Text']");
         }
 
