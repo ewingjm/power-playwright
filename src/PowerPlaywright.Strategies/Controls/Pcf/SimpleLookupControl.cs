@@ -1,5 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
@@ -31,6 +33,7 @@
         private readonly ILocator selectedRecordText;
         private readonly ILocator selectedRecordDeleteButton;
         private readonly ILocator input;
+        private readonly ILocator itemInfoContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleLookupControl"/> class.
@@ -59,6 +62,30 @@
         }
 
         /// <inheritdoc/>
+        public async Task<IEnumerable<IEnumerable<string>>> GetSearchResultsAsync(string search = "")
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            await this.SearchAsync(search);
+
+            var itemInfo = new List<List<string>>();
+            foreach (var result in await this.results.AllAsync())
+            {
+                var spanTexts = (await result.Locator("span[data-id]").AllInnerTextsAsync())
+                    .Select(t => t.Trim())
+                    .Where(t => !string.IsNullOrWhiteSpace(t))
+                    .ToList();
+
+                if (spanTexts.Count != 0)
+                {
+                    itemInfo.Add(spanTexts);
+                }
+            }
+
+            return itemInfo;
+        }
+
+        /// <inheritdoc/>
         public async Task<string> GetValueAsync()
         {
             await this.Page.WaitForAppIdleAsync();
@@ -76,7 +103,7 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            await this.ClearExistingValue();
+            await this.ClearExistingValueAsync();
             await this.input.ClickAndWaitForAppIdleAsync();
             await this.newButton.ClickAndWaitForAppIdleAsync();
 
@@ -86,19 +113,12 @@
         /// <inheritdoc/>
         public async Task SetValueAsync(string value)
         {
-            await this.Page.WaitForAppIdleAsync();
-
-            await this.ClearExistingValue();
-            await this.input.ScrollIntoViewIfNeededAsync();
-
             if (value is null)
             {
                 return;
             }
 
-            await this.input.FillAsync(value);
-            await this.resultsRoot.Or(this.noRecordsText).WaitForAsync();
-            await this.Page.WaitForAppIdleAsync();
+            await this.SearchAsync(value);
 
             var flyoutResult = this.results.GetByText(value, new LocatorGetByTextOptions { Exact = true }).First;
 
@@ -117,7 +137,24 @@
             await flyoutResult.ClickAndWaitForAppIdleAsync();
         }
 
-        private async Task ClearExistingValue()
+        private async Task SearchAsync(string value)
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            await this.ClearExistingValueAsync();
+            await this.input.ScrollIntoViewIfNeededAsync();
+            await this.input.FillAsync(value);
+
+            if (string.IsNullOrEmpty(value))
+            {
+                await this.Page.Keyboard.PressAsync("Enter");
+            }
+
+            await this.resultsRoot.Or(this.noRecordsText).WaitForAsync();
+            await this.Page.WaitForAppIdleAsync();
+        }
+
+        private async Task ClearExistingValueAsync()
         {
             if (await this.selectedRecordListItem.IsVisibleAsync())
             {
