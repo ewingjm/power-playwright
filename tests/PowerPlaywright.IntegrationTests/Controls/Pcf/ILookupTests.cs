@@ -104,11 +104,11 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="ILookup.GetSearchResultsAsync"/> displays a default list of related records given an empty search criteria.
+        /// Tests that <see cref="ILookup.GetSearchResultsAsync"/> returns a list of search results from an empty query.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetSearchResultsAsync_EmptySearchCritera_ReturnsDefaultResults()
+        public async Task GetSearchResultsAsync_EmptySearchCritera_SearchesWithNoQuery()
         {
             await this.CreateRecordAsync(new RelatedRecordFaker().Generate());
 
@@ -126,11 +126,9 @@
         [Test]
         public async Task GetSearchResultsAsync_SearchCriteriaDoesNotMatch_ReturnsNoResults()
         {
-            await this.CreateRecordAsync(new RelatedRecordFaker().Generate());
-
             var lookup = await this.SetupLookupScenarioAsync();
 
-            var results = await lookup.GetSearchResultsAsync("unlimited credit");
+            var results = await lookup.GetSearchResultsAsync(Guid.NewGuid().ToString());
 
             Assert.That(results.Count, Is.EqualTo(0));
         }
@@ -140,7 +138,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetSearchResultsAsync_SearchCriteriaMatches_ReturnsFilteredResults()
+        public async Task GetSearchResultsAsync_SearchCriteriaMatches_ReturnsSearchResults()
         {
             var expectedRelatedRecordName = string.Join(" ", this.faker.Lorem.Random.Words(5));
 
@@ -153,7 +151,7 @@
 
             var results = await lookup.GetSearchResultsAsync(string.Join(" ", expectedRelatedRecordName.Split(" ").Take(2)));
 
-            Assert.That(results.Any(t => t.Contains(expectedRelatedRecordName)), Is.True);
+            Assert.That(results, Has.Some.Matches(Contains.Item(expectedRelatedRecordName)));
         }
 
         private async Task<ILookup> SetupLookupScenarioAsync(Faker<pp_Record>? withRecord = null, Faker<pp_RelatedRecord>? withRelatedRecord = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatableRecords = null)

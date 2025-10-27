@@ -33,6 +33,6 @@
         /// </summary>
         /// <param name="search">The search term.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<List<List<string>>> GetSearchResultsAsync(string search = "");
+        Task<IEnumerable<IEnumerable<string>>> GetSearchResultsAsync(string search = "");
     }
 }

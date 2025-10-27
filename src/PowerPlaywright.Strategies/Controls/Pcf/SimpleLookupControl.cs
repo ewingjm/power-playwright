@@ -33,9 +33,7 @@
         private readonly ILocator selectedRecordText;
         private readonly ILocator selectedRecordDeleteButton;
         private readonly ILocator input;
-        private readonly ILocator searchButton;
         private readonly ILocator itemInfoContainer;
-        private readonly ILocator loadingText;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleLookupControl"/> class.
@@ -61,41 +59,24 @@
             this.selectedRecordText = this.selectedRecordListItem.Locator($"div[data-id*='_selected_tag_text']");
             this.selectedRecordDeleteButton = this.selectedRecordListItem.Locator($"button[data-id*='_selected_tag_delete']");
             this.input = this.Container.Locator("input");
-            this.searchButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Search" });
-            this.itemInfoContainer = this.resultsRoot.GetByRole(AriaRole.Treeitem).Locator($"div[data-id='{this.Name}.fieldControl-LookupResultsDropdown_{this.Name}_infoContainer']");
-            this.loadingText = this.flyoutRoot.Locator($"span[data-id*='_Loading_Text']");
         }
 
         /// <inheritdoc/>
-        public async Task<List<List<string>>> GetSearchResultsAsync(string search = "")
+        public async Task<IEnumerable<IEnumerable<string>>> GetSearchResultsAsync(string search = "")
         {
-            var itemInfo = new List<List<string>>();
-
             await this.Page.WaitForAppIdleAsync();
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                await this.FillAndWaitForResults(search);
-                if (await this.noRecordsText.IsVisibleAsync())
-                {
-                    return itemInfo;
-                }
+            await this.SearchAsync(search);
 
-                await this.itemInfoContainer.WaitForAsync();
-            }
-            else
+            var itemInfo = new List<List<string>>();
+            foreach (var result in await this.results.AllAsync())
             {
-                await this.ClickSearchAndWaitForResults();
-            }
-
-            foreach (var item in await this.itemInfoContainer.AllAsync())
-            {
-                var spanTexts = (await item.Locator("span[data-id]").AllInnerTextsAsync())
+                var spanTexts = (await result.Locator("span[data-id]").AllInnerTextsAsync())
                     .Select(t => t.Trim())
                     .Where(t => !string.IsNullOrWhiteSpace(t))
                     .ToList();
 
-                if (spanTexts.Any())
+                if (spanTexts.Count != 0)
                 {
                     itemInfo.Add(spanTexts);
                 }
@@ -122,7 +103,7 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            await this.ClearExistingValue();
+            await this.ClearExistingValueAsync();
             await this.input.ClickAndWaitForAppIdleAsync();
             await this.newButton.ClickAndWaitForAppIdleAsync();
 
@@ -132,19 +113,12 @@
         /// <inheritdoc/>
         public async Task SetValueAsync(string value)
         {
-            await this.Page.WaitForAppIdleAsync();
-
-            await this.ClearExistingValue();
-            await this.input.ScrollIntoViewIfNeededAsync();
-
             if (value is null)
             {
                 return;
             }
 
-            await this.input.FillAsync(value);
-            await this.resultsRoot.Or(this.noRecordsText).WaitForAsync();
-            await this.Page.WaitForAppIdleAsync();
+            await this.SearchAsync(value);
 
             var flyoutResult = this.results.GetByText(value, new LocatorGetByTextOptions { Exact = true }).First;
 
@@ -163,43 +137,29 @@
             await flyoutResult.ClickAndWaitForAppIdleAsync();
         }
 
-        private async Task ClearExistingValue()
+        private async Task SearchAsync(string value)
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            await this.ClearExistingValueAsync();
+            await this.input.ScrollIntoViewIfNeededAsync();
+            await this.input.FillAsync(value);
+
+            if (string.IsNullOrEmpty(value))
+            {
+                await this.Page.Keyboard.PressAsync("Enter");
+            }
+
+            await this.resultsRoot.Or(this.noRecordsText).WaitForAsync();
+            await this.Page.WaitForAppIdleAsync();
+        }
+
+        private async Task ClearExistingValueAsync()
         {
             if (await this.selectedRecordListItem.IsVisibleAsync())
             {
                 await this.selectedRecordListItem.HoverAsync();
                 await this.selectedRecordDeleteButton.ClickAsync();
-            }
-        }
-
-        private async Task FillAndWaitForResults(string search)
-        {
-            await this.input.ClickAndWaitForAppIdleAsync();
-
-            await this.input.FillAsync(search);
-
-            await this.ResultsLoaded();
-
-            await this.noRecordsText.Or(this.itemInfoContainer).WaitForAsync();
-        }
-
-        private async Task ClickSearchAndWaitForResults()
-        {
-            await this.searchButton.ClickAsync();
-
-            await this.ResultsLoaded();
-
-            await this.noRecordsText.Or(this.results).And(this.itemInfoContainer).IsVisibleAsync();
-        }
-
-        private async Task ResultsLoaded()
-        {
-            if (await this.loadingText.IsVisibleAsync())
-            {
-                await this.loadingText.WaitForAsync(new LocatorWaitForOptions
-                {
-                    State = WaitForSelectorState.Hidden,
-                });
             }
         }
     }
