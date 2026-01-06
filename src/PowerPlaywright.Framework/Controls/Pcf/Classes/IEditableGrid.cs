@@ -1,14 +1,13 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Pcf.Classes
 {
-    using Microsoft.Playwright;
-    using PowerPlaywright.Framework.Pages;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using PowerPlaywright.Framework.Pages;
 
     /// <summary>
     /// GridControl control class.
     /// </summary>
-    public interface IEditableGridControl : IPcfControl
+    public interface IEditableGrid : IPcfControl
     {
         /// <summary>
         /// Gets the column names on the view.

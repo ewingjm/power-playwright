@@ -7,7 +7,7 @@
     /// An interface for the MscrmControls.Grid.GridControl control.
     /// </summary>
     [PcfControl("MscrmControls.Grid.GridControl")]
-    public interface IGridControl : IEditableGridControl
+    public interface IGridControl : IEditableGrid
     {
     }
 }

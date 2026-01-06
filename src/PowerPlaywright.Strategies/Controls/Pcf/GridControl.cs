@@ -14,7 +14,7 @@
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
-    /// Document me.
+    /// A control strategy for the <see cref="IGridControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
     public class GridControl : PcfControlInternal, IGridControl
@@ -31,7 +31,8 @@
         /// </summary>
         /// <param name="appPage">The app page.</param>
         /// <param name="name">The name given to the control.</param>
-        /// <param name="infoProvider"> The info provider.</param>
+        /// <param name="infoProvider">The info provider.</param>
+        /// <param name="pageFactory">The page factory.</param>
         /// <param name="parent">The parent control.</param>
         public GridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
