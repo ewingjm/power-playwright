@@ -16,7 +16,7 @@
     /// <summary>
     /// A control strategy for the <see cref="IGridControl"/>.
     /// </summary>
-    [PcfControlStrategy(0, 0, 0)]
+    [PcfControlStrategy(1, 11, 531)]
     public class GridControl : PcfControlInternal, IGridControl
     {
         private readonly IPageFactory pageFactory;
@@ -160,8 +160,16 @@
         public async Task<IEntityRecordPage> OpenRecordAsync(int index)
         {
             await this.Page.WaitForAppIdleAsync();
+
             var row = this.GetRow(index);
-            await row.GetByRole(AriaRole.Gridcell).Nth(1).DblClickAsync(new LocatorDblClickOptions { Position = new Position { X = 0, Y = 0 } });
+            if (await row.CountAsync() != 1)
+            {
+                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
+            }
+
+            await row.GetByRole(AriaRole.Gridcell).Nth(0).ClickAsync();
+            await row.GetByRole(AriaRole.Gridcell).Nth(0).DblClickAsync();
+
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }
 
@@ -234,6 +242,14 @@
                     await this.ScrollHorizontalAsync(viewPortWidth / 2);
                 }
             }
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return this
+                .Page
+                .Locator($"//div[@data-id=\"DataSetHostContainer\"][.//div[starts-with(@data-lp-id, '{this.PcfControlAttribute}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')]]");
         }
 
         private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
