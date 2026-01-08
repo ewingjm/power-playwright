@@ -86,6 +86,57 @@
             Assert.That(actualSelectedRowCount, Is.EqualTo(0));
         }
 
+        /// <summary>
+        /// Tests that <see cref="IEditableGrid.ToggleSelectAllRowsAsync"/> does not change any row states when there are no rows in the grid.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleSelectAllRowsAsync_EmptyResultSet_SelectsNoRows()
+        {
+            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.Zero);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IEditableGrid.ToggleSelectAllRowsAsync"/> sets the expected state to checked.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleSelectAllRowsAsync_NoRowsSelected_SelectsAllRows()
+        {
+            var expectedTotalRowCount = 4;
+            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.EqualTo(expectedTotalRowCount));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IEditableGrid.ToggleSelectAllRowsAsync"/> sets the expected state to unchecked.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleSelectAllRowsAsync_RowsSelected_DeselectsAllRows()
+        {
+            var expectedTotalRowCount = 4;
+            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+            await gridControl.ToggleSelectAllRowsAsync(select: false);
+
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.EqualTo(0));
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 
