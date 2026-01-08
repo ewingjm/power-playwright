@@ -24,6 +24,21 @@
             this.faker = new Faker("en_GB");
         }
 
+        /// <summary>
+        /// Tests that <see cref="IEditableGrid.GetSelectedRowCountAsync"/> returns the number of selected rows.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetSelectedRowCountAsync_RowsSelected_ReturnsCountOfSelectedRows()
+        {
+            var expectedTotalRowCount = this.faker.Random.Int(1, 4);
+            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.EqualTo(expectedTotalRowCount));
+        }
 
         /// <summary>
         /// Tests that <see cref="IEditableGrid.OpenRecordAsync(int)"/> opens the record when called with an index that is in range.
