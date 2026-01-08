@@ -51,6 +51,41 @@
             Assert.ThrowsAsync<IndexOutOfRangeException>(() => gridControl.OpenRecordAsync(1));
         }
 
+        /// <summary>
+        /// Tests that <see cref="IEditableGrid.ToggleSelectRowAsync"/> sets the expected state to unchecked.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleSelectRowAsync_NoRowsSelected_SelectRow()
+        {
+            var expectedTotalRowCount = 4;
+            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectRowAsync(2, select: true);
+
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IEditableGrid.ToggleSelectRowAsync"/> sets the expected state to unchecked.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleSelectRowAsync_RowsSelected_DeselectRow()
+        {
+            var expectedTotalRowCount = 4;
+            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectRowAsync(3, select: true);
+            await gridControl.ToggleSelectRowAsync(3, select: false);
+
+            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
+
+            Assert.That(actualSelectedRowCount, Is.EqualTo(0));
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 
