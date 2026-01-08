@@ -268,6 +268,55 @@
             return count;
         }
 
+        /// <inheritdoc/>
+        public async Task<IEnumerable<IDictionary<string, string>>> GetRowDataAsync()
+        {
+            var rows = await this.grid.Locator("div[role='row']:not(:has([role='columnheader']))").AllAsync();
+            var columnNames = (await this.GetColumnNamesAsync()).ToArray();
+            var result = new List<IDictionary<string, string>>();
+
+            foreach (var row in rows)
+            {
+                var rowData = new Dictionary<string, string>();
+
+                while (true)
+                {
+                    var visibleColumns = (await this.visibleHeaders.AllInnerTextsAsync())
+                        .Select(s =>
+                        {
+                            var match = Regex.Match(s, @"\r?\n|\\n");
+                            return match.Success ? s.Substring(0, match.Index) : s;
+                        })
+                        .ToList();
+
+                    var visibleCells = await row.Locator("[role='gridcell']:not(:has([role='checkbox'])):not(:has(input[type='checkbox']))").AllAsync();
+
+                    foreach (var column in visibleColumns)
+                    {
+                        if (!rowData.ContainsKey(column))
+                        {
+                            var columnIndex = visibleColumns.FindIndex(c => c == column);
+                            rowData[column] = await visibleCells[columnIndex].InnerTextAsync();
+                        }
+                    }
+
+                    if (rowData.Count < columnNames.Length)
+                    {
+                        await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
+                        continue;
+                    }
+
+                    break;
+                }
+
+                result.Add(rowData);
+
+                await this.ScrollHorizontalToStartAsync();
+            }
+
+            return result;
+        }
+
         private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
         {
             var cell = cells.Nth(0);

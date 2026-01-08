@@ -70,5 +70,11 @@
         /// </summary>
         /// <returns>The total number of rows.</returns>
         Task<int> GetSelectedRowCountAsync();
+
+        /// <summary>
+        /// Gets the row data from the grid as a collection of dictionaries.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<IEnumerable<IDictionary<string, string>>> GetRowDataAsync();
     }
 }
