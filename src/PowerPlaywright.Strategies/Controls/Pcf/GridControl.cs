@@ -195,7 +195,7 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var rows = this.grid.GetByRole(AriaRole.Row);
+            var rows = this.GetRows();
             var cell = rows.GetByRole(AriaRole.Gridcell).Filter(new LocatorFilterOptions { Has = this.Page.GetByRole(AriaRole.Checkbox) }).Nth(rowIndex);
 
             var toggleCheckBox = cell.GetByRole(AriaRole.Checkbox);
@@ -245,11 +245,27 @@
         }
 
         /// <inheritdoc/>
+        public Task ToggleSelectAllRowsAsync(bool select = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public async Task<int> GetSelectedRowCountAsync()
+        {
+            var rows = this.GetRows()
+                .Filter(new LocatorFilterOptions { Has = this.Page.GetByRole(AriaRole.Checkbox, new PageGetByRoleOptions { Checked = true }) });
+
+            var count = await rows.CountAsync();
+            return count;
+        }
+
+        /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
             return this
                 .Page
-                .Locator($"//div[@data-id=\"DataSetHostContainer\"][.//div[starts-with(@data-lp-id, '{this.PcfControlAttribute}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')]]");
+                .Locator($"//div[@data-id=\"DataSetHostContainer\"][.//div[starts-with(@data-lp-id, '{this.GetControlId()}|')]]");
         }
 
         private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
@@ -307,9 +323,14 @@
             await scrollableContainer.Page.WaitForAppIdleAsync();
         }
 
+        private ILocator GetRows()
+        {
+            return this.scrollableContainer.Locator($"[role='row'][aria-label='Data']");
+        }
+
         private ILocator GetRow(int rowIndex)
         {
-            return this.scrollableContainer.Locator($"[role='row'][aria-label='Data']").Nth(rowIndex);
+            return this.GetRows().Nth(rowIndex);
         }
     }
 }

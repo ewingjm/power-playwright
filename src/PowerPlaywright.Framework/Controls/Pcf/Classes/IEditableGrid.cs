@@ -23,12 +23,19 @@
         Task<bool> GetToggledState(int rowIndex);
 
         /// <summary>
-        /// Toggles all rows within the grid to the specified state.
+        /// Toggles a row for the given row index to the specified state.
         /// </summary>
         /// <param name="rowIndex">The row index.</param>
         /// <param name="select">Desired state of the checkbox.</param>
         /// <returns>A <see cref="Task"/> representing an asynchronous operation.</returns>
         Task ToggleSelectRowAsync(int rowIndex, bool select = true);
+
+        /// <summary>
+        /// Toggles all rows within the grid to the specified state.
+        /// </summary>
+        /// <param name="select">Desired state of the checkbox.</param>
+        /// <returns>A <see cref="Task"/> representing an asynchronous operation.</returns>
+        Task ToggleSelectAllRowsAsync(bool select = true);
 
         /// <summary>
         /// Gets which columns are editable for the provided (zero-based) row index.
@@ -64,5 +71,11 @@
         /// <param name="index">The zero-based index of the record.</param>
         /// <returns>The record.</returns>
         Task<IEntityRecordPage> OpenRecordAsync(int index);
+
+        /// <summary>
+        /// Gets the number of selected rows in the grid.
+        /// </summary>
+        /// <returns>The total number of rows.</returns>
+        Task<int> GetSelectedRowCountAsync();
     }
 }
