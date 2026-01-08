@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -12,6 +13,7 @@
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
     /// A control strategy for the <see cref="IGridControl"/>.
@@ -20,6 +22,8 @@
     public class GridControl : PcfControlInternal, IGridControl
     {
         private readonly IPageFactory pageFactory;
+        private readonly ILogger<GridControl> logger;
+
         private readonly ILocator grid;
         private readonly ILocator visibleRows;
         private readonly ILocator visibleHeaders;
@@ -34,13 +38,15 @@
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="pageFactory">The page factory.</param>
         /// <param name="parent">The parent control.</param>
-        public GridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControl parent = null)
+        public GridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControl parent = null, ILogger<GridControl> logger = null)
             : base(name, appPage, infoProvider, parent)
         {
             this.pageFactory = pageFactory;
+            this.logger = logger;
+
             this.grid = this.Container.GetByRole(AriaRole.Grid);
             this.visibleRows = this.grid.GetByRole(AriaRole.Row);
-            this.visibleHeaders = this.visibleRows.Locator("[role='columnheader']:not([aria-colindex='1'])").Filter(new LocatorFilterOptions { HasNot = Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) });
+            this.visibleHeaders = this.visibleRows.Locator("[role='columnheader']:not([aria-colindex='1'])").Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) });
             this.scrollableContainer = this.Container.Locator("[wj-part='root']");
             this.alerts = this.Container.GetByRole(AriaRole.Alert);
         }
@@ -245,9 +251,30 @@
         }
 
         /// <inheritdoc/>
-        public Task ToggleSelectAllRowsAsync(bool select = true)
+        public async Task ToggleSelectAllRowsAsync(bool select = true)
         {
-            throw new NotImplementedException();
+            await this.Page.WaitForAppIdleAsync();
+
+            var totalRowCount = await this.GetRows().CountAsync();
+            if (totalRowCount == 0)
+            {
+                this.logger?.LogInformation("There are no rows in the grid to select.");
+                return;
+            }
+
+            var rows = this.GetRowsByToggledState(select);
+            if (await rows.CountAsync() == totalRowCount)
+            {
+                this.logger?.LogInformation("All rows are already in the expected state.");
+                return;
+            }
+
+            var btnSelectAll = this.Container.Locator("button[title='Select All']");
+            do
+            {
+                await btnSelectAll.ClickAndWaitForAppIdleAsync();
+            }
+            while (await this.GetRowsByToggledState(select).CountAsync() == totalRowCount);
         }
 
         /// <inheritdoc/>
@@ -331,6 +358,13 @@
         private ILocator GetRow(int rowIndex)
         {
             return this.GetRows().Nth(rowIndex);
+        }
+
+        private ILocator GetRowsByToggledState(bool select)
+        {
+            return this.GetRows().Locator($"[aria-selected='{select}']");
+            
+            //return this.scrollableContainer.Locator($"[role='row'][aria-selected='{select}']");
         }
     }
 }
