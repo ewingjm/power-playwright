@@ -59,13 +59,6 @@
         Task<Dictionary<string, string>> GetErrorNotificationsAsync();
 
         /// <summary>
-        /// Scroll horizontal.
-        /// </summary>
-        /// <param name="deltaX"></param>
-        /// <returns>A <see cref="Task"/> representing an asynchronous operation.</returns>
-        Task ScrollHorizontalAsync(float deltaX);
-
-        /// <summary>
         /// Opens the record at the provided zero-based index.
         /// </summary>
         /// <param name="index">The zero-based index of the record.</param>
