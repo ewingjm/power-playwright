@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
+    using System.Linq;
     using System.Text.RegularExpressions;
     using Bogus;
     using Microsoft.Xrm.Sdk;
@@ -179,7 +180,7 @@
             var expectedTotalRowCount = 1;
             var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
-            Assert.That(await gridControl.GetEditableColumnsAsync(1), Is.EqualTo(EditableColumns));
+            Assert.That(await gridControl.GetEditableColumnsAsync(0), Is.EqualTo(EditableColumns));
         }
 
         /// <summary>
@@ -201,6 +202,28 @@
             var notifications = await gridControl.GetErrorNotificationsAsync();
 
             Assert.That(notifications, Has.Count.EqualTo(1));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IEditableGrid.UpdateRowAsync"/> updates editable cells within a row.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task UpdateRowAsync_EditableRow_UpdatesRow()
+        {
+            var expectedTotalRowCount = 1;
+            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var name = string.Join(" ", this.faker.Lorem.Words(8));
+
+            await gridControl.UpdateRowAsync(0, new Dictionary<string, string>
+            {
+                ["Name"] = name,
+            });
+
+            var rowData = await gridControl.GetRowDataAsync();
+
+            Assert.That(rowData.ToList(), Has.Count.EqualTo(1));
+            Assert.That(rowData.Select(rd => rd["Name"]).First(), Is.EqualTo(name));
         }
 
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
