@@ -28,7 +28,7 @@
         private readonly ILocator visibleRows;
         private readonly ILocator visibleHeaders;
         private readonly ILocator alerts;
-        private ILocator scrollableContainer;
+        private readonly ILocator scrollableContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GridControl"/> class.
@@ -58,9 +58,8 @@
 
             var columnCount = int.Parse(await this.grid.GetAttributeAsync("aria-colcount")) - 1;
             var capturedColumns = new List<string>();
-            var viewPortWidth = await this.GetRowsViewPortWidthAsync();
 
-            await this.ScrollHorizontalToStartAsync(this.scrollableContainer);
+            await this.ScrollHorizontalToStartAsync();
 
             while (true)
             {
@@ -69,14 +68,14 @@
                 capturedColumns.AddRange(visibleColumns.Except(capturedColumns));
                 if (capturedColumns.Count < columnCount)
                 {
-                    await this.ScrollHorizontalAsync(viewPortWidth / 2);
+                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
                     continue;
                 }
 
                 break;
             }
 
-            await this.ScrollHorizontalToStartAsync(this.scrollableContainer);
+            await this.ScrollHorizontalToStartAsync();
 
             return capturedColumns;
         }
@@ -133,7 +132,7 @@
                 break;
             }
 
-            await this.ScrollHorizontalToStartAsync(this.scrollableContainer);
+            await this.ScrollHorizontalToStartAsync();
             await this.ToggleSelectRowAsync(rowIndex, existingToggleState);
 
             return columnsByEditability.Where(kvp => kvp.Value).Select(kvp => kvp.Key);
@@ -177,23 +176,6 @@
             await row.GetByRole(AriaRole.Gridcell).Nth(0).DblClickAsync();
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
-        }
-
-        /// <inheritdoc/>
-        public async Task ScrollHorizontalAsync(float deltaX)
-        {
-            var cell = this.scrollableContainer.GetByRole(AriaRole.Row).GetByRole(AriaRole.Gridcell).First;
-
-            if (await cell.IsVisibleAsync())
-            {
-                this.scrollableContainer = cell;
-            }
-
-            await this.scrollableContainer.HoverAsync();
-            await this.scrollableContainer.Page.Mouse.WheelAsync(deltaX, 0);
-            await this.scrollableContainer.Page.WaitForAppIdleAsync();
-
-            // TODO: Return position
         }
 
         /// <inheritdoc/>
@@ -287,14 +269,6 @@
             return count;
         }
 
-        /// <inheritdoc/>
-        protected override ILocator GetRoot(ILocator context)
-        {
-            return this
-                .Page
-                .Locator($"//div[@data-id=\"DataSetHostContainer\"][.//div[contains(concat(' ', normalize-space(@class), ' '), ' {this.PcfControlAttribute.Name} ') or starts-with(@data-lp-id, '{this.GetControlId()}|')]]");
-        }
-
         private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
         {
             var cell = cells.Nth(0);
@@ -316,38 +290,9 @@
 
         private async Task<float> GetRowsViewPortWidthAsync()
         {
-            var rowsBoundingBox = await this.Container.BoundingBoxAsync();
+            var rowsBoundingBox = await this.grid.BoundingBoxAsync();
 
             return rowsBoundingBox.Width;
-        }
-
-        private async Task ScrollHorizontalToStartAsync(ILocator scrollableContainer)
-        {
-            if (await this.scrollableContainer.EvaluateAsync<bool>("el => el.scrollWidth <= el.clientWidth"))
-            {
-                return;
-            }
-
-            var scrollLeft = await this.scrollableContainer.EvaluateAsync<int>("el => el.scrollLeft");
-            var cell = scrollableContainer.GetByRole(AriaRole.Row).GetByRole(AriaRole.Gridcell).First;
-
-            if (await cell.CountAsync() == 1)
-            {
-                scrollableContainer = cell;
-            }
-            else
-            {
-                var noDataAvailable = this.Container.GetByTitle("No data available.");
-
-                if (await noDataAvailable.IsVisibleAsync())
-                {
-                    scrollableContainer = this.Container.GetByRole(AriaRole.Grid);
-                }
-            }
-
-            await scrollableContainer.HoverAsync();
-            await scrollableContainer.Page.Mouse.WheelAsync(-scrollLeft, 0);
-            await scrollableContainer.Page.WaitForAppIdleAsync();
         }
 
         private ILocator GetRows()
@@ -363,8 +308,31 @@
         private ILocator GetRowsByToggledState(bool select)
         {
             return this.GetRows().Locator($"[aria-selected='{select}']");
-            
-            //return this.scrollableContainer.Locator($"[role='row'][aria-selected='{select}']");
+        }
+
+        private async Task ScrollHorizontalAsync(float deltaX)
+        {
+            if (!await this.CanScrollHorizontalAsync())
+            {
+                return;
+            }
+
+            await this.scrollableContainer.EvaluateAsync($"el => el.scrollLeft = {deltaX}");
+        }
+
+        private async Task ScrollHorizontalToStartAsync()
+        {
+            if (!await this.CanScrollHorizontalAsync())
+            {
+                return;
+            }
+
+            await this.scrollableContainer.EvaluateAsync("el => el.scrollLeft = 0");
+        }
+
+        private async Task<bool> CanScrollHorizontalAsync()
+        {
+            return await this.scrollableContainer.EvaluateAsync<bool>("el => el.scrollWidth > el.clientWidth");
         }
     }
 }
