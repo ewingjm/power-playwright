@@ -14,6 +14,7 @@
     public partial class IGridControlTests : IntegrationTests
     {
         private static readonly string[] Columns = ["Name", "Created On", "Created By", "Modified By", "Modified On", "Owner", "Record", "Status", "Status Reason", "Created By (Delegate)", "Modified By (Delegate)", "Owning Business Unit", "Record Created On"];
+        private static readonly string[] EditableColumns = ["Name", "Record"];
 
         private Faker faker;
 
@@ -166,6 +167,40 @@
             var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
 
             Assert.That(actualSelectedRowCount, Is.EqualTo(0));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IEditableGrid.GetEditableColumnsAsync"/> always returns the editable columns.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetEditableColumnsAsync_Always_ReturnsAllColumnNamesInOrder()
+        {
+            var expectedTotalRowCount = 1;
+            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            Assert.That(await gridControl.GetEditableColumnsAsync(1), Is.EqualTo(EditableColumns));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IEditableGrid.GetErrorNotificationsAsync"/> returns error notifications.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetErrorNotificationsAsync_InvalidRows_ReturnsErrorNotifications()
+        {
+            var expectedTotalRowCount = 1;
+            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.UpdateRowAsync(0, new Dictionary<string, string>
+            {
+                ["Name"] = string.Empty,
+                ["Record"] = string.Empty,
+            });
+
+            var notifications = await gridControl.GetErrorNotificationsAsync();
+
+            Assert.That(notifications, Has.Count.EqualTo(1));
         }
 
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
