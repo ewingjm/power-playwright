@@ -13,6 +13,8 @@
     /// </summary>
     public partial class IGridControlTests : IntegrationTests
     {
+        private static readonly string[] Columns = ["Name", "Created On", "Created By", "Modified By", "Modified On", "Owner", "Record", "Status", "Status Reason", "Created By (Delegate)", "Modified By (Delegate)", "Owning Business Unit", "Record Created On"];
+
         private Faker faker;
 
         /// <summary>
@@ -64,6 +66,20 @@
             var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: null);
 
             Assert.ThrowsAsync<IndexOutOfRangeException>(() => gridControl.OpenRecordAsync(1));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IEditableGrid.GetColumnNamesAsync"/> always returns all column names.
+        /// </summary>
+        /// <param name="withRelatedRecords">Whether or not to create related records.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task GetColumnNamesAsync_Always_ReturnsAllColumnNamesInOrder(bool withRelatedRecords)
+        {
+            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: withRelatedRecords ? [new RelatedRecordFaker()] : null);
+
+            Assert.That(gridControl.GetColumnNamesAsync, Is.EqualTo(Columns));
         }
 
         /// <summary>
@@ -177,7 +193,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(withRecord.Generate());
 
-            return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedRecordsSubgrid).GetControl<IEditableGrid>();
+            return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedEditableRecordsSubGrid).GetControl<IEditableGrid>();
         }
     }
 }
