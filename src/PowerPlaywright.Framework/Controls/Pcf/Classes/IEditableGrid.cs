@@ -20,7 +20,7 @@
         /// </summary>
         /// <param name="rowIndex">The row index.</param>
         /// <returns>A <see cref="Task"/> representing an asynchronous operation.</returns>
-        Task<bool> GetToggledState(int rowIndex);
+        Task<bool> GetToggledStateAsync(int rowIndex);
 
         /// <summary>
         /// Toggles a row for the given row index to the specified state.

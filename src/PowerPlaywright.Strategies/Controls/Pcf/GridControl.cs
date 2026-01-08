@@ -86,7 +86,7 @@
             var allColumns = await this.GetColumnNamesAsync();
             var columnsByEditability = allColumns.ToDictionary(col => col, col => true);
 
-            var existingToggleState = await this.GetToggledState(rowIndex);
+            var existingToggleState = await this.GetToggledStateAsync(rowIndex);
             var columnNameByColIndex = Enumerable.Range(2, allColumns.Count()).ToDictionary(i => i, i => allColumns.ElementAt(i - 2));
             var rowsViewportWidth = await this.GetRowsViewPortWidthAsync();
             var row = this.GetRow(rowIndex);
@@ -154,7 +154,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<bool> GetToggledState(int rowIndex)
+        public async Task<bool> GetToggledStateAsync(int rowIndex)
         {
             var row = this.GetRow(rowIndex);
 
