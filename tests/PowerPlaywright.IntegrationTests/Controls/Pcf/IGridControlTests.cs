@@ -184,6 +184,23 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="IEditableGrid.GetToggledStateAsync"/> always returns the editable columns.
+        /// </summary>
+        /// <param name="selectedState">Default checkbox state.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task GetToggledStateAsync_Always_ReturnsTheCheckBoxState(bool selectedState)
+        {
+            var expectedTotalRowCount = 1;
+            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectRowAsync(0, select: selectedState);
+
+            Assert.That(await gridControl.GetToggledStateAsync(0), Is.EqualTo(selectedState));
+        }
+
+        /// <summary>
         /// Tests that <see cref="IEditableGrid.GetErrorNotificationsAsync"/> returns error notifications.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
