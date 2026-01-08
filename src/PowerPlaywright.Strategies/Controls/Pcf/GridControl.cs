@@ -86,10 +86,10 @@
             var allColumns = await this.GetColumnNamesAsync();
             var columnsByEditability = allColumns.ToDictionary(col => col, col => true);
 
-            var existingToggleState = await this.GetToggledState(rowIndex + 1);
+            var existingToggleState = await this.GetToggledState(rowIndex);
             var columnNameByColIndex = Enumerable.Range(2, allColumns.Count()).ToDictionary(i => i, i => allColumns.ElementAt(i - 2));
             var rowsViewportWidth = await this.GetRowsViewPortWidthAsync();
-            var row = this.visibleRows.Nth(rowIndex + 1);
+            var row = this.GetRow(rowIndex);
 
             while (true)
             {
@@ -156,7 +156,7 @@
         /// <inheritdoc/>
         public async Task<bool> GetToggledState(int rowIndex)
         {
-            var row = this.visibleRows.Nth(rowIndex);
+            var row = this.GetRow(rowIndex);
 
             return await row.GetByRole(AriaRole.Checkbox).IsCheckedAsync();
         }
@@ -199,7 +199,6 @@
         /// <inheritdoc/>
         public async Task UpdateRowAsync(int rowIndex, IDictionary<string, string> values)
         {
-            var viewPortWidth = await this.GetRowsViewPortWidthAsync();
             var row = this.visibleRows.Filter(new LocatorFilterOptions { HasNot = this.Page.Locator("[aria-label='Header']"), Has = this.Page.GetByRole(AriaRole.Gridcell) }).Nth(rowIndex);
             var columnsToProcess = values.Keys.ToList();
 
@@ -217,7 +216,7 @@
                     await cell.ClickAsync();
                     await this.Page.WaitForAppIdleAsync();
 
-                    var input = cell.GetByRole(AriaRole.Textbox);
+                    var input = cell.GetByRole(AriaRole.Textbox).Or(cell.GetByRole(AriaRole.Combobox));
                     await input.FillAsync(values[column]);
                     await this.Page.Keyboard.PressAsync("Tab");
                     await this.Page.WaitForAppIdleAsync();
@@ -227,7 +226,7 @@
 
                 if (columnsToProcess.Any())
                 {
-                    await this.ScrollHorizontalAsync(viewPortWidth / 2);
+                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
                 }
             }
         }
