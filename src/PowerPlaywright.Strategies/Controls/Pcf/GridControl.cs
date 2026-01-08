@@ -265,7 +265,7 @@
         {
             return this
                 .Page
-                .Locator($"//div[@data-id=\"DataSetHostContainer\"][.//div[starts-with(@data-lp-id, '{this.GetControlId()}|')]]");
+                .Locator($"//div[@data-id=\"DataSetHostContainer\"][.//div[contains(concat(' ', normalize-space(@class), ' '), ' {this.PcfControlAttribute.Name} ') or starts-with(@data-lp-id, '{this.GetControlId()}|')]]");
         }
 
         private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
