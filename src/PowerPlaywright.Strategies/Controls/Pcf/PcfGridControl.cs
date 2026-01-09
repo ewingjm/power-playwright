@@ -12,6 +12,7 @@
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
 
@@ -56,25 +57,32 @@
             await this.Page.WaitForAppIdleAsync();
 
             var columnCount = int.Parse(await this.treeGrid.GetAttributeAsync(Attributes.AriaColCount)) - 1;
-            var rowsBoundingBox = await this.rowsContainer.BoundingBoxAsync();
             var capturedColumns = new List<string>();
+
+            await this.ScrollHorizontalToStartAsync();
+
             while (true)
             {
-                var visibleColumns = await this.columnHeaders.AllAsync();
-                var visibleColumnLabels = await Task.WhenAll(visibleColumns.Select(c => c.Locator("label").InnerTextAsync()));
+                var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
+                    .Select(s =>
+                    {
+                        var match = Regex.Match(s, @"\r?\n|\\n");
+                        return match.Success ? s.Substring(0, match.Index) : s;
+                    })
+                    .ToList();
 
-                capturedColumns.AddRange(visibleColumnLabels.Except(capturedColumns));
+                capturedColumns.AddRange(visibleColumns.Except(capturedColumns));
+
                 if (capturedColumns.Count < columnCount)
                 {
-                    await this.rowsContainer.HoverAsync();
-                    await this.Page.Mouse.WheelAsync(rowsBoundingBox.Width, 0);
-                    await this.Page.WaitForAppIdleAsync();
-
+                    await this.ScrollHorizontalAsync((await this.columnHeaders.Last.BoundingBoxAsync()).X);
                     continue;
                 }
 
                 break;
             }
+
+            await this.ScrollHorizontalToStartAsync();
 
             return capturedColumns;
         }
@@ -149,27 +157,19 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<IDictionary<string, string>>> GetRowsAsync()
+        public async Task<IEnumerable<IDictionary<string, string>>> GetRowDataAsync()
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var rows = await this.rowsContainer.Locator("div[role='row']").AllAsync();
+            var rows = await this.rowsContainer.Locator("div[role='row']:not(:has([role='columnheader']))").AllAsync();
             var columnNames = (await this.GetColumnNamesAsync()).ToArray();
             var result = new List<IDictionary<string, string>>();
 
             foreach (var row in rows)
             {
-                var cells = await row.Locator("[role='gridcell']").AllAsync();
-                var rowData = new Dictionary<string, string>();
-
-                // Skip first cell (checkbox column)
-                for (int i = 1; i < cells.Count && i - 1 < columnNames.Length; i++)
-                {
-                    var cellValue = await cells[i].InnerTextAsync();
-                    rowData[columnNames[i - 1]] = cellValue;
-                }
-
+                var rowData = await this.GetSingleRowDataAsync(row, columnNames);
                 result.Add(rowData);
+                await this.ScrollHorizontalToStartAsync();
             }
 
             return result;
@@ -188,7 +188,7 @@
 
             var checkboxCell = row.Locator("[role='gridcell']").First;
             var checkbox = checkboxCell.GetByRole(AriaRole.Checkbox);
-            
+
             // Check if it exists first
             if (await checkbox.CountAsync() == 0)
             {
@@ -203,9 +203,88 @@
             }
         }
 
+        /// <inheritdoc/>
+        public Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public async Task SearchAsync(string searchTerm)
+        {
+            var input = this.Parent.Container.GetByPlaceholder("Filter by keyword");
+            await input.FillAsync(searchTerm);
+            await input.PressAsync("Enter");
+            await this.treeGrid.Page.WaitForAppIdleAsync();
+        }
+
         private ILocator GetRow(int index)
         {
             return this.rowsContainer.Locator($"div[role='row'][row-index='{index}']");
+        }
+
+        private async Task<bool> CanScrollHorizontalAsync()
+        {
+            return await this.rowsContainer.EvaluateAsync<bool>("el => el.scrollWidth > el.clientWidth");
+        }
+
+        private async Task ScrollHorizontalAsync(float deltaX)
+        {
+            if (!await this.CanScrollHorizontalAsync())
+            {
+                return;
+            }
+
+            await this.rowsContainer.HoverAsync();
+            await this.Page.Mouse.WheelAsync(deltaX, 0);
+            await this.Page.WaitForAppIdleAsync();
+        }
+
+        private async Task ScrollHorizontalToStartAsync()
+        {
+            if (!await this.CanScrollHorizontalAsync())
+            {
+                return;
+            }
+
+            var position = await this.rowsContainer.EvaluateAsync<float>("el => el.scrollLeft");
+            await this.rowsContainer.HoverAsync();
+            await this.Page.Mouse.WheelAsync(-position, 0);
+            await this.Page.WaitForAppIdleAsync();
+        }
+
+        private async Task<Dictionary<string, string>> GetSingleRowDataAsync(ILocator row, string[] columnNames)
+        {
+            var rowData = new Dictionary<string, string>();
+
+            while (rowData.Count < columnNames.Length)
+            {
+                var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
+                    .Select(s =>
+                    {
+                        var match = Regex.Match(s, @"\r?\n|\\n");
+                        return match.Success ? s.Substring(0, match.Index) : s;
+                    })
+                    .ToList();
+
+                var visibleCells = await row.Locator("[role='gridcell']:not(:has([role='checkbox'])):not(:has(input[type='checkbox']))").AllAsync();
+
+                for (int i = 0; i < visibleColumns.Count; i++)
+                {
+                    var column = visibleColumns[i];
+                    if (!rowData.ContainsKey(column) && i < visibleCells.Count)
+                    {
+                        rowData[column] = await visibleCells[i].InnerTextAsync();
+                    }
+                }
+
+                if (rowData.Count < columnNames.Length)
+                {
+                    await this.ScrollHorizontalAsync((await this.columnHeaders.Last.BoundingBoxAsync()).X);
+                }
+            }
+
+            return rowData;
         }
     }
 }
