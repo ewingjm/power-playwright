@@ -334,7 +334,9 @@
                 return;
             }
 
-            await this.scrollableContainer.EvaluateAsync($"el => el.scrollLeft = {deltaX}");
+            await this.grid.HoverAsync();
+            await this.Page.Mouse.WheelAsync(deltaX, 0);
+            await this.Page.WaitForAppIdleAsync();
         }
 
         private async Task ScrollHorizontalToStartAsync()
@@ -344,7 +346,13 @@
                 return;
             }
 
-            await this.scrollableContainer.EvaluateAsync("el => el.scrollLeft = 0");
+            var position = await this.scrollableContainer.EvaluateAsync<float>("el => el.scrollLeft");
+            if (position > 0)
+            {
+                await this.grid.HoverAsync();
+                await this.Page.Mouse.WheelAsync(-position, 0);
+                await this.Page.WaitForAppIdleAsync();
+            }
         }
 
         private async Task<bool> CanScrollHorizontalAsync()
