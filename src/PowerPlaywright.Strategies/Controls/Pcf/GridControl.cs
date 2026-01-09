@@ -38,6 +38,7 @@
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="pageFactory">The page factory.</param>
         /// <param name="parent">The parent control.</param>
+        /// <param name="logger">The logger.</param>
         public GridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControl parent = null, ILogger<GridControl> logger = null)
             : base(name, appPage, infoProvider, parent)
         {
@@ -277,40 +278,8 @@
 
             foreach (var row in rows)
             {
-                var rowData = new Dictionary<string, string>();
-
-                while (true)
-                {
-                    var visibleColumns = (await this.visibleHeaders.AllInnerTextsAsync())
-                        .Select(s =>
-                        {
-                            var match = Regex.Match(s, @"\r?\n|\\n");
-                            return match.Success ? s.Substring(0, match.Index) : s;
-                        })
-                        .ToList();
-
-                    var visibleCells = await row.Locator("[role='gridcell']:not(:has([role='checkbox'])):not(:has(input[type='checkbox']))").AllAsync();
-
-                    foreach (var column in visibleColumns)
-                    {
-                        if (!rowData.ContainsKey(column))
-                        {
-                            var columnIndex = visibleColumns.FindIndex(c => c == column);
-                            rowData[column] = await visibleCells[columnIndex].InnerTextAsync();
-                        }
-                    }
-
-                    if (rowData.Count < columnNames.Length)
-                    {
-                        await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
-                        continue;
-                    }
-
-                    break;
-                }
-
+                var rowData = await this.GetSingleRowDataAsync(row, columnNames);
                 result.Add(rowData);
-
                 await this.ScrollHorizontalToStartAsync();
             }
 
@@ -381,6 +350,39 @@
         private async Task<bool> CanScrollHorizontalAsync()
         {
             return await this.scrollableContainer.EvaluateAsync<bool>("el => el.scrollWidth > el.clientWidth");
+        }
+
+        private async Task<Dictionary<string, string>> GetSingleRowDataAsync(ILocator row, string[] columnNames)
+        {
+            var rowData = new Dictionary<string, string>();
+            while (rowData.Count < columnNames.Length)
+            {
+                var visibleColumns = (await this.visibleHeaders.AllInnerTextsAsync())
+                    .Select(s =>
+                    {
+                        var match = Regex.Match(s, @"\r?\n|\\n");
+                        return match.Success ? s.Substring(0, match.Index) : s;
+                    })
+                    .ToList();
+
+                var visibleCells = await row.Locator("[role='gridcell']:not(:has([role='checkbox'])):not(:has(input[type='checkbox']))").AllAsync();
+
+                for (int i = 0; i < visibleColumns.Count; i++)
+                {
+                    var column = visibleColumns[i];
+                    if (!rowData.ContainsKey(column) && i < visibleCells.Count)
+                    {
+                        rowData[column] = await visibleCells[i].InnerTextAsync();
+                    }
+                }
+
+                if (rowData.Count < columnNames.Length)
+                {
+                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
+                }
+            }
+
+            return rowData;
         }
     }
 }
