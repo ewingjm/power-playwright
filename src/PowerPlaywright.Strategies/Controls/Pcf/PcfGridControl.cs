@@ -248,9 +248,12 @@
             }
 
             var position = await this.rowsContainer.EvaluateAsync<float>("el => el.scrollLeft");
-            await this.rowsContainer.HoverAsync();
-            await this.Page.Mouse.WheelAsync(-position, 0);
-            await this.Page.WaitForAppIdleAsync();
+            if (position > 0)
+            {
+                await this.rowsContainer.HoverAsync();
+                await this.Page.Mouse.WheelAsync(-position, 0);
+                await this.Page.WaitForAppIdleAsync();
+            }
         }
 
         private async Task<Dictionary<string, string>> GetSingleRowDataAsync(ILocator row, string[] columnNames)
