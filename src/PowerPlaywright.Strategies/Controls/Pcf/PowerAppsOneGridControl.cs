@@ -12,6 +12,7 @@
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
     using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
 
@@ -154,7 +155,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<IDictionary<string, string>>> GetRowsAsync()
+        public async Task<IEnumerable<IDictionary<string, string>>> GetRowDataAsync()
         {
             await this.Page.WaitForAppIdleAsync();
 
@@ -193,7 +194,7 @@
 
             var checkboxCell = row.Locator("[role='gridcell']").First;
             var checkbox = checkboxCell.GetByRole(AriaRole.Checkbox);
-            
+
             // Check if it exists first
             if (await checkbox.CountAsync() == 0)
             {
@@ -206,6 +207,18 @@
             {
                 await checkboxCell.ClickAndWaitForAppIdleAsync();
             }
+        }
+
+        /// <inheritdoc/>
+        public async Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <inheritdoc/>
+        public async Task SearchAsync(string searchTerm)
+        {
+            throw new NotImplementedException();
         }
 
         private ILocator GetRow(int index)
