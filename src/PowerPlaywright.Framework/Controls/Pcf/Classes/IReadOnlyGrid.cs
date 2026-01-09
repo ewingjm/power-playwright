@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
@@ -42,10 +43,10 @@
         Task<int> GetSelectedRowCountAsync();
 
         /// <summary>
-        /// Gets the row data from the currently visible page.
+        /// Gets the row data from the grid as a collection of dictionaries.
         /// </summary>
-        /// <returns>The rows with column name to cell value mappings.</returns>
-        Task<IEnumerable<IDictionary<string, string>>> GetRowsAsync();
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<IEnumerable<IDictionary<string, string>>> GetRowDataAsync();
 
         /// <summary>
         /// Toggles the selection state of a specific row.
@@ -54,5 +55,18 @@
         /// <param name="select">Desired state of the checkbox.</param>
         /// <returns>A <see cref="Task"/> representing an asynchronous operation.</returns>
         Task ToggleSelectRowAsync(int index, bool select = true);
+
+        /// <summary>
+        /// Gets the current sort orders applied to the grid.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync();
+
+        /// <summary>
+        /// Searches in a grid.
+        /// </summary>
+        /// <param name="searchTerm">The search term.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task SearchAsync(string searchTerm);
     }
 }
