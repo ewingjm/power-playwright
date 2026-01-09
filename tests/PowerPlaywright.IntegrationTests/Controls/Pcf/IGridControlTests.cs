@@ -5,12 +5,12 @@
     using Bogus;
     using Microsoft.Xrm.Sdk;
     using Microsoft.Xrm.Sdk.Messages;
-    using PowerPlaywright.Framework.Controls.Pcf.Classes;
+    using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests for the <see cref="IEditableGrid"/> control class.
+    /// Tests for the <see cref="IGridControl"/> control class.
     /// </summary>
     public partial class IGridControlTests : IntegrationTests
     {
@@ -29,14 +29,14 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.GetSelectedRowCountAsync"/> returns the number of selected rows.
+        /// Tests that <see cref="IGridControl.GetSelectedRowCountAsync"/> returns the number of selected rows.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task GetSelectedRowCountAsync_RowsSelected_ReturnsCountOfSelectedRows()
         {
             var expectedTotalRowCount = this.faker.Random.Int(1, 4);
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
             await gridControl.ToggleSelectAllRowsAsync(select: true);
             var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
@@ -45,13 +45,13 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.OpenRecordAsync(int)"/> opens the record when called with an index that is in range.
+        /// Tests that <see cref="IGridControl.OpenRecordAsync(int)"/> opens the record when called with an index that is in range.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task OpenRecordAsync_IndexInRange_OpensRecord()
         {
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: [new RelatedRecordFaker()]);
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: [new RelatedRecordFaker()]);
 
             var recordPage = await gridControl.OpenRecordAsync(0);
 
@@ -59,19 +59,19 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.OpenRecordAsync(int)"/> throws a <see cref="IndexOutOfRangeException"/> when the index is out of range.
+        /// Tests that <see cref="IGridControl.OpenRecordAsync(int)"/> throws a <see cref="IndexOutOfRangeException"/> when the index is out of range.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task OpenRecordAsync_IndexOutOfRange_ThrowsIndexOutOfRangeException()
         {
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: null);
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: null);
 
             Assert.ThrowsAsync<IndexOutOfRangeException>(() => gridControl.OpenRecordAsync(1));
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.GetColumnNamesAsync"/> always returns all column names.
+        /// Tests that <see cref="IGridControl.GetColumnNamesAsync"/> always returns all column names.
         /// </summary>
         /// <param name="withRelatedRecords">Whether or not to create related records.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
@@ -79,20 +79,20 @@
         [TestCase(false)]
         public async Task GetColumnNamesAsync_Always_ReturnsAllColumnNamesInOrder(bool withRelatedRecords)
         {
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: withRelatedRecords ? [new RelatedRecordFaker()] : null);
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: withRelatedRecords ? [new RelatedRecordFaker()] : null);
 
             Assert.That(gridControl.GetColumnNamesAsync, Is.EqualTo(Columns));
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.ToggleSelectRowAsync"/> sets the expected state to unchecked.
+        /// Tests that <see cref="IGridControl.ToggleSelectRowAsync"/> sets the expected state to unchecked.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task ToggleSelectRowAsync_NoRowsSelected_SelectRow()
         {
             var expectedTotalRowCount = 4;
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
             await gridControl.ToggleSelectRowAsync(2, select: true);
 
@@ -102,14 +102,14 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.ToggleSelectRowAsync"/> sets the expected state to unchecked.
+        /// Tests that <see cref="IGridControl.ToggleSelectRowAsync"/> sets the expected state to unchecked.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task ToggleSelectRowAsync_RowsSelected_DeselectRow()
         {
             var expectedTotalRowCount = 4;
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
             await gridControl.ToggleSelectRowAsync(3, select: true);
             await gridControl.ToggleSelectRowAsync(3, select: false);
@@ -120,13 +120,13 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.ToggleSelectAllRowsAsync"/> does not change any row states when there are no rows in the grid.
+        /// Tests that <see cref="IGridControl.ToggleSelectAllRowsAsync"/> does not change any row states when there are no rows in the grid.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task ToggleSelectAllRowsAsync_EmptyResultSet_SelectsNoRows()
         {
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
 
             await gridControl.ToggleSelectAllRowsAsync(select: true);
 
@@ -136,14 +136,14 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.ToggleSelectAllRowsAsync"/> sets the expected state to checked.
+        /// Tests that <see cref="IGridControl.ToggleSelectAllRowsAsync"/> sets the expected state to checked.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task ToggleSelectAllRowsAsync_NoRowsSelected_SelectsAllRows()
         {
             var expectedTotalRowCount = 4;
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
             await gridControl.ToggleSelectAllRowsAsync(select: true);
 
@@ -153,14 +153,14 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.ToggleSelectAllRowsAsync"/> sets the expected state to unchecked.
+        /// Tests that <see cref="IGridControl.ToggleSelectAllRowsAsync"/> sets the expected state to unchecked.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task ToggleSelectAllRowsAsync_RowsSelected_DeselectsAllRows()
         {
             var expectedTotalRowCount = 4;
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
             await gridControl.ToggleSelectAllRowsAsync(select: true);
             await gridControl.ToggleSelectAllRowsAsync(select: false);
@@ -171,20 +171,20 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.GetEditableColumnsAsync"/> always returns the editable columns.
+        /// Tests that <see cref="IGridControl.GetEditableColumnsAsync"/> always returns the editable columns.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task GetEditableColumnsAsync_Always_ReturnsAllColumnNamesInOrder()
         {
             var expectedTotalRowCount = 1;
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
             Assert.That(await gridControl.GetEditableColumnsAsync(0), Is.EqualTo(EditableColumns));
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.GetToggledStateAsync"/> always returns the editable columns.
+        /// Tests that <see cref="IGridControl.GetToggledStateAsync"/> always returns the editable columns.
         /// </summary>
         /// <param name="selectedState">Default checkbox state.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
@@ -193,7 +193,7 @@
         public async Task GetToggledStateAsync_Always_ReturnsTheCheckBoxState(bool selectedState)
         {
             var expectedTotalRowCount = 1;
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
             await gridControl.ToggleSelectRowAsync(0, select: selectedState);
 
@@ -201,14 +201,14 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.GetErrorNotificationsAsync"/> returns error notifications.
+        /// Tests that <see cref="IGridControl.GetErrorNotificationsAsync"/> returns error notifications.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task GetErrorNotificationsAsync_InvalidRows_ReturnsErrorNotifications()
         {
             var expectedTotalRowCount = 1;
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
             await gridControl.UpdateRowAsync(0, new Dictionary<string, string>
             {
@@ -222,14 +222,14 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IEditableGrid.UpdateRowAsync"/> updates editable cells within a row.
+        /// Tests that <see cref="IGridControl.UpdateRowAsync"/> updates editable cells within a row.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task UpdateRowAsync_EditableRow_UpdatesRow()
         {
             var expectedTotalRowCount = 1;
-            var gridControl = await this.SetupEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
             var name = string.Join(" ", this.faker.Lorem.Words(8));
 
             await gridControl.UpdateRowAsync(0, new Dictionary<string, string>
@@ -246,7 +246,7 @@
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 
-        private async Task<IEditableGrid> SetupEditableGridScenarioAsync(Faker<pp_Record>? withRecord = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatedRecords = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatableRecords = null)
+        private async Task<IGridControl> SetupGridControlScenarioAsync(Faker<pp_Record>? withRecord = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatedRecords = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatableRecords = null)
         {
             withRecord ??= new RecordFaker();
 
@@ -268,7 +268,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(withRecord.Generate());
 
-            return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedEditableRecordsSubGrid).GetControl<IEditableGrid>();
+            return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedEditableRecordsSubGrid).GetControl<IGridControl>();
         }
     }
 }
