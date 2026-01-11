@@ -232,7 +232,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task SearchAsync_HasRows_KnownSearchTermFiltersRows()
+        public async Task SearchAsync_KnownSearchTerm_FilteredResultSet()
         {
             var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
             var searchTerm = this.faker.PickRandom(SearchTerms);
@@ -249,7 +249,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task SearchAsync_HasRows_UnknownSearchTermsNoResults()
+        public async Task SearchAsync_UnknownSearchTerm_EmptyResultSet()
         {
             var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
 
@@ -257,6 +257,30 @@
             var rowData = await gridControl.GetRowDataAsync();
 
             Assert.That(rowData.ToList(), Is.Empty);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.SearchAsync"/> throws a <see cref="ArgumentException"/> when the search term is empty.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_EmptySearchTerm_ThrowsArgumentException()
+        {
+            var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(() => gridControl.SearchAsync(string.Empty));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.SearchAsync"/> throws a <see cref="ArgumentException"/> when the search term is null.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_NullSearchTerm_ThrowsArgumentException()
+        {
+            var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(() => gridControl.SearchAsync(null));
         }
 
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
