@@ -16,6 +16,7 @@
     {
         private static readonly string[] Columns = ["Name", "Created On", "Created By", "Modified By", "Modified On", "Owner", "Record", "Status", "Status Reason", "Created By (Delegate)", "Modified By (Delegate)", "Owning Business Unit", "Record Created On"];
         private static readonly string[] EditableColumns = ["Name", "Record"];
+        private static readonly string[] SearchTerms = ["Megatron", "Optimus Prime", "Grimlock", "Ultra Magnus"];
 
         private Faker faker;
 
@@ -243,6 +244,62 @@
             Assert.That(rowData.Select(rd => rd["Name"]).First(), Is.EqualTo(name));
         }
 
+        /// <summary>
+        /// Tests that <see cref="IGridControl.SearchAsync"/> filters data rows by search term.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_KnownSearchTerm_FilteredResultSet()
+        {
+            var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
+            var searchTerm = this.faker.PickRandom(SearchTerms);
+
+            await gridControl.SearchAsync(searchTerm);
+            var rowData = await gridControl.GetRowDataAsync();
+
+            Assert.That(rowData.ToList(), Has.Count.EqualTo(1));
+            Assert.That(rowData.First().Values, Does.Contain(searchTerm));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IGridControl.SearchAsync"/> filters data rows by search term.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_UnknownSearchTerm_EmptyResultSet()
+        {
+            var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
+
+            await gridControl.SearchAsync("Rodimus Prime");
+            var rowData = await gridControl.GetRowDataAsync();
+
+            Assert.That(rowData.ToList(), Is.Empty);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IGridControl.SearchAsync"/> throws a <see cref="ArgumentException"/> when the search term is empty.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_EmptySearchTerm_ThrowsArgumentException()
+        {
+            var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(() => gridControl.SearchAsync(string.Empty));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IGridControl.SearchAsync"/> throws a <see cref="ArgumentException"/> when the search term is null.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_NullSearchTerm_ThrowsArgumentException()
+        {
+            var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(() => gridControl.SearchAsync(null));
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 
@@ -269,6 +326,15 @@
             var recordPage = await this.LoginAndNavigateToRecordAsync(withRecord.Generate());
 
             return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedEditableRecordsSubGrid).GetControl<IGridControl>();
+        }
+
+        private async Task<IGridControl> SetupReadOnlyGridSearchScenarioAsync()
+        {
+            var relatedRecords = SearchTerms.Select((name, index) =>
+                new RelatedRecordFaker()
+                    .RuleFor(r => r.pp_Name, f => name)).AsEnumerable();
+
+            return await this.SetupGridControlScenarioAsync(withRelatedRecords: relatedRecords);
         }
     }
 }
