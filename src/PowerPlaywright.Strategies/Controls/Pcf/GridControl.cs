@@ -89,7 +89,7 @@
 
             var existingToggleState = await this.GetToggledStateAsync(rowIndex);
             var columnNameByColIndex = Enumerable.Range(2, allColumns.Count()).ToDictionary(i => i, i => allColumns.ElementAt(i - 2));
-            var rowsViewportWidth = await this.GetRowsViewPortWidthAsync();
+
             var row = this.GetRow(rowIndex);
 
             while (true)
