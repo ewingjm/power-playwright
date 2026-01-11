@@ -212,6 +212,11 @@
         /// <inheritdoc/>
         public async Task SearchAsync(string searchTerm)
         {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
+            }
+
             var input = this.Parent.Container.GetByPlaceholder("Filter by keyword");
             await input.FillAsync(searchTerm);
             await input.PressAsync("Enter");
