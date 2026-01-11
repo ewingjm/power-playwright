@@ -78,5 +78,12 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<IEnumerable<IDictionary<string, string>>> GetRowDataAsync();
+
+        /// <summary>
+        /// Searches in a grid.
+        /// </summary>
+        /// <param name="searchTerm">The search term.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task SearchAsync(string searchTerm);
     }
 }
