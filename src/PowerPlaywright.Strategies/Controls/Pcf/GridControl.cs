@@ -28,7 +28,7 @@
         private readonly ILocator visibleRows;
         private readonly ILocator visibleHeaders;
         private readonly ILocator alerts;
-        private readonly ILocator scrollableContainer;
+        private readonly ILocator rowsContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GridControl"/> class.
@@ -48,7 +48,7 @@
             this.grid = this.Container.GetByRole(AriaRole.Grid);
             this.visibleRows = this.grid.GetByRole(AriaRole.Row);
             this.visibleHeaders = this.visibleRows.Locator("[role='columnheader']:not([aria-colindex='1'])").Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) });
-            this.scrollableContainer = this.Container.Locator("[wj-part='root']");
+            this.rowsContainer = this.Container.Locator("[wj-part='root']");
             this.alerts = this.Container.GetByRole(AriaRole.Alert);
         }
 
@@ -126,7 +126,7 @@
 
                 if (lastColIndex < allColumns.Count())
                 {
-                    await this.ScrollHorizontalAsync(rowsViewportWidth / 2);
+                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
                     continue;
                 }
 
@@ -286,6 +286,20 @@
             return result;
         }
 
+        /// <inheritdoc/>
+        public async Task SearchAsync(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
+            }
+
+            var input = this.Parent.Container.GetByPlaceholder("Filter by keyword");
+            await input.FillAsync(searchTerm);
+            await input.PressAsync("Enter");
+            await this.grid.Page.WaitForAppIdleAsync();
+        }
+
         private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
         {
             var cell = cells.Nth(0);
@@ -314,7 +328,7 @@
 
         private ILocator GetRows()
         {
-            return this.scrollableContainer.Locator($"[role='row'][aria-label='Data']");
+            return this.rowsContainer.Locator($"[role='row'][aria-label='Data']");
         }
 
         private ILocator GetRow(int rowIndex)
@@ -334,9 +348,8 @@
                 return;
             }
 
-            await this.grid.HoverAsync();
-            await this.Page.Mouse.WheelAsync(deltaX, 0);
-            await this.Page.WaitForAppIdleAsync();
+            await this.rowsContainer.EvaluateAsync($"el => el.scrollLeft='{deltaX}'");
+            await this.rowsContainer.Page.WaitForAppIdleAsync();
         }
 
         private async Task ScrollHorizontalToStartAsync()
@@ -346,18 +359,17 @@
                 return;
             }
 
-            var position = await this.scrollableContainer.EvaluateAsync<float>("el => el.scrollLeft");
+            var position = await this.rowsContainer.EvaluateAsync<float>("el => el.scrollLeft");
             if (position > 0)
             {
-                await this.grid.HoverAsync();
-                await this.Page.Mouse.WheelAsync(-position, 0);
-                await this.Page.WaitForAppIdleAsync();
+                await this.rowsContainer.EvaluateAsync($"el => el.scrollLeft='{-position}'");
+                await this.rowsContainer.Page.WaitForAppIdleAsync();
             }
         }
 
         private async Task<bool> CanScrollHorizontalAsync()
         {
-            return await this.scrollableContainer.EvaluateAsync<bool>("el => el.scrollWidth > el.clientWidth");
+            return await this.rowsContainer.EvaluateAsync<bool>("el => el.scrollWidth > el.clientWidth");
         }
 
         private async Task<Dictionary<string, string>> GetSingleRowDataAsync(ILocator row, string[] columnNames)
