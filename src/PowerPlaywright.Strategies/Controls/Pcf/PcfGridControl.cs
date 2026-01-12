@@ -190,8 +190,8 @@
                 throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for grid.");
             }
 
-            var checkboxCell = row.Locator("[role='gridcell']").First;
-            var checkbox = checkboxCell.GetByRole(AriaRole.Checkbox);
+            var checkboxCell = row.Locator("[aria-colindex='1']");
+            var checkbox = checkboxCell.Locator("input[type='checkbox']");
 
             // Check if it exists first
             if (await checkbox.CountAsync() == 0)
