@@ -323,13 +323,6 @@
             throw new TimeoutException("The read-only icons did not appear.");
         }
 
-        private async Task<float> GetRowsViewPortWidthAsync()
-        {
-            var rowsBoundingBox = await this.grid.BoundingBoxAsync();
-
-            return rowsBoundingBox.Width;
-        }
-
         private ILocator GetRows()
         {
             return this.rowsContainer.Locator($"[role='row'][aria-label='Data']");
