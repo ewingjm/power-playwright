@@ -122,6 +122,8 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
+            await this.ScrollHorizontalToStartAsync();
+
             var totalRowCount = await this.GetTotalRowCountAsync();
             if (totalRowCount == 0)
             {
@@ -179,6 +181,8 @@
         public async Task ToggleSelectRowAsync(int index, bool select = true)
         {
             await this.Page.WaitForAppIdleAsync();
+
+            await this.ScrollHorizontalToStartAsync();
 
             var row = this.GetRow(index);
             if (!await row.IsVisibleAsync())
@@ -247,17 +251,10 @@
 
         private async Task ScrollHorizontalToStartAsync()
         {
-            if (!await this.CanScrollHorizontalAsync())
+            var scrollPosition = await this.GetHorizontalScrollPositionAsync();
+            if (scrollPosition > 0)
             {
-                return;
-            }
-
-            var position = await this.rowsContainer.EvaluateAsync<float>("el => el.scrollLeft");
-            if (position > 0)
-            {
-                await this.rowsContainer.HoverAsync();
-                await this.Page.Mouse.WheelAsync(-position, 0);
-                await this.Page.WaitForAppIdleAsync();
+                await this.ScrollHorizontalAsync(-scrollPosition);
             }
         }
 
@@ -293,6 +290,11 @@
             }
 
             return rowData;
+        }
+
+        private async Task<int> GetHorizontalScrollPositionAsync()
+        {
+            return await this.rowsContainer.EvaluateAsync<int>("el => el.scrollLeft");
         }
     }
 }
