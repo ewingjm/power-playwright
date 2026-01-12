@@ -166,7 +166,7 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var rows = await this.rowsContainer.Locator("div[role='row']").AllAsync();
+            var rows = await this.GetRows().AllAsync();
             var columnNames = (await this.GetColumnNamesAsync()).ToArray();
             var result = new List<IDictionary<string, string>>();
 
@@ -181,6 +181,8 @@
                     var cellValue = await cells[i].InnerTextAsync();
                     rowData[columnNames[i - 1]] = cellValue;
                 }
+
+                result.Add(rowData);
             }
 
             return result;
@@ -241,7 +243,9 @@
                 throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
             }
 
-            var input = this.Parent.Container.GetByPlaceholder("Filter by keyword");
+            var input = this.Parent.Container.GetByRole(AriaRole.Searchbox);
+            await input.ScrollIntoViewIfNeededAsync();
+
             await input.FillAsync(searchTerm);
             await input.PressAsync("Enter");
 
