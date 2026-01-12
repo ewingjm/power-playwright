@@ -166,23 +166,15 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var rows = await this.GetRows().AllAsync();
+            var rows = await this.rowsContainer.Locator("div[role='row']:not(:has([role='columnheader']))").AllAsync();
             var columnNames = (await this.GetColumnNamesAsync()).ToArray();
             var dataRows = Enumerable.Empty<DataRow>().ToList();
 
             foreach (var row in rows)
             {
-                var cells = await row.Locator("[role='gridcell']").AllAsync();
-                var rowData = new Dictionary<string, string>();
-
-                // Skip first cell (checkbox column)
-                for (int i = 1; i < cells.Count && i - 1 < columnNames.Length; i++)
-                {
-                    var cellValue = await cells[i].InnerTextAsync();
-                    rowData[columnNames[i - 1]] = cellValue;
-                }
-
+                var rowData = await this.GetSingleRowDataAsync(row, columnNames);
                 dataRows.Add(new DataRow(rowData));
+                await this.ScrollHorizontalToStartAsync();
             }
 
             return dataRows;
@@ -330,6 +322,40 @@
             }
 
             await this.ScrollHorizontalToStartAsync();
+        }
+
+        private async Task<Dictionary<string, string>> GetSingleRowDataAsync(ILocator row, string[] columnNames)
+        {
+            var rowData = new Dictionary<string, string>();
+
+            while (rowData.Count < columnNames.Length)
+            {
+                var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
+                    .Select(s =>
+                    {
+                        var match = Regex.Match(s, @"\r?\n|\\n");
+                        return match.Success ? s.Substring(0, match.Index) : s;
+                    })
+                    .ToList();
+
+                var visibleCells = await row.Locator("[role='gridcell']:not(:has([role='checkbox'])):not(:has(input[type='checkbox']))").AllAsync();
+
+                for (int i = 0; i < visibleColumns.Count; i++)
+                {
+                    var column = visibleColumns[i];
+                    if (!rowData.ContainsKey(column) && i < visibleCells.Count)
+                    {
+                        rowData[column] = await visibleCells[i].InnerTextAsync();
+                    }
+                }
+
+                if (rowData.Count < columnNames.Length)
+                {
+                    await this.ScrollHorizontalAsync((await this.columnHeaders.Last.BoundingBoxAsync()).X);
+                }
+            }
+
+            return rowData;
         }
     }
 }
