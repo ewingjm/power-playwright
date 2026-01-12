@@ -61,10 +61,15 @@
             var capturedColumns = new List<string>();
             while (true)
             {
-                var visibleColumns = await this.columnHeaders.AllAsync();
-                var visibleColumnLabels = await Task.WhenAll(visibleColumns.Select(c => c.Locator("label").InnerTextAsync()));
+                var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
+                    .Select(s =>
+                    {
+                        var match = Regex.Match(s, @"\r?\n|\\n");
+                        return match.Success ? s.Substring(0, match.Index) : s;
+                    })
+                    .ToList();
 
-                capturedColumns.AddRange(visibleColumnLabels.Except(capturedColumns));
+                capturedColumns.AddRange(visibleColumns.Except(capturedColumns));
                 if (capturedColumns.Count < columnCount)
                 {
                     await this.rowsContainer.HoverAsync();
@@ -76,6 +81,8 @@
 
                 break;
             }
+
+            await this.ScrollHorizontalToStartAsync();
 
             return capturedColumns;
         }
@@ -174,8 +181,6 @@
                     var cellValue = await cells[i].InnerTextAsync();
                     rowData[columnNames[i - 1]] = cellValue;
                 }
-
-                result.Add(rowData);
             }
 
             return result;
@@ -212,18 +217,115 @@
         /// <inheritdoc/>
         public async Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync()
         {
-            throw new NotImplementedException();
+            await this.Page.WaitForAppIdleAsync();
+
+            var sortOrders = new List<ColumnSortSpec>();
+            await this.ExecuteColumnBasedActionAsync(async (columnName, header) =>
+            {
+                var ariaSort = await header.GetAttributeAsync("aria-sort");
+
+                if (Enum.TryParse<ColumnSortOrder>(ariaSort, true, out var order))
+                {
+                    sortOrders.Add(new ColumnSortSpec(columnName, order));
+                }
+            });
+
+            return sortOrders.AsReadOnly();
         }
 
         /// <inheritdoc/>
         public async Task SearchAsync(string searchTerm)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
+            }
+
+            var input = this.Parent.Container.GetByPlaceholder("Filter by keyword");
+            await input.FillAsync(searchTerm);
+            await input.PressAsync("Enter");
+
+            await this.Page.WaitForAppIdleAsync();
+        }
+
+        private ILocator GetRows()
+        {
+            return this.rowsContainer.Locator($"div[role='row']");
         }
 
         private ILocator GetRow(int index)
         {
-            return this.rowsContainer.Locator($"div[role='row'][row-index='{index}']");
+            return this.GetRows().Nth(index);
+        }
+
+        private async Task<bool> CanScrollHorizontalAsync()
+        {
+            return await this.rowsContainer.EvaluateAsync<bool>("el => el.scrollWidth > el.clientWidth");
+        }
+
+        private async Task ScrollHorizontalAsync(float deltaX)
+        {
+            if (!await this.CanScrollHorizontalAsync())
+            {
+                return;
+            }
+
+            await this.rowsContainer.HoverAsync();
+            await this.Page.Mouse.WheelAsync(deltaX, 0);
+            await this.Page.WaitForAppIdleAsync();
+        }
+
+        private async Task ScrollHorizontalToStartAsync()
+        {
+            var scrollPosition = await this.GetHorizontalScrollPositionAsync();
+            if (scrollPosition > 0)
+            {
+                await this.ScrollHorizontalAsync(-scrollPosition);
+            }
+        }
+
+        private async Task<int> GetHorizontalScrollPositionAsync()
+        {
+            return await this.rowsContainer.EvaluateAsync<int>("el => el.scrollLeft");
+        }
+
+        private async Task ExecuteColumnBasedActionAsync(Func<string, ILocator, Task> action)
+        {
+            await this.ScrollHorizontalToStartAsync();
+            var allColumns = await this.GetColumnNamesAsync();
+            var processedColumns = new HashSet<string>();
+
+            while (true)
+            {
+                var visibleColumns = await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
+
+                foreach (var column in visibleColumns)
+                {
+                    var columnName = await column.InnerTextAsync();
+                    var sanitisedColumnName = Regex.Match(columnName, @"\r?\n|\\n").Success
+                        ? Regex.Replace(columnName, @"\r?\n|\\n|\p{C}", string.Empty)
+                        : columnName;
+
+                    if (processedColumns.Contains(sanitisedColumnName))
+                    {
+                        continue;
+                    }
+
+                    await action(sanitisedColumnName, column);
+                    processedColumns.Add(sanitisedColumnName);
+                }
+
+                if (processedColumns.Count < allColumns.Count())
+                {
+                    await this.ScrollHorizontalAsync((await this.columnHeaders.Last.BoundingBoxAsync()).X);
+                    await this.Page.WaitForAppIdleAsync();
+                    continue;
+                }
+
+                break;
+            }
+
+            await this.ScrollHorizontalToStartAsync();
         }
     }
 }

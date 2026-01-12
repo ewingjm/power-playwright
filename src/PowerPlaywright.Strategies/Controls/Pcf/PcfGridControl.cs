@@ -208,9 +208,22 @@
         }
 
         /// <inheritdoc/>
-        public Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync()
+        public async Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync()
         {
-            throw new NotImplementedException();
+            await this.Page.WaitForAppIdleAsync();
+
+            var sortOrders = new List<ColumnSortSpec>();
+            await this.ExecuteColumnBasedActionAsync(async (columnName, header) =>
+            {
+                var ariaSort = await header.GetAttributeAsync("aria-sort");
+
+                if (Enum.TryParse<ColumnSortOrder>(ariaSort, true, out var order))
+                {
+                    sortOrders.Add(new ColumnSortSpec(columnName, order));
+                }
+            });
+
+            return sortOrders.AsReadOnly();
         }
 
         /// <inheritdoc/>
@@ -224,7 +237,8 @@
             var input = this.Parent.Container.GetByPlaceholder("Filter by keyword");
             await input.FillAsync(searchTerm);
             await input.PressAsync("Enter");
-            await this.treeGrid.Page.WaitForAppIdleAsync();
+
+            await this.Page.WaitForAppIdleAsync();
         }
 
         private ILocator GetRow(int index)
@@ -295,6 +309,41 @@
         private async Task<int> GetHorizontalScrollPositionAsync()
         {
             return await this.rowsContainer.EvaluateAsync<int>("el => el.scrollLeft");
+        }
+
+        private async Task ExecuteColumnBasedActionAsync(Func<string, ILocator, Task> action)
+        {
+            await this.ScrollHorizontalToStartAsync();
+            var allColumns = await this.GetColumnNamesAsync();
+            var processedColumns = new HashSet<string>();
+
+            while (true)
+            {
+                var visibleColumns = await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
+
+                foreach (var column in visibleColumns)
+                {
+                    var columnName = await column.InnerTextAsync();
+                    if (processedColumns.Contains(columnName))
+                    {
+                        continue;
+                    }
+
+                    await action(columnName, column);
+                    processedColumns.Add(columnName);
+                }
+
+                if (processedColumns.Count < allColumns.Count())
+                {
+                    await this.ScrollHorizontalAsync(50);
+                    await this.Page.WaitForAppIdleAsync();
+                    continue;
+                }
+
+                break;
+            }
+
+            await this.ScrollHorizontalToStartAsync();
         }
     }
 }
