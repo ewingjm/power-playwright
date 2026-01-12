@@ -157,6 +157,8 @@
         /// <inheritdoc/>
         public async Task<bool> GetToggledStateAsync(int rowIndex)
         {
+            await this.ScrollHorizontalToStartAsync();
+
             var row = this.GetRow(rowIndex);
 
             return await row.GetByRole(AriaRole.Checkbox).IsCheckedAsync();
@@ -183,6 +185,8 @@
         public async Task ToggleSelectRowAsync(int rowIndex, bool select = true)
         {
             await this.Page.WaitForAppIdleAsync();
+
+            await this.ScrollHorizontalToStartAsync();
 
             var rows = this.GetRows();
             var cell = rows.GetByRole(AriaRole.Gridcell).Filter(new LocatorFilterOptions { Has = this.Page.GetByRole(AriaRole.Checkbox) }).Nth(rowIndex);
@@ -244,7 +248,7 @@
                 return;
             }
 
-            var rows = this.GetRowsByToggledState(select);
+            var rows = await this.GetRowsByToggledStateAsync(select);
             if (await rows.CountAsync() == totalRowCount)
             {
                 this.logger?.LogInformation("All rows are already in the expected state.");
@@ -256,7 +260,7 @@
             {
                 await btnSelectAll.ClickAndWaitForAppIdleAsync();
             }
-            while (await this.GetRowsByToggledState(select).CountAsync() == totalRowCount);
+            while (await (await this.GetRowsByToggledStateAsync(select)).CountAsync() == totalRowCount);
         }
 
         /// <inheritdoc/>
@@ -336,8 +340,9 @@
             return this.GetRows().Nth(rowIndex);
         }
 
-        private ILocator GetRowsByToggledState(bool select)
+        private async Task<ILocator> GetRowsByToggledStateAsync(bool select)
         {
+            await this.ScrollHorizontalToStartAsync();
             return this.GetRows().Locator($"[aria-selected='{select}']");
         }
 
@@ -348,22 +353,16 @@
                 return;
             }
 
-            await this.rowsContainer.EvaluateAsync($"el => el.scrollLeft='{deltaX}'");
+            await this.rowsContainer.EvaluateAsync($"el => el.scrollLeft={deltaX}");
             await this.rowsContainer.Page.WaitForAppIdleAsync();
         }
 
         private async Task ScrollHorizontalToStartAsync()
         {
-            if (!await this.CanScrollHorizontalAsync())
+            var scrollPosition = await this.GetHorizontalScrollPositionAsync();
+            if (scrollPosition > 0)
             {
-                return;
-            }
-
-            var position = await this.rowsContainer.EvaluateAsync<float>("el => el.scrollLeft");
-            if (position > 0)
-            {
-                await this.rowsContainer.EvaluateAsync($"el => el.scrollLeft='{-position}'");
-                await this.rowsContainer.Page.WaitForAppIdleAsync();
+                await this.ScrollHorizontalAsync(-scrollPosition);
             }
         }
 
@@ -403,6 +402,11 @@
             }
 
             return rowData;
+        }
+
+        private async Task<int> GetHorizontalScrollPositionAsync()
+        {
+            return await this.rowsContainer.EvaluateAsync<int>("el => el.scrollLeft");
         }
     }
 }
