@@ -283,6 +283,20 @@
             Assert.ThrowsAsync<ArgumentException>(() => gridControl.SearchAsync(null));
         }
 
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.GetSortOrdersAsync"/> gets the current sort orders applied to the grid.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetSortOrdersAsync_Always_ReturnsGridSortOrders()
+        {
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: [new RelatedRecordFaker()]);
+
+            var sortOrders = await gridControl.GetSortOrdersAsync();
+
+            Assert.That(sortOrders, Has.Count.EqualTo(1));
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 
