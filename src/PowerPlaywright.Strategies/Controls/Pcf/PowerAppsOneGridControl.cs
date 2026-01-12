@@ -162,13 +162,13 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<IDictionary<string, string>>> GetRowDataAsync()
+        public async Task<IEnumerable<DataRow>> GetRowDataAsync()
         {
             await this.Page.WaitForAppIdleAsync();
 
             var rows = await this.GetRows().AllAsync();
             var columnNames = (await this.GetColumnNamesAsync()).ToArray();
-            var result = new List<IDictionary<string, string>>();
+            var dataRows = Enumerable.Empty<DataRow>().ToList();
 
             foreach (var row in rows)
             {
@@ -182,10 +182,10 @@
                     rowData[columnNames[i - 1]] = cellValue;
                 }
 
-                result.Add(rowData);
+                dataRows.Add(new DataRow(rowData));
             }
 
-            return result;
+            return dataRows;
         }
 
         /// <inheritdoc/>

@@ -46,7 +46,7 @@
         /// Gets the row data from the grid as a collection of dictionaries.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task<IEnumerable<IDictionary<string, string>>> GetRowDataAsync();
+        Task<IEnumerable<DataRow>> GetRowDataAsync();
 
         /// <summary>
         /// Toggles the selection state of a specific row.

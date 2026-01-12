@@ -159,22 +159,22 @@
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<IDictionary<string, string>>> GetRowDataAsync()
+        public async Task<IEnumerable<DataRow>> GetRowDataAsync()
         {
             await this.Page.WaitForAppIdleAsync();
 
             var rows = await this.rowsContainer.Locator("div[role='row']:not(:has([role='columnheader']))").AllAsync();
             var columnNames = (await this.GetColumnNamesAsync()).ToArray();
-            var result = new List<IDictionary<string, string>>();
+            var dataRows = Enumerable.Empty<DataRow>().ToList();
 
             foreach (var row in rows)
             {
                 var rowData = await this.GetSingleRowDataAsync(row, columnNames);
-                result.Add(rowData);
+                dataRows.Add(new DataRow(rowData));
                 await this.ScrollHorizontalToStartAsync();
             }
 
-            return result;
+            return dataRows;
         }
 
         /// <inheritdoc/>
