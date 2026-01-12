@@ -188,16 +188,16 @@
 
             await this.ScrollHorizontalToStartAsync();
 
-            var rows = this.GetRows();
-            var cell = rows.GetByRole(AriaRole.Gridcell).Filter(new LocatorFilterOptions { Has = this.Page.GetByRole(AriaRole.Checkbox) }).Nth(rowIndex);
+            var row = this.GetRow(rowIndex);
+            var checkBoxCell = row.Locator("[aria-colindex='1']");
 
-            var toggleCheckBox = cell.GetByRole(AriaRole.Checkbox);
+            var toggleCheckBox = checkBoxCell.GetByRole(AriaRole.Checkbox);
             if (select == await toggleCheckBox.IsCheckedAsync())
             {
                 return;
             }
 
-            await cell.ClickAsync();
+            await checkBoxCell.ClickAsync();
             await this.Page.WaitForAppIdleAsync();
         }
 
@@ -347,7 +347,7 @@
             }
 
             await this.rowsContainer.EvaluateAsync($"el => el.scrollLeft={deltaX}");
-            await this.rowsContainer.Page.WaitForAppIdleAsync();
+            await this.Page.WaitForAppIdleAsync();
         }
 
         private async Task ScrollHorizontalToStartAsync()
