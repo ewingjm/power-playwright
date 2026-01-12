@@ -160,12 +160,11 @@
             var expectedRowCount = 2;
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedRowCount).Select(i => new RelatedRecordFaker()));
 
-            var rows = await gridControl.GetRowDataAsync();
-            var rowList = rows.ToList();
+            var dataRows = await gridControl.GetRowDataAsync();
 
-            Assert.That(rowList, Has.Count.EqualTo(expectedRowCount));
-            Assert.That(rowList[0], Has.Count.GreaterThan(0));
-            Assert.That(rowList[0].Keys, Does.Contain("Name"));
+            Assert.That(dataRows.ToList(), Has.Count.EqualTo(expectedRowCount));
+            Assert.That(dataRows.First().Count(), Is.EqualTo(13));
+            Assert.That(dataRows.First().Contains("Name"), Is.True);
         }
 
         /// <summary>
@@ -238,10 +237,10 @@
             var searchTerm = this.faker.PickRandom(SearchTerms);
 
             await gridControl.SearchAsync(searchTerm);
-            var rowData = await gridControl.GetRowDataAsync();
+            var dataRows = await gridControl.GetRowDataAsync();
 
-            Assert.That(rowData.ToList(), Has.Count.EqualTo(1));
-            Assert.That(rowData.First().Values, Does.Contain(searchTerm));
+            Assert.That(dataRows.ToList(), Has.Count.EqualTo(1));
+            Assert.That(dataRows.First().Get("Name"), Is.EqualTo(searchTerm));
         }
 
         /// <summary>
