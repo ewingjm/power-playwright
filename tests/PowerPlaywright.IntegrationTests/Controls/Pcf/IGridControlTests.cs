@@ -238,10 +238,10 @@
                 ["Name"] = name,
             });
 
-            var rowData = await gridControl.GetRowDataAsync();
+            var dataRows = await gridControl.GetRowDataAsync();
 
-            Assert.That(rowData.ToList(), Has.Count.EqualTo(1));
-            Assert.That(rowData.Select(rd => rd["Name"]).First(), Is.EqualTo(name));
+            Assert.That(dataRows.ToList(), Has.Count.EqualTo(1));
+            Assert.That(dataRows.Select(rd => rd["Name"]).First(), Is.EqualTo(name));
         }
 
         /// <summary>
@@ -255,10 +255,10 @@
             var searchTerm = this.faker.PickRandom(SearchTerms);
 
             await gridControl.SearchAsync(searchTerm);
-            var rowData = await gridControl.GetRowDataAsync();
+            var dataRows = await gridControl.GetRowDataAsync();
 
-            Assert.That(rowData.ToList(), Has.Count.EqualTo(1));
-            Assert.That(rowData.First().Values, Does.Contain(searchTerm));
+            Assert.That(dataRows.ToList(), Has.Count.EqualTo(1));
+            Assert.That(dataRows.First().Get("Name"), Is.EqualTo(searchTerm));
         }
 
         /// <summary>
@@ -271,9 +271,9 @@
             var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
 
             await gridControl.SearchAsync("Rodimus Prime");
-            var rowData = await gridControl.GetRowDataAsync();
+            var dataRows = await gridControl.GetRowDataAsync();
 
-            Assert.That(rowData.ToList(), Is.Empty);
+            Assert.That(dataRows.ToList(), Is.Empty);
         }
 
         /// <summary>
@@ -298,6 +298,37 @@
             var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
 
             Assert.ThrowsAsync<ArgumentException>(() => gridControl.SearchAsync(null));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IGridControl.GetRowsAsync"/> returns row data from the currently visible page.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetRowDataAsync_HasRows_ReturnsRowData()
+        {
+            var expectedRowCount = 2;
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedRowCount).Select(i => new RelatedRecordFaker()));
+
+            var dataRows = await gridControl.GetRowDataAsync();
+
+            Assert.That(dataRows.ToList(), Has.Count.EqualTo(expectedRowCount));
+            Assert.That(dataRows.First().Count(), Is.EqualTo(Columns.Length));
+            Assert.That(dataRows.First().Select(c => c.Key), Is.EquivalentTo(Columns));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IGridControl.GetRowsAsync"/> returns empty collection when grid is empty.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetRowDataAsync_EmptyGrid_ReturnsEmptyCollection()
+        {
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
+
+            var dataRows = await gridControl.GetRowDataAsync();
+
+            Assert.That(dataRows, Is.Empty);
         }
 
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
