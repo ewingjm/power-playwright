@@ -151,11 +151,11 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IReadOnlyGrid.GetRowsAsync"/> returns row data from the currently visible page.
+        /// Tests that <see cref="IReadOnlyGrid.GetRowDataAsync"/> returns row data from the currently visible page.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetRowsAsync_HasRows_ReturnsRowData()
+        public async Task GetRowDataAsync_HasRows_ReturnsRowData()
         {
             var expectedRowCount = 2;
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedRowCount).Select(i => new RelatedRecordFaker()));
@@ -168,17 +168,17 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IReadOnlyGrid.GetRowsAsync"/> returns empty collection when grid is empty.
+        /// Tests that <see cref="IReadOnlyGrid.GetRowDataAsync"/> returns empty collection when grid is empty.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetRowsAsync_EmptyGrid_ReturnsEmptyCollection()
+        public async Task GetRowDataAsync_EmptyGrid_ReturnsEmptyCollection()
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
 
-            var rows = await gridControl.GetRowDataAsync();
+            var dataRows = await gridControl.GetRowDataAsync();
 
-            Assert.That(rows, Is.Empty);
+            Assert.That(dataRows, Is.Empty);
         }
 
         /// <summary>
