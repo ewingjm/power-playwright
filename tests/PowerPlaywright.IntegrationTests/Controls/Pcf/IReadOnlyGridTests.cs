@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Pcf
 {
+    using System.Collections.Generic;
     using System.Text.RegularExpressions;
     using Bogus;
     using Microsoft.Xrm.Sdk;
@@ -14,6 +15,7 @@
     public partial class IReadOnlyGridTests : IntegrationTests
     {
         private static readonly string[] Columns = ["Name", "Created On", "Created By", "Modified By", "Modified On", "Owner", "Record", "Status", "Status Reason", "Created By (Delegate)", "Modified By (Delegate)", "Owning Business Unit", "Record Created On"];
+        private static readonly string[] SearchTerms = ["Megatron", "Optimus Prime", "Grimlock", "Ultra Magnus"];
 
         private Faker faker;
 
@@ -148,6 +150,152 @@
             Assert.That(actualSelectedRowCount, Is.EqualTo(expectedTotalRowCount));
         }
 
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.GetRowDataAsync"/> returns row data from the currently visible page.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetRowDataAsync_HasRows_ReturnsRowData()
+        {
+            var expectedRowCount = 2;
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedRowCount).Select(i => new RelatedRecordFaker()));
+
+            var dataRows = await gridControl.GetRowDataAsync();
+
+            Assert.That(dataRows.ToList(), Has.Count.EqualTo(expectedRowCount));
+            Assert.That(dataRows.First().Count(), Is.EqualTo(13));
+            Assert.That(dataRows.First().Contains("Name"), Is.True);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.GetRowDataAsync"/> returns empty collection when grid is empty.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetRowDataAsync_EmptyGrid_ReturnsEmptyCollection()
+        {
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
+
+            var dataRows = await gridControl.GetRowDataAsync();
+
+            Assert.That(dataRows, Is.Empty);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleSelectRowAsync"/> selects a specific row.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleSelectRowAsync_SelectRow_SelectsSpecificRow()
+        {
+            var expectedRowCount = 3;
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectRowAsync(1, select: true);
+
+            var selectedCount = await gridControl.GetSelectedRowCountAsync();
+            Assert.That(selectedCount, Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleSelectRowAsync"/> deselects a specific row.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleSelectRowAsync_DeselectRow_DeselectsSpecificRow()
+        {
+            var expectedRowCount = 3;
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedRowCount).Select(i => new RelatedRecordFaker()));
+
+            await gridControl.ToggleSelectAllRowsAsync(select: true);
+            await gridControl.ToggleSelectRowAsync(1, select: false);
+
+            var selectedCount = await gridControl.GetSelectedRowCountAsync();
+            Assert.That(selectedCount, Is.EqualTo(expectedRowCount - 1));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.ToggleSelectRowAsync"/> throws when index is out of range.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ToggleSelectRowAsync_IndexOutOfRange_ThrowsIndexOutOfRangeException()
+        {
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, 2).Select(i => new RelatedRecordFaker()));
+
+            Assert.ThrowsAsync<IndexOutOfRangeException>(() => gridControl.ToggleSelectRowAsync(5, select: true));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.SearchAsync"/> filters data rows by search term.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_KnownSearchTerm_FilteredResultSet()
+        {
+            var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
+            var searchTerm = this.faker.PickRandom(SearchTerms);
+
+            await gridControl.SearchAsync(searchTerm);
+            var dataRows = await gridControl.GetRowDataAsync();
+
+            Assert.That(dataRows.ToList(), Has.Count.EqualTo(1));
+            Assert.That(dataRows.First().Get("Name"), Is.EqualTo(searchTerm));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.SearchAsync"/> filters data rows by search term.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_UnknownSearchTerm_EmptyResultSet()
+        {
+            var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
+
+            await gridControl.SearchAsync("Rodimus Prime");
+            var rowData = await gridControl.GetRowDataAsync();
+
+            Assert.That(rowData.ToList(), Is.Empty);
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.SearchAsync"/> throws a <see cref="ArgumentException"/> when the search term is empty.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_EmptySearchTerm_ThrowsArgumentException()
+        {
+            var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(() => gridControl.SearchAsync(string.Empty));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.SearchAsync"/> throws a <see cref="ArgumentException"/> when the search term is null.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task SearchAsync_NullSearchTerm_ThrowsArgumentException()
+        {
+            var gridControl = await this.SetupReadOnlyGridSearchScenarioAsync();
+
+            Assert.ThrowsAsync<ArgumentException>(() => gridControl.SearchAsync(null));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IReadOnlyGrid.GetSortOrdersAsync"/> gets the current sort orders applied to the grid.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetSortOrdersAsync_Always_ReturnsGridSortOrders()
+        {
+            var gridControl = await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: [new RelatedRecordFaker()]);
+
+            var sortOrders = await gridControl.GetSortOrdersAsync();
+
+            Assert.That(sortOrders, Has.Count.EqualTo(1));
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 
@@ -174,6 +322,16 @@
             var recordPage = await this.LoginAndNavigateToRecordAsync(withRecord.Generate());
 
             return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedRecordsSubgrid).GetControl<IReadOnlyGrid>();
+        }
+
+        private async Task<IReadOnlyGrid> SetupReadOnlyGridSearchScenarioAsync()
+        {
+            var relatedRecords = SearchTerms.Select((name, index) =>
+                new RelatedRecordFaker()
+                    .RuleFor(r => r.pp_Name, f => name)
+                    .RuleFor(r => r.pp_RelatedRecordId, f => Guid.NewGuid())).AsEnumerable();
+
+            return await this.SetupReadOnlyGridScenarioAsync(withRelatedRecords: relatedRecords);
         }
     }
 }
