@@ -199,7 +199,7 @@
 
         private ILocator GetSplitButtonMainCommand(ILocator command)
         {
-            return command.Locator("[role='button']:not[aria-haspopup='true']");
+            return command.Locator("[role='button']:not([aria-haspopup='true'])");
         }
 
         private ILocator GetSplitButtonDropdownCommand(ILocator command)
