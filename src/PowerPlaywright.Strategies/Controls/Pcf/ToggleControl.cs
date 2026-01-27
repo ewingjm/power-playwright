@@ -24,10 +24,10 @@
         /// <param name="appPage">The app page.</param>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="parent">The parent control.</param>
-        public ToggleControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null) 
+        public ToggleControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
-            this.toggleBtn = this.Container.GetByRole(AriaRole.Switch);
+            this.toggleBtn = this.Parent.Parent.Container.GetByRole(AriaRole.Switch);
         }
 
         /// <inheritdoc/>
