@@ -64,7 +64,7 @@
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
-            return recordPage.Form.GetField<IToggleControl>(nameof(pp_Record.pp_yesno)).Control;
+            return recordPage.Form.GetField<IToggleControl>($"{nameof(pp_Record.pp_yesno)}1").Control;
         }
     }
 }
