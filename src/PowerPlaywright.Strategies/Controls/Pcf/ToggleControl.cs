@@ -27,7 +27,7 @@
         public ToggleControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
-            this.toggleBtn = this.Parent.Parent.Container.GetByRole(AriaRole.Switch);
+            this.toggleBtn = this.Container.GetByRole(AriaRole.Switch);
         }
 
         /// <inheritdoc/>
