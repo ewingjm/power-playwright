@@ -178,7 +178,7 @@
         [Test]
         public async Task GetEditableColumnsAsync_Always_ReturnsAllColumnNamesInOrder()
         {
-            var expectedTotalRowCount = 2;
+            var expectedTotalRowCount = 1;
             var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
 
             Assert.That(await gridControl.GetEditableColumnsAsync(0), Is.EqualTo(EditableColumns));
