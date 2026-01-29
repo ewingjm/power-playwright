@@ -347,7 +347,8 @@
                 return;
             }
 
-            await this.rowsContainer.EvaluateAsync($"el => el.scrollLeft={deltaX}");
+            await this.grid.HoverAsync();
+            await this.Page.Mouse.WheelAsync(deltaX, 0);
             await this.Page.WaitForAppIdleAsync();
         }
 
