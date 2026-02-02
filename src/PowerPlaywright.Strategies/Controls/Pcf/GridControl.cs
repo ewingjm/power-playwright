@@ -39,6 +39,7 @@
         /// <param name="name">The name given to the control.</param>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="pageFactory">The page factory.</param>
+        /// <param name="controlFactory">The control factory.</param>
         /// <param name="parent">The parent control.</param>
         /// <param name="logger">The logger.</param>
         public GridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControlFactory controlFactory, IControl parent = null, ILogger<GridControl> logger = null)
