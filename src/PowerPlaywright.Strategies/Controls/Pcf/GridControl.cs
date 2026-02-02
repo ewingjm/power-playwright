@@ -23,6 +23,7 @@
     public class GridControl : PcfControlInternal, IGridControl
     {
         private readonly IPageFactory pageFactory;
+        private readonly IControlFactory controlFactory;
         private readonly ILogger<GridControl> logger;
 
         private readonly ILocator grid;
@@ -40,10 +41,11 @@
         /// <param name="pageFactory">The page factory.</param>
         /// <param name="parent">The parent control.</param>
         /// <param name="logger">The logger.</param>
-        public GridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControl parent = null, ILogger<GridControl> logger = null)
+        public GridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControlFactory controlFactory, IControl parent = null, ILogger<GridControl> logger = null)
             : base(name, appPage, infoProvider, parent)
         {
             this.pageFactory = pageFactory;
+            this.controlFactory = controlFactory;
             this.logger = logger;
 
             this.grid = this.Container.GetByRole(AriaRole.Grid);
@@ -303,6 +305,29 @@
             await input.FillAsync(searchTerm);
             await input.PressAsync("Enter");
             await this.grid.Page.WaitForAppIdleAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<IGridControl> ExpandNestedSubgridAsync(int rowIndex)
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            var row = this.GetRow(rowIndex);
+            var expandCell = row.GetByRole(AriaRole.Gridcell, new LocatorGetByRoleOptions { Name = "Show nested grid" });
+
+            if (await expandCell.IsVisibleAsync())
+            {
+                await expandCell.Locator("span").First.ClickAsync();
+                await this.Page.WaitForAppIdleAsync();
+            }
+
+            return this.controlFactory.CreateCachedInstance<IGridControl>(this.AppPage, this.Name, this);
+        }
+
+        /// <inheritdoc/>
+        public async Task<int> GetTotalRowCountAsync()
+        {
+            return await this.GetRows().CountAsync();
         }
 
         private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
