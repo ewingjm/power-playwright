@@ -353,12 +353,12 @@
         [Test]
         public async Task ExpandNestedSubgridAsync_Always_ReturnsNestedSubGrid()
         {
-            var expectedTotalRowCount = this.faker.Random.Int(0, 2);
-            var gridControl = await this.SetupNestedEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var expectedColumns = new[] { "Name", "Created On" };
+            var gridControl = await this.SetupNestedEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, 2).Select(i => new RelatedRecordFaker()));
 
             var nestedSubgrid = await gridControl.ExpandNestedSubgridAsync(0);
 
-            Assert.That(nestedSubgrid, Is.Not.Null);
+            Assert.That(nestedSubgrid.GetColumnNamesAsync, Is.EqualTo(expectedColumns));
         }
 
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
