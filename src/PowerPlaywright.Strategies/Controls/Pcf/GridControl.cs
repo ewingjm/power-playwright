@@ -52,7 +52,7 @@
             this.grid = this.Container.GetByRole(AriaRole.Grid);
             this.visibleRows = this.grid.GetByRole(AriaRole.Row);
             this.visibleHeaders = this.visibleRows.Locator("[role='columnheader']:not([aria-colindex='1'])").Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) });
-            this.rowsContainer = this.grid.Locator("[wj-part='root']");
+            this.rowsContainer = this.Container.Locator("[wj-part='root']");
             this.alerts = this.Container.GetByRole(AriaRole.Alert);
         }
 
@@ -280,7 +280,9 @@
         /// <inheritdoc/>
         public async Task<IEnumerable<DataRow>> GetRowDataAsync()
         {
-            var rows = await this.grid.Locator("div[role='row']:not(:has([role='columnheader']))").AllAsync();
+            var rows = await this.GetRows().AllAsync();
+
+            //var rows = await this.grid.Locator("div[role='row']:not(:has([role='columnheader']))").AllAsync();
             var columnNames = (await this.GetColumnNamesAsync()).ToArray();
             var dataRows = Enumerable.Empty<DataRow>().ToList();
 
@@ -334,7 +336,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"//div[(starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{GetControlId()}|')) and substring(@data-lp-id, string-length(@data-lp-id) - string-length('cc-grid') + 1) = 'cc-grid']").First;
+            return context.Locator($"//div[(starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')) and substring(@data-lp-id, string-length(@data-lp-id) - string-length('cc-grid') + 1) = 'cc-grid']").First;
         }
 
         private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
