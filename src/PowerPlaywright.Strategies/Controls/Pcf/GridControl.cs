@@ -52,7 +52,7 @@
             this.grid = this.Container.GetByRole(AriaRole.Grid);
             this.visibleRows = this.grid.GetByRole(AriaRole.Row);
             this.visibleHeaders = this.visibleRows.Locator("[role='columnheader']:not([aria-colindex='1'])").Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) });
-            this.rowsContainer = this.Container.Locator("[wj-part='root']");
+            this.rowsContainer = this.grid.Locator("[wj-part='root']");
             this.alerts = this.Container.GetByRole(AriaRole.Alert);
         }
 
@@ -331,6 +331,12 @@
             return await this.GetRows().CountAsync();
         }
 
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator($"//div[(starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{GetControlId()}|')) and substring(@data-lp-id, string-length(@data-lp-id) - string-length('cc-grid') + 1) = 'cc-grid']").First;
+        }
+
         private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
         {
             var cell = cells.Nth(0);
@@ -352,7 +358,7 @@
 
         private ILocator GetRows()
         {
-            return this.rowsContainer.Locator($"[role='row'][aria-label='Data']");
+            return this.grid.Locator($"[role='row'][aria-label='Data']");
         }
 
         private ILocator GetRow(int rowIndex)
@@ -427,6 +433,11 @@
 
         private async Task<int> GetHorizontalScrollPositionAsync()
         {
+            if (!await this.rowsContainer.IsVisibleAsync())
+            {
+                return 0;
+            }
+
             return await this.rowsContainer.EvaluateAsync<int>("el => el.scrollLeft");
         }
     }
