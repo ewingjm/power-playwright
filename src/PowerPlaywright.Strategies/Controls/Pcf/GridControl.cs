@@ -61,7 +61,9 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var columnCount = await this.visibleHeaders.CountAsync();
+            var countToRemove = (this.Parent is IGridControl) ? 2 : 1;
+            var columnCount = int.Parse(await this.grid.GetAttributeAsync("aria-colcount")) - countToRemove;
+
             var capturedColumns = new List<string>();
 
             await this.ScrollHorizontalToStartAsync();
