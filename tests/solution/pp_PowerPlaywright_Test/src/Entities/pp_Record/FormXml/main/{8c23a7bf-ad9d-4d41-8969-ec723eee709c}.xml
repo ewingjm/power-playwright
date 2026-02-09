@@ -400,7 +400,7 @@
                             <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
                             <TargetEntityType>pp_relatedrecord</TargetEntityType>
                             <AutoExpand>Fixed</AutoExpand>
-                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableQuickFind>true</EnableQuickFind>
                             <EnableViewPicker>false</EnableViewPicker>
                             <ViewIds>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewIds>
                             <EnableJumpBar>false</EnableJumpBar>
@@ -1036,7 +1036,7 @@
           <customControl formFactor="1" name="MscrmControls.Grid.GridControl">
             <parameters>
               <data-set name="Grid">
-                <ViewId>{59772644-c5f9-4449-ba9b-0a1347bffd25}</ViewId>
+                <ViewId>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewId>
                 <TargetEntityType>pp_relatedrecord</TargetEntityType>
                 <IsUserView>false</IsUserView>
                 <EnableViewPicker>false</EnableViewPicker>
@@ -1062,7 +1062,7 @@
           <customControl formFactor="2" name="MscrmControls.Grid.GridControl">
             <parameters>
               <data-set name="Grid">
-                <ViewId>{59772644-c5f9-4449-ba9b-0a1347bffd25}</ViewId>
+                <ViewId>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewId>
                 <TargetEntityType>pp_relatedrecord</TargetEntityType>
                 <IsUserView>false</IsUserView>
                 <EnableViewPicker>false</EnableViewPicker>
