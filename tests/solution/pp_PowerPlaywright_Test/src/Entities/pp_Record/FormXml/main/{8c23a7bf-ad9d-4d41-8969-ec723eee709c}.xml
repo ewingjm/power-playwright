@@ -20,7 +20,7 @@
                   </labels>
                   <rows>
                     <row>
-                      <cell id="{e4b2581b-478f-47ee-b231-8d6b91a5915d}" locklevel="0">
+                      <cell id="{e4b2581b-478f-47ee-b231-8d6b91a5915d}" visible="false" locklevel="0">
                         <labels>
                           <label description="Owner" languagecode="1033" />
                         </labels>
@@ -138,7 +138,18 @@
                     <label description="Section B" languagecode="1033" />
                   </labels>
                   <rows>
-                    <row />
+                    <row>
+                      <cell id="{f36335cf-76f4-491f-a066-e8ea2c0c06bf}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                      <cell id="{744c03ea-985d-4e1d-979a-08a84233249a}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
                     <row>
                       <cell id="{626c0209-d2db-4455-a5ae-7e6eaea9474c}" locklevel="0" colspan="1" rowspan="1">
                         <labels>
@@ -216,7 +227,7 @@
                         </labels>
                         <control id="pp_wholenumbertimezone" classid="{7C624A0B-F59E-493D-9583-638D34759266}" datafieldname="pp_wholenumbertimezone" disabled="false" />
                       </cell>
-                      <cell locklevel="0" id="{5edce3db-6d55-42e9-8bad-0d72a2e339cf}">
+                      <cell locklevel="0" id="{5edce3db-6d55-42e9-8bad-0d72a2e339cf}" showlabel="false">
                         <labels>
                           <label description="" languagecode="1033" />
                         </labels>
@@ -229,7 +240,7 @@
                         </labels>
                         <control id="pp_yesno" classid="{67FAC785-CD58-4F9F-ABB3-4B7DDC6ED5ED}" datafieldname="pp_yesno" disabled="false" />
                       </cell>
-                      <cell locklevel="0" id="{170a9930-82c7-4d1c-bd6d-a8159d4943bd}">
+                      <cell locklevel="0" id="{170a9930-82c7-4d1c-bd6d-a8159d4943bd}" showlabel="false">
                         <labels>
                           <label description="" languagecode="1033" />
                         </labels>
@@ -242,7 +253,7 @@
                         </labels>
                         <control id="pp_yesno" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" datafieldname="pp_yesno" uniqueid="{dda30681-9be0-435a-a958-c9161060ebf7}" />
                       </cell>
-                      <cell locklevel="0" id="{0737b1ec-9c38-4a73-8943-4eec7222efe7}">
+                      <cell locklevel="0" id="{0737b1ec-9c38-4a73-8943-4eec7222efe7}" showlabel="false">
                         <labels>
                           <label description="" languagecode="1033" />
                         </labels>
@@ -255,7 +266,7 @@
                         </labels>
                         <control id="pp_yesno" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" datafieldname="pp_yesno" uniqueid="{cf48af8f-bb4b-4505-94f9-bf7460717062}" />
                       </cell>
-                      <cell locklevel="0" id="{4f9fe477-74cf-40d8-9341-997dfd6e13af}">
+                      <cell locklevel="0" id="{4f9fe477-74cf-40d8-9341-997dfd6e13af}" showlabel="false">
                         <labels>
                           <label description="" languagecode="1033" />
                         </labels>
@@ -268,7 +279,13 @@
                     <label description="Section C" languagecode="1033" />
                   </labels>
                   <rows>
-                    <row />
+                    <row>
+                      <cell id="{62410860-8952-49a1-93ea-cd0392b67414}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
                     <row>
                       <cell id="{5c3e6f16-e186-45ed-814a-791f583bccba}" locklevel="0" colspan="1" rowspan="1">
                         <labels>
@@ -371,6 +388,38 @@
                     <row />
                     <row />
                     <row />
+                    <row>
+                      <cell id="{3c593370-bbc0-4bc0-cc33-e57a5aa0db7b}" showlabel="true" colspan="1" auto="false" rowspan="7">
+                        <labels>
+                          <label description="Related Records" languagecode="1033" />
+                        </labels>
+                        <control id="nestedgrid_RelatedRecords" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" indicationOfSubgrid="true" uniqueid="{2ccf333c-0555-4406-aa35-63b03314dfb4}">
+                          <parameters>
+                            <ViewId>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewId>
+                            <IsUserView>false</IsUserView>
+                            <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
+                            <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>false</EnableViewPicker>
+                            <ViewIds>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewIds>
+                            <EnableJumpBar>false</EnableJumpBar>
+                            <ChartGridMode>Grid</ChartGridMode>
+                            <VisualizationId />
+                            <IsUserChart>false</IsUserChart>
+                            <EnableChartPicker>false</EnableChartPicker>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <HeaderColorCode>#F3F3F3</HeaderColorCode>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row />
                   </rows>
                 </section>
               </sections>
@@ -389,7 +438,13 @@
                     <label description="Section A" languagecode="1033" />
                   </labels>
                   <rows>
-                    <row />
+                    <row>
+                      <cell id="{7b5c7caa-9fc1-4cb2-b52e-0aea15e831b9}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
                     <row>
                       <cell locklevel="0" id="{abd8c989-0707-4fdf-bd82-bac41253ff63}" rowspan="15" colspan="1">
                         <labels>
@@ -423,7 +478,13 @@
                     <label description="Section B" languagecode="1033" />
                   </labels>
                   <rows>
-                    <row />
+                    <row>
+                      <cell id="{7eb1b670-97ff-4b38-8023-adfb5b02a988}">
+                        <labels>
+                          <label description="" languagecode="1033" />
+                        </labels>
+                      </cell>
+                    </row>
                     <row>
                       <cell locklevel="0" id="{c4bb991d-bfbd-47d0-a8f8-eeacdef6da1f}" showlabel="true" rowspan="6" colspan="1">
                         <labels>
@@ -629,9 +690,6 @@
           </row>
         </rows>
       </footer>
-      <DisplayConditions Order="0" FallbackForm="true">
-        <Everyone />
-      </DisplayConditions>
       <controlDescriptions>
         <controlDescription forControl="{0e0eceb4-770f-4101-9797-b3c4a5184edb}">
           <customControl id="{3EF39988-22BB-4F0B-BBBE-64B5A3748AEE}">
@@ -971,7 +1029,97 @@
             </parameters>
           </customControl>
         </controlDescription>
+        <controlDescription forControl="{2ccf333c-0555-4406-aa35-63b03314dfb4}">
+          <customControl id="{E7A81278-8635-4D9E-8D4D-59480B391C5B}" formFactor="0">
+            <parameters />
+          </customControl>
+          <customControl formFactor="1" name="MscrmControls.Grid.GridControl">
+            <parameters>
+              <data-set name="Grid">
+                <ViewId>{59772644-c5f9-4449-ba9b-0a1347bffd25}</ViewId>
+                <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                <IsUserView>false</IsUserView>
+                <EnableViewPicker>false</EnableViewPicker>
+                <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
+                <FilteredViewIds>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</FilteredViewIds>
+              </data-set>
+              <data-set name="SubGrid">
+                <ViewId>{7c0e0725-ccd9-4525-9313-665fd075652f}</ViewId>
+                <TargetEntityType>connection</TargetEntityType>
+                <IsUserView>false</IsUserView>
+                <SubGridParentId>record1id</SubGridParentId>
+              </data-set>
+              <EnableGroupBy type="Enum" static="true">no</EnableGroupBy>
+              <EnableEditing type="Enum" static="true">yes</EnableEditing>
+              <ReflowBehavior type="Enum" static="true">GridOnly</ReflowBehavior>
+              <ListLayoutDirection type="Enum" static="true">Vertical</ListLayoutDirection>
+              <EnableSubGridAutoCollapse type="Enum" static="true">false</EnableSubGridAutoCollapse>
+              <EnableFiltering type="Enum" static="true">yes</EnableFiltering>
+              <HideNestedGridColumnHeader type="Enum" static="true">no</HideNestedGridColumnHeader>
+              <EnableJumpBar type="Enum" static="true">yes</EnableJumpBar>
+            </parameters>
+          </customControl>
+          <customControl formFactor="2" name="MscrmControls.Grid.GridControl">
+            <parameters>
+              <data-set name="Grid">
+                <ViewId>{59772644-c5f9-4449-ba9b-0a1347bffd25}</ViewId>
+                <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                <IsUserView>false</IsUserView>
+                <EnableViewPicker>false</EnableViewPicker>
+                <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
+                <FilteredViewIds>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</FilteredViewIds>
+              </data-set>
+              <data-set name="SubGrid">
+                <ViewId>{7c0e0725-ccd9-4525-9313-665fd075652f}</ViewId>
+                <TargetEntityType>connection</TargetEntityType>
+                <IsUserView>false</IsUserView>
+                <SubGridParentId>record1id</SubGridParentId>
+              </data-set>
+              <EnableGroupBy type="Enum" static="true">no</EnableGroupBy>
+              <EnableEditing type="Enum" static="true">yes</EnableEditing>
+              <ReflowBehavior type="Enum" static="true">GridOnly</ReflowBehavior>
+              <ListLayoutDirection type="Enum" static="true">Vertical</ListLayoutDirection>
+              <EnableSubGridAutoCollapse type="Enum" static="true">false</EnableSubGridAutoCollapse>
+              <EnableFiltering type="Enum" static="true">yes</EnableFiltering>
+              <HideNestedGridColumnHeader type="Enum" static="true">no</HideNestedGridColumnHeader>
+              <EnableJumpBar type="Enum" static="true">yes</EnableJumpBar>
+            </parameters>
+          </customControl>
+        </controlDescription>
       </controlDescriptions>
+      <Navigation>
+        <NavBar />
+        <NavBarAreas>
+          <NavBarArea Id="Info">
+            <Titles>
+              <Title LCID="1033" Text="Common" />
+            </Titles>
+          </NavBarArea>
+          <NavBarArea Id="Sales">
+            <Titles>
+              <Title LCID="1033" Text="Sales" />
+            </Titles>
+          </NavBarArea>
+          <NavBarArea Id="Service">
+            <Titles>
+              <Title LCID="1033" Text="Service" />
+            </Titles>
+          </NavBarArea>
+          <NavBarArea Id="Marketing">
+            <Titles>
+              <Title LCID="1033" Text="Marketing" />
+            </Titles>
+          </NavBarArea>
+          <NavBarArea Id="ProcessCenter">
+            <Titles>
+              <Title LCID="1033" Text="Process Sessions" />
+            </Titles>
+          </NavBarArea>
+        </NavBarAreas>
+      </Navigation>
+      <DisplayConditions Order="0" FallbackForm="true">
+        <Everyone />
+      </DisplayConditions>
     </form>
     <IsCustomizable>1</IsCustomizable>
     <CanBeDeleted>1</CanBeDeleted>
