@@ -61,7 +61,7 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var columnCount = int.Parse(await this.grid.GetAttributeAsync("aria-colcount")) - 1;
+            var columnCount = await this.visibleHeaders.CountAsync();
             var capturedColumns = new List<string>();
 
             await this.ScrollHorizontalToStartAsync();
@@ -282,7 +282,6 @@
         {
             var rows = await this.GetRows().AllAsync();
 
-            //var rows = await this.grid.Locator("div[role='row']:not(:has([role='columnheader']))").AllAsync();
             var columnNames = (await this.GetColumnNamesAsync()).ToArray();
             var dataRows = Enumerable.Empty<DataRow>().ToList();
 
