@@ -354,7 +354,7 @@
         [Test]
         public async Task ExpandNestedSubgridAsync_Always_ReturnsNestedSubGrid()
         {
-            var expectedColumns = new[] { "Name", "Created On" };
+            var expectedColumns = new[] { "Connected To", "Role (To)", "Description" };
             var gridControl = await this.SetupNestedEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, 2).Select(i => new RelatedRecordFaker()));
 
             var nestedSubgrid = await gridControl.ExpandNestedSubgridAsync(0);
