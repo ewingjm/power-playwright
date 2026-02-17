@@ -39,8 +39,11 @@
             this.name = name;
             this.parent = parent;
 
-            this.viewSelector = this.Container.Locator("button[id*='ViewSelector']");
-            this.viewsMenu = this.Page.GetByRole(AriaRole.Menu, new PageGetByRoleOptions { Name = "Views" }).Or(this.Page.GetByRole(AriaRole.Menu, new PageGetByRoleOptions { Name = "View Options" }));
+            this.viewSelector = this.Container.Locator("button[id*='ViewSelector']")
+                .Or(this.Container.Locator("div[role='button'][title='Select a view']:not([aria-hidden='true'])"));
+            this.viewsMenu = this.Page.GetByRole(AriaRole.Menu, new PageGetByRoleOptions { Name = "Views" })
+                .Or(this.Page.GetByRole(AriaRole.Menu, new PageGetByRoleOptions { Name = "View Options",  }))
+                .Or(this.Page.GetByRole(AriaRole.Listbox, new PageGetByRoleOptions { Name = "Select a view" }));
         }
 
         /// <inheritdoc/>
@@ -79,6 +82,7 @@
             {
                 await this.viewsMenu
                     .GetByRole(AriaRole.Menuitemradio)
+                    .Or(this.viewsMenu.GetByRole(AriaRole.Option))
                     .Filter(new LocatorFilterOptions { Has = this.Page.GetByText(viewName, new PageGetByTextOptions { Exact = true }) })
                     .ClickAndWaitForAppIdleAsync();
             }
