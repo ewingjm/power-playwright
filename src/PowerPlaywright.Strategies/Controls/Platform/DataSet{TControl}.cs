@@ -75,7 +75,7 @@
         /// <inheritdoc/>
         public Task SearchAsync(string searchTerm)
         {
-            throw new System.NotImplementedException();
+            return this.dataSet.SearchAsync(searchTerm);
         }
 
         /// <inheritdoc/>
