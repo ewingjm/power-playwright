@@ -35,7 +35,7 @@
         /// <param name="viewName">Expected view name.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IEntityRecordPage), pp_RelatedRecord.Views.InactiveRelatedRecords)]
-        [TestCase(typeof(IEntityListPage), pp_Record.Views.InactiveRecords)]
+        [TestCase(typeof(IEntityListPage), pp_RelatedRecord.Views.InactiveRelatedRecords)]
         public async Task SwitchViewAsync_ViewSelectorVisibleAndViewExists_SwitchesView(Type pageType, string viewName)
         {
             var dataSet = await this.SetupDataSetScenarioAsync(pageType);
@@ -66,7 +66,7 @@
         /// <param name="viewName">Expected view name.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IEntityRecordPage), pp_RelatedRecord.Views.ActiveRelatedRecords)]
-        [TestCase(typeof(IEntityListPage), pp_Record.Views.ActiveRecords)]
+        [TestCase(typeof(IEntityListPage), pp_RelatedRecord.Views.ActiveRelatedRecords)]
         public async Task GetActiveViewAsync_ViewSelectorVisible_ReturnsActiveView(Type pageType, string viewName)
         {
             var dataSet = await this.SetupDataSetScenarioAsync(pageType);

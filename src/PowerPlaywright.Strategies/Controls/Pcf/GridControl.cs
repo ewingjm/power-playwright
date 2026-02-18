@@ -1,10 +1,5 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
@@ -15,6 +10,12 @@
     using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="IGridControl"/>.
@@ -166,7 +167,7 @@
             await this.Page.WaitForAppIdleAsync();
 
             var row = this.GetRow(index);
-            if (await row.CountAsync() != 1)
+            if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
             {
                 throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
             }
@@ -185,7 +186,7 @@
             await this.ScrollHorizontalToStartAsync();
 
             var row = this.GetRow(rowIndex);
-            if (!await row.IsVisibleAsync())
+            if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
             {
                 throw new IndexOutOfRangeException($"The provided index '{rowIndex}' is out of range for grid.");
             }
@@ -280,6 +281,10 @@
             await this.ScrollHorizontalToStartAsync();
 
             var row = this.GetRow(index);
+            if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
+            {
+                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
+            }
 
             return await row.GetByRole(AriaRole.Checkbox).IsCheckedAsync();
         }
@@ -308,6 +313,11 @@
             await this.Page.WaitForAppIdleAsync();
 
             var row = this.GetRow(rowIndex);
+            if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
+            {
+                throw new IndexOutOfRangeException($"The provided index '{rowIndex}' is out of range for subgrid {this.Name}");
+            }
+
             var expandCell = row.GetByRole(AriaRole.Gridcell, new LocatorGetByRoleOptions { Name = "Show nested grid" });
 
             if (await expandCell.IsVisibleAsync())

@@ -31,13 +31,23 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        [Ignore("Grid interactions fail due to viewport rendering - Issue #129")]
-        public async Task GetEditableColumnsAsync_Always_ReturnsAllColumnNamesInOrder()
+        public async Task GetEditableColumnsAsync_RowExists_ReturnsEditableColumnNamesInOrder()
         {
-            var expectedTotalRowCount = 1;
-            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: [new RelatedRecordFaker()]);
 
             Assert.That(await gridControl.GetEditableColumnsAsync(0), Is.EqualTo(EditableColumns));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IGridControl.GetEditableColumnsAsync"/> throws an exception if no rows are present.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetEditableColumnsAsync_RowsDoesntExist_ThrowsIndexOutOfRangeException()
+        {
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: []);
+
+            Assert.ThrowsAsync<IndexOutOfRangeException>(async () => await gridControl.GetEditableColumnsAsync(0));
         }
 
         /// <summary>
