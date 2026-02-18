@@ -26,7 +26,7 @@
         {
             var tryToggleSets = reader.GetString();
 
-            if (!string.IsNullOrEmpty(tryToggleSets) && JsonNode.Parse(tryToggleSets).AsObject().TryGetPropertyValue(appId.ToString(), out var appTogglesJson))
+            if (!string.IsNullOrEmpty(tryToggleSets) && JsonNode.Parse(tryToggleSets).AsObject().TryGetPropertyValue(this.appId.ToString(), out var appTogglesJson))
             {
                 return appTogglesJson.Deserialize<AppToggles>();
             }
