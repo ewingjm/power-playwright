@@ -377,7 +377,7 @@
                             <IsUserView>false</IsUserView>
                             <RecordsPerPage>4</RecordsPerPage>
                             <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
-                            <ViewIds>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewIds>
+                            <ViewIds>{59772644-C5F9-4449-BA9B-0A1347BFFD25},{8B122363-03D3-4924-A2AF-D4A1EC2C61F8}</ViewIds>
                             <ChartGridMode>Grid</ChartGridMode>
                           </parameters>
                         </control>
