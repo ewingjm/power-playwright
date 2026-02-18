@@ -13,6 +13,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http.Headers;
     using System.Reflection;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -91,59 +92,44 @@
         /// <inheritdoc/>
         public async Task<IEnumerable<string>> GetEditableColumnsAsync(int rowIndex)
         {
+            await this.ScrollHorizontalToStartAsync();
+
             var allColumns = await this.GetColumnNamesAsync();
-            var columnsByEditability = allColumns.ToDictionary(col => col, col => true);
+            var editableColumns = new List<string>();
 
             var existingToggleState = await this.GetSelectedStateAsync(rowIndex);
             var columnNameByColIndex = Enumerable.Range(2, allColumns.Count()).ToDictionary(i => i, i => allColumns.ElementAt(i - 2));
 
             var row = this.GetRow(rowIndex);
+            await row
+                .GetByRole(AriaRole.Gridcell)
+                .Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Checkbox) })
+                .First
+                .ClickAndWaitForAppIdleAsync();
 
-            while (true)
+            await this.Page.Keyboard.PressAsync("Escape");
+
+            int lastColIndex = 0;
+            while (lastColIndex <= allColumns.Count())
             {
-                var cells = row.GetByRole(AriaRole.Gridcell);
-                await this.EnsureReadOnlyIconsAreVisibleAsync(cells);  // Trigger the aria-readonly attributes
+                var handle = await this.Page.EvaluateHandleAsync("() => document.activeElement");
+                var focusedCell = handle.AsElement();
 
-                var visibleCells = await cells.Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Checkbox) }).AllAsync();
+                lastColIndex = int.Parse(await focusedCell.GetAttributeAsync("aria-colindex"));
 
-                int lastColIndex = 0;
-                foreach (var visibleCell in visibleCells)
+                var isReadOnly = bool.TryParse(await focusedCell.GetAttributeAsync("aria-readonly"), out bool result) && result;
+                if (!isReadOnly)
                 {
-                    var colIndex = int.Parse(await visibleCell.GetAttributeAsync("aria-colindex"));
-                    if (colIndex == 1)
-                    {
-                        continue;
-                    }
-
-                    lastColIndex = colIndex;
-                    var columnName = columnNameByColIndex[lastColIndex];
-
-                    if (!columnsByEditability[columnName])
-                    {
-                        continue;
-                    }
-
-                    var isReadOnly = bool.TryParse(await visibleCell.GetAttributeAsync("aria-readonly"), out bool result) && result;
-
-                    if (isReadOnly)
-                    {
-                        columnsByEditability[columnName] = false;
-                    }
+                    editableColumns.Add(columnNameByColIndex[lastColIndex]);
                 }
 
-                if (lastColIndex < allColumns.Count())
-                {
-                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
-                    continue;
-                }
-
-                break;
+                await this.Page.Keyboard.PressAsync("ArrowRight");
             }
 
             await this.ScrollHorizontalToStartAsync();
             await this.ToggleSelectRowAsync(rowIndex, existingToggleState);
 
-            return columnsByEditability.Where(kvp => kvp.Value).Select(kvp => kvp.Key);
+            return editableColumns;
         }
 
         /// <inheritdoc/>
@@ -358,25 +344,6 @@
         protected override ILocator GetRoot(ILocator context)
         {
             return context.Locator($"//div[(starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')) and substring(@data-lp-id, string-length(@data-lp-id) - string-length('cc-grid') + 1) = 'cc-grid']").First;
-        }
-
-        private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
-        {
-            var cell = cells.Nth(0);
-            var readOnlyIcons = cells.Locator("span[editable-grid-icon='true']");
-
-            for (int i = 0; i < maxAttempts; i++)
-            {
-                await cell.ClickAsync();
-                await this.Page.WaitForAppIdleAsync();
-
-                if (await readOnlyIcons.CountAsync() > 0)
-                {
-                    return;
-                }
-            }
-
-            throw new TimeoutException("The read-only icons did not appear.");
         }
 
         private ILocator GetRows()
