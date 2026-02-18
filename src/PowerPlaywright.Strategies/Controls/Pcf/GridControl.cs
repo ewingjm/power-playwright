@@ -344,6 +344,12 @@
             return context.Locator($"//div[(starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')) and substring(@data-lp-id, string-length(@data-lp-id) - string-length('cc-grid') + 1) = 'cc-grid']").First;
         }
 
+        private static string RemovePatternMatches(string input, string pattern)
+        {
+            var match = Regex.Match(input, pattern);
+            return match.Success ? input.Substring(0, match.Index) : input;
+        }
+
         private ILocator GetRows()
         {
             return this.grid.Locator($"[role='row'][aria-label='Data']");
@@ -389,21 +395,17 @@
         private async Task<Dictionary<string, string>> GetSingleRowDataAsync(ILocator row, string[] columnNames)
         {
             var rowData = new Dictionary<string, string>();
+            var pattern = @"\r?\n|\\n";
+
             while (rowData.Count < columnNames.Length)
             {
-                var visibleColumns = (await this.visibleHeaders.AllInnerTextsAsync())
-                    .Select(s =>
-                    {
-                        var match = Regex.Match(s, @"\r?\n|\\n");
-                        return match.Success ? s.Substring(0, match.Index) : s;
-                    })
-                    .ToList();
+                var visibleColumns = await this.visibleHeaders.AllInnerTextsAsync();
 
                 var visibleCells = await row.Locator("[role='gridcell']:not(:has([role='checkbox'])):not(:has(input[type='checkbox']))").AllAsync();
 
                 for (int i = 0; i < visibleColumns.Count; i++)
                 {
-                    var column = visibleColumns[i];
+                    var column = RemovePatternMatches(visibleColumns[i], pattern);
                     if (!rowData.ContainsKey(column) && i < visibleCells.Count)
                     {
                         rowData[column] = await visibleCells[i].InnerTextAsync();

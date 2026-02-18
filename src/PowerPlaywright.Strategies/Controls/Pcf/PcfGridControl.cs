@@ -233,6 +233,12 @@
             return sortOrders.AsReadOnly();
         }
 
+        private static string RemovePatternMatches(string input, string pattern)
+        {
+            var match = Regex.Match(input, pattern);
+            return match.Success ? input.Substring(0, match.Index) : input;
+        }
+
         private ILocator GetRow(int index)
         {
             return this.rowsContainer.Locator($"div[role='row'][row-index='{index}']");
@@ -308,14 +314,15 @@
             await this.ScrollHorizontalToStartAsync();
             var allColumns = await this.GetColumnNamesAsync();
             var processedColumns = new HashSet<string>();
+            var pattern = @"\r?\n|\\n";
 
             while (true)
             {
-                var visibleColumns = await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
+                var visibleColumns = await this.GetVisibleColumnsAsync();
 
                 foreach (var column in visibleColumns)
                 {
-                    var columnName = await column.InnerTextAsync();
+                    var columnName = RemovePatternMatches(await column.InnerTextAsync(), pattern);
                     if (processedColumns.Contains(columnName))
                     {
                         continue;
@@ -337,5 +344,8 @@
 
             await this.ScrollHorizontalToStartAsync();
         }
+
+        private async Task<IReadOnlyList<ILocator>> GetVisibleColumnsAsync() =>
+            await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
     }
 }
