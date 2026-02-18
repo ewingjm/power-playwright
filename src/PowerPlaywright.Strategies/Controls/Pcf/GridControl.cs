@@ -213,7 +213,7 @@
             var row = this.visibleRows.Filter(new LocatorFilterOptions { HasNot = this.Page.Locator("[aria-label='Header']"), Has = this.Page.GetByRole(AriaRole.Gridcell) }).Nth(rowIndex);
             var columnsToProcess = values.Keys.ToList();
 
-            while (columnsToProcess.Any())
+            while (columnsToProcess.Count != 0)
             {
                 var visibleColumns = (await this.visibleHeaders.AllInnerTextsAsync()).ToList();
                 var visibleColumnsToProcess = visibleColumns.Where(columnsToProcess.Contains);
@@ -235,7 +235,7 @@
                     columnsToProcess.Remove(column);
                 }
 
-                if (columnsToProcess.Any())
+                if (columnsToProcess.Count != 0)
                 {
                     await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
                 }
@@ -298,20 +298,6 @@
         }
 
         /// <inheritdoc/>
-        public async Task SearchAsync(string searchTerm)
-        {
-            if (string.IsNullOrWhiteSpace(searchTerm))
-            {
-                throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
-            }
-
-            var input = this.Parent.Container.GetByPlaceholder("Filter by keyword");
-            await input.FillAsync(searchTerm);
-            await input.PressAsync("Enter");
-            await this.grid.Page.WaitForAppIdleAsync();
-        }
-
-        /// <inheritdoc/>
         public async Task<IGridControl> ExpandNestedSubgridAsync(int rowIndex)
         {
             await this.Page.WaitForAppIdleAsync();
@@ -332,6 +318,25 @@
         public async Task<int> GetTotalRowCountAsync()
         {
             return await this.GetRows().CountAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            var sortOrders = new List<ColumnSortSpec>();
+            await this.ExecuteColumnBasedActionAsync(async (columnName, header) =>
+            {
+                var ariaSort = await header.GetAttributeAsync("aria-sort");
+
+                if (Enum.TryParse<ColumnSortOrder>(ariaSort, true, out var order))
+                {
+                    sortOrders.Add(new ColumnSortSpec(columnName, order));
+                }
+            });
+
+            return sortOrders.AsReadOnly();
         }
 
         /// <inheritdoc/>
@@ -442,6 +447,41 @@
             }
 
             return await this.rowsContainer.EvaluateAsync<int>("el => el.scrollLeft");
+        }
+
+        private async Task ExecuteColumnBasedActionAsync(Func<string, ILocator, Task> action)
+        {
+            await this.ScrollHorizontalToStartAsync();
+            var allColumns = await this.GetColumnNamesAsync();
+            var processedColumns = new HashSet<string>();
+
+            while (true)
+            {
+                var visibleColumns = await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
+
+                foreach (var column in visibleColumns)
+                {
+                    var columnName = await column.InnerTextAsync();
+                    if (processedColumns.Contains(columnName))
+                    {
+                        continue;
+                    }
+
+                    await action(columnName, column);
+                    processedColumns.Add(columnName);
+                }
+
+                if (processedColumns.Count < allColumns.Count())
+                {
+                    await this.ScrollHorizontalAsync(50);
+                    await this.Page.WaitForAppIdleAsync();
+                    continue;
+                }
+
+                break;
+            }
+
+            await this.ScrollHorizontalToStartAsync();
         }
     }
 }

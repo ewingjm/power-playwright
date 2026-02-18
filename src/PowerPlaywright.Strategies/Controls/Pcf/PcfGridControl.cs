@@ -131,11 +131,8 @@
                 return;
             }
 
-            var toggleCheckBox = this.gridHeaderContainer.GetByRole(AriaRole.Checkbox, new LocatorGetByRoleOptions { Name = "Toggle selection of all rows" });
-            if (toggleCheckBox == null)
-            {
-                throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
-            }
+            var toggleCheckBox = this.gridHeaderContainer.GetByRole(AriaRole.Checkbox, new LocatorGetByRoleOptions { Name = "Toggle selection of all rows" })
+                ?? throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
 
             var currentState = await toggleCheckBox.IsCheckedAsync();
             if (currentState == select)
@@ -224,21 +221,6 @@
             });
 
             return sortOrders.AsReadOnly();
-        }
-
-        /// <inheritdoc/>
-        public async Task SearchAsync(string searchTerm)
-        {
-            if (string.IsNullOrEmpty(searchTerm))
-            {
-                throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
-            }
-
-            var input = this.Parent.Container.GetByPlaceholder("Filter by keyword");
-            await input.FillAsync(searchTerm);
-            await input.PressAsync("Enter");
-
-            await this.Page.WaitForAppIdleAsync();
         }
 
         private ILocator GetRow(int index)

@@ -73,6 +73,12 @@
         }
 
         /// <inheritdoc/>
+        public Task SearchAsync(string searchTerm)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
             return context.Locator($"div[data-id=\"DataSetHostContainer\"]{(!string.IsNullOrEmpty(this.name) ? $"[id$=\"{this.name}\"]" : string.Empty)}");
