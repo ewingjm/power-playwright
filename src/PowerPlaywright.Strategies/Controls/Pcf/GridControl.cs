@@ -1,5 +1,10 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
@@ -10,13 +15,6 @@
     using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Net.Http.Headers;
-    using System.Reflection;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A control strategy for the <see cref="IGridControl"/>.
@@ -165,16 +163,16 @@
         }
 
         /// <inheritdoc/>
-        public async Task ToggleSelectRowAsync(int rowIndex, bool select = true)
+        public async Task ToggleSelectRowAsync(int index, bool select = true)
         {
             await this.Page.WaitForAppIdleAsync();
 
             await this.ScrollHorizontalToStartAsync();
 
-            var row = this.GetRow(rowIndex);
+            var row = this.GetRow(index);
             if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
             {
-                throw new IndexOutOfRangeException($"The provided index '{rowIndex}' is out of range for grid.");
+                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for grid.");
             }
 
             var checkBoxCell = row.Locator("[aria-colindex='1']");
