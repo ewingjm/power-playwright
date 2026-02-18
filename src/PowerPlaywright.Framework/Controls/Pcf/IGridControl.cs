@@ -86,5 +86,18 @@
         /// <param name="searchTerm">The search term.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task SearchAsync(string searchTerm);
+
+        /// <summary>
+        /// Gets a nested subgrid for the specified row index.
+        /// </summary>
+        /// <param name="rowIndex">The zero-based index of the record.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<IGridControl> ExpandNestedSubgridAsync(int rowIndex);
+
+        /// <summary>
+        /// Gets the total number of rows across all pages.
+        /// </summary>
+        /// <returns>The total number of rows.</returns>
+        Task<int> GetTotalRowCountAsync();
     }
 }

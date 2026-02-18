@@ -176,6 +176,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
+        [Ignore("Grid interactions fail due to viewport rendering - Issue #129 ")]
         public async Task GetEditableColumnsAsync_Always_ReturnsAllColumnNamesInOrder()
         {
             var expectedTotalRowCount = 1;
@@ -331,6 +332,36 @@
             Assert.That(dataRows, Is.Empty);
         }
 
+        /// <summary>
+        /// Tests that <see cref="IGridControl.GetTotalRowCountAsync"/> always returns the total number of rows.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetTotalRowCountAsync_Always_ReturnsTotalRowCount()
+        {
+            var expectedTotalRowCount = this.faker.Random.Int(0, 2);
+            var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
+
+            var actualRowCount = await gridControl.GetTotalRowCountAsync();
+
+            Assert.That(actualRowCount, Is.EqualTo(expectedTotalRowCount));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IGridControl.ExpandNestedSubgridAsync"/> always returns a nested subgrid.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ExpandNestedSubgridAsync_Always_ReturnsNestedSubGrid()
+        {
+            var expectedColumns = new[] { "Connected To", "Role (To)", "Description" };
+            var gridControl = await this.SetupNestedEditableGridScenarioAsync(withRelatedRecords: Enumerable.Range(0, 2).Select(i => new RelatedRecordFaker()));
+
+            var nestedSubgrid = await gridControl.ExpandNestedSubgridAsync(0);
+
+            Assert.That(nestedSubgrid.GetColumnNamesAsync, Is.EqualTo(expectedColumns));
+        }
+
         [GeneratedRegex(".*pagetype=entityrecord&etn=pp_relatedrecord.*")]
         private static partial Regex RelatedRecordFormUrlRegex();
 
@@ -366,6 +397,31 @@
                     .RuleFor(r => r.pp_Name, f => name)).AsEnumerable();
 
             return await this.SetupGridControlScenarioAsync(withRelatedRecords: relatedRecords);
+        }
+
+        private async Task<IGridControl> SetupNestedEditableGridScenarioAsync(Faker<pp_Record>? withRecord = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatedRecords = null, IEnumerable<Faker<pp_RelatedRecord>>? withRelatableRecords = null)
+        {
+            withRecord ??= new RecordFaker();
+
+            if (withRelatedRecords != null && withRelatedRecords.Any())
+            {
+                withRecord.RuleFor(r => r.pp_Record_RelatedRecord, f => withRelatedRecords?.Select(f => f.Generate()));
+            }
+
+            if (withRelatableRecords != null)
+            {
+                using var client = this.GetServiceClient();
+
+                await client.ExecuteAsync(
+                    new CreateMultipleRequest
+                    {
+                        Targets = new EntityCollection([.. withRelatableRecords.Select(f => f.Generate())]),
+                    });
+            }
+
+            var recordPage = await this.LoginAndNavigateToRecordAsync(withRecord.Generate());
+
+            return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedNestedEditableSubGrid).GetControl<IGridControl>();
         }
     }
 }

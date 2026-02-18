@@ -23,6 +23,7 @@
     public class GridControl : PcfControlInternal, IGridControl
     {
         private readonly IPageFactory pageFactory;
+        private readonly IControlFactory controlFactory;
         private readonly ILogger<GridControl> logger;
 
         private readonly ILocator grid;
@@ -38,12 +39,14 @@
         /// <param name="name">The name given to the control.</param>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="pageFactory">The page factory.</param>
+        /// <param name="controlFactory">The control factory.</param>
         /// <param name="parent">The parent control.</param>
         /// <param name="logger">The logger.</param>
-        public GridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControl parent = null, ILogger<GridControl> logger = null)
+        public GridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControlFactory controlFactory, IControl parent = null, ILogger<GridControl> logger = null)
             : base(name, appPage, infoProvider, parent)
         {
             this.pageFactory = pageFactory;
+            this.controlFactory = controlFactory;
             this.logger = logger;
 
             this.grid = this.Container.GetByRole(AriaRole.Grid);
@@ -58,7 +61,9 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var columnCount = int.Parse(await this.grid.GetAttributeAsync("aria-colcount")) - 1;
+            var countToRemove = (this.Parent is IGridControl) ? 2 : 1;
+            var columnCount = int.Parse(await this.grid.GetAttributeAsync("aria-colcount")) - countToRemove;
+
             var capturedColumns = new List<string>();
 
             await this.ScrollHorizontalToStartAsync();
@@ -277,7 +282,8 @@
         /// <inheritdoc/>
         public async Task<IEnumerable<DataRow>> GetRowDataAsync()
         {
-            var rows = await this.grid.Locator("div[role='row']:not(:has([role='columnheader']))").AllAsync();
+            var rows = await this.GetRows().AllAsync();
+
             var columnNames = (await this.GetColumnNamesAsync()).ToArray();
             var dataRows = Enumerable.Empty<DataRow>().ToList();
 
@@ -305,6 +311,35 @@
             await this.grid.Page.WaitForAppIdleAsync();
         }
 
+        /// <inheritdoc/>
+        public async Task<IGridControl> ExpandNestedSubgridAsync(int rowIndex)
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            var row = this.GetRow(rowIndex);
+            var expandCell = row.GetByRole(AriaRole.Gridcell, new LocatorGetByRoleOptions { Name = "Show nested grid" });
+
+            if (await expandCell.IsVisibleAsync())
+            {
+                await expandCell.Locator("span").First.ClickAsync();
+                await this.Page.WaitForAppIdleAsync();
+            }
+
+            return this.controlFactory.CreateCachedInstance<IGridControl>(this.AppPage, this.Name, this);
+        }
+
+        /// <inheritdoc/>
+        public async Task<int> GetTotalRowCountAsync()
+        {
+            return await this.GetRows().CountAsync();
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator($"//div[(starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')) and substring(@data-lp-id, string-length(@data-lp-id) - string-length('cc-grid') + 1) = 'cc-grid']").First;
+        }
+
         private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
         {
             var cell = cells.Nth(0);
@@ -326,7 +361,7 @@
 
         private ILocator GetRows()
         {
-            return this.rowsContainer.Locator($"[role='row'][aria-label='Data']");
+            return this.grid.Locator($"[role='row'][aria-label='Data']");
         }
 
         private ILocator GetRow(int rowIndex)
@@ -401,6 +436,11 @@
 
         private async Task<int> GetHorizontalScrollPositionAsync()
         {
+            if (!await this.rowsContainer.IsVisibleAsync())
+            {
+                return 0;
+            }
+
             return await this.rowsContainer.EvaluateAsync<int>("el => el.scrollLeft");
         }
     }
