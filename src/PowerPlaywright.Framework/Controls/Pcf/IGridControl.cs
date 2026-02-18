@@ -12,13 +12,6 @@
     public interface IGridControl : IPcfControl, IReadOnlyGrid
     {
         /// <summary>
-        /// Gets the toggled state for a given row.
-        /// </summary>
-        /// <param name="rowIndex">The row index.</param>
-        /// <returns>A <see cref="Task"/> representing an asynchronous operation.</returns>
-        Task<bool> GetToggledStateAsync(int rowIndex);
-
-        /// <summary>
         /// Gets which columns are editable for the provided (zero-based) row index.
         /// </summary>
         /// <param name="rowIndex">The row index.</param>

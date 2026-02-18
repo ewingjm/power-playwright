@@ -1,10 +1,9 @@
-﻿namespace PowerPlaywright
+﻿namespace PowerPlaywright.Strategies.Redirectors
 {
     using System;
     using System.Text.Json;
     using System.Text.Json.Nodes;
     using System.Text.Json.Serialization;
-    using PowerPlaywright.Strategies.Redirectors;
 
     /// <summary>
     /// A converter for a versioned dictionary.
@@ -27,7 +26,7 @@
         {
             var tryToggleSets = reader.GetString();
 
-            if (!string.IsNullOrEmpty(tryToggleSets) && JsonNode.Parse(tryToggleSets).AsObject().TryGetPropertyValue(this.appId.ToString(), out var appTogglesJson))
+            if (!string.IsNullOrEmpty(tryToggleSets) && JsonNode.Parse(tryToggleSets).AsObject().TryGetPropertyValue(appId.ToString(), out var appTogglesJson))
             {
                 return appTogglesJson.Deserialize<AppToggles>();
             }

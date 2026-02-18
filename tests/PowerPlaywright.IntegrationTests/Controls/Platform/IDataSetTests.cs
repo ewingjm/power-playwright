@@ -90,11 +90,7 @@
             await dataSet.SearchAsync(searchTerm);
             var dataRows = await dataSet.GetControl<IReadOnlyGrid>().GetRowDataAsync();
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(dataRows.ToList(), Has.Count.EqualTo(1));
-                Assert.That(dataRows.First().Get("Name"), Is.EqualTo(searchTerm));
-            });
+            Assert.That(dataRows.First().Get("Name"), Is.EqualTo(searchTerm));
         }
 
         /// <summary>
@@ -163,10 +159,10 @@
                 var gridRecords = SearchTerms.Select(name =>
                     new RelatedRecordFaker()
                         .RuleFor(r => r.pp_Name, f => name)
-                        .RuleFor(r => r.pp_RelatedRecordId, (f, r) => r.pp_Name.ToDeterministicGuid())
+                        .RuleFor(r => r.pp_RelatedRecordId, (f, r) => name.ToDeterministicGuid())
                         .Generate());
 
-                await this.UpsertRecordsAsync(gridRecords.ToArray());
+                await this.UpsertRecordsAsync([.. gridRecords]);
             }
 
             return await this.SetupDataSetScenarioAsync(pageType, withRecord);

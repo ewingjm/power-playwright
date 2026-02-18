@@ -93,7 +93,7 @@
             var allColumns = await this.GetColumnNamesAsync();
             var columnsByEditability = allColumns.ToDictionary(col => col, col => true);
 
-            var existingToggleState = await this.GetToggledStateAsync(rowIndex);
+            var existingToggleState = await this.GetSelectedStateAsync(rowIndex);
             var columnNameByColIndex = Enumerable.Range(2, allColumns.Count()).ToDictionary(i => i, i => allColumns.ElementAt(i - 2));
 
             var row = this.GetRow(rowIndex);
@@ -161,16 +161,6 @@
         }
 
         /// <inheritdoc/>
-        public async Task<bool> GetToggledStateAsync(int rowIndex)
-        {
-            await this.ScrollHorizontalToStartAsync();
-
-            var row = this.GetRow(rowIndex);
-
-            return await row.GetByRole(AriaRole.Checkbox).IsCheckedAsync();
-        }
-
-        /// <inheritdoc/>
         public async Task<IEntityRecordPage> OpenRecordAsync(int index)
         {
             await this.Page.WaitForAppIdleAsync();
@@ -195,6 +185,11 @@
             await this.ScrollHorizontalToStartAsync();
 
             var row = this.GetRow(rowIndex);
+            if (!await row.IsVisibleAsync())
+            {
+                throw new IndexOutOfRangeException($"The provided index '{rowIndex}' is out of range for grid.");
+            }
+
             var checkBoxCell = row.Locator("[aria-colindex='1']");
 
             var toggleCheckBox = checkBoxCell.GetByRole(AriaRole.Checkbox);
@@ -277,6 +272,16 @@
 
             var count = await rows.CountAsync();
             return count;
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> GetSelectedStateAsync(int index)
+        {
+            await this.ScrollHorizontalToStartAsync();
+
+            var row = this.GetRow(index);
+
+            return await row.GetByRole(AriaRole.Checkbox).IsCheckedAsync();
         }
 
         /// <inheritdoc/>

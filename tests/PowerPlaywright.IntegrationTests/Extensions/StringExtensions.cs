@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Extensions
 {
     using System.Security.Cryptography;
+    using System.Text;
 
     /// <summary>
     /// Extensions to the <see cref="string"/> class.
@@ -14,7 +15,7 @@
         /// <returns>The GUID.</returns>
         public static Guid ToDeterministicGuid(this string s)
         {
-            var hash = SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(s));
+            var hash = SHA256.HashData(Encoding.UTF8.GetBytes(s));
 
             return new Guid(hash.AsSpan(0, 16));
         }

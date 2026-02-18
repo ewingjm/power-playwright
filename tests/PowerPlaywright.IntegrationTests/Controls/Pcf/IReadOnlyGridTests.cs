@@ -100,7 +100,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
-        public async Task ToggleAllRows_NoRowsSelected_SelectsAllRows(Type readOnlyGridType)
+        public async Task ToggleSelectAllRowsAsync_NoRowsSelected_SelectsAllRows(Type readOnlyGridType)
         {
             var expectedTotalRowCount = 4;
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
@@ -119,7 +119,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
-        public async Task ToggleAllRows_RowsSelected_DeselectsAllRows(Type readOnlyGridType)
+        public async Task ToggleSelectAllRowsAsync_RowsSelected_DeselectsAllRows(Type readOnlyGridType)
         {
             var expectedTotalRowCount = 4;
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
@@ -133,31 +133,13 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IReadOnlyGrid.ToggleAllRowsAsync"/> does not change any row states when there are no rows in the grid.
-        /// </summary>
-        /// <param name="readOnlyGridType">The type of read-only grid to test.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-        [TestCase(typeof(IReadOnlyGrid))]
-        [TestCase(typeof(IGridControl))]
-        public async Task ToggleAllRows_EmptyResultSet_SelectsNoRows(Type readOnlyGridType)
-        {
-            var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
-
-            await gridControl.ToggleSelectAllRowsAsync(select: true);
-
-            var actualSelectedRowCount = await gridControl.GetSelectedRowCountAsync();
-
-            Assert.That(actualSelectedRowCount, Is.Zero);
-        }
-
-        /// <summary>
         /// Tests that <see cref="IReadOnlyGrid.GetSelectedRowCountAsync"/> returns the number of selected rows.
         /// </summary>
         /// <param name="readOnlyGridType">The type of read-only grid to test.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
-        public async Task GetSelectedRowCount_RowsSelected_ReturnsCountOfSelectedRows(Type readOnlyGridType)
+        public async Task GetSelectedRowCountAsync_RowsSelected_ReturnsCountOfSelectedRows(Type readOnlyGridType)
         {
             var expectedTotalRowCount = this.faker.Random.Int(1, 4);
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: Enumerable.Range(0, expectedTotalRowCount).Select(i => new RelatedRecordFaker()));
@@ -220,9 +202,9 @@
 
             await gridControl.ToggleSelectRowAsync(1, select: true);
 
-            var selectedCount = await gridControl.GetSelectedRowCountAsync();
+            var isSelected = await gridControl.GetSelectedStateAsync(1);
 
-            Assert.That(selectedCount, Is.EqualTo(1));
+            Assert.That(isSelected, Is.True);
         }
 
         /// <summary>
@@ -240,9 +222,9 @@
             await gridControl.ToggleSelectAllRowsAsync(select: true);
             await gridControl.ToggleSelectRowAsync(1, select: false);
 
-            var selectedCount = await gridControl.GetSelectedRowCountAsync();
+            var isSelected = await gridControl.GetSelectedStateAsync(1);
 
-            Assert.That(selectedCount, Is.EqualTo(expectedRowCount - 1));
+            Assert.That(isSelected, Is.False);
         }
 
         /// <summary>

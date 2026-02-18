@@ -225,7 +225,7 @@
         /// <summary>
         /// Upserts records.
         /// </summary>
-        /// <param name="records">The records</param>
+        /// <param name="records">The records.</param>
         /// <returns>An array of entity references.</returns>
         protected async Task<EntityReference[]> UpsertRecordsAsync(params Entity[] records)
         {
@@ -246,7 +246,7 @@
                 Requests = [.. requests],
             });
 
-            return response.Responses.Select(r => r.Response).Cast<UpsertResponse>().Select(r => r.Target).ToArray();
+            return [.. response.Responses.Select(r => r.Response).Cast<UpsertResponse>().Select(r => r.Target)];
         }
 
         /// <summary>

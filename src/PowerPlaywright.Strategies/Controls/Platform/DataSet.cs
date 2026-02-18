@@ -113,7 +113,6 @@
             await input.PressAsync("Enter");
 
             await this.Page.WaitForAppIdleAsync();
-
         }
 
         /// <inheritdoc/>

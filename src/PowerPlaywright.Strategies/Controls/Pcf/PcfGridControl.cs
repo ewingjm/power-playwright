@@ -205,6 +205,16 @@
         }
 
         /// <inheritdoc/>
+        public async Task<bool> GetSelectedStateAsync(int index)
+        {
+            await this.ScrollHorizontalToStartAsync();
+
+            var row = this.GetRow(index);
+
+            return await row.GetByRole(AriaRole.Checkbox).IsCheckedAsync();
+        }
+
+        /// <inheritdoc/>
         public async Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync()
         {
             await this.Page.WaitForAppIdleAsync();
