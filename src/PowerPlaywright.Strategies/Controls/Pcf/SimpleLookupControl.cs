@@ -21,6 +21,8 @@
     [PcfControlStrategy(1, 0, 470)]
     public class SimpleLookupControl : PcfControlInternal, ISimpleLookupControl
     {
+        private const int AutoCompleteRequiredCharacters = 3;
+
         private readonly IControlFactory controlFactory;
         private readonly ILogger<PcfGridControl> logger;
 
@@ -145,7 +147,7 @@
             await this.input.ScrollIntoViewIfNeededAsync();
             await this.input.FillAsync(value);
 
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrWhiteSpace(value) || value.Length < AutoCompleteRequiredCharacters)
             {
                 await this.Page.Keyboard.PressAsync("Enter");
             }
