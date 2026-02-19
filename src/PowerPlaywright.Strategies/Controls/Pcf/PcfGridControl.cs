@@ -131,11 +131,8 @@
                 return;
             }
 
-            var toggleCheckBox = this.gridHeaderContainer.GetByRole(AriaRole.Checkbox, new LocatorGetByRoleOptions { Name = "Toggle selection of all rows" });
-            if (toggleCheckBox == null)
-            {
-                throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
-            }
+            var toggleCheckBox = this.gridHeaderContainer.GetByRole(AriaRole.Checkbox, new LocatorGetByRoleOptions { Name = "Toggle selection of all rows" })
+                ?? throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
 
             var currentState = await toggleCheckBox.IsCheckedAsync();
             if (currentState == select)
@@ -208,6 +205,16 @@
         }
 
         /// <inheritdoc/>
+        public async Task<bool> GetSelectedStateAsync(int index)
+        {
+            await this.ScrollHorizontalToStartAsync();
+
+            var row = this.GetRow(index);
+
+            return await row.GetByRole(AriaRole.Checkbox).IsCheckedAsync();
+        }
+
+        /// <inheritdoc/>
         public async Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync()
         {
             await this.Page.WaitForAppIdleAsync();
@@ -226,19 +233,10 @@
             return sortOrders.AsReadOnly();
         }
 
-        /// <inheritdoc/>
-        public async Task SearchAsync(string searchTerm)
+        private static string RemovePatternMatches(string input, string pattern)
         {
-            if (string.IsNullOrEmpty(searchTerm))
-            {
-                throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
-            }
-
-            var input = this.Parent.Container.GetByPlaceholder("Filter by keyword");
-            await input.FillAsync(searchTerm);
-            await input.PressAsync("Enter");
-
-            await this.Page.WaitForAppIdleAsync();
+            var match = Regex.Match(input, pattern);
+            return match.Success ? input.Substring(0, match.Index) : input;
         }
 
         private ILocator GetRow(int index)
@@ -316,14 +314,15 @@
             await this.ScrollHorizontalToStartAsync();
             var allColumns = await this.GetColumnNamesAsync();
             var processedColumns = new HashSet<string>();
+            var pattern = @"\r?\n|\\n";
 
             while (true)
             {
-                var visibleColumns = await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
+                var visibleColumns = await this.GetVisibleColumnsAsync();
 
                 foreach (var column in visibleColumns)
                 {
-                    var columnName = await column.InnerTextAsync();
+                    var columnName = RemovePatternMatches(await column.InnerTextAsync(), pattern);
                     if (processedColumns.Contains(columnName))
                     {
                         continue;
@@ -345,5 +344,8 @@
 
             await this.ScrollHorizontalToStartAsync();
         }
+
+        private async Task<IReadOnlyList<ILocator>> GetVisibleColumnsAsync() =>
+            await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
     }
 }

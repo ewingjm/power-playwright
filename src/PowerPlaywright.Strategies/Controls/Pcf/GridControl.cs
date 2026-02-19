@@ -90,59 +90,44 @@
         /// <inheritdoc/>
         public async Task<IEnumerable<string>> GetEditableColumnsAsync(int rowIndex)
         {
-            var allColumns = await this.GetColumnNamesAsync();
-            var columnsByEditability = allColumns.ToDictionary(col => col, col => true);
+            await this.ScrollHorizontalToStartAsync();
 
-            var existingToggleState = await this.GetToggledStateAsync(rowIndex);
+            var allColumns = await this.GetColumnNamesAsync();
+            var editableColumns = new List<string>();
+
+            var existingToggleState = await this.GetSelectedStateAsync(rowIndex);
             var columnNameByColIndex = Enumerable.Range(2, allColumns.Count()).ToDictionary(i => i, i => allColumns.ElementAt(i - 2));
 
             var row = this.GetRow(rowIndex);
+            await row
+                .GetByRole(AriaRole.Gridcell)
+                .Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Checkbox) })
+                .First
+                .ClickAndWaitForAppIdleAsync();
 
-            while (true)
+            await this.Page.Keyboard.PressAsync("Escape");
+
+            int lastColIndex = 0;
+            while (lastColIndex <= allColumns.Count())
             {
-                var cells = row.GetByRole(AriaRole.Gridcell);
-                await this.EnsureReadOnlyIconsAreVisibleAsync(cells);  // Trigger the aria-readonly attributes
+                var handle = await this.Page.EvaluateHandleAsync("() => document.activeElement");
+                var focusedCell = handle.AsElement();
 
-                var visibleCells = await cells.Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Checkbox) }).AllAsync();
+                lastColIndex = int.Parse(await focusedCell.GetAttributeAsync("aria-colindex"));
 
-                int lastColIndex = 0;
-                foreach (var visibleCell in visibleCells)
+                var isReadOnly = bool.TryParse(await focusedCell.GetAttributeAsync("aria-readonly"), out bool result) && result;
+                if (!isReadOnly)
                 {
-                    var colIndex = int.Parse(await visibleCell.GetAttributeAsync("aria-colindex"));
-                    if (colIndex == 1)
-                    {
-                        continue;
-                    }
-
-                    lastColIndex = colIndex;
-                    var columnName = columnNameByColIndex[lastColIndex];
-
-                    if (!columnsByEditability[columnName])
-                    {
-                        continue;
-                    }
-
-                    var isReadOnly = bool.TryParse(await visibleCell.GetAttributeAsync("aria-readonly"), out bool result) && result;
-
-                    if (isReadOnly)
-                    {
-                        columnsByEditability[columnName] = false;
-                    }
+                    editableColumns.Add(columnNameByColIndex[lastColIndex]);
                 }
 
-                if (lastColIndex < allColumns.Count())
-                {
-                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
-                    continue;
-                }
-
-                break;
+                await this.Page.Keyboard.PressAsync("ArrowRight");
             }
 
             await this.ScrollHorizontalToStartAsync();
             await this.ToggleSelectRowAsync(rowIndex, existingToggleState);
 
-            return columnsByEditability.Where(kvp => kvp.Value).Select(kvp => kvp.Key);
+            return editableColumns;
         }
 
         /// <inheritdoc/>
@@ -161,22 +146,12 @@
         }
 
         /// <inheritdoc/>
-        public async Task<bool> GetToggledStateAsync(int rowIndex)
-        {
-            await this.ScrollHorizontalToStartAsync();
-
-            var row = this.GetRow(rowIndex);
-
-            return await row.GetByRole(AriaRole.Checkbox).IsCheckedAsync();
-        }
-
-        /// <inheritdoc/>
         public async Task<IEntityRecordPage> OpenRecordAsync(int index)
         {
             await this.Page.WaitForAppIdleAsync();
 
             var row = this.GetRow(index);
-            if (await row.CountAsync() != 1)
+            if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
             {
                 throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
             }
@@ -188,13 +163,18 @@
         }
 
         /// <inheritdoc/>
-        public async Task ToggleSelectRowAsync(int rowIndex, bool select = true)
+        public async Task ToggleSelectRowAsync(int index, bool select = true)
         {
             await this.Page.WaitForAppIdleAsync();
 
             await this.ScrollHorizontalToStartAsync();
 
-            var row = this.GetRow(rowIndex);
+            var row = this.GetRow(index);
+            if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
+            {
+                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for grid.");
+            }
+
             var checkBoxCell = row.Locator("[aria-colindex='1']");
 
             var toggleCheckBox = checkBoxCell.GetByRole(AriaRole.Checkbox);
@@ -213,7 +193,7 @@
             var row = this.visibleRows.Filter(new LocatorFilterOptions { HasNot = this.Page.Locator("[aria-label='Header']"), Has = this.Page.GetByRole(AriaRole.Gridcell) }).Nth(rowIndex);
             var columnsToProcess = values.Keys.ToList();
 
-            while (columnsToProcess.Any())
+            while (columnsToProcess.Count != 0)
             {
                 var visibleColumns = (await this.visibleHeaders.AllInnerTextsAsync()).ToList();
                 var visibleColumnsToProcess = visibleColumns.Where(columnsToProcess.Contains);
@@ -235,7 +215,7 @@
                     columnsToProcess.Remove(column);
                 }
 
-                if (columnsToProcess.Any())
+                if (columnsToProcess.Count != 0)
                 {
                     await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
                 }
@@ -280,6 +260,20 @@
         }
 
         /// <inheritdoc/>
+        public async Task<bool> GetSelectedStateAsync(int index)
+        {
+            await this.ScrollHorizontalToStartAsync();
+
+            var row = this.GetRow(index);
+            if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
+            {
+                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
+            }
+
+            return await row.GetByRole(AriaRole.Checkbox).IsCheckedAsync();
+        }
+
+        /// <inheritdoc/>
         public async Task<IEnumerable<DataRow>> GetRowDataAsync()
         {
             var rows = await this.GetRows().AllAsync();
@@ -298,25 +292,16 @@
         }
 
         /// <inheritdoc/>
-        public async Task SearchAsync(string searchTerm)
-        {
-            if (string.IsNullOrWhiteSpace(searchTerm))
-            {
-                throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
-            }
-
-            var input = this.Parent.Container.GetByPlaceholder("Filter by keyword");
-            await input.FillAsync(searchTerm);
-            await input.PressAsync("Enter");
-            await this.grid.Page.WaitForAppIdleAsync();
-        }
-
-        /// <inheritdoc/>
         public async Task<IGridControl> ExpandNestedSubgridAsync(int rowIndex)
         {
             await this.Page.WaitForAppIdleAsync();
 
             var row = this.GetRow(rowIndex);
+            if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
+            {
+                throw new IndexOutOfRangeException($"The provided index '{rowIndex}' is out of range for subgrid {this.Name}");
+            }
+
             var expandCell = row.GetByRole(AriaRole.Gridcell, new LocatorGetByRoleOptions { Name = "Show nested grid" });
 
             if (await expandCell.IsVisibleAsync())
@@ -335,28 +320,34 @@
         }
 
         /// <inheritdoc/>
+        public async Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync()
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            var sortOrders = new List<ColumnSortSpec>();
+            await this.ExecuteColumnBasedActionAsync(async (columnName, header) =>
+            {
+                var ariaSort = await header.GetAttributeAsync("aria-sort");
+
+                if (Enum.TryParse<ColumnSortOrder>(ariaSort, true, out var order))
+                {
+                    sortOrders.Add(new ColumnSortSpec(columnName, order));
+                }
+            });
+
+            return sortOrders.AsReadOnly();
+        }
+
+        /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
             return context.Locator($"//div[(starts-with(@data-lp-id, '{this.PcfControlAttribute.Name}|') or starts-with(@data-lp-id, '{this.GetControlId()}|')) and substring(@data-lp-id, string-length(@data-lp-id) - string-length('cc-grid') + 1) = 'cc-grid']").First;
         }
 
-        private async Task EnsureReadOnlyIconsAreVisibleAsync(ILocator cells, int maxAttempts = 5)
+        private static string RemovePatternMatches(string input, string pattern)
         {
-            var cell = cells.Nth(0);
-            var readOnlyIcons = cells.Locator("span[editable-grid-icon='true']");
-
-            for (int i = 0; i < maxAttempts; i++)
-            {
-                await cell.ClickAsync();
-                await this.Page.WaitForAppIdleAsync();
-
-                if (await readOnlyIcons.CountAsync() > 0)
-                {
-                    return;
-                }
-            }
-
-            throw new TimeoutException("The read-only icons did not appear.");
+            var match = Regex.Match(input, pattern);
+            return match.Success ? input.Substring(0, match.Index) : input;
         }
 
         private ILocator GetRows()
@@ -404,21 +395,17 @@
         private async Task<Dictionary<string, string>> GetSingleRowDataAsync(ILocator row, string[] columnNames)
         {
             var rowData = new Dictionary<string, string>();
+            var pattern = @"\r?\n|\\n";
+
             while (rowData.Count < columnNames.Length)
             {
-                var visibleColumns = (await this.visibleHeaders.AllInnerTextsAsync())
-                    .Select(s =>
-                    {
-                        var match = Regex.Match(s, @"\r?\n|\\n");
-                        return match.Success ? s.Substring(0, match.Index) : s;
-                    })
-                    .ToList();
+                var visibleColumns = await this.visibleHeaders.AllInnerTextsAsync();
 
                 var visibleCells = await row.Locator("[role='gridcell']:not(:has([role='checkbox'])):not(:has(input[type='checkbox']))").AllAsync();
 
                 for (int i = 0; i < visibleColumns.Count; i++)
                 {
-                    var column = visibleColumns[i];
+                    var column = RemovePatternMatches(visibleColumns[i], pattern);
                     if (!rowData.ContainsKey(column) && i < visibleCells.Count)
                     {
                         rowData[column] = await visibleCells[i].InnerTextAsync();
@@ -442,6 +429,41 @@
             }
 
             return await this.rowsContainer.EvaluateAsync<int>("el => el.scrollLeft");
+        }
+
+        private async Task ExecuteColumnBasedActionAsync(Func<string, ILocator, Task> action)
+        {
+            await this.ScrollHorizontalToStartAsync();
+            var allColumns = await this.GetColumnNamesAsync();
+            var processedColumns = new HashSet<string>();
+
+            while (true)
+            {
+                var visibleColumns = await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
+
+                foreach (var column in visibleColumns)
+                {
+                    var columnName = await column.InnerTextAsync();
+                    if (processedColumns.Contains(columnName))
+                    {
+                        continue;
+                    }
+
+                    await action(columnName, column);
+                    processedColumns.Add(columnName);
+                }
+
+                if (processedColumns.Count < allColumns.Count())
+                {
+                    await this.ScrollHorizontalAsync(50);
+                    await this.Page.WaitForAppIdleAsync();
+                    continue;
+                }
+
+                break;
+            }
+
+            await this.ScrollHorizontalToStartAsync();
         }
     }
 }

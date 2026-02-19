@@ -209,6 +209,16 @@
         }
 
         /// <inheritdoc/>
+        public async Task<bool> GetSelectedStateAsync(int index)
+        {
+            await this.ScrollHorizontalToStartAsync();
+
+            var row = this.GetRow(index);
+
+            return await row.GetByRole(AriaRole.Checkbox).IsCheckedAsync();
+        }
+
+        /// <inheritdoc/>
         public async Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync()
         {
             await this.Page.WaitForAppIdleAsync();
@@ -225,23 +235,6 @@
             });
 
             return sortOrders.AsReadOnly();
-        }
-
-        /// <inheritdoc/>
-        public async Task SearchAsync(string searchTerm)
-        {
-            if (string.IsNullOrEmpty(searchTerm))
-            {
-                throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
-            }
-
-            var input = this.Parent.Container.GetByRole(AriaRole.Searchbox);
-            await input.ScrollIntoViewIfNeededAsync();
-
-            await input.FillAsync(searchTerm);
-            await input.PressAsync("Enter");
-
-            await this.Page.WaitForAppIdleAsync();
         }
 
         private ILocator GetRows()

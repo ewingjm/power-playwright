@@ -43,5 +43,12 @@
         /// <returns>The view display name.</returns>
         /// <exception cref="PowerPlaywrightException">Thrown if the view selector is not available.</exception>"
         Task<string> GetActiveViewAsync();
+
+        /// <summary>
+        /// Searches in the data set.
+        /// </summary>
+        /// <param name="searchTerm">The search term.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task SearchAsync(string searchTerm);
     }
 }

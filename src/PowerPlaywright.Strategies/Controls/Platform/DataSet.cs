@@ -42,7 +42,7 @@
             this.viewSelector = this.Container.Locator("button[id*='ViewSelector']")
                 .Or(this.Container.Locator("div[role='button'][title='Select a view']:not([aria-hidden='true'])"));
             this.viewsMenu = this.Page.GetByRole(AriaRole.Menu, new PageGetByRoleOptions { Name = "Views" })
-                .Or(this.Page.GetByRole(AriaRole.Menu, new PageGetByRoleOptions { Name = "View Options",  }))
+                .Or(this.Page.GetByRole(AriaRole.Menu, new PageGetByRoleOptions { Name = "View Options", }))
                 .Or(this.Page.GetByRole(AriaRole.Listbox, new PageGetByRoleOptions { Name = "Select a view" }));
         }
 
@@ -98,6 +98,21 @@
             await this.Page.WaitForAppIdleAsync();
 
             return await this.viewSelector.GetAttributeAsync(Attributes.AriaLabel);
+        }
+
+        /// <inheritdoc/>
+        public async Task SearchAsync(string searchTerm)
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                throw new ArgumentException("Search term cannot be null or whitespace.", nameof(searchTerm));
+            }
+
+            var input = this.Container.GetByPlaceholder("Filter by keyword");
+            await input.FillAsync(searchTerm);
+            await input.PressAsync("Enter");
+
+            await this.Page.WaitForAppIdleAsync();
         }
 
         /// <inheritdoc/>

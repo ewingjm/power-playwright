@@ -57,16 +57,16 @@
         Task ToggleSelectRowAsync(int index, bool select = true);
 
         /// <summary>
+        /// Gets the selection state of a specific row.
+        /// </summary>
+        /// <param name="index">The zero-based index of the row.</param>
+        /// <returns>The state of the selection.</returns>
+        Task<bool> GetSelectedStateAsync(int index);
+
+        /// <summary>
         /// Gets the current sort orders applied to the grid.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync();
-
-        /// <summary>
-        /// Searches in a grid.
-        /// </summary>
-        /// <param name="searchTerm">The search term.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        Task SearchAsync(string searchTerm);
     }
 }
