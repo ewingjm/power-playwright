@@ -175,7 +175,7 @@
                 throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for grid.");
             }
 
-            var checkBoxCell = row.Locator("[aria-colindex='1']");
+            var checkBoxCell = row.Locator("[aria-colindex='1']:not([aria-label='Navigate'])");
 
             var toggleCheckBox = checkBoxCell.GetByRole(AriaRole.Checkbox);
             if (select == await toggleCheckBox.IsCheckedAsync())
