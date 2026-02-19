@@ -21,6 +21,8 @@
     [PcfControlStrategy(1, 0, 470)]
     public class SimpleLookupControl : PcfControlInternal, ISimpleLookupControl
     {
+        private const int AutoCompleteRequiredCharacters = 3;
+
         private readonly IControlFactory controlFactory;
         private readonly ILogger<PcfGridControl> logger;
 
@@ -34,7 +36,6 @@
         private readonly ILocator selectedRecordDeleteButton;
         private readonly ILocator input;
         private readonly ILocator itemInfoContainer;
-        private const int autoCompleteRequiredCharacters = 3;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleLookupControl"/> class.
@@ -146,7 +147,7 @@
             await this.input.ScrollIntoViewIfNeededAsync();
             await this.input.FillAsync(value);
 
-            if (string.IsNullOrEmpty(value) || value.Length < autoCompleteRequiredCharacters)
+            if (string.IsNullOrWhiteSpace(value) || value.Length < AutoCompleteRequiredCharacters)
             {
                 await this.Page.Keyboard.PressAsync("Enter");
             }
