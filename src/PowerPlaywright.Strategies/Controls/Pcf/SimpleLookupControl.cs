@@ -34,6 +34,7 @@
         private readonly ILocator selectedRecordDeleteButton;
         private readonly ILocator input;
         private readonly ILocator itemInfoContainer;
+        private const int autoCompleteRequiredCharacters = 3;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleLookupControl"/> class.
@@ -145,7 +146,7 @@
             await this.input.ScrollIntoViewIfNeededAsync();
             await this.input.FillAsync(value);
 
-            if (string.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value) || value.Length < autoCompleteRequiredCharacters)
             {
                 await this.Page.Keyboard.PressAsync("Enter");
             }
