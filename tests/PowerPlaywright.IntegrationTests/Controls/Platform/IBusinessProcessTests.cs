@@ -7,16 +7,15 @@
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests for the <see cref="ICommandBar"/> control.
+    /// Tests for the <see cref="IBusinessProcess"/> control.
     /// </summary>
     public class IBusinessProcessTests : IntegrationTests
     {
         private static readonly string[] ProcessStages = ["Details", "Researching", "Undertake Banding", "Maintain Assessment"];
 
         /// <summary>
-        /// Tests that the <see cref="IBusinessProcess.GetCommandsAsync(string[])"/> method returns the labels of all commands when no parent commands are passed.
+        /// Tests that the <see cref="IBusinessProcess.GetStagesAsync(string[])"/> method returns the labels of all the stages of the bpf.
         /// </summary>
-        /// <param name="parentType">The type of parent control.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
         public async Task GetStagesAsync_ReturnsAllStages()
@@ -142,7 +141,7 @@
         }
 
         /// <summary>
-        /// Sets up a command bar scenario.
+        /// Sets up a business process.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IUrlControl"/>.</returns>
         private async Task<IEntityRecordPage> SetupBusinessProcessFlowScenarioAsync()

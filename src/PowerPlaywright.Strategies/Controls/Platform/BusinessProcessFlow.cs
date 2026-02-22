@@ -1,5 +1,8 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -8,14 +11,9 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text.RegularExpressions;
-    using System.Threading.Tasks;
 
     /// <summary>
-    /// A command bar.
+    /// A business process flow.
     /// </summary>
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class BusinessProcessFlow : Control, IBusinessProcess
@@ -27,7 +25,6 @@
         private readonly ILocator flyout;
         private readonly ILocator nextbutton;
         private readonly ILocator previousButton;
-        private readonly ILocator processStatus;
         private readonly ILocator finishButton;
         private readonly ILocator finishedButton;
         private readonly ILocator activeButton;
@@ -50,7 +47,6 @@
             this.flyout = appPage.Page.Locator("[data-id^='MscrmControls.Containers.ProcessStageControl-processHeaderStageFlyoutContainer']");
             this.nextbutton = this.flyout.GetByLabel("Next Stage");
             this.previousButton = this.flyout.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Back" });
-            this.processStatus = this.Container.Locator("[data-id='MscrmControls.Containers.ProcessBreadCrumb-processHeaderDataContainer']");
             this.finishButton = this.flyout.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Finish" });
             this.finishedButton = this.flyout.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Finished" });
         }
