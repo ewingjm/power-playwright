@@ -7,16 +7,16 @@
     using PowerPlaywright.Framework.Redirectors;
 
     /// <summary>
-    /// Redirects requests for an <see cref="IRichText"/> control.
+    /// Redirects requests for an <see cref="IMultiLineRichText"/> control.
     /// </summary>
-    public class RichTextRedirector : ControlRedirector<IRichText>
+    public class MultiLineRichTextRedirector : ControlRedirector<IMultiLineRichText>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RichTextRedirector"/> class.
+        /// Initializes a new instance of the <see cref="MultiLineRichTextRedirector"/> class.
         /// </summary>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="logger">The logger.</param>
-        public RichTextRedirector(IRedirectionInfoProvider infoProvider, ILogger<RichTextRedirector> logger)
+        public MultiLineRichTextRedirector(IRedirectionInfoProvider infoProvider, ILogger<MultiLineRichTextRedirector> logger)
             : base(infoProvider, logger)
         {
         }
@@ -24,7 +24,7 @@
         /// <inheritdoc/>
         protected override Type GetTargetControlType(IRedirectionEnvironmentInfo environmentInfo, RedirectionControlInfo controlInfo)
         {
-            return typeof(IRichTextControl);
+            return typeof(IMultiLineRichTextControl);
         }
     }
 }

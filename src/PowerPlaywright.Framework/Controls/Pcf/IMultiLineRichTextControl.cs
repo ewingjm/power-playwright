@@ -7,7 +7,7 @@
     /// An interface for the MscrmControls.RichTextEditorV2.RichTextEditorControlV2 control.
     /// </summary>
     [PcfControl("MscrmControls.RichTextEditorV2.RichTextEditorControlV2")]
-    public interface IRichTextControl : IRichText
+    public interface IMultiLineRichTextControl : IMultiLineRichText
     {
     }
 }

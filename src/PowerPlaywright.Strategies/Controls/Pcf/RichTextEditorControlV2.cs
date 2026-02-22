@@ -11,24 +11,24 @@
     using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
-    /// A control strategy for the <see cref="IRichTextControl"/>.
+    /// A control strategy for the <see cref="IMultiLineRichTextControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class RichTextControl : PcfControlInternal, IRichTextControl
+    public class RichTextEditorControlV2 : PcfControlInternal, IMultiLineRichTextControl
     {
-        private readonly ILocator textbox;
+        private readonly ILocator richTextArea;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RichTextControl"/> class.
+        /// Initializes a new instance of the <see cref="RichTextEditorControlV2"/> class.
         /// </summary>
         /// <param name="name">The name given to the control.</param>
         /// <param name="appPage">The app page.</param>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="parent">The parent control.</param>
-        public RichTextControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
+        public RichTextEditorControlV2(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
-            this.textbox = this.Container.GetByRole(AriaRole.Textbox);
+            this.richTextArea = this.Container.GetByRole(AriaRole.Textbox);
         }
 
         /// <inheritdoc/>
@@ -36,18 +36,18 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            return await this.textbox.InnerTextAsync();
+            return await this.richTextArea.InnerTextOrNullAsync();
         }
 
         /// <inheritdoc/>
         public async Task SetValueAsync(string value)
         {
-            await this.textbox.FocusAsync();
-            await this.textbox.FillAsync(string.Empty);
+            await this.richTextArea.FocusAsync();
+            await this.richTextArea.FillAsync(string.Empty);
 
             if (value != null)
             {
-                await this.textbox.FillAsync(value);
+                await this.richTextArea.FillAsync(value);
             }
 
             await this.Parent.Container.ClickAndWaitForAppIdleAsync();

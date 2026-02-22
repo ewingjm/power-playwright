@@ -7,10 +7,10 @@
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests the <see cref="IRichTextTests"/> PCF control class.
+    /// Tests the <see cref="IMultiLineRichTextTests"/> PCF control class.
     /// </summary>
-    [Ignore("The IRichText control is currently not available on the current solution. Please Enable these when the solution has a richtext on the form.")]
-    public class IRichTextTests : IntegrationTests
+    [Ignore("Beta Phase")]
+    public class IMultiLineRichTextTests : IntegrationTests
     {
         private Faker faker;
 
@@ -24,7 +24,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IRichText.GetValueAsync"/> returns null when the value has not been set.
+        /// Tests that <see cref="IMultiLineRichText.GetValueAsync"/> returns null when the value has not been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -36,7 +36,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IRichText.GetValueAsync"/> returns the value when the value has been set.
+        /// Tests that <see cref="IMultiLineRichText.GetValueAsync"/> returns the value when the value has been set.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -49,7 +49,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IRichText.SetValueAsync(string)"/> sets the value.
+        /// Tests that <see cref="IMultiLineRichText.SetValueAsync(string)"/> sets the value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -64,7 +64,7 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IRichText.SetValueAsync(string)"/> replaces the value when the control already contains a value.
+        /// Tests that <see cref="IMultiLineRichText.SetValueAsync(string)"/> replaces the value when the control already contains a value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -80,7 +80,7 @@
 
         private string GenerateRandomText()
         {
-            return this.faker.Lorem.Sentence(100);
+            return this.faker.Lorem.Sentence(200);
         }
 
         /// <summary>
@@ -88,8 +88,8 @@
         /// </summary>
         /// <param name="withValue">An optional value to set in the record. If null, a random value will be generated.</param>
         /// <param name="withNoValue">Whether to set the choice to null. Defaults to false.</param>
-        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IRichText"/>.</returns>
-        private async Task<IRichText> SetupRichTextScenarioAsync(string? withValue = null, bool withNoValue = false)
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IMultiLineRichText"/>.</returns>
+        private async Task<IMultiLineRichText> SetupRichTextScenarioAsync(string? withValue = null, bool withNoValue = false)
         {
             var record = new RecordFaker();
 
@@ -104,7 +104,7 @@
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
 
-            return recordPage.Form.GetField<IRichText>("TBC").Control;
+            return recordPage.Form.GetField<IMultiLineRichText>("TBC").Control;
         }
     }
 }
