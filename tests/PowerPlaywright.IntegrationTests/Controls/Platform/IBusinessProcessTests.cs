@@ -11,7 +11,7 @@
     /// </summary>
     public class IBusinessProcessTests : IntegrationTests
     {
-        private static readonly string[] ProcessStages = ["Details", "Researching", "Undertake Banding", "Maintain Assessment"];
+        private static readonly string[] ProcessStages = ["Details", "Processing", "Resolution"];
 
         /// <summary>
         /// Tests that the <see cref="IBusinessProcess.GetStagesAsync(string[])"/> method returns the labels of all the stages of the bpf.
