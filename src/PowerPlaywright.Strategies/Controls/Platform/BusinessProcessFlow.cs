@@ -31,10 +31,8 @@
         /// Initializes a new instance of the <see cref="BusinessProcessFlow"/> class.
         /// </summary>
         /// <param name="appPage">The app page.</param>
-        /// <param name="pageFactory">The page factory.</param>
-        /// <param name="controlFactory">The control factory.</param>
         /// <param name="parent">The parent control.</param>
-        public BusinessProcessFlow(IAppPage appPage, IPageFactory pageFactory, IControlFactory controlFactory, IControl parent = null)
+        public BusinessProcessFlow(IAppPage appPage, IControl parent = null)
             : base(appPage, parent)
         {
             this.activeStage = this.Container.Locator("li[data-selected-stage='true']");

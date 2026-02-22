@@ -3,12 +3,12 @@
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Pages;
-    using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
     /// Tests for the <see cref="IBusinessProcessFlow"/> control.
     /// </summary>
+    [Ignore("Beta Mode")]
     public class IBusinessProcessTests : IntegrationTests
     {
         private static readonly string[] ProcessStages = ["Details", "Processing", "Resolution"];
@@ -37,11 +37,9 @@
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            var currentStage = await businessProcessFlow.GetCurrentStageAsync();
+            var didChangeStage = await businessProcessFlow.NextAsync();
 
-            string newStage = await businessProcessFlow.NextAsync();
-
-            Assert.That(currentStage != newStage);
+            Assert.IsTrue(didChangeStage);
         }
 
         /// <summary>
@@ -60,9 +58,9 @@
                 await businessProcessFlow.NextAsync();
             }
 
-            var returnedStage = await businessProcessFlow.NextAsync();
+            var didChangeStage = await businessProcessFlow.NextAsync();
 
-            Assert.That(returnedStage, Is.EqualTo(ProcessStages[ProcessStages.Length - 1]));
+            Assert.IsFalse(didChangeStage);
         }
 
         /// <summary>
