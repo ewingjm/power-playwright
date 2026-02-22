@@ -49,6 +49,9 @@
         public ICommandBar CommandBar => this.controlFactory.CreateCachedInstance<ICommandBar>(this.AppPage, parent: this);
 
         /// <inheritdoc/>
+        public IBusinessProcess BusinessProcess => this.controlFactory.CreateCachedInstance<IBusinessProcess>(this.AppPage, parent: this);
+
+        /// <inheritdoc/>
         public async Task<string> GetActiveTabAsync()
         {
             await this.Page.WaitForAppIdleAsync();

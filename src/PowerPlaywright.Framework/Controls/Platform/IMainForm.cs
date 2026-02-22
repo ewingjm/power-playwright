@@ -14,6 +14,11 @@
     public interface IMainForm : IPlatformControl
     {
         /// <summary>
+        /// Gets the business process flow on the form.
+        /// </summary>
+        IBusinessProcess BusinessProcess { get; }
+
+        /// <summary>
         /// Gets the command bar on the form.
         /// </summary>
         ICommandBar CommandBar { get; }
