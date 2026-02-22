@@ -18,7 +18,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetStagesAsync_ReturnsAllStages()
+        public async Task GetStagesAsync_BusinessProcessFlowVisible_ReturnsAllStages()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
@@ -32,7 +32,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task MoveToNextStageAsync_ReturnsNewStage()
+        public async Task NextAsync_WhenPossible_ReturnsTrue()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
@@ -48,7 +48,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task MoveToNextStageAsync_ReturnsSameStageWhenAlreadyAtLastStage()
+        public async Task NextStageAsync_WhenAlreadyAtLastStage_ReturnsFalse()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
@@ -69,7 +69,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task CompleteAsync_ReturnsCompleted()
+        public async Task CompleteAsync_WhenAtLastStage_ReturnsTrue()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
@@ -90,7 +90,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task CompleteAsync_ThrowsExceptionWhenAtEarlierStage()
+        public async Task CompleteAsync_WhenNotAtLastStage_ThrowsException()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
@@ -105,7 +105,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task IsProcessCompleteAsync_ReturnsTrue()
+        public async Task IsProcessCompleteAsync_WhenComplete_ReturnsTrue()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
@@ -128,7 +128,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task IsProcessCompleteAsync_ReturnsFalse()
+        public async Task IsProcessCompleteAsync_WhenNotComplete_ReturnsFalse()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
