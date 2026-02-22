@@ -18,8 +18,6 @@
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class BusinessProcessFlow : Control, IBusinessProcess
     {
-        private readonly IPageFactory pageFactory;
-        private readonly IControlFactory controlFactory;
         private readonly ILocator activeStage;
         private readonly ILocator allStages;
         private readonly ILocator flyout;
@@ -39,8 +37,6 @@
         public BusinessProcessFlow(IAppPage appPage, IPageFactory pageFactory, IControlFactory controlFactory, IControl parent = null)
             : base(appPage, parent)
         {
-            this.pageFactory = pageFactory;
-            this.controlFactory = controlFactory;
             this.activeStage = this.Container.Locator("li[data-selected-stage='true']");
             this.allStages = this.Container.Locator("li");
             this.activeButton = this.activeStage.Locator("button");
