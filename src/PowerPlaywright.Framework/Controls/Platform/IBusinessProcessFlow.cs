@@ -9,19 +9,19 @@
     /// A business process flow.
     /// </summary>
     [PlatformControl]
-    public interface IBusinessProcess : IControl
+    public interface IBusinessProcessFlow : IControl
     {
         /// <summary>
         /// Proceeds to the next stage in the process.
         /// </summary>
         /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
-        Task<string> MoveToNextStageAsync();
+        Task<bool> NextAsync();
 
         /// <summary>
         /// Moves to a previous stage in the process.
         /// </summary>
         /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
-        Task<string> MoveToPreviousStageAsync();
+        Task<bool> PreviousAsync();
 
         /// <summary>
         /// Determies if the process is complete.
@@ -51,6 +51,6 @@
         /// Determines if we can Move forward in the process or we have reached the end of the process.
         /// </summary>
         /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
-        Task<bool> HasAnotherStageAsync();
+        Task<bool> IsFinalStageAsync();
     }
 }

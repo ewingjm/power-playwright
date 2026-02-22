@@ -16,7 +16,7 @@
         /// <summary>
         /// Gets the business process flow on the form.
         /// </summary>
-        IBusinessProcess BusinessProcess { get; }
+        IBusinessProcessFlow BusinessProcess { get; }
 
         /// <summary>
         /// Gets the command bar on the form.

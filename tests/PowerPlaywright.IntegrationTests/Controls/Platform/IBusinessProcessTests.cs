@@ -7,14 +7,14 @@
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
-    /// Tests for the <see cref="IBusinessProcess"/> control.
+    /// Tests for the <see cref="IBusinessProcessFlow"/> control.
     /// </summary>
     public class IBusinessProcessTests : IntegrationTests
     {
         private static readonly string[] ProcessStages = ["Details", "Processing", "Resolution"];
 
         /// <summary>
-        /// Tests that the <see cref="IBusinessProcess.GetStagesAsync(string[])"/> method returns the labels of all the stages of the bpf.
+        /// Tests that the <see cref="IBusinessProcessFlow.GetStagesAsync(string[])"/> method returns the labels of all the stages of the bpf.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -28,7 +28,7 @@
         }
 
         /// <summary>
-        /// Tests that the <see cref="IBusinessProcess.MoveToNextStageAsync(string[])"/> method returns the new stage of the business process flow after moving.
+        /// Tests that the <see cref="IBusinessProcessFlow.MoveToNextStageAsync(string[])"/> method returns the new stage of the business process flow after moving.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
@@ -39,13 +39,13 @@
 
             var currentStage = await businessProcessFlow.GetCurrentStageAsync();
 
-            string newStage = await businessProcessFlow.MoveToNextStageAsync();
+            string newStage = await businessProcessFlow.NextAsync();
 
             Assert.That(currentStage != newStage);
         }
 
         /// <summary>
-        /// Tests that the <see cref="IBusinessProcess.MoveToNextStageAsync(string[])"/> method
+        /// Tests that the <see cref="IBusinessProcessFlow.MoveToNextStageAsync(string[])"/> method
         /// returns the same stage when already at the last stage.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
@@ -55,18 +55,18 @@
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            while (await businessProcessFlow.HasAnotherStageAsync())
+            while (await businessProcessFlow.IsFinalStageAsync())
             {
-                await businessProcessFlow.MoveToNextStageAsync();
+                await businessProcessFlow.NextAsync();
             }
 
-            var returnedStage = await businessProcessFlow.MoveToNextStageAsync();
+            var returnedStage = await businessProcessFlow.NextAsync();
 
             Assert.That(returnedStage, Is.EqualTo(ProcessStages[ProcessStages.Length - 1]));
         }
 
         /// <summary>
-        /// Tests that the <see cref="IBusinessProcess.CompleteAsync(string[])"/> method
+        /// Tests that the <see cref="IBusinessProcessFlow.CompleteAsync(string[])"/> method
         /// returns a boolean to confirm completion.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
@@ -76,9 +76,9 @@
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            while (await businessProcessFlow.HasAnotherStageAsync())
+            while (await businessProcessFlow.IsFinalStageAsync())
             {
-                await businessProcessFlow.MoveToNextStageAsync();
+                await businessProcessFlow.NextAsync();
             }
 
             var didComplete = await businessProcessFlow.CompleteAsync();
@@ -87,7 +87,7 @@
         }
 
         /// <summary>
-        /// Tests that the <see cref="IBusinessProcess.CompleteAsync(string[])"/> method
+        /// Tests that the <see cref="IBusinessProcessFlow.CompleteAsync(string[])"/> method
         /// throws an exception when called before reaching the final stage.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
@@ -102,7 +102,7 @@
         }
 
         /// <summary>
-        /// Tests that the <see cref="IBusinessProcess.IsProcessCompleteAsync(string[])"/> method
+        /// Tests that the <see cref="IBusinessProcessFlow.IsProcessCompleteAsync(string[])"/> method
         /// returns a boolean to confirm completion.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
@@ -112,9 +112,9 @@
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            while (await businessProcessFlow.HasAnotherStageAsync())
+            while (await businessProcessFlow.IsFinalStageAsync())
             {
-                await businessProcessFlow.MoveToNextStageAsync();
+                await businessProcessFlow.NextAsync();
             }
 
             await businessProcessFlow.CompleteAsync();
@@ -125,7 +125,7 @@
         }
 
         /// <summary>
-        /// Tests that the <see cref="IBusinessProcess.IsProcessCompleteAsync(string[])"/> method
+        /// Tests that the <see cref="IBusinessProcessFlow.IsProcessCompleteAsync(string[])"/> method
         /// returns a boolean to confirm completion.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>

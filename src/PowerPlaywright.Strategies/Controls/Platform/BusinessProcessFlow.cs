@@ -16,7 +16,7 @@
     /// A business process flow.
     /// </summary>
     [PlatformControlStrategy(0, 0, 0, 0)]
-    public class BusinessProcessFlow : Control, IBusinessProcess
+    public class BusinessProcessFlow : Control, IBusinessProcessFlow
     {
         private readonly ILocator activeStage;
         private readonly ILocator allStages;
@@ -39,9 +39,9 @@
         {
             this.activeStage = this.Container.Locator("li[data-selected-stage='true']");
             this.allStages = this.Container.Locator("li");
-            this.activeButton = this.activeStage.Locator("button");
+            this.activeButton = this.activeStage.GetByRole(AriaRole.Button);
             this.flyout = appPage.Page.Locator("[data-id^='MscrmControls.Containers.ProcessStageControl-processHeaderStageFlyoutContainer']");
-            this.nextbutton = this.flyout.GetByLabel("Next Stage");
+            this.nextbutton = this.flyout.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Next Stage" });
             this.previousButton = this.flyout.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Back" });
             this.finishButton = this.flyout.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Finish" });
             this.finishedButton = this.flyout.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Finished" });
@@ -68,13 +68,13 @@
         }
 
         /// <inheritdoc/>
-        public async Task<string> MoveToNextStageAsync()
+        public async Task<bool> NextAsync()
         {
             return await this.MoveStage(this.nextbutton);
         }
 
         /// <inheritdoc/>
-        public async Task<string> MoveToPreviousStageAsync()
+        public async Task<bool> PreviousAsync()
         {
             return await this.MoveStage(this.previousButton);
         }
@@ -107,7 +107,7 @@
         }
 
         /// <inheritdoc/>
-        public async Task<bool> HasAnotherStageAsync()
+        public async Task<bool> IsFinalStageAsync()
         {
             var stages = await this.GetStagesAsync();
             var currentStage = await this.GetCurrentStageAsync();
@@ -121,27 +121,16 @@
             return context.Locator("#bpfContainer");
         }
 
-        private async Task<string> MoveStage(ILocator button)
+        private async Task<bool> MoveStage(ILocator button)
         {
+            var currentStage = await this.GetCurrentStageAsync();
             await this.activeButton.ClickAsync();
             await this.flyout.WaitForAsync();
             await button.ClickAsync();
             await this.Page.WaitForAppIdleAsync();
-            return await this.GetCurrentStage();
-        }
+            var newStage = await this.GetCurrentStageAsync();
 
-        private async Task<string> GetCurrentStage()
-        {
-            var currentStage = this.Container.Locator(
-               "li[data-selected-stage='true'] " +
-               "div[data-id^='MscrmControls.Containers.ProcessBreadCrumb-processHeaderStageName_']");
-
-            if (await currentStage.CountAsync() == 0)
-            {
-                throw new PowerPlaywrightException("Could not find the current stage. Please ensure you have a BPF enabled on the entity.");
-            }
-
-            return (await currentStage.InnerTextAsync()).Trim();
+            return currentStage != newStage;
         }
     }
 }
