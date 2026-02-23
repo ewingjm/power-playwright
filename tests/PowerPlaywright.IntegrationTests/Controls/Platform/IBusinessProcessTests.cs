@@ -8,10 +8,9 @@
     /// <summary>
     /// Tests for the <see cref="IBusinessProcessFlow"/> control.
     /// </summary>
-    [Ignore("Beta Mode")]
     public class IBusinessProcessTests : IntegrationTests
     {
-        private static readonly string[] ProcessStages = ["Details", "Processing", "Resolution"];
+        private static readonly string[] ProcessStages = ["Validate", "Process", "Resolve"];
 
         /// <summary>
         /// Tests that the <see cref="IBusinessProcessFlow.GetStagesAsync(string[])"/> method returns the labels of all the stages of the bpf.
