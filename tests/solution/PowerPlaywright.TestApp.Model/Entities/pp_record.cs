@@ -472,11 +472,26 @@ namespace PowerPlaywright.TestApp.Model
 				this.OnPropertyChanged("pp_multiplelinesoftexttext");
 			}
 		}
-		
-		/// <summary>
-		/// A self-referential lookup
-		/// </summary>
-		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_parentrecord")]
+
+        [Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_multilinerichtext")]
+        public string pp_multilinerichtext
+        {
+            get
+            {
+                return this.GetAttributeValue<string>("pp_multilinerichtext");
+            }
+            set
+            {
+                this.OnPropertyChanging("pp_multilinerichtext");
+                this.SetAttributeValue("pp_multilinerichtext", value);
+                this.OnPropertyChanged("pp_multilinerichtext");
+            }
+        }
+
+        /// <summary>
+        /// A self-referential lookup
+        /// </summary>
+        [Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_parentrecord")]
 		public Microsoft.Xrm.Sdk.EntityReference pp_ParentRecord
 		{
 			get

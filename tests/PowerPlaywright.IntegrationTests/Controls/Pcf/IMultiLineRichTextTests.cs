@@ -5,11 +5,11 @@
     using PowerPlaywright.Strategies.Controls.Pcf;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
+    using System.Text.RegularExpressions;
 
     /// <summary>
     /// Tests the <see cref="IMultiLineRichTextTests"/> PCF control class.
     /// </summary>
-    [Ignore("Beta Phase")]
     public class IMultiLineRichTextTests : IntegrationTests
     {
         private Faker faker;
@@ -60,7 +60,9 @@
 
             await richTextControl.SetValueAsync(expectedValue);
 
-            Assert.That(richTextControl.GetValueAsync, Is.EqualTo(expectedValue));
+            var actualValue = await richTextControl.GetValueAsync();
+
+            Assert.That(this.NormalizeLineEndings(actualValue), Is.EqualTo(this.NormalizeLineEndings(expectedValue)));
         }
 
         /// <summary>
@@ -74,13 +76,26 @@
             var expectedValue = this.GenerateRandomText();
 
             await richTextControl.SetValueAsync(expectedValue);
+            var actualValue = await richTextControl.GetValueAsync();
 
-            Assert.That(richTextControl.GetValueAsync, Is.EqualTo(expectedValue));
+            Assert.That(this.NormalizeLineEndings(actualValue), Is.EqualTo(this.NormalizeLineEndings(expectedValue)));
         }
 
         private string GenerateRandomText()
         {
-            return this.faker.Lorem.Sentence(200);
+            return this.faker.Lorem.Lines(2);
+        }
+
+        /// <summary>
+        /// Removes formatiing supporting so running on all platforms does not cause test failures due to differences in line endings or multiple line breaks.
+        /// </summary>
+        /// <param name="value">The string to normalise the endings on.</param>
+        /// <returns>A <see cref="string"/> with endings replaced.</returns>
+        private string NormalizeLineEndings(string value)
+        {
+            const string ending = "\n";
+            value = value.ReplaceLineEndings(ending);
+            return Regex.Replace(value, $@"{ending}+", ending);
         }
 
         /// <summary>
@@ -95,16 +110,16 @@
 
             if (withNoValue)
             {
-                record.RuleFor(x => x.pp_multiplelinesoftexttext, f => null!);
+                record.RuleFor(x => x.pp_multilinerichtext, f => null!);
             }
             else if (withValue is not null)
             {
-                record.RuleFor(x => x.pp_multiplelinesoftexttext, withValue);
+                record.RuleFor(x => x.pp_multilinerichtext, withValue);
             }
 
             var recordPage = await this.LoginAndNavigateToRecordAsync(record.Generate());
 
-            return recordPage.Form.GetField<IMultiLineRichText>("TBC").Control;
+            return recordPage.Form.GetField<IMultiLineRichText>(nameof(pp_Record.pp_multilinerichtext)).Control;
         }
     }
 }
