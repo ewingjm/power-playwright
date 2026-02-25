@@ -1,6 +1,5 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
-    using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
@@ -9,12 +8,15 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
+    using System.Net;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
 
     /// <summary>
-    /// A control strategy for the <see cref="IMultiLineRichTextControl"/>.
+    /// A control strategy for the <see cref="IMultiLineRichTextControlV2"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class RichTextEditorControlV2 : PcfControlInternal, IMultiLineRichTextControl
+    public class RichTextEditorControlV2 : PcfControlInternal, IMultiLineRichTextControlV2
     {
         private readonly ILocator richTextArea;
 
@@ -36,7 +38,11 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            return await this.richTextArea.InnerTextOrNullAsync();
+            var innerHtml = await this.richTextArea.InnerHTMLAsync();
+
+            string textOnly = Regex.Replace(innerHtml, "<.*?>", string.Empty).Trim();
+
+            return string.IsNullOrEmpty(textOnly) ? null : WebUtility.HtmlDecode(innerHtml);
         }
 
         /// <inheritdoc/>

@@ -2,6 +2,7 @@
 {
     using Bogus;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
+    using PowerPlaywright.IntegrationTests.Extensions;
     using PowerPlaywright.Strategies.Controls.Pcf;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
@@ -45,7 +46,9 @@
             var expectedValue = this.GenerateRandomText();
             var richTextControl = await this.SetupRichTextScenarioAsync(withValue: expectedValue);
 
-            Assert.That(richTextControl.GetValueAsync, Is.EqualTo(expectedValue));
+            var actualValue = await richTextControl.GetValueAsync();
+
+            Assert.That(actualValue.ToClearTextFromHtml(), Is.EqualTo(expectedValue.ToClearTextFromHtml()));
         }
 
         /// <summary>
@@ -62,7 +65,7 @@
 
             var actualValue = await richTextControl.GetValueAsync();
 
-            Assert.That(this.NormalizeLineEndings(actualValue), Is.EqualTo(this.NormalizeLineEndings(expectedValue)));
+            Assert.That(actualValue.ToClearTextFromHtml(), Is.EqualTo(expectedValue.ToClearTextFromHtml()));
         }
 
         /// <summary>
@@ -78,24 +81,12 @@
             await richTextControl.SetValueAsync(expectedValue);
             var actualValue = await richTextControl.GetValueAsync();
 
-            Assert.That(this.NormalizeLineEndings(actualValue), Is.EqualTo(this.NormalizeLineEndings(expectedValue)));
+            Assert.That(actualValue.ToClearTextFromHtml(), Is.EqualTo(expectedValue.ToClearTextFromHtml()));
         }
 
         private string GenerateRandomText()
         {
             return this.faker.Lorem.Lines(2);
-        }
-
-        /// <summary>
-        /// Removes formatiing supporting so running on all platforms does not cause test failures due to differences in line endings or multiple line breaks.
-        /// </summary>
-        /// <param name="value">The string to normalise the endings on.</param>
-        /// <returns>A <see cref="string"/> with endings replaced.</returns>
-        private string NormalizeLineEndings(string value)
-        {
-            const string ending = "\n";
-            value = value.ReplaceLineEndings(ending);
-            return Regex.Replace(value, $@"{ending}+", ending);
         }
 
         /// <summary>

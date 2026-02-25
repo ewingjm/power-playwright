@@ -24,7 +24,12 @@
         /// <inheritdoc/>
         protected override Type GetTargetControlType(IRedirectionEnvironmentInfo environmentInfo, RedirectionControlInfo controlInfo)
         {
-            return typeof(IMultiLineRichTextControl);
+            if (!environmentInfo.IsNewLookEnabled)
+            {
+                return typeof(IMultiLineRichTextControl);
+            }
+
+            return typeof(IMultiLineRichTextControlV2);
         }
     }
 }

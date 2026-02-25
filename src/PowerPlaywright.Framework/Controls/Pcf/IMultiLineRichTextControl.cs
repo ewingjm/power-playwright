@@ -4,9 +4,9 @@
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
 
     /// <summary>
-    /// An interface for the MscrmControls.RichTextEditorV2.RichTextEditorControlV2 control.
+    /// An interface for the MscrmControls.RichTextEditor.RichTextEditorControl control.
     /// </summary>
-    [PcfControl("MscrmControls.RichTextEditorV2.RichTextEditorControlV2")]
+    [PcfControl("MscrmControls.RichTextEditor.RichTextEditorControl")]
     public interface IMultiLineRichTextControl : IMultiLineRichText
     {
     }
