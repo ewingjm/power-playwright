@@ -19,6 +19,8 @@
     [PcfControlStrategy(0, 0, 0)]
     public class RichTextEditorControl : PcfControlInternal, IMultiLineRichTextControl
     {
+        private readonly ILocator richTextFrame;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RichTextEditorControl"/> class.
         /// </summary>
@@ -29,14 +31,13 @@
         public RichTextEditorControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
+            this.richTextFrame = this.Container.Locator("iframe").Last;
         }
 
         /// <inheritdoc/>
         public async Task<string> GetValueAsync()
         {
-            var frame = await this.Container
-            .Locator("iframe").Last.ElementHandleAsync();
-
+            var frame = await this.richTextFrame.ElementHandleAsync();
             var contentFrame = await frame.ContentFrameAsync();
 
             await contentFrame.WaitForFunctionAsync(@"
@@ -70,9 +71,7 @@
                 await this.Container.WaitForAsync();
                 await this.Container.ClickAndWaitForAppIdleAsync();
 
-                var frame = await this.Container
-                .Locator("iframe").Last.ElementHandleAsync();
-
+                var frame = await this.richTextFrame.ElementHandleAsync();
                 var contentFrame = await frame.ContentFrameAsync();
 
                 await contentFrame.EvaluateAsync(
