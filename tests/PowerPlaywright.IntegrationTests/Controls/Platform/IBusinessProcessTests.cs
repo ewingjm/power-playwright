@@ -47,12 +47,12 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task NextStageAsync_WhenAlreadyAtLastStage_ReturnsFalse()
+        public async Task NextAsync_WhenAlreadyAtLastStage_ReturnsFalse()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            while (await businessProcessFlow.IsFinalStageAsync())
+            while (!await businessProcessFlow.IsFinalStageAsync())
             {
                 await businessProcessFlow.NextAsync();
             }
@@ -73,7 +73,7 @@
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            while (await businessProcessFlow.IsFinalStageAsync())
+            while (!await businessProcessFlow.IsFinalStageAsync())
             {
                 await businessProcessFlow.NextAsync();
             }
@@ -109,7 +109,7 @@
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            while (await businessProcessFlow.IsFinalStageAsync())
+            while (!await businessProcessFlow.IsFinalStageAsync())
             {
                 await businessProcessFlow.NextAsync();
             }

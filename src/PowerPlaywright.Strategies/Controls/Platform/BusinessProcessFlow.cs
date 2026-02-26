@@ -110,7 +110,7 @@
             var stages = await this.GetStagesAsync();
             var currentStage = await this.GetCurrentStageAsync();
 
-            return currentStage != stages.Last();
+            return currentStage == stages.Last();
         }
 
         /// <inheritdoc/>
@@ -123,6 +123,12 @@
         {
             var currentStage = await this.GetCurrentStageAsync();
             await this.activeButton.ClickAsync();
+
+            if (!await button.IsVisibleAsync())
+            {
+                return false;
+            }
+
             await this.flyout.WaitForAsync();
             await button.ClickAsync();
             await this.Page.WaitForAppIdleAsync();
