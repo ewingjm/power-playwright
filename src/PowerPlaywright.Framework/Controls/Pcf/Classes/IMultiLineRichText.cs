@@ -15,7 +15,7 @@
         Task SetValueAsync(string value);
 
         /// <summary>
-        /// Gets the value of the rich text control.
+        /// Gets the value of the rich text control in rich html format.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         Task<string> GetValueAsync();

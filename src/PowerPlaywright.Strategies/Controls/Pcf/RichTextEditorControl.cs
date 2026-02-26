@@ -48,10 +48,10 @@
             ");
 
             string innerHtml = await contentFrame.EvaluateAsync<string>(@"
-                () => Object.values(CKEDITOR.instances)[0]
-                      .editable()
-                      .getText()
-                      .trim()
+                () => {
+                    const editor = Object.values(CKEDITOR.instances)[0];
+                    return editor.editable().$?.innerHTML || '';
+                }
             ");
 
             await this.Page.WaitForAppIdleAsync();
