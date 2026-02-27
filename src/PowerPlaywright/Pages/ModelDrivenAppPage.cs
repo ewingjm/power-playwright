@@ -33,6 +33,12 @@ namespace PowerPlaywright.Pages
         public IAlertDialog AlertDialog => this.GetControl<IAlertDialog>();
 
         /// <inheritdoc/>
+        public IErrorDialog ErrorDialog => this.GetControl<IErrorDialog>();
+
+        /// <inheritdoc/>
+        public ISetStateDialog SetStateDialog => this.GetControl<ISetStateDialog>();
+
+        /// <inheritdoc/>
         public IGlobalSearch Search => this.GetControl<IGlobalSearch>();
     }
 }

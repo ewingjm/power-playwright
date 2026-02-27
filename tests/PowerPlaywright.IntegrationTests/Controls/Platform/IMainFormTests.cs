@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.IntegrationTests.Controls.Platform
 {
     using System.Threading.Tasks;
+    using Microsoft.Playwright;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform;
@@ -120,12 +121,48 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="IMainForm.GetFormNotificationsAsync"/> returns the notification when there is a single notification.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetFormNotificationsAsync_SingleNotification_ReturnsNotification()
+        {
+            var expectedNotifications = new FormNotification[] { new(FormNotificationLevel.Info, "This is a notification") };
+            var form = await this.SetupFormScenarioAsync(withNotifications: expectedNotifications);
+
+            var notifications = await form.GetFormNotificationsAsync();
+
+            Assert.That(notifications, Is.EquivalentTo(expectedNotifications));
+        }
+
+        /// <summary>
+        /// Tests that <see cref="IMainForm.GetFormNotificationsAsync"/> returns the notification when there is a single notification.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetFormNotificationsAsync_MultipleNotification_ReturnsAllNotifications()
+        {
+            var expectedNotifications = new FormNotification[]
+            {
+                new(FormNotificationLevel.Info, "This is an info notification"),
+                new(FormNotificationLevel.Warning, "This is an warning notification"),
+                new(FormNotificationLevel.Error, "This is an error notification"),
+            };
+            var form = await this.SetupFormScenarioAsync(withNotifications: expectedNotifications);
+
+            var notifications = await form.GetFormNotificationsAsync();
+
+            Assert.That(notifications, Is.EquivalentTo(expectedNotifications));
+        }
+
+        /// <summary>
         /// Sets up a form scenario.
         /// </summary>
         /// <param name="withDisabledRecord">Whether or not to set up the record as disabled (e.g. inactive).</param>
         /// <param name="withQuickViewRecord">Whether or not to set up a related record that will display a quick view.</param>
+        /// <param name="withNotifications">Optional notifications to add to the form.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IUrlControl"/>.</returns>
-        private async Task<IMainForm> SetupFormScenarioAsync(bool withDisabledRecord = false, bool withQuickViewRecord = false)
+        private async Task<IMainForm> SetupFormScenarioAsync(bool withDisabledRecord = false, bool withQuickViewRecord = false, FormNotification[]? withNotifications = null)
         {
             var recordfaker = new RecordFaker();
 
@@ -143,6 +180,29 @@
             var recordPage = await this.LoginAndNavigateToRecordAsync(recordfaker.Generate());
 
             await recordPage.Page.WaitForAppIdleAsync();
+
+            if (withNotifications != null)
+            {
+                foreach (var notification in withNotifications)
+                {
+                    await recordPage.Page.EvaluateAsync(
+                        "notification => Xrm.Page.ui.setFormNotification(notification.message, notification.level, notification.level);",
+                        new
+                        {
+                            message = notification.Message,
+                            level = notification.Level.ToString().ToUpper(),
+                        });
+                }
+
+                if (withNotifications.Length > 1)
+                {
+                    await recordPage.Page.Locator("[data-id='notificationWrapper']").GetByText($"You have {withNotifications.Length} notifications.").WaitForAsync();
+                }
+                else
+                {
+                    await recordPage.Page.Locator("[data-id='warningNotification']").WaitForAsync();
+                }
+            }
 
             return recordPage.Form;
         }

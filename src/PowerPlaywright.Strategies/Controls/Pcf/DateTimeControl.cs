@@ -1,6 +1,7 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Pcf
 {
     using System;
+    using System.Globalization;
     using System.Threading.Tasks;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
@@ -30,8 +31,8 @@
         public DateTimeControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
-            this.dateInput = this.Container.GetByRole(AriaRole.Combobox, new LocatorGetByRoleOptions { Name = "Date of" });
-            this.timeInput = this.Container.GetByRole(AriaRole.Combobox, new LocatorGetByRoleOptions { Name = "Time of" });
+            this.dateInput = this.Container.Locator("input[aria-label^='Date of']");
+            this.timeInput = this.Container.Locator("input[aria-label^='Time of']");
         }
 
         /// <inheritdoc/>
@@ -58,9 +59,20 @@
             await this.dateInput.FocusAsync();
             await this.dateInput.FillAsync(string.Empty);
             await this.Page.WaitForAppIdleAsync();
-            await this.dateInput.FillAsync(value.Value.ToShortDateString());
+
+            if (value != null)
+            {
+                await this.dateInput.FillAsync(value.Value.ToShortDateString());
+            }
+
             await this.Container.ClickAndWaitForAppIdleAsync();
             await this.Page.Keyboard.PressAsync("Escape");
+
+            if (value == null)
+            {
+                return;
+            }
+
             await this.timeInput.FocusAsync();
             await this.timeInput.FillAsync(string.Empty);
             await this.timeInput.FillAsync(value.Value.ToShortTimeString());

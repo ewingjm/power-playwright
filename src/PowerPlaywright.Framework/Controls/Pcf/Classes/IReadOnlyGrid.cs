@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
@@ -21,5 +22,51 @@
         /// </summary>
         /// <returns>The column names.</returns>
         Task<IEnumerable<string>> GetColumnNamesAsync();
+
+        /// <summary>
+        /// Gets the total number of rows across all pages.
+        /// </summary>
+        /// <returns>The total number of rows.</returns>
+        Task<int> GetTotalRowCountAsync();
+
+        /// <summary>
+        /// Toggles all rows within the grid to the specified state.
+        /// </summary>
+        /// <param name="select">Desired state of the checkbox.</param>
+        /// <returns>A <see cref="Task"/> representing an asynchronous operation.</returns>
+        Task ToggleSelectAllRowsAsync(bool select = true);
+
+        /// <summary>
+        /// Gets the number of selected rows in the grid.
+        /// </summary>
+        /// <returns>The total number of rows.</returns>
+        Task<int> GetSelectedRowCountAsync();
+
+        /// <summary>
+        /// Gets the row data from the grid as a collection of dictionaries.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<IEnumerable<DataRow>> GetRowDataAsync();
+
+        /// <summary>
+        /// Toggles the selection state of a specific row.
+        /// </summary>
+        /// <param name="index">The zero-based index of the row.</param>
+        /// <param name="select">Desired state of the checkbox.</param>
+        /// <returns>A <see cref="Task"/> representing an asynchronous operation.</returns>
+        Task ToggleSelectRowAsync(int index, bool select = true);
+
+        /// <summary>
+        /// Gets the selection state of a specific row.
+        /// </summary>
+        /// <param name="index">The zero-based index of the row.</param>
+        /// <returns>The state of the selection.</returns>
+        Task<bool> GetSelectedStateAsync(int index);
+
+        /// <summary>
+        /// Gets the current sort orders applied to the grid.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task<IReadOnlyList<ColumnSortSpec>> GetSortOrdersAsync();
     }
 }

@@ -12,6 +12,11 @@
         <row name="result" id="pp_relatedrecordid">
           <cell name="pp_name" width="300" />
           <cell name="createdon" width="125" />
+          <cell name="createdby" width="104" />
+          <cell name="modifiedon" width="113" />
+          <cell name="modifiedby" width="112" />
+          <cell name="statecode" width="100" />
+          <cell name="statuscode" width="119" />
         </row>
       </grid>
     </layoutxml>
@@ -26,6 +31,11 @@
           <filter type="and">
             <condition attribute="statecode" operator="eq" value="1" />
           </filter>
+          <attribute name="createdby" />
+          <attribute name="modifiedon" />
+          <attribute name="modifiedby" />
+          <attribute name="statecode" />
+          <attribute name="statuscode" />
         </entity>
       </fetch>
     </fetchxml>

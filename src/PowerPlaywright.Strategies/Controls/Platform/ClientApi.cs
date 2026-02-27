@@ -31,6 +31,23 @@
         }
 
         /// <inheritdoc/>
+        public async Task<IEntityRecordPage> OpenFormAsync(string entityName)
+        {
+            await this.Page.EvaluateAsync(
+                @"
+                    async (entityName) => { 
+                        await Xrm.Navigation.openForm(
+                            { 
+                                entityName: entityName,
+                            }
+                        ) 
+                    } ",
+                entityName);
+
+            return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
+        }
+
+        /// <inheritdoc/>
         public async Task<IEntityRecordPage> NavigateToRecordAsync(string entityName, Guid entityId)
         {
             await this.Page.EvaluateAsync(

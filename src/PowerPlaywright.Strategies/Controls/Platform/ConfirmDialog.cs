@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using Microsoft.Playwright;
+    using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
@@ -15,6 +16,8 @@
     [PlatformControlStrategy(0, 0, 0, 0)]
     public class ConfirmDialog : Control, IConfirmDialog
     {
+        private readonly IPageFactory pageFactory;
+
         private readonly ILocator title;
         private readonly ILocator subtitle;
         private readonly ILocator text;
@@ -25,10 +28,13 @@
         /// Initializes a new instance of the <see cref="ConfirmDialog"/> class.
         /// </summary>
         /// <param name="appPage">The app page.</param>
+        /// <param name="pageFactory">The page factory.</param>
         /// <param name="parent">The parent control.</param>
-        public ConfirmDialog(IAppPage appPage, IControl parent = null)
+        public ConfirmDialog(IAppPage appPage, IPageFactory pageFactory, IControl parent = null)
             : base(appPage, parent)
         {
+            this.pageFactory = pageFactory;
+
             this.title = this.Container.GetByRole(AriaRole.Heading);
             this.subtitle = this.Container.Locator("[data-id='errorDialog_subtitle']");
             this.text = this.Container.Locator("[id*='modalDialogBody']");
@@ -42,6 +48,15 @@
             await this.Page.WaitForAppIdleAsync();
 
             await this.cancelButton.ClickAndWaitForAppIdleAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<TModelDrivenAppPage> ConfirmAsync<TModelDrivenAppPage>()
+            where TModelDrivenAppPage : IModelDrivenAppPage
+        {
+            await this.ConfirmAsync();
+
+            return await this.pageFactory.CreateInstanceAsync<TModelDrivenAppPage>(this.Page);
         }
 
         /// <inheritdoc/>

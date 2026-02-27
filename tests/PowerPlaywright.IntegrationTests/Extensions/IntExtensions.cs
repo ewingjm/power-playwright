@@ -24,7 +24,7 @@
             else
             {
                 var days = Math.Round(value / 1440m, 2);
-                return $"{(days % 1 == 0 ? ((int)days).ToString() : days.ToString("#,##0.##"))} day{(days > 1 ? "s" : string.Empty)}";
+                return $"{(days % 1 == 0 ? ((int)days).ToString("#,##0") : days.ToString("#,##0.##"))} day{(days > 1 ? "s" : string.Empty)}";
             }
         }
     }

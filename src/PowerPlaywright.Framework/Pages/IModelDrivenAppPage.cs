@@ -31,5 +31,15 @@
         /// Gets an alert dialog.
         /// </summary>
         IAlertDialog AlertDialog { get; }
+
+        /// <summary>
+        /// Gets an error dialog.
+        /// </summary>
+        IErrorDialog ErrorDialog { get; }
+
+        /// <summary>
+        /// Gets a deactivate dialog.
+        /// </summary>
+        ISetStateDialog SetStateDialog { get; }
     }
 }

@@ -30,6 +30,16 @@
                 public const string RelatedRecordsSubgrid = "subgrid_relatedrecords";
 
                 /// <summary>
+                /// The related editable subgrid.
+                /// </summary>
+                public const string RelatedEditableRecordsSubGrid = "editablegrid_RelatedRecords";
+
+                /// <summary>
+                /// The related nested subgrid.
+                /// </summary>
+                public const string RelatedNestedEditableSubGrid = "nestedgrid_RelatedRecords";
+
+                /// <summary>
                 /// The related record lookup.
                 /// </summary>
                 public const string RelatedRecord = "pp_relatedrecord";

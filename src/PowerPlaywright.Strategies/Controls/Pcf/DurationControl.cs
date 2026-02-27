@@ -6,7 +6,6 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
-    using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
 
@@ -41,7 +40,12 @@
         public async Task SetValueAsync(string value)
         {
             await this.input.ClearAsync();
-            await this.input.FillAsync(value);
+
+            if (value != null)
+            {
+                await this.input.FillAsync(value);
+            }
+
             await this.Parent.Container.ClickAndWaitForAppIdleAsync();
         }
     }

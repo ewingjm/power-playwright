@@ -1,0 +1,29 @@
+<appaction uniquename="pp__ChildDropdown!32e4691c92ed48a0804f9e9d91f1a514!pp_UserInterfaceDemo!pp_relatedrecord!2">
+  <appmoduleid>
+    <uniquename>pp_UserInterfaceDemo</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Child Dropdown">
+    <label description="Child Dropdown" languagecode="1033" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>pp_relatedrecord</logicalname>
+  </contextentity>
+  <contextvalue>pp_relatedrecord</contextvalue>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>2</location>
+  <name>ChildDropdown!32e4691c92ed48a0804f9e9d91f1a514</name>
+  <onclickeventtype>0</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>pp__GroupA!1bfb87ef7e2e4824907754815e3ad967!pp_UserInterfaceDemo!pp_relatedrecord!2</uniquename>
+  </parentappactionid>
+  <sequence>10000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>1</type>
+  <visibilitytype>0</visibilitytype>
+</appaction>

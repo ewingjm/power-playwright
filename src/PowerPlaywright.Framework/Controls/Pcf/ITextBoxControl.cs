@@ -7,7 +7,7 @@
     /// An interface for the MscrmControls.FieldControls.TextBox control.
     /// </summary>
     [PcfControl("MscrmControls.FieldControls.TextBoxControl")]
-    public interface ITextBoxControl : ISingleLineText, ISingleLineTextArea
+    public interface ITextBoxControl : ISingleLineText, ISingleLineTextArea, IMultiLineText
     {
     }
 }

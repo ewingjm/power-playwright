@@ -9,6 +9,7 @@
   <EntityRelationship Name="lk_pp_relatedrecord_modifiedby" />
   <EntityRelationship Name="owner_pp_record" />
   <EntityRelationship Name="owner_pp_relatedrecord" />
+  <EntityRelationship Name="pp_record_ParentRecord_pp_record" />
   <EntityRelationship Name="pp_Record_RelatedRecord" />
   <EntityRelationship Name="pp_relatedrecord_record" />
   <EntityRelationship Name="team_pp_record" />

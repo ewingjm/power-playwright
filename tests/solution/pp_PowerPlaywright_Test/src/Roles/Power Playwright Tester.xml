@@ -47,6 +47,7 @@
     <RolePrivilege name="prvReadAttributeMap" level="Global" />
     <RolePrivilege name="prvReadBusinessUnit" level="Global" />
     <RolePrivilege name="prvReadComplexControl" level="Global" />
+    <RolePrivilege name="prvReadConnection" level="Global" />
     <RolePrivilege name="prvReadCustomization" level="Global" />
     <RolePrivilege name="prvReadEntity" level="Global" />
     <RolePrivilege name="prvReadEntityKey" level="Global" />

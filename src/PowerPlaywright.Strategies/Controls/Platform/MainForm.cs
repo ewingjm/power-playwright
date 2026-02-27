@@ -11,6 +11,7 @@
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
     using PowerPlaywright.Framework.Extensions;
+    using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.Strategies.Extensions;
 
@@ -66,8 +67,6 @@
         /// <inheritdoc/>
         public new async Task<IEnumerable<IField>> GetFieldsAsync()
         {
-            await this.Page.WaitForAppIdleAsync();
-
             return await base.GetFieldsAsync();
         }
 
@@ -138,6 +137,12 @@
             }
 
             await this.expandHeaderButton.ClickAndWaitForAppIdleAsync();
+        }
+
+        /// <inheritdoc/>
+        public new Task<IEnumerable<FormNotification>> GetFormNotificationsAsync()
+        {
+            return base.GetFormNotificationsAsync();
         }
 
         /// <inheritdoc/>

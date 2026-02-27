@@ -9,10 +9,12 @@
     using Azure.Extensions.AspNetCore.Configuration.Secrets;
     using Azure.Identity;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Playwright;
     using Microsoft.PowerPlatform.Dataverse.Client;
     using Microsoft.Xrm.Sdk;
     using Microsoft.Xrm.Sdk.Query;
     using Newtonsoft.Json;
+    using Microsoft.Xrm.Sdk.Messages;
     using NuGet.Protocol;
     using NuGet.Protocol.Core.Types;
     using NUnit.Framework.Interfaces;
@@ -163,7 +165,7 @@
         protected Task<IModelDrivenAppPage> LoginAsync()
         {
             return this.powerPlaywright.LaunchAppAsync(
-                this.Context, Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password);
+                this.Context, Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password, this.User.TOTPSecret);
         }
 
         /// <summary>
@@ -287,6 +289,18 @@
         }
 
         /// <summary>
+        /// Logs into the app and navigates to a record.
+        /// </summary>
+        /// <param name="record">The record to navigate to.</param>
+        /// <returns>The form.</returns>
+        protected async Task<IEntityRecordPage> LoginAndNavigateToRecordAsync(EntityReference record)
+        {
+            var page = await this.LoginAsync();
+
+            return await page.ClientApi.NavigateToRecordAsync(record.LogicalName, record.Id);
+        }
+
+        /// <summary>
         /// Creates a record.
         /// </summary>
         /// <param name="record">The record.</param>
@@ -318,6 +332,33 @@
             }
 
             return record.ToEntityReference();
+        }
+
+        /// <summary>
+        /// Upserts records.
+        /// </summary>
+        /// <param name="records">The records.</param>
+        /// <returns>An array of entity references.</returns>
+        protected async Task<EntityReference[]> UpsertRecordsAsync(params Entity[] records)
+        {
+            using var client = this.GetServiceClient();
+
+            var requests = records.Select(r => new UpsertRequest
+            {
+                Target = r,
+            });
+
+            var response = (ExecuteMultipleResponse)await client.ExecuteAsync(new ExecuteMultipleRequest
+            {
+                Settings = new ExecuteMultipleSettings
+                {
+                    ContinueOnError = false,
+                    ReturnResponses = true,
+                },
+                Requests = [.. requests],
+            });
+
+            return [.. response.Responses.Select(r => r.Response).Cast<UpsertResponse>().Select(r => r.Target)];
         }
 
         /// <summary>

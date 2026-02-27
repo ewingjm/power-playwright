@@ -1,10 +1,9 @@
-﻿namespace PowerPlaywright
+﻿namespace PowerPlaywright.Strategies.Redirectors
 {
     using System;
     using System.Text.Json;
     using System.Text.Json.Nodes;
     using System.Text.Json.Serialization;
-    using PowerPlaywright.Strategies.Redirectors;
 
     /// <summary>
     /// A converter for a versioned dictionary.

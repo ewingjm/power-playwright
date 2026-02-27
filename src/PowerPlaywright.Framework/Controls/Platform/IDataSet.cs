@@ -11,6 +11,11 @@
     public interface IDataSet : IControl
     {
         /// <summary>
+        /// Gets the command bar on the data set.
+        /// </summary>
+        ICommandBar CommandBar { get; }
+
+        /// <summary>
         /// Gets the control within the dataset.
         /// </summary>
         /// <typeparam name="TPcfControl">The type of PCF control.</typeparam>
@@ -38,5 +43,12 @@
         /// <returns>The view display name.</returns>
         /// <exception cref="PowerPlaywrightException">Thrown if the view selector is not available.</exception>"
         Task<string> GetActiveViewAsync();
+
+        /// <summary>
+        /// Searches in the data set.
+        /// </summary>
+        /// <param name="searchTerm">The search term.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        Task SearchAsync(string searchTerm);
     }
 }
