@@ -75,7 +75,7 @@
                 capturedColumns.AddRange(visibleColumns.Except(capturedColumns));
                 if (capturedColumns.Count < columnCount)
                 {
-                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
+                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X / 2);
                     continue;
                 }
 
@@ -217,7 +217,7 @@
 
                 if (columnsToProcess.Count != 0)
                 {
-                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
+                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X / 2);
                 }
             }
         }
@@ -414,7 +414,7 @@
 
                 if (rowData.Count < columnNames.Length)
                 {
-                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X);
+                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X / 2);
                 }
             }
 
