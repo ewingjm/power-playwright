@@ -28,10 +28,11 @@
 
         /// <summary>
         /// Tests that the <see cref="IBusinessProcessFlow.MoveToNextStageAsync(string[])"/> method returns the new stage of the business process flow after moving.
+        /// moves to the next stage and verifies that the stage has changed by comparing the current stage before and after the move. Resulting in true.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task NextAsync_WhenPossible_ReturnsTrue()
+        public async Task NextAsync_WhenAvailable_ReturnsTrue()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
@@ -43,23 +44,48 @@
 
         /// <summary>
         /// Tests that the <see cref="IBusinessProcessFlow.MoveToNextStageAsync(string[])"/> method
-        /// returns the same stage when already at the last stage.
+        /// returns the same stage when already at the last stage. Resulting in false.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task NextAsync_WhenAlreadyAtLastStage_ReturnsFalse()
+        public async Task NextAsync_WhenAtLastStage_ReturnsFalse()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            while (!await businessProcessFlow.IsFinalStageAsync())
-            {
-                await businessProcessFlow.NextAsync();
-            }
+            await this.MoveToFinalStageAsync(businessProcessFlow);
 
-            var didChangeStage = await businessProcessFlow.NextAsync();
+            Assert.IsFalse(await businessProcessFlow.NextAsync());
+        }
 
-            Assert.IsFalse(didChangeStage);
+        /// <summary>
+        /// Tests that the <see cref="IBusinessProcessFlow.PreviousAsync(string[])"/> method
+        /// returns the same stage when already at the last stage. Resulting in false.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task PreviousAsync_AtFirstStage_ReturnsFalse()
+        {
+            var page = await this.SetupBusinessProcessFlowScenarioAsync();
+            var businessProcessFlow = page.Form.BusinessProcess;
+
+            Assert.IsFalse(await businessProcessFlow.PreviousAsync());
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="IBusinessProcessFlow.PreviousAsync(string[])"/> method
+        /// returns the the previous stage after previously moving forward. Resulting in true.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task PreviousAsync_WhenAvailable_ReturnsTrue()
+        {
+            var page = await this.SetupBusinessProcessFlowScenarioAsync();
+            var businessProcessFlow = page.Form.BusinessProcess;
+
+            await businessProcessFlow.NextAsync();
+
+            Assert.IsTrue(await businessProcessFlow.PreviousAsync());
         }
 
         /// <summary>
@@ -68,19 +94,14 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task CompleteAsync_WhenAtLastStage_ReturnsTrue()
+        public async Task CompleteAsync_WhenLastStage_ReturnsTrue()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            while (!await businessProcessFlow.IsFinalStageAsync())
-            {
-                await businessProcessFlow.NextAsync();
-            }
+            await this.MoveToFinalStageAsync(businessProcessFlow);
 
-            var didComplete = await businessProcessFlow.CompleteAsync();
-
-            Assert.IsTrue(didComplete);
+            Assert.IsTrue(await businessProcessFlow.CompleteAsync());
         }
 
         /// <summary>
@@ -89,7 +110,7 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task CompleteAsync_WhenNotAtLastStage_ThrowsException()
+        public async Task CompleteAsync_WhenNotLastStage_ThrowsException()
         {
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
@@ -109,16 +130,11 @@
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            while (!await businessProcessFlow.IsFinalStageAsync())
-            {
-                await businessProcessFlow.NextAsync();
-            }
+            await this.MoveToFinalStageAsync(businessProcessFlow);
 
             await businessProcessFlow.CompleteAsync();
 
-            var isComplete = await businessProcessFlow.IsProcessCompleteAsync();
-
-            Assert.IsTrue(isComplete);
+            Assert.IsTrue(await businessProcessFlow.IsProcessCompleteAsync());
         }
 
         /// <summary>
@@ -132,9 +148,18 @@
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            var isComplete = await businessProcessFlow.IsProcessCompleteAsync();
+            Assert.IsFalse(await businessProcessFlow.IsProcessCompleteAsync());
+        }
 
-            Assert.IsFalse(isComplete);
+        /// <summary>
+        /// Helper method to move the business process flow to the final stage.
+        /// </summary>
+        private async Task MoveToFinalStageAsync(IBusinessProcessFlow bpf)
+        {
+            while (!await bpf.IsFinalStageAsync())
+            {
+                await bpf.NextAsync();
+            }
         }
 
         /// <summary>
