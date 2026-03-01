@@ -31,6 +31,7 @@
         private readonly ILocator visibleHeaders;
         private readonly ILocator alerts;
         private readonly ILocator rowsContainer;
+        private readonly ILocator scrollContainer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GridControl"/> class.
@@ -53,6 +54,7 @@
             this.visibleRows = this.grid.GetByRole(AriaRole.Row);
             this.visibleHeaders = this.visibleRows.Locator("[role='columnheader']:not([aria-colindex='1'])").Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) });
             this.rowsContainer = this.Container.Locator("[wj-part='root']");
+            this.scrollContainer = this.Container.Locator("div[wj-part='root']");
             this.alerts = this.Container.GetByRole(AriaRole.Alert);
         }
 
@@ -75,14 +77,21 @@
                 capturedColumns.AddRange(visibleColumns.Except(capturedColumns));
                 if (capturedColumns.Count < columnCount)
                 {
-                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X / 2);
+                    //   await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X / 2);
+                    await this.scrollContainer.EvaluateAsync(
+                        "(el, dx) => { el.scrollLeft += dx; }",
+                        500
+                    );
+
+                    //await this.scrollContainer.EvaluateAsync("el => { el.scrollLeft += 200; }");
+
                     continue;
                 }
 
                 break;
             }
 
-            await this.ScrollHorizontalToStartAsync();
+            await this.scrollContainer.EvaluateAsync("el => el.scrollTo({ left: 0 })");
 
             return capturedColumns;
         }
