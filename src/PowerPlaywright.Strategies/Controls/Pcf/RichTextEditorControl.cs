@@ -42,8 +42,14 @@
 
             await contentFrame.WaitForFunctionAsync(@"
                 () => {
-                    const editor = Object.values(CKEDITOR.instances)[0];
-                    return editor && editor.status === 'ready';
+                    if (!window.CKEDITOR)
+                        return false;
+
+                    const instances = Object.values(window.CKEDITOR.instances || {});
+                    if (!instances.length)
+                        return false;
+
+                    return instances[0].status === 'ready';
                 }
             ");
 

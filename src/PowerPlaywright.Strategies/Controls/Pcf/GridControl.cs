@@ -66,7 +66,7 @@
 
             var capturedColumns = new List<string>();
 
-            await this.ScrollToExactPoint();
+            await this.ScrollToAsync();
 
             while (true)
             {
@@ -82,7 +82,7 @@
                 break;
             }
 
-            await this.ScrollToExactPoint();
+            await this.ScrollToAsync();
 
             return capturedColumns;
         }
@@ -394,7 +394,7 @@
             }
         }
 
-        private async Task ScrollToExactPoint(int position = 0)
+        private async Task ScrollToAsync(int position = 0)
         {
             if (!await this.rowsContainer.IsVisibleAsync())
             {
