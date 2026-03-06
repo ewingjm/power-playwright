@@ -18,6 +18,11 @@
         IClientApi ClientApi { get; }
 
         /// <summary>
+        /// Gets the global search control.
+        /// </summary>
+        IGlobalSearch Search { get; }
+
+        /// <summary>
         /// Gets a confirm dialog.
         /// </summary>
         IConfirmDialog ConfirmDialog { get; }

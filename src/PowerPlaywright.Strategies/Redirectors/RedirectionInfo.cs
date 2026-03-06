@@ -33,6 +33,17 @@
         public IUserSettings User => this.UserSettings;
 
         /// <summary>
+        /// Gets a value indicating whether relevance search is enabled on the instance.
+        /// </summary>
+        public bool IsRelevanceSearchEnabled
+        {
+            get
+            {
+                return this.Org.IsRelevanceSearchEnabled;
+            }
+        }
+
+        /// <summary>
         /// Gets a value indicating whether the new look is enabled.
         /// </summary>
         public bool IsNewLookEnabled
@@ -67,8 +78,10 @@
                     {
                         case ReleaseChannelOverride.SemiAnnual:
                             return (int)ReleaseChannel.SemiAnnualChannel;
+
                         case ReleaseChannelOverride.Inner:
                             return (int)ReleaseChannel.MicrosoftInnerChannel;
+
                         case ReleaseChannelOverride.Monthly:
                             return (int)ReleaseChannel.Monthly;
                     }
