@@ -6,8 +6,8 @@
       <LocalizedName description="Power Playwright - Test" languagecode="1033" />
     </LocalizedNames>
     <Descriptions />
-    <Version>1.0.20</Version>
-    <Managed>0</Managed>
+    <Version>1.0.0.0</Version>
+    <Managed>2</Managed>
     <Publisher>
       <UniqueName>powerplaywright</UniqueName>
       <LocalizedNames>
