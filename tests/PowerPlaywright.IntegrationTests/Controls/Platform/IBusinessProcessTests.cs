@@ -39,7 +39,7 @@
 
             var didChangeStage = await businessProcessFlow.NextAsync();
 
-            Assert.IsTrue(didChangeStage);
+            Assert.That(didChangeStage, Is.True);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@
 
             await this.MoveToFinalStageAsync(businessProcessFlow);
 
-            Assert.IsFalse(await businessProcessFlow.NextAsync());
+            Assert.That(await businessProcessFlow.NextAsync(), Is.False);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            Assert.IsFalse(await businessProcessFlow.PreviousAsync());
+            Assert.That(await businessProcessFlow.PreviousAsync(), Is.False);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@
 
             await businessProcessFlow.NextAsync();
 
-            Assert.IsTrue(await businessProcessFlow.PreviousAsync());
+            Assert.That(await businessProcessFlow.PreviousAsync(), Is.True);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@
 
             await this.MoveToFinalStageAsync(businessProcessFlow);
 
-            Assert.IsTrue(await businessProcessFlow.CompleteAsync());
+            Assert.That(await businessProcessFlow.CompleteAsync(), Is.True);
         }
 
         /// <summary>
@@ -134,7 +134,7 @@
 
             await businessProcessFlow.CompleteAsync();
 
-            Assert.IsTrue(await businessProcessFlow.IsProcessCompleteAsync());
+            Assert.That(await businessProcessFlow.IsProcessCompleteAsync(), Is.True);
         }
 
         /// <summary>
@@ -148,7 +148,7 @@
             var page = await this.SetupBusinessProcessFlowScenarioAsync();
             var businessProcessFlow = page.Form.BusinessProcess;
 
-            Assert.IsFalse(await businessProcessFlow.IsProcessCompleteAsync());
+            Assert.That(await businessProcessFlow.IsProcessCompleteAsync(), Is.False);
         }
 
         /// <summary>
@@ -156,8 +156,13 @@
         /// </summary>
         private async Task MoveToFinalStageAsync(IBusinessProcessFlow bpf)
         {
-            while (!await bpf.IsFinalStageAsync())
+            for (var i = 0; i < ProcessStages.Length; i++)
             {
+                if (await bpf.IsFinalStageAsync())
+                {
+                    break;
+                }
+
                 await bpf.NextAsync();
             }
         }
