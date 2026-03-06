@@ -49,6 +49,19 @@
         }
 
         /// <summary>
+        /// Tests that <see cref="IChoices.GetValueAsync()"/> returns the value when the record is inactive.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task GetValueAsync_InactiveRecord_ReturnsValue()
+        {
+            var expectedValue = this.faker.Random.EnumValuesRange<pp_record_pp_choices>(1);
+            var choicesControl = await this.SetupChoicesScenarioAsync(expectedValue, withDisabledRecord: true);
+
+            Assert.That(choicesControl.GetValueAsync, Is.EquivalentTo(expectedValue.Select(v => v.ToDisplayName()).ToArray()));
+        }
+
+        /// <summary>
         /// Tests that <see cref="IChoice.SetValueAsync(string)"/> sets the value when the control does not contain a value.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
@@ -94,14 +107,21 @@
         }
 
         /// <summary>
-        /// Sets up a choice control scenario for testing by creating a record with a specified or generated choices.
+        /// Sets up a choices control scenario for testing by creating a record with a specified or generated choices.
         /// </summary>
         /// <param name="withValue">An optional choice value to set in the record. If null, a random value will be generated.</param>
         /// <param name="withNoValue">Whether to set the choice to null. Defaults to false.</param>
+        /// <param name="withDisabledRecord">Whether or not to make the record inactive. Defaults to false.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation. The task result contains the initialized <see cref="IChoices"/>.</returns>
-        private async Task<IChoices> SetupChoicesScenarioAsync(IEnumerable<pp_record_pp_choices>? withValue = null, bool withNoValue = false)
+        private async Task<IChoices> SetupChoicesScenarioAsync(IEnumerable<pp_record_pp_choices>? withValue = null, bool withNoValue = false, bool withDisabledRecord = false)
         {
             var record = new RecordFaker();
+
+            if (withDisabledRecord)
+            {
+                record.RuleFor(r => r.statecode, r => pp_record_statecode.Inactive);
+                record.RuleFor(r => r.statuscode, r => pp_record_statuscode.Inactive);
+            }
 
             if (withNoValue)
             {

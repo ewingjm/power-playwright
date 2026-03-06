@@ -52,7 +52,7 @@ namespace PowerPlaywright.Api
         }
 
         /// <inheritdoc/>
-        public Task<IModelDrivenAppPage> LaunchAppAsync(IBrowserContext browserContext, Uri environmentUrl, string uniqueName, string username, string password)
+        public Task<IModelDrivenAppPage> LaunchAppAsync(IBrowserContext browserContext, Uri environmentUrl, string uniqueName, string username, string password, string totpSecret = null)
         {
             if (environmentUrl is null)
             {
@@ -75,11 +75,11 @@ namespace PowerPlaywright.Api
             }
 
             return this.LaunchAppInternalAsync<IModelDrivenAppPage>(
-                browserContext, environmentUrl, uniqueName, username, password);
+                browserContext, environmentUrl, uniqueName, username, password, totpSecret);
         }
 
         /// <inheritdoc/>
-        public Task<TModelDrivenAppPage> LaunchAppAsync<TModelDrivenAppPage>(IBrowserContext browserContext, Uri environmentUrl, string uniqueName, string username, string password)
+        public Task<TModelDrivenAppPage> LaunchAppAsync<TModelDrivenAppPage>(IBrowserContext browserContext, Uri environmentUrl, string uniqueName, string username, string password, string totpSecret = null)
             where TModelDrivenAppPage : IModelDrivenAppPage
         {
             if (environmentUrl is null)
@@ -103,7 +103,7 @@ namespace PowerPlaywright.Api
             }
 
             return this.LaunchAppInternalAsync<TModelDrivenAppPage>(
-                browserContext, environmentUrl, uniqueName, username, password);
+                browserContext, environmentUrl, uniqueName, username, password, totpSecret);
         }
 
         /// <summary>
@@ -134,13 +134,14 @@ namespace PowerPlaywright.Api
         /// <param name="uniqueName">The unique name of the app to launch.</param>
         /// <param name="username">The username to use to log in to the app.</param>
         /// <param name="password">The password to use to log in to the app.</param>
+        /// <param name="totpSecret">The secret if TOTP is configured.</param>
         /// <returns>A <see cref="Task"/> representing the operation. The task result is the model-driven app page after login.</returns>
-        internal Task<TModelDrivenAppPage> LaunchAppInternalAsync<TModelDrivenAppPage>(IBrowserContext browserContext, Uri environmentUrl, string uniqueName, string username, string password)
+        internal Task<TModelDrivenAppPage> LaunchAppInternalAsync<TModelDrivenAppPage>(IBrowserContext browserContext, Uri environmentUrl, string uniqueName, string username, string password, string totpSecret = null)
             where TModelDrivenAppPage : IModelDrivenAppPage
         {
             return this
                 .GetModelDrivenApp(browserContext, environmentUrl, uniqueName)
-                .LoginAsync<TModelDrivenAppPage>(username, password);
+                .LoginAsync<TModelDrivenAppPage>(username, password, totpSecret);
         }
 
         private static async Task<INuGetPackageInstaller> GetNuGetPackageInstaller()

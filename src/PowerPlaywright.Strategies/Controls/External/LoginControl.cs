@@ -4,11 +4,13 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using Microsoft.Playwright;
+    using OtpNet;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.External;
     using PowerPlaywright.Framework.Controls.External.Attributes;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
     /// Login control strategy.
@@ -22,6 +24,7 @@
         private readonly ILocator usernameInput;
         private readonly ILocator nextButton;
         private readonly ILocator passwordInput;
+        private readonly ILocator otpInput;
         private readonly ILocator workOrSchoolAccount;
         private readonly ILocator staySignedInButton;
 
@@ -40,12 +43,13 @@
             this.usernameInput = this.Container.GetByRole(AriaRole.Textbox).And(this.Container.Locator("input[type=email]"));
             this.nextButton = this.Container.GetByRole(AriaRole.Button).And(this.Container.Locator("input[type=submit]"));
             this.passwordInput = this.Container.GetByRole(AriaRole.Textbox).And(this.Container.Locator("input[type=password]"));
+            this.otpInput = this.Container.GetByRole(AriaRole.Textbox).And(this.Container.Locator("input[type=tel]"));
             this.workOrSchoolAccount = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Work or school account" });
             this.staySignedInButton = this.Container.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Yes" });
         }
 
         /// <inheritdoc/>
-        public async Task<IModelDrivenAppPage> LoginAsync(string username, string password)
+        public async Task<IModelDrivenAppPage> LoginAsync(string username, string password, string totpSecret = null)
         {
             await this.usernameInput.FocusAsync();
             await this.usernameInput.FillAsync(username);
@@ -69,6 +73,23 @@
             await this.passwordInput.FillAsync(password);
             await this.nextButton.ClickAsync();
 
+            if (totpSecret != null)
+            {
+                var totp = new Totp(totpSecret.DecodeAsBase32String());
+
+                try
+                {
+                    await this.otpInput.ClickAsync(new LocatorClickOptions { Timeout = 10000 });
+                    await this.otpInput.FocusAsync();
+                    await this.otpInput.FillAsync(totp.ComputeTotp());
+                    await this.nextButton.ClickAsync();
+                }
+                catch (TimeoutException)
+                {
+                    // Swallow. MFA may not be configured.
+                }
+            }
+
             try
             {
                 await this.staySignedInButton.ClickAsync(new LocatorClickOptions { Timeout = 10000 });
@@ -78,7 +99,7 @@
                 // Ignore.
             }
 
-            await this.Page.WaitForURLAsync("**/main.aspx*", new PageWaitForURLOptions { Timeout = 60000 });
+            await this.Page.WaitForURLAsync("**/main.aspx*", new PageWaitForURLOptions { Timeout = 120000 });
 
             return (IModelDrivenAppPage)await this.pageFactory.CreateInstanceAsync(this.Page);
         }

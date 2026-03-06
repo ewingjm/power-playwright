@@ -67,6 +67,17 @@
                     public const string Custom = "Custom";
                 }
             }
+
+            /// <summary>
+            /// Constants relating to Area B.
+            /// </summary>
+            public static class AreaB
+            {
+                /// <summary>
+                /// The display name of <see cref="AreaB"/>.
+                /// </summary>
+                public const string DisplayName = "Area B";
+            }
         }
     }
 }

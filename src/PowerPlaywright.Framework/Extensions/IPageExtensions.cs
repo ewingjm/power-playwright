@@ -23,6 +23,18 @@
             }
 
             await page.WaitForFunctionAsync("window.UCWorkBlockTracker.isAppIdle()", options: new PageWaitForFunctionOptions { Timeout = timeout.Milliseconds });
+
+            await WaitForSaveAsync(page, timeout);
+        }
+
+        private static async Task WaitForSaveAsync(IPage page, TimeSpan timeout)
+        {
+            var savingAlert = page.GetByRole(AriaRole.Alert).Filter(new LocatorFilterOptions { HasText = "Saving..." });
+
+            if (await savingAlert.IsVisibleAsync())
+            {
+                await savingAlert.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Hidden, Timeout = timeout.Milliseconds });
+            }
         }
     }
 }

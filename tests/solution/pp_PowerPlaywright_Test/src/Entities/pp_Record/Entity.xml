@@ -1921,6 +1921,14 @@
                   <label description="Inactive" languagecode="1033" />
                 </labels>
               </status>
+              <status value="125600001" state="1">
+                <labels>
+                  <label description="Cancelled" languagecode="1033" />
+                </labels>
+                <Descriptions>
+                  <Description description="" languagecode="1033" />
+                </Descriptions>
+              </status>
             </statuses>
           </optionset>
           <displaynames>

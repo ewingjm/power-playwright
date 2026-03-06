@@ -20,6 +20,7 @@
     public class CommandBar : Control, ICommandBar
     {
         private readonly IPageFactory pageFactory;
+        private readonly IControlFactory controlFactory;
 
         private readonly ILocator commands;
         private readonly ILocator overflowCommand;
@@ -32,12 +33,13 @@
         /// </summary>
         /// <param name="appPage">The app page.</param>
         /// <param name="pageFactory">The page factory.</param>
+        /// <param name="controlFactory">The control factory.</param>
         /// <param name="parent">The parent control.</param>
-        public CommandBar(IAppPage appPage, IPageFactory pageFactory, IControl parent = null)
+        public CommandBar(IAppPage appPage, IPageFactory pageFactory, IControlFactory controlFactory, IControl parent = null)
             : base(appPage, parent)
         {
             this.pageFactory = pageFactory;
-
+            this.controlFactory = controlFactory;
             this.commands = this.Container.Locator("[role='menuitem']:not([data-id='OverflowButton']):not([aria-hidden='true'])");
             this.overflowCommand = this.Container.Locator("[data-id='OverflowButton']");
             this.flyout = this.Page.GetByRole(AriaRole.Menu);
@@ -81,7 +83,7 @@
 
             if (!commandFound && commands.Length == 1 && await this.IsOverflowPresentAsync())
             {
-                await this.ExpandOverflowAsync();
+                await this.ToggleOverflowAsync();
                 commandFound = await command.IsVisibleAsync();
             }
 
@@ -99,6 +101,15 @@
         }
 
         /// <inheritdoc/>
+        public async Task<TControl> ClickCommandWithDialogAsync<TControl>(params string[] commands)
+            where TControl : IControl
+        {
+            await this.ClickCommandAsync(commands);
+
+            return this.controlFactory.CreateCachedInstance<TControl>(this.AppPage);
+        }
+
+        /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
             return context.GetByRole(AriaRole.Menubar, new LocatorGetByRoleOptions { Name = "Commands" }).First;
@@ -113,7 +124,7 @@
             var isRootCommand = await initialCommand.IsVisibleAsync();
             if (!isRootCommand && await this.IsOverflowPresentAsync())
             {
-                await this.ExpandOverflowAsync();
+                await this.ToggleOverflowAsync();
 
                 if (!await initialCommand.IsVisibleAsync())
                 {
@@ -140,11 +151,13 @@
 
             if (await this.IsOverflowPresentAsync())
             {
-                await this.ExpandOverflowAsync();
+                await this.ToggleOverflowAsync();
             }
 
             var overflowCommands = await this.flyoutCommands.AllAsync();
             labels.AddRange(await Task.WhenAll(overflowCommands.Select(this.GetCommandLabel)));
+
+            await this.Page.Keyboard.PressAsync("Escape");
 
             return labels;
         }
@@ -158,7 +171,11 @@
 
             var nestedCommands = await this.flyoutCommands.AllAsync();
 
-            return await Task.WhenAll(nestedCommands.Select(this.GetCommandLabel));
+            var commands = await Task.WhenAll(nestedCommands.Select(this.GetCommandLabel));
+
+            await this.Page.Keyboard.PressAsync("Escape");
+
+            return commands;
         }
 
         private async Task<bool> IsOverflowPresentAsync()
@@ -166,7 +183,7 @@
             return await this.overflowCommand.IsVisibleAsync();
         }
 
-        private async Task ExpandOverflowAsync()
+        private async Task ToggleOverflowAsync()
         {
             await this.overflowCommand.ClickAndWaitForAppIdleAsync();
         }
@@ -182,7 +199,7 @@
 
         private ILocator GetSplitButtonMainCommand(ILocator command)
         {
-            return command.Locator("[role='button']:not[aria-haspopup='true']");
+            return command.Locator("[role='button']:not([aria-haspopup='true'])");
         }
 
         private ILocator GetSplitButtonDropdownCommand(ILocator command)
@@ -194,7 +211,7 @@
         {
             var id = await command.GetAttributeAsync(Attributes.Id);
 
-            return id != null && id.Contains(".Menu0_splitButton");
+            return id != null && Regex.IsMatch(id, @"\.Menu\d+_splitButton");
         }
     }
 }

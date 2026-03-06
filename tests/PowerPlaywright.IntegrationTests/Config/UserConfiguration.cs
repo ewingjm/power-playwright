@@ -14,5 +14,10 @@
         /// Gets or sets the password.
         /// </summary>
         public required string Password { get; set; }
+
+        /// <summary>
+        /// Gets or sets the TOTP Secret.
+        /// </summary>
+        public string? TOTPSecret { get; set; }
     }
 }
