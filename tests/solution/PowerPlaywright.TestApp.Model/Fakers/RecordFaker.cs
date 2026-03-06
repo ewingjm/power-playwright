@@ -23,6 +23,7 @@
             this.RuleFor(r => r.pp_decimal, f => f.Random.Decimal());
             this.RuleFor(r => r.pp_float, f => f.Random.Float());
             this.RuleFor(r => r.pp_multiplelinesoftexttext, f => f.Lorem.Lines());
+            this.RuleFor(r => r.pp_multilinerichtext, f => f.Lorem.Lines());
             this.RuleFor(r => r.pp_RecordId, f => Guid.NewGuid());
             this.RuleFor(r => r.pp_singlelineoftexttext, f => f.Lorem.Random.AlphaNumeric(100));
             this.RuleFor(r => r.pp_singlelineoftextemail, f => f.Internet.Email());

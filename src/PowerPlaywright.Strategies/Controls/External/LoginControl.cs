@@ -99,7 +99,7 @@
                 // Ignore.
             }
 
-            await this.Page.WaitForURLAsync("**/main.aspx*", new PageWaitForURLOptions { Timeout = 60000 });
+            await this.Page.WaitForURLAsync("**/main.aspx*", new PageWaitForURLOptions { Timeout = 120000 });
 
             return (IModelDrivenAppPage)await this.pageFactory.CreateInstanceAsync(this.Page);
         }

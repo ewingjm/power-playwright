@@ -39,6 +39,19 @@
         }
 
         /// <summary>
+        /// Returns the value returned by <see cref="ILocator.InnerTextAsync(LocatorInnerTextOptions)"/> but transforms placeholder values (e.g. '---') to null.
+        /// </summary>
+        /// <param name="locator">The locator.</param>
+        /// <param name="options">The options.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        internal static async Task<string> InnerTextOrNullAsync(this ILocator locator, LocatorInnerTextOptions options = null)
+        {
+            var value = await locator.InnerTextAsync(options);
+
+            return string.IsNullOrWhiteSpace(value) || value == "---" ? null : value;
+        }
+
+        /// <summary>
         /// Returns the value returned by <see cref="ILocator.TextContentAsync(LocatorTextContentOptions)"/> but transforms placeholder values (e.g. '---') to null.
         /// </summary>
         /// <param name="locator">The locator.</param>

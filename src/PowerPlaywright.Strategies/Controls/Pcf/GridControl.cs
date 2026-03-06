@@ -66,7 +66,7 @@
 
             var capturedColumns = new List<string>();
 
-            await this.ScrollHorizontalToStartAsync();
+            await this.ScrollToAsync();
 
             while (true)
             {
@@ -75,14 +75,14 @@
                 capturedColumns.AddRange(visibleColumns.Except(capturedColumns));
                 if (capturedColumns.Count < columnCount)
                 {
-                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X / 2);
+                    await this.ScrollHorizontalAsync((await this.visibleHeaders.Last.BoundingBoxAsync()).X / 2, true);
                     continue;
                 }
 
                 break;
             }
 
-            await this.ScrollHorizontalToStartAsync();
+            await this.ScrollToAsync();
 
             return capturedColumns;
         }
@@ -366,16 +366,23 @@
             return this.GetRows().Locator($"[aria-selected='{select}']");
         }
 
-        private async Task ScrollHorizontalAsync(float deltaX)
+        private async Task ScrollHorizontalAsync(float deltaX, bool useNativeScroll = false)
         {
             if (!await this.CanScrollHorizontalAsync())
             {
                 return;
             }
 
-            await this.grid.HoverAsync();
-            await this.Page.Mouse.WheelAsync(deltaX, 0);
-            await this.Page.WaitForAppIdleAsync();
+            if (useNativeScroll)
+            {
+                await this.rowsContainer.EvaluateAsync("(el, dx) => { el.scrollLeft += dx; }", (int)deltaX);
+            }
+            else
+            {
+                await this.grid.HoverAsync();
+                await this.Page.Mouse.WheelAsync(deltaX, 0);
+                await this.Page.WaitForAppIdleAsync();
+            }
         }
 
         private async Task ScrollHorizontalToStartAsync()
@@ -385,6 +392,18 @@
             {
                 await this.ScrollHorizontalAsync(-scrollPosition);
             }
+        }
+
+        private async Task ScrollToAsync(int position = 0)
+        {
+            if (!await this.rowsContainer.IsVisibleAsync())
+            {
+                return;
+            }
+
+            await this.rowsContainer.EvaluateAsync("(el, x) => { el.scrollLeft = x; }", position);
+
+            await this.Page.WaitForAppIdleAsync();
         }
 
         private async Task<bool> CanScrollHorizontalAsync()
