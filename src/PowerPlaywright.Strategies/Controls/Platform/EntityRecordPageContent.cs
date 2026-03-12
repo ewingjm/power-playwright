@@ -23,6 +23,7 @@
         /// </summary>
         /// <param name="appPage">The app page.</param>
         /// <param name="controlFactory">The control factory.</param>
+        /// <param name="parent">The parent control.</param>
         public EntityRecordPageContent(IAppPage appPage, IControlFactory controlFactory, IControl parent = null)
         {
             this.appPage = appPage;
