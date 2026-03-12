@@ -21,6 +21,9 @@
         }
 
         /// <inheritdoc/>
-        public IMainForm Form => this.GetControl<IMainForm>();
+        public IMainForm Form => this.Content.Form;
+
+        /// <inheritdoc/>
+        public IEntityRecordPageContent Content => this.GetControl<IEntityRecordPageContent>();
     }
 }

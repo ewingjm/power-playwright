@@ -1,6 +1,5 @@
 ﻿namespace PowerPlaywright.Pages
 {
-    using System;
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Platform;
@@ -23,5 +22,8 @@
 
         /// <inheritdoc/>
         public IDataSet DataSet => this.GetControl<IDataSet>(string.Empty);
+
+        /// <inheritdoc/>
+        public IEntityListPageContent Content => this.GetControl<IEntityListPageContent>();
     }
 }
