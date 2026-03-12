@@ -4,6 +4,7 @@
     using System.Threading.Tasks;
     using Bogus;
     using PowerPlaywright.Framework.Controls.Platform;
+    using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.TestApp.Model.Fakers;
 
     /// <summary>
@@ -59,6 +60,9 @@
                 case Type t when t == typeof(IEntityRecordPageContent):
                     var recordPage = await this.LoginAndNavigateToRecordAsync(new RecordFaker().Generate());
                     return recordPage.Content;
+                case Type t when t == typeof(IEntityListPageContent):
+                    var listPage = (IEntityListPage)await this.LoginAsync();
+                    return listPage.Content;
                 default:
                     throw new InvalidOperationException();
             }
