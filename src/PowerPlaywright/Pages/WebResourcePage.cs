@@ -2,6 +2,7 @@
 {
     using Microsoft.Playwright;
     using PowerPlaywright.Framework;
+    using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
@@ -18,5 +19,8 @@
             : base(page, controlFactory)
         {
         }
+
+        /// <inheritdoc/>
+        public IWebResourcePageContent Content => this.GetControl<IWebResourcePageContent>();
     }
 }
