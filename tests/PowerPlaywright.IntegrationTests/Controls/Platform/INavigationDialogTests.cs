@@ -75,9 +75,12 @@
             var dialog = await this.SetupDialogScenarioAsync(pageContentType);
 
             await dialog.CloseAsync();
-            if (typeof(EntityRecordPageContent) == pageContentType)
+            if (typeof(IEntityRecordPageContent) == pageContentType)
             {
-                await this.appPage.ConfirmDialog.CancelAsync();
+                if (await this.appPage.ConfirmDialog.IsVisibleAsync())
+                {
+                    await this.appPage.ConfirmDialog.CancelAsync();
+                }
             }
 
             await this.Expect(dialog.Container).Not.ToBeVisibleAsync();
