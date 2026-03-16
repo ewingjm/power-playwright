@@ -131,6 +131,14 @@
                         <control id="pp_multiplelinesoftexttext" classid="{E0DECE4B-6FC8-4A8F-A065-082708572369}" datafieldname="pp_multiplelinesoftexttext" disabled="false" />
                       </cell>
                     </row>
+                    <row>
+                      <cell id="{83993c18-e6bb-4308-8fe1-2ce3b578aad1}" locklevel="0" colspan="1" rowspan="1">
+                        <labels>
+                          <label description="Multi Line Rich Text" languagecode="1033" />
+                        </labels>
+                        <control id="pp_multilinerichtext" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="pp_multilinerichtext" disabled="false" />
+                      </cell>
+                    </row>
                   </rows>
                 </section>
                 <section name="tab_A_section_B" id="2fda7ffe-d5b9-442e-893c-9abcde07623b" IsUserDefined="0" locklevel="0" showlabel="true" showbar="false" layout="varwidth" celllabelalignment="Left" celllabelposition="Left" columns="11" labelwidth="115">
