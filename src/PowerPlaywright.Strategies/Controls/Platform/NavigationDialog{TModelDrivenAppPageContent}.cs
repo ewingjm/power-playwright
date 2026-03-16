@@ -26,7 +26,7 @@
         private readonly ILocator title;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NavigationDialog"/> class.
+        /// Initializes a new instance of the <see cref="NavigationDialog{TModelDrivenAppPageContent}"/> class.
         /// </summary>
         /// <param name="appPage">The app page.</param>
         /// <param name="controlFactory">The control factory.</param>
