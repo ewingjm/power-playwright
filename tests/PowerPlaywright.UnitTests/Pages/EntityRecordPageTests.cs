@@ -48,7 +48,7 @@ public class EntityRecordPageTests : AppPageTests<IEntityRecordPage>
     /// <param name="propertyName">The property.</param>
     /// <param name="controlName">The control name (optional).</param>
     [Test]
-    [TestCase<IEntityRecordPageContent>(nameof(IEntityRecordPage.Content))]
+    [TestCase<IMainForm>(nameof(IEntityRecordPage.Form))]
     public new void ControlProperty_Always_ReturnsControlInstantiatedByControlFactory<TControlType>(
         string propertyName, string? controlName = null)
         where TControlType : class, IControl
