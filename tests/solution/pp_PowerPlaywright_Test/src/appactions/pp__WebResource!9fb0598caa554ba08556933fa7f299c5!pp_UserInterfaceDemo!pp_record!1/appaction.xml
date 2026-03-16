@@ -1,0 +1,35 @@
+<appaction uniquename="pp__WebResource!9fb0598caa554ba08556933fa7f299c5!pp_UserInterfaceDemo!pp_record!1">
+  <appmoduleid>
+    <uniquename>pp_UserInterfaceDemo</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="WebResource">
+    <label description="WebResource" languagecode="1033" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>pp_record</logicalname>
+  </contextentity>
+  <contextvalue>pp_record</contextvalue>
+  <fonticon>OpenInBrowser</fonticon>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>1</location>
+  <name>WebResource!9fb0598caa554ba08556933fa7f299c5</name>
+  <onclickeventjavascriptfunctionname>openWebResource</onclickeventjavascriptfunctionname>
+  <onclickeventjavascriptparameters>[{"type":21,"value":"pp_/html/hello-world.html"}]</onclickeventjavascriptparameters>
+  <onclickeventjavascriptwebresourceid>
+    <webresourceid>6f9903d8-c41e-f111-8341-7ced8d9cba50</webresourceid>
+  </onclickeventjavascriptwebresourceid>
+  <onclickeventtype>2</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>pp__NewGroup!bceddbb16fdf4dadab82545c8f05eeea!pp_UserInterfaceDemo!pp_record!1</uniquename>
+  </parentappactionid>
+  <sequence>20000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilitytype>0</visibilitytype>
+</appaction>

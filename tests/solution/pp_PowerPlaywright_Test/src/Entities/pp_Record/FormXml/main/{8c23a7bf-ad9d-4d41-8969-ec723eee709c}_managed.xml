@@ -391,7 +391,7 @@
                     <row>
                       <cell id="{3c593370-bbc0-4bc0-cc33-e57a5aa0db7b}" showlabel="true" colspan="1" auto="false" rowspan="7">
                         <labels>
-                          <label description="" languagecode="1033" />
+                          <label description="Related Records" languagecode="1033" />
                         </labels>
                         <control id="nestedgrid_RelatedRecords" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" indicationOfSubgrid="true" uniqueid="{2ccf333c-0555-4406-aa35-63b03314dfb4}">
                           <parameters>
