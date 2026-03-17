@@ -4,7 +4,6 @@
     using Bogus;
     using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Pages;
-    using PowerPlaywright.Strategies.Controls.Platform;
 
     /// <summary>
     /// Tests for the <see cref="INavigationDialog"/> control.
@@ -115,17 +114,17 @@
             switch (pageContentType)
             {
                 case Type t when t == typeof(IEntityRecordPageContent):
-                    return await this.appPage.DataSet.CommandBar
-                        .ClickCommandWithDialogAsync<INavigationDialog<IEntityRecordPageContent>>(commandModelDialogs, subCommandEntityRecord);
+                    await this.appPage.DataSet.CommandBar.ClickCommandAsync(commandModelDialogs, subCommandEntityRecord);
+                    return this.appPage.GetNavigationDialog<IEntityRecordPageContent>();
                 case Type t when t == typeof(ICustomPageContent):
-                    return await this.appPage.DataSet.CommandBar
-                        .ClickCommandWithDialogAsync<INavigationDialog<ICustomPageContent>>(commandModelDialogs, subCommandCustomPage);
+                    await this.appPage.DataSet.CommandBar.ClickCommandAsync(commandModelDialogs, subCommandCustomPage);
+                    return this.appPage.GetNavigationDialog<ICustomPageContent>();
                 case Type t when t == typeof(IWebResourcePageContent):
-                    return await this.appPage.DataSet.CommandBar
-                        .ClickCommandWithDialogAsync<INavigationDialog<IWebResourcePageContent>>(commandModelDialogs, subCommandWebResource);
-                case Type t when t == typeof(IEntityListPageContent):
-                    return await this.appPage.DataSet.CommandBar
-                        .ClickCommandWithDialogAsync<INavigationDialog<IWebResourcePageContent>>(commandModelDialogs, subCommandEntityList);
+                    await this.appPage.DataSet.CommandBar.ClickCommandAsync(commandModelDialogs, subCommandWebResource);
+                    return this.appPage.GetNavigationDialog<IWebResourcePageContent>();
+                case Type t when t == typeof(IEntityRecordPageContent):
+                    await this.appPage.DataSet.CommandBar.ClickCommandAsync(commandModelDialogs, subCommandEntityList);
+                    return this.appPage.GetNavigationDialog<IEntityRecordPageContent>();
                 default:
                     throw new InvalidOperationException($"Unsupported page content type '{pageContentType}'.");
             }

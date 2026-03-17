@@ -36,5 +36,13 @@
         /// Gets a deactivate dialog.
         /// </summary>
         ISetStateDialog SetStateDialog { get; }
+
+        /// <summary>
+        /// Gets a navigation dialog hosting the specified page content type.
+        /// </summary>
+        /// <typeparam name="TModelDrivenAppPageContent">The page content type hosted inside the dialog.</typeparam>
+        /// <returns>The navigation dialog.</returns>
+        INavigationDialog<TModelDrivenAppPageContent> GetNavigationDialog<TModelDrivenAppPageContent>()
+            where TModelDrivenAppPageContent : IModelDrivenAppPageContent;
     }
 }
