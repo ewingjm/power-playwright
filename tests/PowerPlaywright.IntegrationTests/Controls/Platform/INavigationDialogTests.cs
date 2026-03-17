@@ -74,12 +74,10 @@
             var dialog = await this.SetupDialogScenarioAsync(pageContentType);
 
             await dialog.CloseAsync();
-            if (typeof(IEntityRecordPageContent) == pageContentType)
+            if (typeof(IEntityRecordPageContent) == pageContentType
+                && await this.appPage.ConfirmDialog.IsVisibleAsync())
             {
-                if (await this.appPage.ConfirmDialog.IsVisibleAsync())
-                {
-                    await this.appPage.ConfirmDialog.CancelAsync();
-                }
+                await this.appPage.ConfirmDialog.CancelAsync();
             }
 
             await this.Expect(dialog.Container).Not.ToBeVisibleAsync();
@@ -122,9 +120,9 @@
                 case Type t when t == typeof(IWebResourcePageContent):
                     await this.appPage.DataSet.CommandBar.ClickCommandAsync(commandModelDialogs, subCommandWebResource);
                     return this.appPage.GetNavigationDialog<IWebResourcePageContent>();
-                case Type t when t == typeof(IEntityRecordPageContent):
+                case Type t when t == typeof(IEntityListPageContent):
                     await this.appPage.DataSet.CommandBar.ClickCommandAsync(commandModelDialogs, subCommandEntityList);
-                    return this.appPage.GetNavigationDialog<IEntityRecordPageContent>();
+                    return this.appPage.GetNavigationDialog<IEntityListPageContent>();
                 default:
                     throw new InvalidOperationException($"Unsupported page content type '{pageContentType}'.");
             }
