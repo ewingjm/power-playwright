@@ -24,7 +24,6 @@
 
         private readonly ILocator commands;
         private readonly ILocator overflowCommand;
-        private readonly ILocator flyoutRootNode;
         private readonly ILocator flyout;
         private readonly ILocator flyoutCommands;
         private readonly ILocator flyoutLoading;
@@ -43,8 +42,7 @@
             this.controlFactory = controlFactory;
             this.commands = this.Container.Locator("[role='menuitem']:not([data-id='OverflowButton']):not([aria-hidden='true'])");
             this.overflowCommand = this.Container.Locator("[data-id='OverflowButton']");
-            this.flyoutRootNode = this.Page.Locator("#__flyoutRootNode").Or(this.Page.Locator("#__fluentPortalMountNode"));
-            this.flyout = this.flyoutRootNode.GetByRole(AriaRole.Menu);
+            this.flyout = this.Page.GetByRole(AriaRole.Menu);
             this.flyoutCommands = this.flyout.Locator("[role='menuitem']:not([id*='flyoutbackbutton']):not([aria-hidden='true'])");
             this.flyoutLoading = this.flyoutCommands.Filter(new LocatorFilterOptions { HasText = "Loading..." });
         }
@@ -183,7 +181,7 @@
 
         private async Task CloseFlyout()
         {
-            while (await this.flyoutRootNode.CountAsync() > 0)
+            while (await this.flyout.IsVisibleAsync())
             {
                 await this.Page.Keyboard.PressAsync("Escape");
             }
