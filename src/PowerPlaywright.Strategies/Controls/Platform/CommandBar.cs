@@ -43,7 +43,7 @@
             this.controlFactory = controlFactory;
             this.commands = this.Container.Locator("[role='menuitem']:not([data-id='OverflowButton']):not([aria-hidden='true'])");
             this.overflowCommand = this.Container.Locator("[data-id='OverflowButton']");
-            this.flyoutRootNode = this.Page.Locator("#__flyoutRootNode");
+            this.flyoutRootNode = this.Page.Locator("#__flyoutRootNode").Or(this.Page.Locator("#__fluentPortalMountNode"));
             this.flyout = this.flyoutRootNode.GetByRole(AriaRole.Menu);
             this.flyoutCommands = this.flyout.Locator("[role='menuitem']:not([id*='flyoutbackbutton']):not([aria-hidden='true'])");
             this.flyoutLoading = this.flyoutCommands.Filter(new LocatorFilterOptions { HasText = "Loading..." });
