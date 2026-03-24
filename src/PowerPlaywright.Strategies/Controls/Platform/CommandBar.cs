@@ -24,6 +24,7 @@
 
         private readonly ILocator commands;
         private readonly ILocator overflowCommand;
+        private readonly ILocator flyoutRootNode;
         private readonly ILocator flyout;
         private readonly ILocator flyoutCommands;
         private readonly ILocator flyoutLoading;
@@ -42,7 +43,8 @@
             this.controlFactory = controlFactory;
             this.commands = this.Container.Locator("[role='menuitem']:not([data-id='OverflowButton']):not([aria-hidden='true'])");
             this.overflowCommand = this.Container.Locator("[data-id='OverflowButton']");
-            this.flyout = this.Page.GetByRole(AriaRole.Menu);
+            this.flyoutRootNode = this.Page.Locator("#__flyoutRootNode");
+            this.flyout = this.flyoutRootNode.GetByRole(AriaRole.Menu);
             this.flyoutCommands = this.flyout.Locator("[role='menuitem']:not([id*='flyoutbackbutton']):not([aria-hidden='true'])");
             this.flyoutLoading = this.flyoutCommands.Filter(new LocatorFilterOptions { HasText = "Loading..." });
         }
@@ -149,15 +151,16 @@
             var commands = await this.commands.AllAsync();
             labels.AddRange(await Task.WhenAll(commands.Select(this.GetCommandLabel)));
 
-            if (await this.IsOverflowPresentAsync())
+            if (!await this.IsOverflowPresentAsync())
             {
-                await this.ToggleOverflowAsync();
+                return labels;
             }
 
+            await this.ToggleOverflowAsync();
             var overflowCommands = await this.flyoutCommands.AllAsync();
             labels.AddRange(await Task.WhenAll(overflowCommands.Select(this.GetCommandLabel)));
 
-            await this.Page.Keyboard.PressAsync("Escape");
+            await this.CloseFlyout();
 
             return labels;
         }
@@ -173,9 +176,17 @@
 
             var commands = await Task.WhenAll(nestedCommands.Select(this.GetCommandLabel));
 
-            await this.Page.Keyboard.PressAsync("Escape");
+            await this.CloseFlyout();
 
             return commands;
+        }
+
+        private async Task CloseFlyout()
+        {
+            while (await this.flyoutRootNode.CountAsync() > 0)
+            {
+                await this.Page.Keyboard.PressAsync("Escape");
+            }
         }
 
         private async Task<bool> IsOverflowPresentAsync()
