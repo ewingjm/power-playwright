@@ -149,15 +149,16 @@
             var commands = await this.commands.AllAsync();
             labels.AddRange(await Task.WhenAll(commands.Select(this.GetCommandLabel)));
 
-            if (await this.IsOverflowPresentAsync())
+            if (!await this.IsOverflowPresentAsync())
             {
-                await this.ToggleOverflowAsync();
+                return labels;
             }
 
+            await this.ToggleOverflowAsync();
             var overflowCommands = await this.flyoutCommands.AllAsync();
             labels.AddRange(await Task.WhenAll(overflowCommands.Select(this.GetCommandLabel)));
 
-            await this.Page.Keyboard.PressAsync("Escape");
+            await this.CloseFlyout();
 
             return labels;
         }
@@ -173,9 +174,17 @@
 
             var commands = await Task.WhenAll(nestedCommands.Select(this.GetCommandLabel));
 
-            await this.Page.Keyboard.PressAsync("Escape");
+            await this.CloseFlyout();
 
             return commands;
+        }
+
+        private async Task CloseFlyout()
+        {
+            while (await this.flyout.IsVisibleAsync())
+            {
+                await this.Page.Keyboard.PressAsync("Escape");
+            }
         }
 
         private async Task<bool> IsOverflowPresentAsync()
