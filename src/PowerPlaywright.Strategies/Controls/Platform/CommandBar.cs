@@ -115,12 +115,12 @@
             return context.GetByRole(AriaRole.Menubar, new LocatorGetByRoleOptions { Name = "Commands" }).First;
         }
 
-        private async Task ExpandCommandAsync(string command)
+        private async Task<bool> ExpandCommandAsync(string command)
         {
             await this.Page.WaitForAppIdleAsync();
 
+            var isOverflowCommand = false;
             var initialCommand = this.commands.Or(this.flyoutCommands).Filter(new LocatorFilterOptions { HasText = command });
-
             var isRootCommand = await initialCommand.IsVisibleAsync();
             if (!isRootCommand && await this.IsOverflowPresentAsync())
             {
@@ -130,6 +130,8 @@
                 {
                     throw new PowerPlaywrightException($"The command '{initialCommand}' is not available in the command bar.");
                 }
+
+                isOverflowCommand = true;
             }
 
             if (await this.IsSplitButtonCommandAsync(initialCommand))
@@ -140,6 +142,8 @@
             await initialCommand.ClickAndWaitForAppIdleAsync();
 
             await this.flyoutLoading.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Hidden });
+
+            return isOverflowCommand;
         }
 
         private async Task<IEnumerable<string>> GetRootCommandsAsync()
@@ -158,32 +162,34 @@
             var overflowCommands = await this.flyoutCommands.AllAsync();
             labels.AddRange(await Task.WhenAll(overflowCommands.Select(this.GetCommandLabel)));
 
-            await this.CloseFlyout();
+            await this.CloseFlyout(1);
 
             return labels;
         }
 
         private async Task<IEnumerable<string>> GetNestedCommandsAsync(string[] parentCommands)
         {
+            var isOverflowCommandUsed = false;
             foreach (var parentCommand in parentCommands)
             {
-                await this.ExpandCommandAsync(parentCommand);
+                isOverflowCommandUsed = isOverflowCommandUsed || await this.ExpandCommandAsync(parentCommand);
             }
 
             var nestedCommands = await this.flyoutCommands.AllAsync();
 
             var commands = await Task.WhenAll(nestedCommands.Select(this.GetCommandLabel));
 
-            await this.CloseFlyout();
+            await this.CloseFlyout(parentCommands.Length + (isOverflowCommandUsed ? 1 : 0));
 
             return commands;
         }
 
-        private async Task CloseFlyout()
+        private async Task CloseFlyout(int depth)
         {
-            while (await this.flyout.IsVisibleAsync())
+            for (int i = 0; i < depth; i++)
             {
                 await this.Page.Keyboard.PressAsync("Escape");
+                await this.Page.WaitForAppIdleAsync();
             }
         }
 
