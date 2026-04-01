@@ -162,7 +162,7 @@
             var overflowCommands = await this.flyoutCommands.AllAsync();
             labels.AddRange(await Task.WhenAll(overflowCommands.Select(this.GetCommandLabel)));
 
-            await this.CloseFlyout(1);
+            await this.CloseFlyout();
 
             return labels;
         }
@@ -179,14 +179,14 @@
 
             var commands = await Task.WhenAll(nestedCommands.Select(this.GetCommandLabel));
 
-            await this.CloseFlyout(parentCommands.Length + (isOverflowCommandUsed ? 1 : 0));
+            await this.CloseFlyout();
 
             return commands;
         }
 
-        private async Task CloseFlyout(int depth)
+        private async Task CloseFlyout()
         {
-            for (int i = 0; i < depth; i++)
+            while (!await this.overflowCommand.IsVisibleAsync() || await this.overflowCommand.IsExpandedAsync())
             {
                 await this.Page.Keyboard.PressAsync("Escape");
                 await this.Page.WaitForAppIdleAsync();
