@@ -6,12 +6,10 @@
     <RolePrivilege name="prvActivateSynchronousWorkflow" level="Basic" />
     <RolePrivilege name="prvAppendNewProcess" level="Global" />
     <RolePrivilege name="prvAppendpp_Record" level="Global" />
-    <RolePrivilege name="prvAppendpp_recordbpf" level="Global" />
     <RolePrivilege name="prvAppendpp_RelatedRecord" level="Global" />
     <RolePrivilege name="prvAppendToAsyncOperation" level="Basic" />
     <RolePrivilege name="prvAppendToNewProcess" level="Global" />
     <RolePrivilege name="prvAppendTopp_Record" level="Global" />
-    <RolePrivilege name="prvAppendTopp_recordbpf" level="Global" />
     <RolePrivilege name="prvAppendTopp_RelatedRecord" level="Global" />
     <RolePrivilege name="prvAppendToTranslationProcess" level="Global" />
     <RolePrivilege name="prvAppendToWorkflow" level="Global" />
@@ -26,7 +24,6 @@
     <RolePrivilege name="prvAssignWorkflowSession" level="Basic" />
     <RolePrivilege name="prvCreateNewProcess" level="Global" />
     <RolePrivilege name="prvCreatepp_Record" level="Global" />
-    <RolePrivilege name="prvCreatepp_recordbpf" level="Global" />
     <RolePrivilege name="prvCreatepp_RelatedRecord" level="Global" />
     <RolePrivilege name="prvCreateSharePointData" level="Global" />
     <RolePrivilege name="prvCreateTranslationProcess" level="Global" />
@@ -36,7 +33,6 @@
     <RolePrivilege name="prvCreateWorkflowSession" level="Basic" />
     <RolePrivilege name="prvDeleteNewProcess" level="Global" />
     <RolePrivilege name="prvDeletepp_Record" level="Global" />
-    <RolePrivilege name="prvDeletepp_recordbpf" level="Global" />
     <RolePrivilege name="prvDeletepp_RelatedRecord" level="Global" />
     <RolePrivilege name="prvDeleteTranslationProcess" level="Global" />
     <RolePrivilege name="prvDeleteUserApplicationMetadata" level="Basic" />
@@ -64,7 +60,6 @@
     <RolePrivilege name="prvReadPluginTraceLog" level="Global" />
     <RolePrivilege name="prvReadPluginType" level="Global" />
     <RolePrivilege name="prvReadpp_Record" level="Global" />
-    <RolePrivilege name="prvReadpp_recordbpf" level="Global" />
     <RolePrivilege name="prvReadpp_RelatedRecord" level="Global" />
     <RolePrivilege name="prvReadQuery" level="Global" />
     <RolePrivilege name="prvReadRelationship" level="Global" />
@@ -99,7 +94,6 @@
     <RolePrivilege name="prvWriteAsyncOperation" level="Basic" />
     <RolePrivilege name="prvWriteNewProcess" level="Global" />
     <RolePrivilege name="prvWritepp_Record" level="Global" />
-    <RolePrivilege name="prvWritepp_recordbpf" level="Global" />
     <RolePrivilege name="prvWritepp_RelatedRecord" level="Global" />
     <RolePrivilege name="prvWriteSharePointData" level="Global" />
     <RolePrivilege name="prvWriteTranslationProcess" level="Global" />

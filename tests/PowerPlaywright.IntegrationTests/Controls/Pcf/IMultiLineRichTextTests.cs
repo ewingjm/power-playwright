@@ -3,8 +3,10 @@
     using Bogus;
     using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.IntegrationTests.Extensions;
+    using PowerPlaywright.Strategies.Controls.Pcf;
     using PowerPlaywright.TestApp.Model;
     using PowerPlaywright.TestApp.Model.Fakers;
+    using System.Text.RegularExpressions;
 
     /// <summary>
     /// Tests the <see cref="IMultiLineRichTextTests"/> PCF control class.
