@@ -34,5 +34,10 @@
         /// A custom page.
         /// </summary>
         Custom,
+
+        /// <summary>
+        /// A search page.
+        /// </summary>
+        Search,
     }
 }

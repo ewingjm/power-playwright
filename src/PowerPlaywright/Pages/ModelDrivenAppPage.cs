@@ -37,5 +37,8 @@ namespace PowerPlaywright.Pages
 
         /// <inheritdoc/>
         public ISetStateDialog SetStateDialog => this.GetControl<ISetStateDialog>();
+
+        /// <inheritdoc/>
+        public IGlobalSearch Search => this.GetControl<IGlobalSearch>();
     }
 }

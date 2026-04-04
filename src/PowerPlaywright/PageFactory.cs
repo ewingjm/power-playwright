@@ -102,16 +102,25 @@
             {
                 case ModelDrivenPageType.EntityList:
                     return typeof(EntityListPage);
+
                 case ModelDrivenPageType.EntityRecord:
                     return typeof(EntityRecordPage);
+
                 case ModelDrivenPageType.Login:
                     return typeof(LoginPage);
+
                 case ModelDrivenPageType.WebResource:
                     return typeof(WebResourcePage);
+
                 case ModelDrivenPageType.Dashboard:
                     return typeof(DashboardPage);
+
                 case ModelDrivenPageType.Custom:
                     return typeof(CustomPage);
+
+                case ModelDrivenPageType.Search:
+                    return typeof(SearchPage);
+
                 default:
                     throw new PowerPlaywrightException($"Page type {pageType} has not been mapped to a concrete type.");
             }

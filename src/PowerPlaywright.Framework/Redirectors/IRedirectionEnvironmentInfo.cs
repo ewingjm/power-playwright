@@ -29,5 +29,10 @@
         /// Gets a value indicating whether new look is enabled based on user, app, and org settings.
         /// </summary>
         bool IsNewLookEnabled { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether gets whether the relevance search is enabled on the instance.
+        /// </summary>
+        bool IsRelevanceSearchEnabled { get; }
     }
 }
