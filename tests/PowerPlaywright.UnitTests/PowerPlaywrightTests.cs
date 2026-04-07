@@ -193,7 +193,7 @@ public class PowerPlaywrightTests
 
     private void MockValidDefaults()
     {
-        var powerPlaywrightAssembly = Assembly.GetExecutingAssembly();
+        var powerPlaywrightAssembly = typeof(IPowerPlaywright).Assembly;
         var powerPlaywrightVersion = powerPlaywrightAssembly.GetName().Version!;
         var productVersion = FileVersionInfo.GetVersionInfo(powerPlaywrightAssembly.Location).ProductVersion;
         var match = Regex.Match(productVersion ?? string.Empty, "-(.+?)\\+");
