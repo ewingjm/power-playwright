@@ -3,9 +3,9 @@
     using PowerPlaywright.Framework.Controls.Platform;
 
     /// <summary>
-    /// A dashboard page.
+    /// A custom page.
     /// </summary>
-    public interface IDashboardPage : IModelDrivenAppPage<IDashboardPageContent>
+    public interface ICustomPage : IModelDrivenAppPage<ICustomPageContent>
     {
     }
 }

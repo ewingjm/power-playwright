@@ -5,7 +5,7 @@
     /// <summary>
     /// An entity list page.
     /// </summary>
-    public interface IEntityListPage : IModelDrivenAppPage
+    public interface IEntityListPage : IModelDrivenAppPage<IEntityListPageContent>
     {
         /// <summary>
         /// Gets the grid.
