@@ -1,0 +1,35 @@
+<appaction uniquename="pp__EntityList!a28b3ce111a841f1b105917f4f17daa6!pp_UserInterfaceDemo!pp_record!1">
+  <appmoduleid>
+    <uniquename>pp_UserInterfaceDemo</uniquename>
+  </appmoduleid>
+  <buttonlabeltext default="Entity List">
+    <label description="Entity List" languagecode="1033" />
+  </buttonlabeltext>
+  <context>1</context>
+  <contextentity>
+    <logicalname>pp_record</logicalname>
+  </contextentity>
+  <contextvalue>pp_record</contextvalue>
+  <fonticon>$clientsvg:CustomList</fonticon>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>0</isgrouptitlehidden>
+  <location>1</location>
+  <name>EntityList!a28b3ce111a841f1b105917f4f17daa6</name>
+  <onclickeventjavascriptfunctionname>openEntityList</onclickeventjavascriptfunctionname>
+  <onclickeventjavascriptparameters>[{"type":8},{"type":21,"value":"59772644-c5f9-4449-ba9b-0a1347bffd25"}]</onclickeventjavascriptparameters>
+  <onclickeventjavascriptwebresourceid>
+    <webresourceid>6f9903d8-c41e-f111-8341-7ced8d9cba50</webresourceid>
+  </onclickeventjavascriptwebresourceid>
+  <onclickeventtype>2</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>pp__NewGroup!bceddbb16fdf4dadab82545c8f05eeea!pp_UserInterfaceDemo!pp_record!1</uniquename>
+  </parentappactionid>
+  <sequence>40000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>0</type>
+  <visibilitytype>0</visibilitytype>
+</appaction>
