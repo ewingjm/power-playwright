@@ -7,6 +7,9 @@ using NuGet.Versioning;
 using PowerPlaywright.Api;
 using PowerPlaywright.Config;
 using PowerPlaywright.Framework.Pages;
+using System.Diagnostics;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using PowerPlaywright = PowerPlaywright.Api.PowerPlaywright;
 
 /// <summary>
@@ -190,9 +193,13 @@ public class PowerPlaywrightTests
 
     private void MockValidDefaults()
     {
-        var powerPlaywrightVersion = typeof(IPowerPlaywright).Assembly.GetName().Version!;
+        var powerPlaywrightAssembly = Assembly.GetExecutingAssembly();
+        var powerPlaywrightVersion = powerPlaywrightAssembly.GetName().Version!;
+        var productVersion = FileVersionInfo.GetVersionInfo(powerPlaywrightAssembly.Location).ProductVersion;
+        var match = Regex.Match(productVersion ?? string.Empty, "-(.+?)\\+");
+        var release = match.Success ? match.Groups[1].Value : string.Empty;
 
         this.packageInstaller.GetAllVersionsAsync(StrategiesPackageId)
-            .Returns([new NuGetVersion(powerPlaywrightVersion.Major, powerPlaywrightVersion.Minor, powerPlaywrightVersion.Revision)]);
+            .Returns([new NuGetVersion(powerPlaywrightVersion.Major, powerPlaywrightVersion.Minor, powerPlaywrightVersion.Build, 0, release, string.Empty)]);
     }
 }
