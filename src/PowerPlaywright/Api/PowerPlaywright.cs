@@ -193,7 +193,7 @@ namespace PowerPlaywright.Api
 
             var versions = await nuGetPackageInstaller.GetAllVersionsAsync(StrategiesPackageId);
 
-            var strategiesVersion = versions.FirstOrDefault(v => v.Major == assemblyVersion.Major && v.Minor == assemblyVersion.Minor && v.Patch == assemblyVersion.Build && v.Release == release);
+            var strategiesVersion = versions.Count() == 1 ? versions.First() : versions.FirstOrDefault(v => v.Major == assemblyVersion.Major && v.Minor == assemblyVersion.Minor && v.Patch == assemblyVersion.Build && v.Release == release);
 
             return strategiesVersion is null
                 ? throw new PowerPlaywrightException($"Unable to find strategies version matching '{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}{(string.IsNullOrEmpty(release) ? string.Empty : $"-{release}")}'.")
