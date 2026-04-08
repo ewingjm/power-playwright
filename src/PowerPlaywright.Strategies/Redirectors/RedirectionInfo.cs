@@ -39,6 +39,12 @@
         {
             get
             {
+                // https://learn.microsoft.com/en-us/power-platform/release-plan/2026wave1/power-apps/enforce-modern-refreshed-look-model-driven-apps
+                if (this.Version >= new Version(9, 2, 26033, 159))
+                {
+                    return true;
+                }
+
                 if (this.App.NewLookAlwaysOn)
                 {
                     return true;
