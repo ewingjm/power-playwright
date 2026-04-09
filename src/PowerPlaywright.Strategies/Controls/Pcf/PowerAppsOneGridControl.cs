@@ -85,17 +85,16 @@
         /// <inheritdoc/>
         public async Task<int> GetTotalRowCountAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             var pattern = @"Rows:\s+(\d+)";
             var statusTextContainers = await this.Container.Locator("span[class*='statusTextContainer-']").AllTextContentsAsync();
             var match = statusTextContainers.Select(st => Regex.Match(st, pattern, RegexOptions.CultureInvariant))
                 .FirstOrDefault(m => m.Success);
 
-            if (match == null)
-            {
-                throw new PowerPlaywrightException($"Unable to get total row count from status text: {string.Join(" ", statusTextContainers)}.");
-            }
-
-            return int.Parse(match.Groups[1].Value);
+            return match == null
+                ? throw new PowerPlaywrightException($"Unable to get total row count from status text: {string.Join(" ", statusTextContainers)}.")
+                : int.Parse(match.Groups[1].Value);
         }
 
         /// <inheritdoc/>
@@ -147,6 +146,8 @@
         /// <inheritdoc/>
         public async Task<int> GetSelectedRowCountAsync()
         {
+            await this.Page.WaitForAppIdleAsync();
+
             var pattern = @"Selected:\s*(\d+)";
             var statusTextContainers = await this.Container.Locator("span[class*='statusTextContainer-']").AllTextContentsAsync();
 
@@ -206,6 +207,8 @@
         /// <inheritdoc/>
         public async Task<bool> GetSelectedStateAsync(int index)
         {
+            await this.Page.WaitForAppIdleAsync();
+
             await this.ScrollHorizontalToStartAsync();
 
             var row = this.GetRow(index);
