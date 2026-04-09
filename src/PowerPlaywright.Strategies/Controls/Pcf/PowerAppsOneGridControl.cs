@@ -59,7 +59,10 @@
             var columnCount = int.Parse(await this.treeGrid.GetAttributeAsync(Attributes.AriaColCount)) - 1;
             var rowsBoundingBox = await this.rowsContainer.BoundingBoxAsync();
             var capturedColumns = new List<string>();
-            while (true)
+
+            await this.Container.Locator("[role='columnheader'][aria-colindex='1']").FocusAsync();
+
+            for (int i = 0; i < columnCount; i++)
             {
                 var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
                     .Select(s =>
@@ -70,16 +73,8 @@
                     .ToList();
 
                 capturedColumns.AddRange(visibleColumns.Except(capturedColumns));
-                if (capturedColumns.Count < columnCount)
-                {
-                    await this.rowsContainer.HoverAsync();
-                    await this.Page.Mouse.WheelAsync(rowsBoundingBox.Width, 0);
-                    await this.Page.WaitForAppIdleAsync();
 
-                    continue;
-                }
-
-                break;
+                await this.Page.Keyboard.PressAsync("ArrowRight");
             }
 
             await this.ScrollHorizontalToStartAsync();
