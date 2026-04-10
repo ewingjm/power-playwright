@@ -1,5 +1,6 @@
 ﻿namespace PowerPlaywright.Strategies.Controls.Platform
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text.RegularExpressions;
@@ -97,6 +98,7 @@
                 command = this.GetSplitButtonMainCommand(command);
             }
 
+            await Task.Delay(TimeSpan.FromMilliseconds(500)); // Buttons clicked too quickly appear to not fire events (seen on JavaScript commands).
             await command.ClickAndWaitForAppIdleAsync();
         }
 
