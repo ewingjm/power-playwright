@@ -1,0 +1,28 @@
+<appaction uniquename="pp__NewGroup!bceddbb16fdf4dadab82545c8f05eeea!pp_UserInterfaceDemo!pp_record!1">
+  <appmoduleid>
+    <uniquename>pp_UserInterfaceDemo</uniquename>
+  </appmoduleid>
+  <context>1</context>
+  <contextentity>
+    <logicalname>pp_record</logicalname>
+  </contextentity>
+  <contextvalue>pp_record</contextvalue>
+  <grouptitle default="NewGroup">
+    <label description="NewGroup" languagecode="1033" />
+  </grouptitle>
+  <hidden>0</hidden>
+  <iscustomizable>1</iscustomizable>
+  <isdisabled>0</isdisabled>
+  <isgrouptitlehidden>1</isgrouptitlehidden>
+  <location>1</location>
+  <name>NewGroup!bceddbb16fdf4dadab82545c8f05eeea</name>
+  <onclickeventtype>0</onclickeventtype>
+  <origin>0</origin>
+  <parentappactionid>
+    <uniquename>pp__ModelDialogs!4d8d3db245514351943f094a46c16589!pp_UserInterfaceDemo!pp_record!1</uniquename>
+  </parentappactionid>
+  <sequence>10000.0000000000</sequence>
+  <statecode>0</statecode>
+  <statuscode>1</statuscode>
+  <type>3</type>
+</appaction>

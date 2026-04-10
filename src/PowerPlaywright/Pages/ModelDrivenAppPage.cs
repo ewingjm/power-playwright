@@ -15,7 +15,7 @@ namespace PowerPlaywright.Pages
         /// </summary>
         /// <param name="page">The page.</param>
         /// <param name="controlFactory">The control factory.</param>
-        public ModelDrivenAppPage(IPage page, IControlFactory controlFactory)
+        protected ModelDrivenAppPage(IPage page, IControlFactory controlFactory)
             : base(page, controlFactory)
         {
         }
@@ -37,5 +37,12 @@ namespace PowerPlaywright.Pages
 
         /// <inheritdoc/>
         public ISetStateDialog SetStateDialog => this.GetControl<ISetStateDialog>();
+
+        /// <inheritdoc/>
+        public INavigationDialog<TModelDrivenAppPageContent> GetNavigationDialog<TModelDrivenAppPageContent>()
+            where TModelDrivenAppPageContent : IModelDrivenAppPageContent
+        {
+            return this.GetControl<INavigationDialog<TModelDrivenAppPageContent>>();
+        }
     }
 }

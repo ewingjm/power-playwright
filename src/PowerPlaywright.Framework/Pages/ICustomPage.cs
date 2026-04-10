@@ -3,9 +3,9 @@
     using PowerPlaywright.Framework.Controls.Platform;
 
     /// <summary>
-    /// Represents a web reource page.
+    /// A custom page.
     /// </summary>
-    public interface IWebResourcePage : IModelDrivenAppPage<IWebResourcePageContent>
+    public interface ICustomPage : IModelDrivenAppPage<ICustomPageContent>
     {
     }
 }

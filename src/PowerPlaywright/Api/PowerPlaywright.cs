@@ -1,8 +1,10 @@
 namespace PowerPlaywright.Api
 {
     using System;
+    using System.Diagnostics;
     using System.Linq;
     using System.Reflection;
+    using System.Text.RegularExpressions;
     using System.Threading;
     using System.Threading.Tasks;
     using global::PowerPlaywright.Config;
@@ -183,15 +185,18 @@ namespace PowerPlaywright.Api
 
         private static async Task<PackageIdentity> FindBestStrategiesPackageVersionAsync(INuGetPackageInstaller nuGetPackageInstaller)
         {
-            var assemblyVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            var powerPlaywrightAssembly = Assembly.GetExecutingAssembly();
+            var assemblyVersion = powerPlaywrightAssembly.GetName().Version;
+            var productVersion = FileVersionInfo.GetVersionInfo(powerPlaywrightAssembly.Location).ProductVersion;
+            var match = Regex.Match(productVersion ?? string.Empty, "-(.+?)\\+");
+            var release = match.Success ? match.Groups[1].Value : string.Empty;
 
             var versions = await nuGetPackageInstaller.GetAllVersionsAsync(StrategiesPackageId);
-            var strategiesVersion = versions.Count() > 1
-                ? versions.FirstOrDefault(v => v.Major == assemblyVersion.Major && v.Minor == assemblyVersion.Minor && v.Patch == assemblyVersion.Build)
-                : versions.FirstOrDefault();
+
+            var strategiesVersion = versions.Count() == 1 ? versions.First() : versions.FirstOrDefault(v => v.Major == assemblyVersion.Major && v.Minor == assemblyVersion.Minor && v.Patch == assemblyVersion.Build && v.Release == release);
 
             return strategiesVersion is null
-                ? throw new PowerPlaywrightException($"Unable to find strategies version matching '{assemblyVersion.ToString(3)}'.")
+                ? throw new PowerPlaywrightException($"Unable to find strategies version matching '{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}{(string.IsNullOrEmpty(release) ? string.Empty : $"-{release}")}'.")
                 : new PackageIdentity(StrategiesPackageId, strategiesVersion);
         }
 
