@@ -111,6 +111,7 @@
             }
 
             await row.GetByRole(AriaRole.Gridcell).Nth(1).DblClickAsync(new LocatorDblClickOptions { Position = new Position { X = 0, Y = 0 } });
+            await this.Page.WaitForAppIdleAsync();
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }

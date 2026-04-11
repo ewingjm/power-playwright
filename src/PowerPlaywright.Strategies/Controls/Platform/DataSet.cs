@@ -85,6 +85,8 @@
                     .Or(this.viewsMenu.GetByRole(AriaRole.Option))
                     .Filter(new LocatorFilterOptions { Has = this.Page.GetByText(viewName, new PageGetByTextOptions { Exact = true }) })
                     .ClickAndWaitForAppIdleAsync();
+
+                await this.Container.GetByText(viewName).WaitForAsync();
             }
             catch (TimeoutException)
             {
