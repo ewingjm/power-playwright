@@ -100,7 +100,6 @@
 
             await Task.Delay(TimeSpan.FromMilliseconds(500)); // Buttons clicked too quickly appear to not fire events (seen on JavaScript commands).
             await command.ClickAndWaitForAppIdleAsync();
-            await this.Page.Keyboard.PressAsync("Escape"); // Ensure any tooltips are closed
         }
 
         /// <inheritdoc/>
