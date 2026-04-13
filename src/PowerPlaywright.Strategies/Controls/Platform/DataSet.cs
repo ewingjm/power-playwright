@@ -86,7 +86,7 @@
                     .Filter(new LocatorFilterOptions { Has = this.Page.GetByText(viewName, new PageGetByTextOptions { Exact = true }) })
                     .ClickAndWaitForAppIdleAsync();
 
-                await this.Container.GetByText(viewName).WaitForAsync();
+                await this.Container.GetByRole(AriaRole.Heading, new LocatorGetByRoleOptions { Name = viewName, Exact = true }).WaitForAsync();
             }
             catch (TimeoutException)
             {
