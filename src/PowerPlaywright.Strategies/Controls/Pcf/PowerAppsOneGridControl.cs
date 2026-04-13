@@ -110,7 +110,7 @@
                 throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
             }
 
-            await row.GetByRole(AriaRole.Gridcell).Nth(0).DblClickAsync(new LocatorDblClickOptions { Delay = 50 });
+            await row.GetByRole(AriaRole.Gridcell).Nth(0).DispatchEventAsync("dblclick");
             await this.Page.WaitForAppIdleAsync();
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
