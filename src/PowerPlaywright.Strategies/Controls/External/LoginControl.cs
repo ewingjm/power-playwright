@@ -61,6 +61,11 @@
             }
             catch (TimeoutException)
             {
+                if (await this.usernameInput.IsVisibleAsync())
+                {
+                    await this.usernameInput.FillAsync(username);
+                }
+
                 if (await this.nextButton.IsVisibleAsync())
                 {
                     await this.nextButton.ClickAsync();
@@ -92,11 +97,14 @@
 
             try
             {
-                await this.staySignedInButton.ClickAsync(new LocatorClickOptions { Timeout = 10000 });
+                await this.staySignedInButton.ClickAsync();
             }
             catch
             {
-                // Ignore.
+                if (await this.staySignedInButton.IsVisibleAsync())
+                {
+                    await this.staySignedInButton.ClickAsync();
+                }
             }
 
             await this.Page.WaitForURLAsync("**/main.aspx*", new PageWaitForURLOptions { Timeout = 120000 });

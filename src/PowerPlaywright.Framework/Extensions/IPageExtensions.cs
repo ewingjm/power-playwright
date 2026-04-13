@@ -29,7 +29,7 @@
 
         private static async Task WaitForSaveAsync(IPage page, TimeSpan timeout)
         {
-            var savingAlert = page.GetByRole(AriaRole.Alert).Filter(new LocatorFilterOptions { HasText = "Saving..." });
+            var savingAlert = page.GetByRole(AriaRole.Alert).Filter(new LocatorFilterOptions { HasText = "Saving..." }).Or(page.GetByRole(AriaRole.Progressbar));
 
             if (await savingAlert.IsVisibleAsync())
             {

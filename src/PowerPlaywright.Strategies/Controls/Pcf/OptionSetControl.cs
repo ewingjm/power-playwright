@@ -40,7 +40,9 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            return await this.toggleMenu.GetAttributeAsync("value") ?? null;
+            var value = await this.toggleMenu.GetAttributeAsync("value");
+
+            return !string.IsNullOrEmpty(value) ? value : null;
         }
 
         /// <inheritdoc/>
@@ -115,6 +117,8 @@
                 .Where(o => !string.IsNullOrWhiteSpace(o) && o != "--Select--")
                 .Select(o => o.Trim());
 
+            await this.Page.Keyboard.PressAsync("Escape");
+
             return allOptionsNoSelect;
         }
 
@@ -129,7 +133,7 @@
         {
             var flyout = await this.GetFlyoutLocatorAsync();
 
-            return flyout.GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Name = optionValue, Exact = true });
+            return flyout.GetByRole(AriaRole.Option, new LocatorGetByRoleOptions { Name = optionValue ?? "--Select--", Exact = true });
         }
 
         private async Task<ILocator> GetOptionsLocatorAsync()
