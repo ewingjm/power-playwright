@@ -27,7 +27,6 @@
 
         private readonly ILocator treeGrid;
         private readonly ILocator rowsContainer;
-        private readonly ILocator columnHeaders;
         private readonly ILocator gridHeaderContainer;
 
         /// <summary>
@@ -47,7 +46,6 @@
 
             this.treeGrid = this.Container.GetByRole(AriaRole.Treegrid);
             this.rowsContainer = this.Container.Locator("div.ag-center-cols-viewport");
-            this.columnHeaders = this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) });
             this.gridHeaderContainer = this.Container.GetByRole(AriaRole.Rowgroup).Filter(new LocatorFilterOptions { Has = this.Page.GetByRole(AriaRole.Columnheader) });
         }
 
@@ -55,31 +53,16 @@
         public async Task<IEnumerable<string>> GetColumnNamesAsync()
         {
             await this.Page.WaitForAppIdleAsync();
-
-            var columnCount = int.Parse(await this.treeGrid.GetAttributeAsync(Attributes.AriaColCount)) - 1;
-            var rowsBoundingBox = await this.rowsContainer.BoundingBoxAsync();
-            var capturedColumns = new List<string>();
-
-            await this.Container.Locator("[role='columnheader'][aria-colindex='1']").FocusAsync();
-
-            for (int i = 0; i < columnCount; i++)
-            {
-                var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
-                    .Select(s =>
-                    {
-                        var match = Regex.Match(s, @"\r?\n|\\n");
-                        return match.Success ? s.Substring(0, match.Index) : s;
-                    })
-                    .ToList();
-
-                capturedColumns.AddRange(visibleColumns.Except(capturedColumns));
-
-                await this.Page.Keyboard.PressAsync("ArrowRight");
-            }
-
             await this.ScrollHorizontalToStartAsync();
 
-            return capturedColumns;
+            var columnNames = new List<string>();
+
+            await this.ExecuteColumnBasedActionAsync((column, locator) =>
+            {
+                columnNames.Add(column);
+            });
+
+            return columnNames;
         }
 
         /// <inheritdoc/>
@@ -162,19 +145,23 @@
         public async Task<IEnumerable<DataRow>> GetRowDataAsync()
         {
             await this.Page.WaitForAppIdleAsync();
+            var rowCount = await this.GetRows().CountAsync();
 
+            var dataRows = Enumerable.Range(0, rowCount).Select(i => new Dictionary<string, string>()).ToArray();
             var rows = await this.rowsContainer.Locator("div[role='row']:not(:has([role='columnheader']))").AllAsync();
-            var columnNames = (await this.GetColumnNamesAsync()).ToArray();
-            var dataRows = Enumerable.Empty<DataRow>().ToList();
 
-            foreach (var row in rows)
+            await this.ExecuteColumnBasedActionAsync(async (columnName, header) =>
             {
-                var rowData = await this.GetSingleRowDataAsync(row, columnNames);
-                dataRows.Add(new DataRow(rowData));
-                await this.ScrollHorizontalToStartAsync();
-            }
+                var colIndex = header.GetAttributeAsync(Attributes.AriaColIndex);
 
-            return dataRows;
+                for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
+                {
+                    var cell = this.GetRow(rowIndex).Locator($"[role='gridcell'][aria-colindex='{colIndex}']]");
+                    dataRows[rowIndex][columnName] = await cell.InnerTextAsync();
+                }
+            });
+
+            return dataRows.Select(d => new DataRow(d));
         }
 
         /// <inheritdoc/>
@@ -277,13 +264,25 @@
             return await this.rowsContainer.EvaluateAsync<int>("el => el.scrollLeft");
         }
 
+        private async Task ExecuteColumnBasedActionAsync(Action<string, ILocator> action)
+        {
+            await this.ExecuteColumnBasedActionAsync((column, locator) =>
+            {
+                action(column, locator);
+                return Task.CompletedTask;
+            });
+        }
+
         private async Task ExecuteColumnBasedActionAsync(Func<string, ILocator, Task> action)
         {
             await this.ScrollHorizontalToStartAsync();
+
             var allColumns = await this.GetColumnNamesAsync();
             var processedColumns = new HashSet<string>();
+            var columnCount = int.Parse(await this.treeGrid.GetAttributeAsync(Attributes.AriaColCount)) - 1;
 
-            while (true)
+            await this.Container.Locator("[role='columnheader'][aria-colindex='1']").FocusAsync();
+            while (processedColumns.Count < columnCount)
             {
                 var visibleColumns = await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
 
@@ -305,7 +304,7 @@
 
                 if (processedColumns.Count < allColumns.Count())
                 {
-                    await this.ScrollHorizontalAsync((await this.columnHeaders.Last.BoundingBoxAsync()).X / 2);
+                    await this.Page.Keyboard.PressAsync("ArrowRight");
                     await this.Page.WaitForAppIdleAsync();
                     continue;
                 }
@@ -314,40 +313,6 @@
             }
 
             await this.ScrollHorizontalToStartAsync();
-        }
-
-        private async Task<Dictionary<string, string>> GetSingleRowDataAsync(ILocator row, string[] columnNames)
-        {
-            var rowData = new Dictionary<string, string>();
-
-            while (rowData.Count < columnNames.Length)
-            {
-                var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
-                    .Select(s =>
-                    {
-                        var match = Regex.Match(s, @"\r?\n|\\n");
-                        return match.Success ? s.Substring(0, match.Index) : s;
-                    })
-                    .ToList();
-
-                var visibleCells = await row.Locator("[role='gridcell']:not(:has([role='checkbox'])):not(:has(input[type='checkbox']))").AllAsync();
-
-                for (int i = 0; i < visibleColumns.Count; i++)
-                {
-                    var column = visibleColumns[i];
-                    if (!rowData.ContainsKey(column) && i < visibleCells.Count)
-                    {
-                        rowData[column] = await visibleCells[i].InnerTextAsync();
-                    }
-                }
-
-                if (rowData.Count < columnNames.Length)
-                {
-                    await this.ScrollHorizontalAsync((await this.columnHeaders.Last.BoundingBoxAsync()).X / 2);
-                }
-            }
-
-            return rowData;
         }
     }
 }
