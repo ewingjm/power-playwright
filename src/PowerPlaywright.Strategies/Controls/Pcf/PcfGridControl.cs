@@ -56,46 +56,13 @@
         {
             await this.Page.WaitForAppIdleAsync();
 
-            var columnCount = int.Parse(await this.treeGrid.GetAttributeAsync(Attributes.AriaColCount)) - 1;
-            var capturedColumns = new List<string>();
+            var columns = new List<string>();
+            await this.ExecuteColumnBasedActionAsync((name, locator) =>
+            {
+                columns.Add(name);
+            });
 
-            await this.ScrollHorizontalToStartAsync();
-
-            await TimeoutGuard.ExecuteWithTimeoutAsync(async () =>
-             {
-                 List<string> lastVisibleColumns = null;
-                 while (capturedColumns.Count < columnCount)
-                 {
-                     var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
-                         .Select(s =>
-                         {
-                             var match = Regex.Match(s, @"\r?\n|\\n");
-                             return match.Success ? s.Substring(0, match.Index) : s;
-                         })
-                         .ToList();
-
-                     if (lastVisibleColumns != null && visibleColumns.SequenceEqual(lastVisibleColumns))
-                     {
-                         break;
-                     }
-
-                     lastVisibleColumns = visibleColumns.ToList();
-
-                     capturedColumns.AddRange(visibleColumns.Except(capturedColumns));
-
-                     if (capturedColumns.Count < columnCount)
-                     {
-                         await this.ScrollHorizontalAsync((await this.columnHeaders.Last.BoundingBoxAsync()).X / 2);
-                         continue;
-                     }
-
-                     break;
-                 }
-             });
-
-            await this.ScrollHorizontalToStartAsync();
-
-            return capturedColumns;
+            return columns;
         }
 
         /// <inheritdoc/>
@@ -323,16 +290,25 @@
             return await this.rowsContainer.EvaluateAsync<int>("el => el.scrollLeft");
         }
 
+        private async Task ExecuteColumnBasedActionAsync(Action<string, ILocator> action)
+        {
+            await this.ExecuteColumnBasedActionAsync((column, locator) =>
+            {
+                action(column, locator);
+                return Task.CompletedTask;
+            });
+        }
+
         private async Task ExecuteColumnBasedActionAsync(Func<string, ILocator, Task> action)
         {
             await this.ScrollHorizontalToStartAsync();
-            var allColumns = await this.GetColumnNamesAsync();
+            var columnCount = int.Parse(await this.treeGrid.GetAttributeAsync(Attributes.AriaColCount)) - 1;
             var processedColumns = new HashSet<string>();
             var pattern = @"\r?\n|\\n";
 
             await TimeoutGuard.ExecuteWithTimeoutAsync(async () =>
              {
-                 while (processedColumns.Count < allColumns.Count())
+                 while (processedColumns.Count < columnCount)
                  {
                      var visibleColumns = await this.GetVisibleColumnsAsync();
 
@@ -348,7 +324,7 @@
                          processedColumns.Add(columnName);
                      }
 
-                     if (processedColumns.Count < allColumns.Count())
+                     if (processedColumns.Count < columnCount)
                      {
                          await this.ScrollHorizontalAsync(50);
                          await this.Page.WaitForAppIdleAsync();

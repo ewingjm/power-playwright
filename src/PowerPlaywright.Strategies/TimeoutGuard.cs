@@ -1,6 +1,7 @@
 namespace PowerPlaywright.Strategies
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -27,18 +28,23 @@ namespace PowerPlaywright.Strategies
                 throw new ArgumentNullException(nameof(operation));
             }
 
-            var operationTask = operation();
-            var delay = Task.Delay((int)(timeout ?? DefaultTimeout).TotalMilliseconds);
-
-            var winner = await Task.WhenAny(operationTask, delay).ConfigureAwait(false);
-
-            if (winner != operationTask)
+            using (var cts = new CancellationTokenSource())
             {
-                throw new TimeoutException(message ?? $"Operation timed out after {timeout ?? DefaultTimeout}.");
-            }
+                var operationTask = operation();
+                var delay = Task.Delay((int)(timeout ?? DefaultTimeout).TotalMilliseconds, cts.Token);
 
-            // Propagate exceptions/cancellation from the operation.
-            await operationTask.ConfigureAwait(false);
+                var winner = await Task.WhenAny(operationTask, delay).ConfigureAwait(false);
+
+                if (winner != operationTask)
+                {
+                    throw new TimeoutException(message ?? $"Operation timed out after {timeout ?? DefaultTimeout}.");
+                }
+
+                cts.Cancel();
+
+                // Propagate exceptions/cancellation from the operation.
+                await operationTask.ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -56,18 +62,23 @@ namespace PowerPlaywright.Strategies
                 throw new ArgumentNullException(nameof(operation));
             }
 
-            var operationTask = operation();
-            var delay = Task.Delay((int)(timeout ?? DefaultTimeout).TotalMilliseconds);
-
-            var winner = await Task.WhenAny(operationTask, delay).ConfigureAwait(false);
-
-            if (winner != operationTask)
+            using (var cts = new CancellationTokenSource())
             {
-                throw new TimeoutException(message ?? $"Operation timed out after {timeout ?? DefaultTimeout}.");
-            }
+                var operationTask = operation();
+                var delay = Task.Delay((int)(timeout ?? DefaultTimeout).TotalMilliseconds, cts.Token);
 
-            // Propagate exceptions/cancellation from the operation and return result.
-            return await operationTask.ConfigureAwait(false);
+                var winner = await Task.WhenAny(operationTask, delay).ConfigureAwait(false);
+
+                if (winner != operationTask)
+                {
+                    throw new TimeoutException(message ?? $"Operation timed out after {timeout ?? DefaultTimeout}.");
+                }
+
+                cts.Cancel();
+
+                // Propagate exceptions/cancellation from the operation and return result.
+                return await operationTask.ConfigureAwait(false);
+            }
         }
     }
 }

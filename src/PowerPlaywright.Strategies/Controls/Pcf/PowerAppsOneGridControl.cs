@@ -152,11 +152,11 @@
 
             await this.ExecuteColumnBasedActionAsync(async (columnName, header) =>
             {
-                var colIndex = header.GetAttributeAsync(Attributes.AriaColIndex);
+                var colIndex = await header.GetAttributeAsync(Attributes.AriaColIndex);
 
                 for (int rowIndex = 0; rowIndex < rowCount; rowIndex++)
                 {
-                    var cell = this.GetRow(rowIndex).Locator($"[role='gridcell'][aria-colindex='{colIndex}']]");
+                    var cell = this.GetRow(rowIndex).Locator($"[role='gridcell'][aria-colindex='{colIndex}']");
                     dataRows[rowIndex][columnName] = await cell.InnerTextAsync();
                 }
             });
@@ -279,7 +279,6 @@
             {
                 await this.ScrollHorizontalToStartAsync();
 
-                var allColumns = await this.GetColumnNamesAsync();
                 var processedColumns = new HashSet<string>();
                 var columnCount = int.Parse(await this.treeGrid.GetAttributeAsync(Attributes.AriaColCount)) - 1;
 
@@ -304,7 +303,7 @@
                         processedColumns.Add(sanitisedColumnName);
                     }
 
-                    if (processedColumns.Count < allColumns.Count())
+                    if (processedColumns.Count < columnCount)
                     {
                         await this.Page.Keyboard.PressAsync("ArrowRight");
                         await this.Page.WaitForAppIdleAsync();
