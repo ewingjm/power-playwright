@@ -12,7 +12,7 @@ namespace PowerPlaywright.Strategies
         /// <summary>
         /// The default timeout used across the library for UI-driven loops. This is configurable.
         /// </summary>
-        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(120);
 
         /// <summary>
         /// Executes the provided asynchronous function and throws a <see cref="TimeoutException"/> if it does not complete within the configured timeout.
