@@ -282,29 +282,22 @@
                 var processedColumns = new HashSet<string>();
                 var columnCount = int.Parse(await this.treeGrid.GetAttributeAsync(Attributes.AriaColCount)) - 1;
 
-                await this.Container.Locator("[role='columnheader'][aria-colindex='1']").FocusAsync();
+                await this.Container.Locator("[role='columnheader'][aria-colindex='2']").FocusAsync();
                 while (processedColumns.Count < columnCount)
                 {
-                    var visibleColumns = await this.Container
-                        .Locator("[role='columnheader']:not([aria-colindex='1'])")
-                        .Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) })
-                        .AllAsync();
+                    var column = this.Container.Locator("[role='columnheader']:focus");
+                    var columnName = await column.InnerTextAsync();
+                    var sanitisedColumnName = Regex.Match(columnName, @"\r?\n|\\n").Success
+                        ? Regex.Replace(columnName, @"\r?\n|\\n|\p{C}", string.Empty)
+                        : columnName;
 
-                    foreach (var column in visibleColumns)
+                    if (processedColumns.Contains(sanitisedColumnName))
                     {
-                        var columnName = await column.InnerTextAsync();
-                        var sanitisedColumnName = Regex.Match(columnName, @"\r?\n|\\n").Success
-                            ? Regex.Replace(columnName, @"\r?\n|\\n|\p{C}", string.Empty)
-                            : columnName;
-
-                        if (processedColumns.Contains(sanitisedColumnName))
-                        {
-                            continue;
-                        }
-
-                        await action(sanitisedColumnName, column);
-                        processedColumns.Add(sanitisedColumnName);
+                        continue;
                     }
+
+                    await action(sanitisedColumnName, column);
+                    processedColumns.Add(sanitisedColumnName);
 
                     if (processedColumns.Count < columnCount)
                     {
