@@ -285,7 +285,10 @@
                 await this.Container.Locator("[role='columnheader'][aria-colindex='1']").FocusAsync();
                 while (processedColumns.Count < columnCount)
                 {
-                    var visibleColumns = await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
+                    var visibleColumns = await this.Container
+                        .Locator("[role='columnheader']:not([aria-colindex='1'])")
+                        .Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) })
+                        .AllAsync();
 
                     foreach (var column in visibleColumns)
                     {
