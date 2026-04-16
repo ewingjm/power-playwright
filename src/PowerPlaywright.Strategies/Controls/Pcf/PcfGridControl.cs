@@ -14,6 +14,7 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Framework.Timeouts;
     using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
@@ -61,26 +62,37 @@
 
             await this.ScrollHorizontalToStartAsync();
 
-            while (true)
-            {
-                var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
-                    .Select(s =>
-                    {
-                        var match = Regex.Match(s, @"\r?\n|\\n");
-                        return match.Success ? s.Substring(0, match.Index) : s;
-                    })
-                    .ToList();
+            await TimeoutGuard.ExecuteWithTimeoutAsync(async () =>
+             {
+                 List<string> lastVisibleColumns = null;
+                 while (capturedColumns.Count < columnCount)
+                 {
+                     var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
+                         .Select(s =>
+                         {
+                             var match = Regex.Match(s, @"\r?\n|\\n");
+                             return match.Success ? s.Substring(0, match.Index) : s;
+                         })
+                         .ToList();
 
-                capturedColumns.AddRange(visibleColumns.Except(capturedColumns));
+                     if (lastVisibleColumns != null && visibleColumns.SequenceEqual(lastVisibleColumns))
+                     {
+                         break;
+                     }
 
-                if (capturedColumns.Count < columnCount)
-                {
-                    await this.ScrollHorizontalAsync((await this.columnHeaders.Last.BoundingBoxAsync()).X / 2);
-                    continue;
-                }
+                     lastVisibleColumns = visibleColumns.ToList();
 
-                break;
-            }
+                     capturedColumns.AddRange(visibleColumns.Except(capturedColumns));
+
+                     if (capturedColumns.Count < columnCount)
+                     {
+                         await this.ScrollHorizontalAsync((await this.columnHeaders.Last.BoundingBoxAsync()).X / 2);
+                         continue;
+                     }
+
+                     break;
+                 }
+             });
 
             await this.ScrollHorizontalToStartAsync();
 
@@ -132,7 +144,7 @@
             }
 
             var toggleCheckBox = this.gridHeaderContainer.GetByRole(AriaRole.Checkbox, new LocatorGetByRoleOptions { Name = "Toggle selection of all rows" })
-                ?? throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
+    ?? throw new PowerPlaywrightException($"Unable to find the select all checkbox within the {this.Name} grid header.");
 
             var currentState = await toggleCheckBox.IsCheckedAsync();
             if (currentState == select)
@@ -274,32 +286,35 @@
         {
             var rowData = new Dictionary<string, string>();
 
-            while (rowData.Count < columnNames.Length)
+            await TimeoutGuard.ExecuteWithTimeoutAsync(async () =>
             {
-                var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
-                    .Select(s =>
-                    {
-                        var match = Regex.Match(s, @"\r?\n|\\n");
-                        return match.Success ? s.Substring(0, match.Index) : s;
-                    })
-                    .ToList();
-
-                var visibleCells = await row.Locator("[role='gridcell']:not(:has([role='checkbox'])):not(:has(input[type='checkbox']))").AllAsync();
-
-                for (int i = 0; i < visibleColumns.Count; i++)
+                while (rowData.Count < columnNames.Length)
                 {
-                    var column = visibleColumns[i];
-                    if (!rowData.ContainsKey(column) && i < visibleCells.Count)
+                    var visibleColumns = (await this.columnHeaders.AllInnerTextsAsync())
+                        .Select(s =>
+                        {
+                            var match = Regex.Match(s, @"\r?\n|\\n");
+                            return match.Success ? s.Substring(0, match.Index) : s;
+                        })
+                        .ToList();
+
+                    var visibleCells = await row.Locator("[role='gridcell']:not(:has([role='checkbox'])):not(:has(input[type='checkbox']))").AllAsync();
+
+                    for (int i = 0; i < visibleColumns.Count; i++)
                     {
-                        rowData[column] = await visibleCells[i].InnerTextAsync();
+                        var column = visibleColumns[i];
+                        if (!rowData.ContainsKey(column) && i < visibleCells.Count)
+                        {
+                            rowData[column] = await visibleCells[i].InnerTextAsync();
+                        }
+                    }
+
+                    if (rowData.Count < columnNames.Length)
+                    {
+                        await this.ScrollHorizontalAsync((await this.columnHeaders.Last.BoundingBoxAsync()).X / 2);
                     }
                 }
-
-                if (rowData.Count < columnNames.Length)
-                {
-                    await this.ScrollHorizontalAsync((await this.columnHeaders.Last.BoundingBoxAsync()).X / 2);
-                }
-            }
+            });
 
             return rowData;
         }
@@ -316,31 +331,34 @@
             var processedColumns = new HashSet<string>();
             var pattern = @"\r?\n|\\n";
 
-            while (true)
-            {
-                var visibleColumns = await this.GetVisibleColumnsAsync();
+            await TimeoutGuard.ExecuteWithTimeoutAsync(async () =>
+             {
+                 while (processedColumns.Count < allColumns.Count())
+                 {
+                     var visibleColumns = await this.GetVisibleColumnsAsync();
 
-                foreach (var column in visibleColumns)
-                {
-                    var columnName = RemovePatternMatches(await column.InnerTextAsync(), pattern);
-                    if (processedColumns.Contains(columnName))
-                    {
-                        continue;
-                    }
+                     foreach (var column in visibleColumns)
+                     {
+                         var columnName = RemovePatternMatches(await column.InnerTextAsync(), pattern);
+                         if (processedColumns.Contains(columnName))
+                         {
+                             continue;
+                         }
 
-                    await action(columnName, column);
-                    processedColumns.Add(columnName);
-                }
+                         await action(columnName, column);
+                         processedColumns.Add(columnName);
+                     }
 
-                if (processedColumns.Count < allColumns.Count())
-                {
-                    await this.ScrollHorizontalAsync(50);
-                    await this.Page.WaitForAppIdleAsync();
-                    continue;
-                }
+                     if (processedColumns.Count < allColumns.Count())
+                     {
+                         await this.ScrollHorizontalAsync(50);
+                         await this.Page.WaitForAppIdleAsync();
+                         continue;
+                     }
 
-                break;
-            }
+                     break;
+                 }
+             });
 
             await this.ScrollHorizontalToStartAsync();
         }

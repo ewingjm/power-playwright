@@ -21,6 +21,11 @@
         internal const string AriaColCount = "aria-colcount";
 
         /// <summary>
+        /// Gets the name of the 'aria-colindex' attribute.
+        /// </summary>
+        internal const string AriaColIndex = "aria-colindex";
+
+        /// <summary>
         /// Gets the name of 'aria-controls' attribute.
         /// </summary>
         internal const string AriaControls = "aria-controls";

@@ -1,4 +1,4 @@
-namespace PowerPlaywright.Framework.Timeouts
+namespace PowerPlaywright.Strategies
 {
     using System;
     using System.Threading.Tasks;

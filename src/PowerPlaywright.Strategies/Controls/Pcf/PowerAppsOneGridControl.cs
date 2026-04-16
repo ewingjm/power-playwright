@@ -14,7 +14,6 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
-    using PowerPlaywright.Framework.Timeouts;
     using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>

@@ -188,11 +188,14 @@
 
         private async Task CloseFlyout()
         {
-            while (!await this.overflowCommand.IsVisibleAsync() || await this.overflowCommand.IsExpandedAsync())
+            await TimeoutGuard.ExecuteWithTimeoutAsync(async () =>
             {
-                await this.Page.Keyboard.PressAsync("Escape");
-                await this.Page.WaitForAppIdleAsync();
-            }
+                while (!await this.overflowCommand.IsVisibleAsync() || await this.overflowCommand.IsExpandedAsync())
+                {
+                    await this.Page.Keyboard.PressAsync("Escape");
+                    await this.Page.WaitForAppIdleAsync();
+                }
+            });
         }
 
         private async Task<bool> IsOverflowPresentAsync()
