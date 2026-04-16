@@ -14,6 +14,7 @@
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
+    using PowerPlaywright.Framework.Timeouts;
     using PowerPlaywright.Strategies.Extensions;
 
     /// <summary>
@@ -275,44 +276,47 @@
 
         private async Task ExecuteColumnBasedActionAsync(Func<string, ILocator, Task> action)
         {
-            await this.ScrollHorizontalToStartAsync();
-
-            var allColumns = await this.GetColumnNamesAsync();
-            var processedColumns = new HashSet<string>();
-            var columnCount = int.Parse(await this.treeGrid.GetAttributeAsync(Attributes.AriaColCount)) - 1;
-
-            await this.Container.Locator("[role='columnheader'][aria-colindex='1']").FocusAsync();
-            while (processedColumns.Count < columnCount)
+            await TimeoutGuard.ExecuteWithTimeoutAsync(async () =>
             {
-                var visibleColumns = await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
+                await this.ScrollHorizontalToStartAsync();
 
-                foreach (var column in visibleColumns)
+                var allColumns = await this.GetColumnNamesAsync();
+                var processedColumns = new HashSet<string>();
+                var columnCount = int.Parse(await this.treeGrid.GetAttributeAsync(Attributes.AriaColCount)) - 1;
+
+                await this.Container.Locator("[role='columnheader'][aria-colindex='1']").FocusAsync();
+                while (processedColumns.Count < columnCount)
                 {
-                    var columnName = await column.InnerTextAsync();
-                    var sanitisedColumnName = Regex.Match(columnName, @"\r?\n|\\n").Success
-                        ? Regex.Replace(columnName, @"\r?\n|\\n|\p{C}", string.Empty)
-                        : columnName;
+                    var visibleColumns = await this.Container.Locator("[role='columnheader']:not([aria-colindex='1'])").AllAsync();
 
-                    if (processedColumns.Contains(sanitisedColumnName))
+                    foreach (var column in visibleColumns)
                     {
+                        var columnName = await column.InnerTextAsync();
+                        var sanitisedColumnName = Regex.Match(columnName, @"\r?\n|\\n").Success
+                            ? Regex.Replace(columnName, @"\r?\n|\\n|\p{C}", string.Empty)
+                            : columnName;
+
+                        if (processedColumns.Contains(sanitisedColumnName))
+                        {
+                            continue;
+                        }
+
+                        await action(sanitisedColumnName, column);
+                        processedColumns.Add(sanitisedColumnName);
+                    }
+
+                    if (processedColumns.Count < allColumns.Count())
+                    {
+                        await this.Page.Keyboard.PressAsync("ArrowRight");
+                        await this.Page.WaitForAppIdleAsync();
                         continue;
                     }
 
-                    await action(sanitisedColumnName, column);
-                    processedColumns.Add(sanitisedColumnName);
+                    break;
                 }
 
-                if (processedColumns.Count < allColumns.Count())
-                {
-                    await this.Page.Keyboard.PressAsync("ArrowRight");
-                    await this.Page.WaitForAppIdleAsync();
-                    continue;
-                }
-
-                break;
-            }
-
-            await this.ScrollHorizontalToStartAsync();
+                await this.ScrollHorizontalToStartAsync();
+            });
         }
     }
 }
