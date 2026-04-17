@@ -95,11 +95,13 @@
                 }
             }
 
+            await this.staySignedInButton.ClickAsync();
+
             try
             {
-                await this.staySignedInButton.ClickAsync();
+                await this.staySignedInButton.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000, State = WaitForSelectorState.Detached });
             }
-            catch
+            catch (TimeoutException)
             {
                 if (await this.staySignedInButton.IsVisibleAsync())
                 {
