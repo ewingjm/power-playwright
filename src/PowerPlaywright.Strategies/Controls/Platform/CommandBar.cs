@@ -190,10 +190,23 @@
         {
             await TimeoutGuard.ExecuteWithTimeoutAsync(async () =>
             {
-                while (!await this.overflowCommand.IsVisibleAsync() || await this.overflowCommand.IsExpandedAsync())
+                while (!await this.overflowCommand.IsVisibleAsync())
                 {
                     await this.Page.Keyboard.PressAsync("Escape");
                     await this.Page.WaitForAppIdleAsync();
+                }
+
+                if (await this.overflowCommand.IsExpandedAsync())
+                {
+                    if (await this.overflowCommand.IsVisibleAsync())
+                    {
+                        await this.ToggleOverflowAsync();
+                    }
+                    else
+                    {
+                        await this.Page.Keyboard.PressAsync("Escape");
+                        await this.Page.WaitForAppIdleAsync();
+                    }
                 }
             });
         }
