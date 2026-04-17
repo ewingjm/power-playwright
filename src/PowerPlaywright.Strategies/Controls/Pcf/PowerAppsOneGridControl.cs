@@ -285,7 +285,9 @@
                 await this.Container.Locator("[role='columnheader'][aria-colindex='2']").FocusAsync();
                 while (processedColumns.Count < columnCount)
                 {
-                    var column = this.Container.Locator("[role='columnheader']:focus");
+                    var column = this.Container.Locator("[role='columnheader']:focus")
+                        .Filter(new LocatorFilterOptions { HasNot = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) });
+
                     var columnName = await column.InnerTextAsync();
                     var sanitisedColumnName = Regex.Match(columnName, @"\r?\n|\\n").Success
                         ? Regex.Replace(columnName, @"\r?\n|\\n|\p{C}", string.Empty)
