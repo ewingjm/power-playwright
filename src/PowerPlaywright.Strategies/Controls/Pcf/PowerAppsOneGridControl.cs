@@ -289,7 +289,7 @@
 
                     if (await column.Filter(new LocatorFilterOptions { Has = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) }).First.IsVisibleAsync())
                     {
-                        continue;
+                        break;
                     }
 
                     var columnName = await column.InnerTextAsync();
