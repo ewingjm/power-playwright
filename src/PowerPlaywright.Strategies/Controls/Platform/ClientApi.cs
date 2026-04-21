@@ -35,14 +35,16 @@
         {
             await this.Page.EvaluateAsync(
                 @"
-                    async (entityName) => { 
-                        await Xrm.Navigation.openForm(
+                    (entityName) => { 
+                        Xrm.Navigation.openForm(
                             { 
                                 entityName: entityName,
                             }
                         ) 
                     } ",
                 entityName);
+
+            await this.Page.WaitForAppIdleAsync();
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }
@@ -52,8 +54,8 @@
         {
             await this.Page.EvaluateAsync(
                 @"
-                    async ({ entityName, entityId } ) => { 
-                        await Xrm.Navigation.navigateTo(
+                    ({ entityName, entityId } ) => { 
+                        Xrm.Navigation.navigateTo(
                             { 
                                 pageType: 'entityrecord',
                                 entityName: entityName,
