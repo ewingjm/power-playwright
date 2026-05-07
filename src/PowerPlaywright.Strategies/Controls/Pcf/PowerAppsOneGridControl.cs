@@ -23,6 +23,7 @@
     public class PowerAppsOneGridControl : PcfControlInternal, IPowerAppsOneGrid
     {
         private readonly IPageFactory pageFactory;
+        private readonly IControlFactory controlFactory;
         private readonly ILogger<PcfGridControl> logger;
 
         private readonly ILocator treeGrid;
@@ -36,12 +37,14 @@
         /// <param name="name">The name given to the control.</param>
         /// <param name="infoProvider"> The info provider.</param>
         /// <param name="pageFactory">The page factory.</param>
+        /// /// <param name="controlFactory">The control factory.</param>
         /// <param name="parent">The parent control.</param>
         /// <param name="logger">The logger.</param>
-        public PowerAppsOneGridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
+        public PowerAppsOneGridControl(IAppPage appPage, string name, IEnvironmentInfoProvider infoProvider, IPageFactory pageFactory, IControlFactory controlFactory, IControl parent = null, ILogger<PcfGridControl> logger = null)
             : base(name, appPage, infoProvider, parent)
         {
             this.pageFactory = pageFactory;
+            this.controlFactory = controlFactory;
             this.logger = logger;
 
             this.treeGrid = this.Container.GetByRole(AriaRole.Treegrid);
@@ -53,6 +56,7 @@
         public async Task<IEnumerable<string>> GetColumnNamesAsync()
         {
             await this.Page.WaitForAppIdleAsync();
+
             await this.ScrollHorizontalToStartAsync();
 
             var columnNames = new List<string>();
@@ -90,7 +94,7 @@
             var row = this.GetRow(index);
             if (!await row.IsVisibleAsync())
             {
-                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
+                throw new ArgumentOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
             }
 
             await row.GetByRole(AriaRole.Gridcell).Nth(0).DispatchEventAsync("dblclick");
@@ -148,7 +152,6 @@
             var rowCount = await this.GetRows().CountAsync();
 
             var dataRows = Enumerable.Range(0, rowCount).Select(i => new Dictionary<string, string>()).ToArray();
-            var rows = await this.rowsContainer.Locator("div[role='row']:not(:has([role='columnheader']))").AllAsync();
 
             await this.ExecuteColumnBasedActionAsync(async (columnName, header) =>
             {
@@ -172,7 +175,7 @@
             var row = this.GetRow(index);
             if (!await row.IsVisibleAsync())
             {
-                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for grid.");
+                throw new ArgumentOutOfRangeException(nameof(index), $"The provided index '{index}' is out of range for grid.");
             }
 
             var checkboxCell = row.Locator("[role='gridcell']").First;
@@ -221,6 +224,33 @@
             });
 
             return sortOrders.AsReadOnly();
+        }
+
+        /// <inheritdoc/>
+        public async Task<IPowerAppsOneGrid> ExpandNestedSubgridAsync(int rowIndex)
+        {
+            await this.Page.WaitForAppIdleAsync();
+
+            var row = this.GetRow(rowIndex);
+            if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
+            {
+                throw new ArgumentOutOfRangeException(nameof(rowIndex), $"The provided index '{rowIndex}' is out of range for subgrid {this.Name}");
+            }
+
+            var expandCell = row.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Collapsed" });
+            if (await expandCell.IsVisibleAsync())
+            {
+                await expandCell.ClickAsync();
+                await this.Page.WaitForAppIdleAsync();
+            }
+
+            return this.controlFactory.CreateCachedInstance<IPowerAppsOneGrid>(this.AppPage, this.Name, this);
+        }
+
+        /// <inheritdoc/>
+        protected override ILocator GetRoot(ILocator context)
+        {
+            return context.Locator("div[data-id=\'grid-container\'][data-type=\'grid\']");
         }
 
         private ILocator GetRows()
