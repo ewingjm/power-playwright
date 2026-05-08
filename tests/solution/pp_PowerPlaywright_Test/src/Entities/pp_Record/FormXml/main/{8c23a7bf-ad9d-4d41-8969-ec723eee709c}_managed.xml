@@ -134,7 +134,7 @@
                     <row>
                       <cell id="{83993c18-e6bb-4308-8fe1-2ce3b578aad1}" locklevel="0" colspan="1" rowspan="1">
                         <labels>
-                          <label description="" languagecode="1033" />
+                          <label description="Multi Line Rich Text" languagecode="1033" />
                         </labels>
                         <control id="pp_multilinerichtext" classid="{4273EDBD-AC1D-40D3-9FB2-095C621B552D}" datafieldname="pp_multilinerichtext" disabled="false" />
                       </cell>
@@ -425,6 +425,29 @@
                     <row />
                     <row />
                     <row />
+                    <row />
+                    <row />
+                    <row />
+                    <row>
+                      <cell locklevel="0" id="{0854ed9d-31e8-4ff7-bd83-53b9db59201a}" rowspan="4" colspan="1" auto="false">
+                        <labels>
+                          <label description="Related Records" languagecode="1033" />
+                        </labels>
+                        <control indicationOfSubgrid="true" id="powerappsone_nested_RelatedRecords" classid="{F9A8A302-114E-466A-B582-6771B2AE0D92}" uniqueid="{243423a6-73b8-4f7a-af72-c9102967ce82}">
+                          <parameters>
+                            <RecordsPerPage>4</RecordsPerPage>
+                            <AutoExpand>Fixed</AutoExpand>
+                            <EnableQuickFind>false</EnableQuickFind>
+                            <EnableViewPicker>true</EnableViewPicker>
+                            <EnableChartPicker>false</EnableChartPicker>
+                            <ChartGridMode>Grid</ChartGridMode>
+                            <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
+                            <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                            <ViewId>{59772644-C5F9-4449-BA9B-0A1347BFFD25}</ViewId>
+                          </parameters>
+                        </control>
+                      </cell>
+                    </row>
                     <row />
                     <row />
                     <row />
@@ -1091,6 +1114,63 @@
               <EnableFiltering type="Enum" static="true">yes</EnableFiltering>
               <HideNestedGridColumnHeader type="Enum" static="true">no</HideNestedGridColumnHeader>
               <EnableJumpBar type="Enum" static="true">yes</EnableJumpBar>
+            </parameters>
+          </customControl>
+        </controlDescription>
+        <controlDescription forControl="{243423a6-73b8-4f7a-af72-c9102967ce82}">
+          <customControl id="{E7A81278-8635-4D9E-8D4D-59480B391C5B}">
+            <parameters />
+          </customControl>
+          <customControl id="{E7A81278-8635-4D9E-8D4D-59480B391C5B}" formFactor="1">
+            <parameters />
+          </customControl>
+          <customControl id="{E7A81278-8635-4D9E-8D4D-59480B391C5B}" formFactor="0">
+            <parameters />
+          </customControl>
+          <customControl formFactor="2" name="Microsoft.PowerApps.PowerAppsOneGrid">
+            <parameters>
+              <data-set name="Items">
+                <ViewId>{59772644-c5f9-4449-ba9b-0a1347bffd25}</ViewId>
+                <TargetEntityType>pp_relatedrecord</TargetEntityType>
+                <IsUserView>false</IsUserView>
+                <EnableViewPicker>true</EnableViewPicker>
+                <RelationshipName>pp_Record_RelatedRecord</RelationshipName>
+                <FilteredViewIds />
+              </data-set>
+              <data-set name="ChildItems">
+                <ViewId>{7c0e0725-ccd9-4525-9313-665fd075652f}</ViewId>
+                <TargetEntityType>connection</TargetEntityType>
+                <IsUserView>false</IsUserView>
+                <ParentId>record1id</ParentId>
+              </data-set>
+              <EnableEditing type="Enum" static="true">no</EnableEditing>
+              <DisableChildItemsEditing type="Enum" static="true">yes</DisableChildItemsEditing>
+              <EnableFiltering type="Enum" static="true">yes</EnableFiltering>
+              <EnableSorting type="Enum" static="true">yes</EnableSorting>
+              <EnableGrouping type="Enum" static="true">yes</EnableGrouping>
+              <EnableAggregation type="Enum" static="true">no</EnableAggregation>
+              <EnableColumnMoving type="Enum" static="true">no</EnableColumnMoving>
+              <EnableMultipleSelection type="Enum" static="true">yes</EnableMultipleSelection>
+              <EnableRangeSelection type="Enum" static="true">yes</EnableRangeSelection>
+              <EnableJumpBar type="Enum" static="true">no</EnableJumpBar>
+              <EnablePagination type="Enum" static="true">no</EnablePagination>
+              <EnableDropdownColor type="Enum" static="true">no</EnableDropdownColor>
+              <EnableStatusIcons type="Enum" static="true">yes</EnableStatusIcons>
+              <EnableTypeIcons type="Enum" static="true">no</EnableTypeIcons>
+              <NavigationTypesAllowed type="Enum" static="true">all</NavigationTypesAllowed>
+              <ReflowBehavior type="Enum" static="true">Reflow</ReflowBehavior>
+              <ShowAvatar type="Enum" static="true">yes</ShowAvatar>
+              <ShowColumnNamesForListView type="Enum" static="true">no</ShowColumnNamesForListView>
+              <EnableBandedRowsForListView type="Enum" static="true">no</EnableBandedRowsForListView>
+              <NumberOfListColumns type="Whole.None" static="true">3</NumberOfListColumns>
+              <ShowFooter type="Enum" static="true">yes</ShowFooter>
+              <ShowColumnHeaders type="Enum" static="true">yes</ShowColumnHeaders>
+              <ContextualLookupColumnFilters type="Enum" static="true">yes</ContextualLookupColumnFilters>
+              <LookupFilterBeginsWith type="Enum" static="true">no</LookupFilterBeginsWith>
+              <UseFirstColumnForLookupEdits type="Enum" static="true">no</UseFirstColumnForLookupEdits>
+              <DateTimeFormat type="Enum" static="true">none</DateTimeFormat>
+              <DateOnlyFormat type="Enum" static="true">none</DateOnlyFormat>
+              <EnableStatusColumn type="Enum" static="true">yes</EnableStatusColumn>
             </parameters>
           </customControl>
         </controlDescription>
