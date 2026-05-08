@@ -7,7 +7,6 @@
     using Azure.Extensions.AspNetCore.Configuration.Secrets;
     using Azure.Identity;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Playwright;
     using Microsoft.PowerPlatform.Dataverse.Client;
     using Microsoft.Xrm.Sdk;
     using Microsoft.Xrm.Sdk.Messages;

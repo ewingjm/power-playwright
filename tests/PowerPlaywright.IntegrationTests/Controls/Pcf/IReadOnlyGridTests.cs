@@ -46,17 +46,17 @@
         }
 
         /// <summary>
-        /// Tests that <see cref="IReadOnlyGrid.OpenRecordAsync(int)"/> throws a <see cref="IndexOutOfRangeException"/> when the index is out of range.
+        /// Tests that <see cref="IReadOnlyGrid.OpenRecordAsync(int)"/> throws a <see cref="ArgumentOutOfRangeException"/> when the index is out of range.
         /// </summary>
         /// <param name="readOnlyGridType">The type of read-only grid to test.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
-        public async Task OpenRecordAsync_IndexOutOfRange_ThrowsIndexOutOfRangeException(Type readOnlyGridType)
+        public async Task OpenRecordAsync_IndexOutOfRange_ThrowsArgumentOutOfRangeException(Type readOnlyGridType)
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: null);
 
-            Assert.ThrowsAsync<IndexOutOfRangeException>(() => gridControl.OpenRecordAsync(1));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => gridControl.OpenRecordAsync(1));
         }
 
         /// <summary>
@@ -234,11 +234,11 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
-        public async Task ToggleSelectRowAsync_IndexOutOfRange_ThrowsIndexOutOfRangeException(Type readOnlyGridType)
+        public async Task ToggleSelectRowAsync_IndexOutOfRange_ThrowsArgumentOutOfRangeException(Type readOnlyGridType)
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: Enumerable.Range(0, 2).Select(i => new RelatedRecordFaker()));
 
-            Assert.ThrowsAsync<IndexOutOfRangeException>(() => gridControl.ToggleSelectRowAsync(5, select: true));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => gridControl.ToggleSelectRowAsync(5, select: true));
         }
 
         /// <summary>

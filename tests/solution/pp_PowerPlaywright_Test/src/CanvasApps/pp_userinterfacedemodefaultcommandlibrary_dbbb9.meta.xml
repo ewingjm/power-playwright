@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <CanvasApp xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Name>pp_userinterfacedemodefaultcommandlibrary_dbbb9</Name>
-  <AppVersion>2026-03-16T14:16:35Z</AppVersion>
+  <AppVersion>2026-05-07T10:01:59Z</AppVersion>
   <Status>Ready</Status>
   <CreatedByClientVersion>3.26031.13.0</CreatedByClientVersion>
   <MinClientVersion>0.0.0.0</MinClientVersion>
@@ -21,7 +21,6 @@
   <CanConsumeAppPass>1</CanConsumeAppPass>
   <CanvasAppType>1</CanvasAppType>
   <BypassConsent>0</BypassConsent>
-  <AdminControlBypassConsent>0</AdminControlBypassConsent>
   <EmbeddedApp xsi:nil="true"></EmbeddedApp>
   <IntroducedVersion>1.0</IntroducedVersion>
   <CdsDependencies>{"cdsdependencies":[{"componenttype":1,"logicalname":"pp_record"},{"componenttype":1,"logicalname":"pp_relatedrecord"}]}</CdsDependencies>

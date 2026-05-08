@@ -40,6 +40,11 @@
                 public const string RelatedNestedEditableSubGrid = "nestedgrid_RelatedRecords";
 
                 /// <summary>
+                /// The related nested power apps one subgrid.
+                /// </summary>
+                public const string RelatedPowerAppsOneNestedSubGrid = "powerappsone_nested_RelatedRecords";
+
+                /// <summary>
                 /// The related record lookup.
                 /// </summary>
                 public const string RelatedRecord = "pp_relatedrecord";
