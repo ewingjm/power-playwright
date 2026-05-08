@@ -11,6 +11,7 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
+    using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
@@ -250,12 +251,7 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            if (this.Parent is IPowerAppsOneGrid)
-            {
-                return context.Locator($"//div[@data-id='grid-container'][@data-type='grid']");
-            }
-
-            return base.GetRoot(context);
+            return context.Locator($"//div[@data-id='grid-container'][@data-type='grid']");
         }
 
         private ILocator GetRows()
