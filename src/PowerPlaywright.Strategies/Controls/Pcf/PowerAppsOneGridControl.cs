@@ -238,6 +238,8 @@
                 throw new ArgumentOutOfRangeException(nameof(rowIndex), $"The provided index '{rowIndex}' is out of range for subgrid {this.Name}");
             }
 
+            await this.CollapseExpandedRowsAsync();
+
             var expandCell = row.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Collapsed" });
             if (await expandCell.IsVisibleAsync())
             {
@@ -251,7 +253,12 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator($"//div[@data-id='grid-container'][@data-type='grid']");
+            if (this.Parent is IPowerAppsOneGrid)
+            {
+                return context.Locator($"//div[@data-id='grid-container'][@data-type='grid']").Nth(1);
+            }
+
+            return base.GetRoot(context);
         }
 
         private ILocator GetRows()
@@ -348,6 +355,20 @@
 
                 await this.ScrollHorizontalToStartAsync();
             });
+        }
+
+        private async Task CollapseExpandedRowsAsync()
+        {
+            var expandedCells = await this.treeGrid.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Expanded" }).AllAsync();
+
+            foreach (var expandedCell in expandedCells)
+            {
+                if (await expandedCell.IsVisibleAsync())
+                {
+                    await expandedCell.ClickAsync();
+                    await this.Page.WaitForAppIdleAsync();
+                }
+            }
         }
     }
 }
