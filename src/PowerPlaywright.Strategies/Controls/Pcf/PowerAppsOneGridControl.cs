@@ -250,7 +250,12 @@
         /// <inheritdoc/>
         protected override ILocator GetRoot(ILocator context)
         {
-            return context.Locator("div[data-id=\'grid-container\'][data-type=\'grid\']");
+            if (this.Parent is IPowerAppsOneGrid)
+            {
+                return context.Locator($"//div[@data-id='grid-container'][@data-type='grid']");
+            }
+
+            return base.GetRoot(context);
         }
 
         private ILocator GetRows()
