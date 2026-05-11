@@ -192,7 +192,7 @@
 
             if (currentState != select)
             {
-                await checkboxCell.ClickAndWaitForAppIdleAsync();
+                await checkbox.Locator("..").ClickAndWaitForAppIdleAsync();
             }
         }
 
