@@ -36,6 +36,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task OpenRecordAsync_IndexInRange_OpensRecord(Type readOnlyGridType)
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: [new RelatedRecordFaker()]);
@@ -52,6 +53,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task OpenRecordAsync_IndexOutOfRange_ThrowsArgumentOutOfRangeException(Type readOnlyGridType)
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: null);
@@ -69,6 +71,8 @@
         [TestCase(typeof(IReadOnlyGrid), false)]
         [TestCase(typeof(IGridControl), true)]
         [TestCase(typeof(IGridControl), false)]
+        [TestCase(typeof(IPowerAppsOneGrid), true)]
+        [TestCase(typeof(IPowerAppsOneGrid), false)]
         public async Task GetColumnNamesAsync_Always_ReturnsAllColumnNamesInOrder(Type readOnlyGridType, bool withRelatedRecords)
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: withRelatedRecords ? [new RelatedRecordFaker()] : null);
@@ -83,6 +87,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task GetTotalRowCountAsync_Always_ReturnsTotalRowCount(Type readOnlyGridType)
         {
             var expectedTotalRowCount = this.faker.Random.Int(0, 2);
@@ -100,6 +105,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task ToggleSelectAllRowsAsync_NoRowsSelected_SelectsAllRows(Type readOnlyGridType)
         {
             var expectedTotalRowCount = 4;
@@ -119,6 +125,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task ToggleSelectAllRowsAsync_RowsSelected_DeselectsAllRows(Type readOnlyGridType)
         {
             var expectedTotalRowCount = 4;
@@ -139,6 +146,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task GetSelectedRowCountAsync_RowsSelected_ReturnsCountOfSelectedRows(Type readOnlyGridType)
         {
             var expectedTotalRowCount = this.faker.Random.Int(1, 4);
@@ -157,6 +165,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task GetRowDataAsync_HasRows_ReturnsRowData(Type readOnlyGridType)
         {
             var expectedRowCount = 2;
@@ -179,6 +188,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task GetRowDataAsync_EmptyGrid_ReturnsEmptyCollection(Type readOnlyGridType)
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: Enumerable.Empty<RelatedRecordFaker>());
@@ -195,6 +205,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task ToggleSelectRowAsync_SelectRow_SelectsSpecificRow(Type readOnlyGridType)
         {
             var expectedRowCount = 3;
@@ -214,6 +225,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task ToggleSelectRowAsync_DeselectRow_DeselectsSpecificRow(Type readOnlyGridType)
         {
             var expectedRowCount = 3;
@@ -234,6 +246,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task ToggleSelectRowAsync_IndexOutOfRange_ThrowsArgumentOutOfRangeException(Type readOnlyGridType)
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: Enumerable.Range(0, 2).Select(i => new RelatedRecordFaker()));
@@ -248,6 +261,7 @@
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [TestCase(typeof(IReadOnlyGrid))]
         [TestCase(typeof(IGridControl))]
+        [TestCase(typeof(IPowerAppsOneGrid))]
         public async Task GetSortOrdersAsync_Always_ReturnsGridSortOrders(Type readOnlyGridType)
         {
             var gridControl = await this.SetupReadOnlyGridScenarioAsync(readOnlyGridType, withRelatedRecords: [new RelatedRecordFaker()]);
@@ -293,6 +307,8 @@
                     return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedRecordsSubgrid).GetControl<IReadOnlyGrid>();
                 case Type _ when readOnlyGridType == typeof(IGridControl):
                     return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedEditableRecordsSubGrid).GetControl<IGridControl>();
+                case Type _ when readOnlyGridType == typeof(IPowerAppsOneGrid):
+                    return recordPage.Form.GetDataSet(pp_Record.Forms.Information.RelatedPowerAppsOneNestedSubGrid).GetControl<IPowerAppsOneGrid>();
                 default:
                     throw new NotImplementedException($"This method has not implemented {readOnlyGridType.Name}.");
             }
