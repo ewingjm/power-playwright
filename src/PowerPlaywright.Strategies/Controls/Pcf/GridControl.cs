@@ -267,7 +267,7 @@
             var row = this.GetRow(index);
             if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
             {
-                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
+                throw new ArgumentOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
             }
 
             return await row.GetByRole(AriaRole.Checkbox).IsCheckedAsync();
@@ -299,7 +299,7 @@
             var row = this.GetRow(rowIndex);
             if (!await row.GetByRole(AriaRole.Gridcell).First.IsVisibleAsync())
             {
-                throw new IndexOutOfRangeException($"The provided index '{rowIndex}' is out of range for subgrid {this.Name}");
+                throw new ArgumentOutOfRangeException($"The provided index '{rowIndex}' is out of range for subgrid {this.Name}");
             }
 
             var expandCell = row.GetByRole(AriaRole.Gridcell, new LocatorGetByRoleOptions { Name = "Show nested grid" });

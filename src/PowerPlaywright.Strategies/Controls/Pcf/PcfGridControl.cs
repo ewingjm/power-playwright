@@ -73,7 +73,7 @@
             var row = this.GetRow(index);
             if (!await row.IsVisibleAsync())
             {
-                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
+                throw new ArgumentOutOfRangeException($"The provided index '{index}' is out of range for subgrid {this.Name}");
             }
 
             await row.GetByRole(AriaRole.Gridcell).Nth(1).DblClickAsync(new LocatorDblClickOptions { Position = new Position { X = 0, Y = 0 } });
@@ -162,7 +162,7 @@
             var row = this.GetRow(index);
             if (!await row.IsVisibleAsync())
             {
-                throw new IndexOutOfRangeException($"The provided index '{index}' is out of range for grid.");
+                throw new ArgumentOutOfRangeException($"The provided index '{index}' is out of range for grid.");
             }
 
             var checkboxCell = row.Locator("[aria-colindex='1']");

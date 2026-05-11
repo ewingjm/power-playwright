@@ -43,11 +43,11 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
         [Test]
-        public async Task GetEditableColumnsAsync_RowsDoesntExist_ThrowsIndexOutOfRangeException()
+        public async Task GetEditableColumnsAsync_RowsDoesntExist_ThrowsArgumentOutOfRangeException()
         {
             var gridControl = await this.SetupGridControlScenarioAsync(withRelatedRecords: []);
 
-            Assert.ThrowsAsync<IndexOutOfRangeException>(async () => await gridControl.GetEditableColumnsAsync(0));
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () => await gridControl.GetEditableColumnsAsync(0));
         }
 
         /// <summary>
