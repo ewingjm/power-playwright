@@ -1,7 +1,9 @@
 ﻿namespace PowerPlaywright.Framework.Controls.Platform
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using PowerPlaywright.Framework.Controls.Pcf.Classes;
     using PowerPlaywright.Framework.Controls.Platform.Attributes;
 
     /// <summary>
@@ -51,5 +53,12 @@
         /// </summary>
         /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
         Task<bool> IsFinalStageAsync();
+
+        /// <summary>
+        /// Executes the action associated with the current stage in the business process flow.
+        /// </summary>
+        /// <param name="action">The action to execute for the current stage.</param>
+        /// <returns>A <see cref="Task"/> that represents the asynchronous operation.</returns>
+        Task ExecuteStageActionAsync(Func<IEnumerable<IField>, Task> action);
     }
 }
