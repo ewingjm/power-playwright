@@ -29,7 +29,7 @@
   </LocalizedNames>
   <labels>
     <steplabels id="{f98207d1-0fcb-439e-903f-f32d223e2076}">
-      <label languagecode="1033" description="New Stage 1" />
+      <label languagecode="1033" description="Validate" />
     </steplabels>
     <steplabels id="{ad58e620-26f3-4f7a-8fbe-ce356190cc14}">
       <label languagecode="1033" description="Single line of text (text)" />
@@ -38,7 +38,7 @@
       <label languagecode="1033" description="Single line of text (email)" />
     </steplabels>
     <steplabels id="{d94cc48d-4e92-4a61-9530-0b5304233650}">
-      <label languagecode="1033" description="New Stage 2" />
+      <label languagecode="1033" description="Process" />
     </steplabels>
     <steplabels id="{318e62fb-30e4-450c-b5f3-07b589ece376}">
       <label languagecode="1033" description="Whole number (none)" />
@@ -46,23 +46,17 @@
     <steplabels id="{2f66ee6f-4ff4-4762-a92d-43e9c9cfb3ea}">
       <label languagecode="1033" description="Decimal" />
     </steplabels>
+    <steplabels id="{a8c8e200-7c9e-4c64-867c-e5516ed39d57}">
+      <label languagecode="1033" description="Yes/no" />
+    </steplabels>
     <steplabels id="{810958ef-c67b-438f-b9ba-f46907e7514b}">
-      <label languagecode="1033" description="New Stage 3" />
+      <label languagecode="1033" description="Resolve" />
     </steplabels>
     <steplabels id="{8b0442d2-a1e6-4208-8080-de4d13cae829}">
       <label languagecode="1033" description="Date and time (date and time)" />
     </steplabels>
     <steplabels id="{ca5e0e7a-9c7e-498e-a536-a74cc67092b1}">
       <label languagecode="1033" description="Date and time (date only)" />
-    </steplabels>
-    <steplabels id="{ac2fbf90-9a03-4f9b-9e95-bfaf0a932bfa}">
-      <label languagecode="1033" description="New Stage 4" />
-    </steplabels>
-    <steplabels id="{1df0f3ad-0fb2-40f9-92b1-a81ba6d60982}">
-      <label languagecode="1033" description="Choice" />
-    </steplabels>
-    <steplabels id="{5a59b5a0-f149-494c-8c5f-024205209822}">
-      <label languagecode="1033" description="Yes/no" />
     </steplabels>
   </labels>
 </Workflow>
