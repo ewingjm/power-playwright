@@ -152,6 +152,25 @@
         }
 
         /// <summary>
+        /// Tests that the <see cref="IBusinessProcessFlow.ExecuteStageActionAsync(Func{FieldCollection, Task}, string[])"/> method returns the fields of the current stage.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ExecuteStageActionAsync_WhenActiveStageFlyoutIsVisible_ReturnsFieldCollection()
+        {
+            var expectedLabels = new[] { "Single line of text (text)", "Single line of text (email)" };
+
+            var page = await this.SetupBusinessProcessFlowScenarioAsync();
+            await page.Form.BusinessProcess.ExecuteStageActionAsync(async (fields) =>
+            {
+                var actualLabels = await Task.WhenAll(fields.Select(f => f.GetLabelAsync()));
+
+                Assert.That(fields.Count(), Is.EqualTo(expectedLabels.Length));
+                Assert.That(actualLabels, Is.EquivalentTo(expectedLabels));
+            });
+        }
+
+        /// <summary>
         /// Helper method to move the business process flow to the final stage.
         /// </summary>
         private async Task MoveToFinalStageAsync(IBusinessProcessFlow bpf)
