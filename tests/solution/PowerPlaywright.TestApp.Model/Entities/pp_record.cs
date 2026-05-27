@@ -458,6 +458,24 @@ namespace PowerPlaywright.TestApp.Model
 			}
 		}
 		
+		/// <summary>
+		/// Rich text multi line
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_multilinerichtext")]
+		public string pp_multilinerichtext
+		{
+			get
+			{
+				return this.GetAttributeValue<string>("pp_multilinerichtext");
+			}
+			set
+			{
+				this.OnPropertyChanging("pp_multilinerichtext");
+				this.SetAttributeValue("pp_multilinerichtext", value);
+				this.OnPropertyChanged("pp_multilinerichtext");
+			}
+		}
+		
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_multiplelinesoftexttext")]
 		public string pp_multiplelinesoftexttext
 		{
@@ -472,26 +490,11 @@ namespace PowerPlaywright.TestApp.Model
 				this.OnPropertyChanged("pp_multiplelinesoftexttext");
 			}
 		}
-
-        [Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_multilinerichtext")]
-        public string pp_multilinerichtext
-        {
-            get
-            {
-                return this.GetAttributeValue<string>("pp_multilinerichtext");
-            }
-            set
-            {
-                this.OnPropertyChanging("pp_multilinerichtext");
-                this.SetAttributeValue("pp_multilinerichtext", value);
-                this.OnPropertyChanged("pp_multilinerichtext");
-            }
-        }
-
-        /// <summary>
-        /// A self-referential lookup
-        /// </summary>
-        [Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_parentrecord")]
+		
+		/// <summary>
+		/// A self-referential lookup
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("pp_parentrecord")]
 		public Microsoft.Xrm.Sdk.EntityReference pp_ParentRecord
 		{
 			get
@@ -726,6 +729,42 @@ namespace PowerPlaywright.TestApp.Model
 		}
 		
 		/// <summary>
+		/// Contains the id of the process associated with the entity.
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("processid")]
+		public System.Nullable<System.Guid> processid
+		{
+			get
+			{
+				return this.GetAttributeValue<System.Nullable<System.Guid>>("processid");
+			}
+			set
+			{
+				this.OnPropertyChanging("processid");
+				this.SetAttributeValue("processid", value);
+				this.OnPropertyChanged("processid");
+			}
+		}
+		
+		/// <summary>
+		/// Contains the id of the stage where the entity is located.
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("stageid")]
+		public System.Nullable<System.Guid> stageid
+		{
+			get
+			{
+				return this.GetAttributeValue<System.Nullable<System.Guid>>("stageid");
+			}
+			set
+			{
+				this.OnPropertyChanging("stageid");
+				this.SetAttributeValue("stageid", value);
+				this.OnPropertyChanged("stageid");
+			}
+		}
+		
+		/// <summary>
 		/// Status of the Record
 		/// </summary>
 		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("statecode")]
@@ -794,6 +833,24 @@ namespace PowerPlaywright.TestApp.Model
 				this.OnPropertyChanging("TransactionCurrencyId");
 				this.SetAttributeValue("transactioncurrencyid", value);
 				this.OnPropertyChanged("TransactionCurrencyId");
+			}
+		}
+		
+		/// <summary>
+		/// A comma separated list of string values representing the unique identifiers of stages in a Business Process Flow Instance in the order that they occur.
+		/// </summary>
+		[Microsoft.Xrm.Sdk.AttributeLogicalNameAttribute("traversedpath")]
+		public string traversedpath
+		{
+			get
+			{
+				return this.GetAttributeValue<string>("traversedpath");
+			}
+			set
+			{
+				this.OnPropertyChanging("traversedpath");
+				this.SetAttributeValue("traversedpath", value);
+				this.OnPropertyChanged("traversedpath");
 			}
 		}
 		
