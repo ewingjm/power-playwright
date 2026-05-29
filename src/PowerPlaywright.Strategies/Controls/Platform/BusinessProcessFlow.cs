@@ -179,7 +179,7 @@
         {
             if (await this.flyout.IsVisibleAsync())
             {
-                var closeButton = this.flyout.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Close" });
+                var closeButton = this.flyout.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Close", Exact = true });
                 await closeButton.ClickAndWaitForAppIdleAsync();
             }
         }
