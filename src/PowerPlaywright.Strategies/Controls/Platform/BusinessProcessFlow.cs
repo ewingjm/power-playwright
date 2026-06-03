@@ -42,7 +42,7 @@
         {
             this.controlFactory = controlFactory;
 
-            this.activeStage = this.Container.Locator("li[data-selected-stage='true']");
+            this.activeStage = this.Container.Locator("li[id^='MscrmControls.Containers.ProcessBreadCrumb-processHeaderStage'][data-selected-stage='true']");
             this.allStages = this.Container.Locator("li");
             this.activeButton = this.activeStage.GetByRole(AriaRole.Button);
             this.flyout = appPage.Page.Locator("[data-id^='MscrmControls.Containers.ProcessStageControl-processHeaderStageFlyoutContainer']");
@@ -123,11 +123,9 @@
         /// <inheritdoc/>
         public async Task ExecuteStageActionAsync(Func<IEnumerable<IField>, Task> action)
         {
-            var stage = this.GetStage(await this.GetCurrentStageAsync());
-
             if (!await this.flyout.IsVisibleAsync())
             {
-                await stage.ClickAndWaitForAppIdleAsync();
+                await this.activeStage.ClickAndWaitForAppIdleAsync();
             }
 
             var fieldLocators = await this.flyout.Locator("div[data-id*='MscrmControls.Containers.ProcessStageControl-fieldSectionItemContainer'] [data-lp-id*='MscrmControls.Containers.FieldSectionItem']").AllAsync();
@@ -182,15 +180,6 @@
                 var closeButton = this.flyout.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions() { Name = "Close", Exact = true });
                 await closeButton.ClickAndWaitForAppIdleAsync();
             }
-        }
-
-        private ILocator GetStage(string stageName)
-        {
-            var stageLocator = this.Container.Locator(
-                "li[id^='MscrmControls.Containers.ProcessBreadCrumb-processHeaderStage']",
-                new LocatorLocatorOptions { HasTextString = stageName });
-
-            return stageLocator;
         }
     }
 }
