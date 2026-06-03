@@ -2,6 +2,7 @@
 {
     using PowerPlaywright.Framework;
     using PowerPlaywright.Framework.Controls.Platform;
+    using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
     using PowerPlaywright.TestApp.Model.Fakers;
 
@@ -167,6 +168,23 @@
 
                 Assert.That(fields.Count(), Is.EqualTo(expectedLabels.Length));
                 Assert.That(actualLabels, Is.EquivalentTo(expectedLabels));
+            });
+        }
+
+        /// <summary>
+        /// Tests that the <see cref="IBusinessProcessFlow.ExecuteStageActionAsync(Func{FieldCollection, Task}, string[])"/> method allows interaction with the fields of the current stage.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+        [Test]
+        public async Task ExecuteStageActionAsync_FieldPresent_AllowsFieldInteraction()
+        {
+            var page = await this.SetupBusinessProcessFlowScenarioAsync();
+            await page.Form.BusinessProcess.ExecuteStageActionAsync(async (fields) =>
+            {
+                var singleLineTextControl = fields.First();
+
+                Assert.That(singleLineTextControl.GetRequirementLevelAsync, Is.EqualTo(FieldRequirementLevel.Required));
+                Assert.That(singleLineTextControl.IsDisabledAsync, Is.False);
             });
         }
 
