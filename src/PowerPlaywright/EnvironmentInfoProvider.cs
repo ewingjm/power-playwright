@@ -13,6 +13,8 @@ namespace PowerPlaywright
     /// </summary>
     internal class EnvironmentInfoProvider : IEnvironmentInfoProvider, IAppLoadInitializable
     {
+        private static readonly Dictionary<string, EnvironmentInfo> EnvironmentInfoCache = new Dictionary<string, EnvironmentInfo>();
+
         private readonly ILogger<EnvironmentInfoProvider> logger;
 
         /// <summary>
@@ -47,11 +49,33 @@ namespace PowerPlaywright
                 throw new ArgumentNullException(nameof(page));
             }
 
-            var controls = await GetControlsAsync(page);
-            this.ControlIds = controls.ToDictionary(c => c.Name, c => c.Id);
-            this.ControlVersions = controls.ToDictionary(c => c.Name, c => c.Version);
+            var environmentUrl = new Uri(page.Url).GetLeftPart(UriPartial.Authority);
 
-            this.PlatformVersion = await GetPlatformVersionAsync(page);
+            EnvironmentInfo environmentInfo;
+            if (EnvironmentInfoCache.TryGetValue(environmentUrl, out var cachedInfo))
+            {
+                this.logger.LogInformation($"Using cached environment info for {environmentUrl}");
+                environmentInfo = cachedInfo;
+            }
+            else
+            {
+                var controls = await GetControlsAsync(page);
+                var platformVersion = await GetPlatformVersionAsync(page);
+
+                environmentInfo = new EnvironmentInfo
+                {
+                    ControlIds = controls.ToDictionary(c => c.Name, c => c.Id),
+                    ControlVersions = controls.ToDictionary(c => c.Name, c => c.Version),
+                    PlatformVersion = platformVersion,
+                };
+
+                EnvironmentInfoCache[environmentUrl] = environmentInfo;
+                this.logger.LogInformation($"Cached environment info for {environmentUrl}");
+            }
+
+            this.ControlIds = environmentInfo.ControlIds;
+            this.ControlVersions = environmentInfo.ControlVersions;
+            this.PlatformVersion = environmentInfo.PlatformVersion;
 
             this.IsReady = true;
             this.OnReady?.Invoke(this, EventArgs.Empty);
@@ -89,6 +113,15 @@ namespace PowerPlaywright
             public Version Version { get; set; }
 
             public string Name { get; set; }
+        }
+
+        private class EnvironmentInfo
+        {
+            public Version PlatformVersion { get; set; }
+
+            public IDictionary<string, Version> ControlVersions { get; set; }
+
+            public IDictionary<string, Guid> ControlIds { get; set; }
         }
     }
 }
