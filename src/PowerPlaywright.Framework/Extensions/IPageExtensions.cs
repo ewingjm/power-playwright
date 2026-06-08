@@ -22,7 +22,7 @@
                 timeout = TimeSpan.FromSeconds(30);
             }
 
-            await page.WaitForFunctionAsync("window.UCWorkBlockTracker.isAppIdle()", options: new PageWaitForFunctionOptions { Timeout = timeout.Milliseconds });
+            await page.WaitForFunctionAsync("window.UCWorkBlockTracker.isAppIdle()", options: new PageWaitForFunctionOptions { Timeout = (int)timeout.TotalMilliseconds });
 
             await WaitForSaveAsync(page, timeout);
         }
@@ -33,7 +33,7 @@
 
             if (await savingAlert.IsVisibleAsync())
             {
-                await savingAlert.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Hidden, Timeout = timeout.Milliseconds });
+                await savingAlert.WaitForAsync(new LocatorWaitForOptions { State = WaitForSelectorState.Hidden, Timeout = (int)timeout.TotalMilliseconds });
             }
         }
     }

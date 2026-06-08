@@ -33,7 +33,10 @@
         /// <inheritdoc/>
         public async Task<IEntityRecordPage> OpenFormAsync(string entityName)
         {
-            await this.Page.EvaluateAsync(
+            await this.Page.WaitForAppIdleAsync();
+
+            await TimeoutGuard.ExecuteWithTimeoutAsync(
+                async () => await this.Page.EvaluateAsync(
                 @"
                     async (entityName) => { 
                         await Xrm.Navigation.openForm(
@@ -42,7 +45,7 @@
                             }
                         ) 
                     } ",
-                entityName);
+                entityName));
 
             return await this.pageFactory.CreateInstanceAsync<IEntityRecordPage>(this.Page);
         }
@@ -50,7 +53,10 @@
         /// <inheritdoc/>
         public async Task<IEntityRecordPage> NavigateToRecordAsync(string entityName, Guid entityId)
         {
-            await this.Page.EvaluateAsync(
+            await this.Page.WaitForAppIdleAsync();
+
+            await TimeoutGuard.ExecuteWithTimeoutAsync(
+                async () => await this.Page.EvaluateAsync(
                 @"
                     async ({ entityName, entityId } ) => { 
                         await Xrm.Navigation.navigateTo(
@@ -61,7 +67,7 @@
                             }
                         ) 
                     } ",
-                new { entityName, entityId });
+                new { entityName, entityId }));
 
             await this.Page.WaitForAppIdleAsync();
 
