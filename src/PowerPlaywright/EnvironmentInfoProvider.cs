@@ -54,7 +54,7 @@ namespace PowerPlaywright
             EnvironmentInfo environmentInfo;
             if (EnvironmentInfoCache.TryGetValue(environmentUrl, out var cachedInfo))
             {
-                this.logger.LogInformation($"Using cached environment info for {environmentUrl}");
+                this.logger.LogInformation("Using cached environment info for {environmentUrl}", environmentUrl);
                 environmentInfo = cachedInfo;
             }
             else
@@ -70,7 +70,7 @@ namespace PowerPlaywright
                 };
 
                 EnvironmentInfoCache[environmentUrl] = environmentInfo;
-                this.logger.LogInformation($"Cached environment info for {environmentUrl}");
+                this.logger.LogInformation("Cached environment info for {environmentUrl}", environmentUrl);
             }
 
             this.ControlIds = environmentInfo.ControlIds;
