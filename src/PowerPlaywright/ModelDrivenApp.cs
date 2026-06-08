@@ -16,6 +16,8 @@ namespace PowerPlaywright
     /// </summary>
     internal class ModelDrivenApp : IModelDrivenApp
     {
+        private static readonly Dictionary<string, string> AppUrlCache = new Dictionary<string, string>();
+
         private readonly ModelDrivenAppOptions options;
         private readonly IBrowserContext browserContext;
         private readonly IPageFactory pageFactory;
@@ -92,7 +94,17 @@ namespace PowerPlaywright
             }
 
             var page = await this.browserContext.NewPageAsync();
-            await page.GotoAsync(new Uri(this.options.EnvironmentUrl, $"Apps/uniquename/{this.options.AppUniqueName}").ToString());
+            var cacheKey = GetCacheKey(this.options.EnvironmentUrl, this.options.AppUniqueName);
+
+            // Use cached URL if available to avoid redirect
+            if (AppUrlCache.TryGetValue(cacheKey, out var cachedUrl))
+            {
+                await page.GotoAsync(cachedUrl);
+            }
+            else
+            {
+                await page.GotoAsync(new Uri(this.options.EnvironmentUrl, $"Apps/uniquename/{this.options.AppUniqueName}").ToString());
+            }
 
             var currentPage = await this.pageFactory.CreateInstanceAsync(page);
 
@@ -110,12 +122,24 @@ namespace PowerPlaywright
 
             this.loggedInUser = username;
 
+            // Cache the final URL for future navigations
+            if (!AppUrlCache.ContainsKey(cacheKey))
+            {
+                AppUrlCache[cacheKey] = homePage.Page.Url;
+                this.logger.LogInformation("Cached app URL for {AppUniqueName}: {AppUrl}", this.options.AppUniqueName, homePage.Page.Url);
+            }
+
             await homePage.Page.GotoAsync(homePage.Page.Url + "&flags=easyreproautomation%3Dtrue%2Ctestmode%3Dtrue");
             await homePage.Page.WaitForAppIdleAsync();
 
             await Task.WhenAll(this.initializables.Select(i => i.InitializeAsync(homePage.Page)));
 
             return homePage;
+        }
+
+        private static string GetCacheKey(Uri environmentUrl, string appUniqueName)
+        {
+            return $"{environmentUrl.GetLeftPart(UriPartial.Authority)}|{appUniqueName}";
         }
     }
 }
