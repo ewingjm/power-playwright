@@ -22,7 +22,14 @@
                 timeout = TimeSpan.FromSeconds(30);
             }
 
-            await page.WaitForFunctionAsync("window.UCWorkBlockTracker.isAppIdle()", options: new PageWaitForFunctionOptions { Timeout = (int)timeout.TotalMilliseconds });
+            try
+            {
+                await page.WaitForFunctionAsync("window.UCWorkBlockTracker.isAppIdle()", options: new PageWaitForFunctionOptions { Timeout = (int)timeout.TotalMilliseconds });
+            }
+            catch (TimeoutException)
+            {
+                // App still not idle after timeout which appears to occasionally happens to due certain assets not being loaded - swallow and attempt to continue.
+            }
 
             await WaitForSaveAsync(page, timeout);
         }
