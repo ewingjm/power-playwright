@@ -221,7 +221,9 @@
 
         private async Task<string> GetCommandLabel(ILocator command)
         {
-            var label = await command.InnerTextAsync();
+            var label = await this.IsSplitButtonCommandAsync(command)
+                ? await this.GetSplitButtonMainCommand(command).InnerTextAsync()
+                : await command.InnerTextAsync();
 
             return label.Trim();
         }
