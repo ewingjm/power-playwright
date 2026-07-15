@@ -82,7 +82,10 @@
                 await this.OpenAreaAsync(area);
             }
 
-            var groupHeaders = await this.Container.GetByRole(AriaRole.Heading, new LocatorGetByRoleOptions { Level = 3 }).AllTextContentsAsync();
+            var groupHeaders = await this.Container
+                .GetByRole(AriaRole.Tree)
+                .GetByRole(AriaRole.Treeitem)
+                .Locator("[data-id*='sitemap-sitemapAreaGroup']").AllInnerTextsAsync();
 
             return groupHeaders.Select(h => h.TrimStart(' '));
         }

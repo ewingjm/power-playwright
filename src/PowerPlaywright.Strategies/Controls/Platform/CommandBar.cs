@@ -25,7 +25,6 @@
 
         private readonly ILocator commands;
         private readonly ILocator overflowCommand;
-        private readonly ILocator flyout;
         private readonly ILocator flyoutCommands;
         private readonly ILocator flyoutLoading;
 
@@ -41,10 +40,9 @@
         {
             this.pageFactory = pageFactory;
             this.controlFactory = controlFactory;
-            this.commands = this.Container.Locator("[role='menuitem']:not([data-id='OverflowButton']):not([aria-hidden='true'])");
+            this.commands = this.Container.Locator("li:has(button[role='menuitem']:not([data-id='OverflowButton'])):not([aria-hidden='true']):not([id*='Menu$splitButtonId'])");
             this.overflowCommand = this.Container.Locator("[data-id='OverflowButton']");
-            this.flyout = this.Page.GetByRole(AriaRole.Menu);
-            this.flyoutCommands = this.flyout.Locator("[role='menuitem']:not([id*='flyoutbackbutton']):not([aria-hidden='true'])");
+            this.flyoutCommands = this.Page.GetByRole(AriaRole.Menu).Locator("[role='menuitem']:not([id*='flyoutbackbutton']):not([aria-hidden='true']):not([data-id*='Menu$splitButtonId'])");
             this.flyoutLoading = this.flyoutCommands.Filter(new LocatorFilterOptions { HasText = "Loading..." });
         }
 
@@ -232,19 +230,19 @@
 
         private ILocator GetSplitButtonMainCommand(ILocator command)
         {
-            return command.Locator("[role='button']:not([aria-haspopup='true'])");
+            return command.Locator("button[role='menuitem']:not([aria-haspopup='true'])");
         }
 
         private ILocator GetSplitButtonDropdownCommand(ILocator command)
         {
-            return command.Locator("[role='button'][aria-haspopup='true']");
+            return command.Locator("button[role='menuitem'][aria-haspopup='true']");
         }
 
         private async Task<bool> IsSplitButtonCommandAsync(ILocator command)
         {
             var id = await command.GetAttributeAsync(Attributes.Id);
 
-            return id != null && Regex.IsMatch(id, @"\.Menu\d+_splitButton");
+            return id != null && Regex.IsMatch(id, @"_splitButton");
         }
     }
 }
