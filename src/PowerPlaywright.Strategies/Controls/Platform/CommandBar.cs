@@ -42,7 +42,7 @@
             this.controlFactory = controlFactory;
             this.commands = this.Container.Locator("li:has(button[role='menuitem']:not([data-id='OverflowButton'])):not([aria-hidden='true']):not([id*='Menu$splitButtonId'])");
             this.overflowCommand = this.Container.Locator("[data-id='OverflowButton']");
-            this.flyoutCommands = this.Page.GetByRole(AriaRole.Menu).Or(this.Page.GetByRole(AriaRole.Menubar)).Locator("[role='menuitem']:not([id*='flyoutbackbutton']):not([aria-hidden='true']):not([data-id*='Menu$splitButtonId'])");
+            this.flyoutCommands = this.Page.GetByRole(AriaRole.Menu).Locator("[role='menuitem']:not([id*='flyoutbackbutton']):not([aria-hidden='true']):not([data-id*='Menu$splitButtonId'])");
             this.flyoutLoading = this.flyoutCommands.Filter(new LocatorFilterOptions { HasText = "Loading..." });
         }
 
@@ -228,19 +228,19 @@
 
         private ILocator GetSplitButtonMainCommand(ILocator command)
         {
-            return command.Locator("[role='menuitem']:not([aria-haspopup='true'])");
+            return command.Locator("button[role='menuitem']:not([aria-haspopup='true'])");
         }
 
         private ILocator GetSplitButtonDropdownCommand(ILocator command)
         {
-            return command.Locator("[role='button'][aria-haspopup='true']");
+            return command.Locator("button[role='menuitem'][aria-haspopup='true']");
         }
 
         private async Task<bool> IsSplitButtonCommandAsync(ILocator command)
         {
             var id = await command.GetAttributeAsync(Attributes.Id);
 
-            return id != null && Regex.IsMatch(id, @"^(?!.*Menu\$splitButtonId).*\|SplitButton!");
+            return id != null && Regex.IsMatch(id, @"_splitButton");
         }
     }
 }
