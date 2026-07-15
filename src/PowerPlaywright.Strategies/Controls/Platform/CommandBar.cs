@@ -25,7 +25,6 @@
 
         private readonly ILocator commands;
         private readonly ILocator overflowCommand;
-        private readonly ILocator flyout;
         private readonly ILocator flyoutCommands;
         private readonly ILocator flyoutLoading;
 
@@ -41,10 +40,9 @@
         {
             this.pageFactory = pageFactory;
             this.controlFactory = controlFactory;
-            this.commands = this.Container.Locator("[role='menuitem']:not([data-id='OverflowButton']):not([aria-hidden='true'])");
+            this.commands = this.Container.Locator("[role='menuitem']:not([data-id='OverflowButton']):not([aria-hidden='true']):not([data-id*='Menu$splitButtonId'])");
             this.overflowCommand = this.Container.Locator("[data-id='OverflowButton']");
-            this.flyout = this.Page.GetByRole(AriaRole.Menu);
-            this.flyoutCommands = this.flyout.Locator("[role='menuitem']:not([id*='flyoutbackbutton']):not([aria-hidden='true'])");
+            this.flyoutCommands = this.Page.GetByRole(AriaRole.Menu).Or(this.Page.GetByRole(AriaRole.Menubar)).Locator("[role='menuitem']:not([id*='flyoutbackbutton']):not([aria-hidden='true']):not([data-id*='Menu$splitButtonId'])");
             this.flyoutLoading = this.flyoutCommands.Filter(new LocatorFilterOptions { HasText = "Loading..." });
         }
 
@@ -71,6 +69,8 @@
         public async Task ClickCommandAsync(params string[] commands)
         {
             await this.Page.WaitForAppIdleAsync();
+
+            var c = await this.commands.CountAsync();
 
             var parentCommands = commands.Take(commands.Length - 1);
 
@@ -223,16 +223,14 @@
 
         private async Task<string> GetCommandLabel(ILocator command)
         {
-            var label = await this.IsSplitButtonCommandAsync(command)
-                ? await this.GetSplitButtonMainCommand(command).InnerTextAsync()
-                : await command.InnerTextAsync();
+            var label = await command.InnerTextAsync();
 
             return label.Trim();
         }
 
         private ILocator GetSplitButtonMainCommand(ILocator command)
         {
-            return command.Locator("[role='button']:not([aria-haspopup='true'])");
+            return command.Locator("[role='menuitem']:not([aria-haspopup='true'])");
         }
 
         private ILocator GetSplitButtonDropdownCommand(ILocator command)
@@ -244,7 +242,7 @@
         {
             var id = await command.GetAttributeAsync(Attributes.Id);
 
-            return id != null && Regex.IsMatch(id, @"\.Menu\d+_splitButton");
+            return id != null && Regex.IsMatch(id, @"^(?!.*Menu\$splitButtonId).*\|SplitButton!");
         }
     }
 }
