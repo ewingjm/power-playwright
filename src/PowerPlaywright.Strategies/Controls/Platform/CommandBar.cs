@@ -40,7 +40,7 @@
         {
             this.pageFactory = pageFactory;
             this.controlFactory = controlFactory;
-            this.commands = this.Container.Locator("[role='menuitem']:not([data-id='OverflowButton']):not([aria-hidden='true']):not([data-id*='Menu$splitButtonId'])");
+            this.commands = this.Container.Locator("li:has(button[role='menuitem']:not([data-id='OverflowButton'])):not([aria-hidden='true']):not([id*='Menu$splitButtonId'])");
             this.overflowCommand = this.Container.Locator("[data-id='OverflowButton']");
             this.flyoutCommands = this.Page.GetByRole(AriaRole.Menu).Or(this.Page.GetByRole(AriaRole.Menubar)).Locator("[role='menuitem']:not([id*='flyoutbackbutton']):not([aria-hidden='true']):not([data-id*='Menu$splitButtonId'])");
             this.flyoutLoading = this.flyoutCommands.Filter(new LocatorFilterOptions { HasText = "Loading..." });
@@ -69,8 +69,6 @@
         public async Task ClickCommandAsync(params string[] commands)
         {
             await this.Page.WaitForAppIdleAsync();
-
-            var c = await this.commands.CountAsync();
 
             var parentCommands = commands.Take(commands.Length - 1);
 
