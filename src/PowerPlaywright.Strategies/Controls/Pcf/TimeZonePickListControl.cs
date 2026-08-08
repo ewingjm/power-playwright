@@ -1,5 +1,6 @@
-﻿namespace PowerPlaywright.Strategies.Controls.Pcf
+namespace PowerPlaywright.Strategies.Controls.Pcf
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -12,22 +13,22 @@
     using PowerPlaywright.Framework.Pages;
 
     /// <summary>
-    /// A control strategy for the <see cref="IOptionSetControl"/>.
+    /// A control strategy for the <see cref="ITimeZonePickListControl"/>.
     /// </summary>
     [PcfControlStrategy(0, 0, 0)]
-    public class OptionSet : PcfControlInternal, IOptionSet
+    public class TimeZonePickListControl : PcfControlInternal, ITimeZonePickListControl
     {
         private readonly ILocator toggleMenu;
         private readonly ILocator selectedOption;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OptionSet"/> class.
+        /// Initializes a new instance of the <see cref="TimeZonePickListControl"/> class.
         /// </summary>
         /// <param name="name">The control name.</param>
         /// <param name="appPage">The app page.</param>
         /// <param name="infoProvider">The info provider.</param>
         /// <param name="parent">The parent control.</param>
-        public OptionSet(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
+        public TimeZonePickListControl(string name, IAppPage appPage, IEnvironmentInfoProvider infoProvider, IControl parent = null)
             : base(name, appPage, infoProvider, parent)
         {
             this.toggleMenu = this.Container.GetByRole(AriaRole.Combobox);
@@ -37,7 +38,7 @@
         /// <inheritdoc/>
         public async Task<string> GetValueAsync()
         {
-            await this.Page.WaitForAppIdleAsync();
+            await this.AppPage.Page.WaitForAppIdleAsync();
 
             var optionText = await this.selectedOption.TextContentAsync();
 
@@ -45,13 +46,20 @@
         }
 
         /// <inheritdoc/>
+        public async Task SetValueAsync(string value)
+        {
+            await this.toggleMenu.SelectOptionAsync(value);
+            await this.AppPage.Page.WaitForAppIdleAsync();
+        }
+
+        /// <inheritdoc/>
         public async Task<IEnumerable<string>> GetAllOptionsAsync()
         {
-            await this.Page.WaitForAppIdleAsync();
+            await this.AppPage.Page.WaitForAppIdleAsync();
             var isEditable = await this.toggleMenu.IsEditableAsync();
             if (!isEditable)
             {
-                throw new PowerPlaywrightException("Unable to retrieve the available options because the option set control is not editable.");
+                throw new PowerPlaywrightException("Unable to retrieve the available options because the timezone control is not editable.");
             }
 
             var optionSetOptions = this.toggleMenu.GetByRole(AriaRole.Option);
@@ -61,13 +69,6 @@
                 .Select(o => o.Trim());
 
             return allOptionsNoSelect;
-        }
-
-        /// <inheritdoc/>
-        public async Task SetValueAsync(string value)
-        {
-            await this.toggleMenu.SelectOptionAsync(value);
-            await this.AppPage.Page.WaitForAppIdleAsync();
         }
     }
 }
