@@ -24,7 +24,7 @@
 
             try
             {
-                await page.WaitForFunctionAsync("window.UCWorkBlockTracker.isAppIdle()", options: new PageWaitForFunctionOptions { Timeout = (int)timeout.TotalMilliseconds });
+                await page.WaitForFunctionAsync("typeof window.UCWorkBlockTracker?.isAppIdle === 'function' && window.UCWorkBlockTracker.isAppIdle() === true", options: new PageWaitForFunctionOptions { Timeout = (int)timeout.TotalMilliseconds });
             }
             catch (TimeoutException)
             {
@@ -32,6 +32,41 @@
             }
 
             await WaitForSaveAsync(page, timeout);
+        }
+
+        /// <summary>
+        /// Waits until no DOM mutations have occurred for the given quiet period.
+        /// </summary>
+        /// <param name="page">The page.</param>
+        /// <param name="quietPeriod">The period without DOM changes required for the DOM to be considered stable.</param>
+        /// <param name="timeout">The maximum time to wait. Defaults to 30 seconds.</param>
+        /// <returns>A <see cref="Task"/> that resolves to true if the DOM became stable, or false if the timeout elapsed first.</returns>
+        public static async Task<bool> WaitForDomStableAsync(this IPage page, TimeSpan quietPeriod, TimeSpan timeout = default)
+        {
+            if (timeout == default)
+            {
+                timeout = TimeSpan.FromSeconds(30);
+            }
+
+            const string script = @"({ quiet, timeout }) => new Promise(resolve => {
+                let quietTimer;
+                const finish = stable => {
+                    observer.disconnect();
+                    clearTimeout(quietTimer);
+                    clearTimeout(maxTimer);
+                    resolve(stable);
+                };
+                const arm = () => {
+                    clearTimeout(quietTimer);
+                    quietTimer = setTimeout(() => finish(true), quiet);
+                };
+                const observer = new MutationObserver(arm);
+                observer.observe(document, { childList: true, subtree: true, attributes: true, characterData: true });
+                const maxTimer = setTimeout(() => finish(false), timeout);
+                arm();
+            })";
+
+            return await page.EvaluateAsync<bool>(script, new { quiet = (int)quietPeriod.TotalMilliseconds, timeout = (int)timeout.TotalMilliseconds });
         }
 
         private static async Task WaitForSaveAsync(IPage page, TimeSpan timeout)

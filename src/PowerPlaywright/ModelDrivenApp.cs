@@ -130,6 +130,7 @@ namespace PowerPlaywright
             }
 
             await homePage.Page.GotoAsync(homePage.Page.Url + "&flags=easyreproautomation%3Dtrue%2Ctestmode%3Dtrue");
+            await homePage.Page.WaitForDomStableAsync(TimeSpan.FromSeconds(1));
             await homePage.Page.WaitForAppIdleAsync();
 
             await Task.WhenAll(this.initializables.Select(i => i.InitializeAsync(homePage.Page)));
