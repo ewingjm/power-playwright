@@ -133,6 +133,13 @@ namespace PowerPlaywright
             await homePage.Page.WaitForDomStableAsync(TimeSpan.FromSeconds(1));
             await homePage.Page.WaitForAppIdleAsync();
 
+            var errorDialog = homePage.Page.GetByRole(AriaRole.Alertdialog, new PageGetByRoleOptions { Name = "Error: Error" });
+            if (await errorDialog.IsVisibleAsync())
+            {
+                await errorDialog.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Show details" }).ClickAsync();
+                throw new PowerPlaywrightException($"Failed to load app: {await errorDialog.InnerTextAsync()}");
+            }
+
             await Task.WhenAll(this.initializables.Select(i => i.InitializeAsync(homePage.Page)));
 
             return homePage;
