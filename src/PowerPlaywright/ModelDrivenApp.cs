@@ -106,7 +106,16 @@ namespace PowerPlaywright
                 await page.GotoAsync(new Uri(this.options.EnvironmentUrl, $"Apps/uniquename/{this.options.AppUniqueName}").ToString());
             }
 
-            var currentPage = await this.pageFactory.CreateInstanceAsync(page);
+            IAppPage currentPage = null;
+            try
+            {
+                currentPage = await this.pageFactory.CreateInstanceAsync(page);
+            }
+            catch (TimeoutException)
+            {
+                await CheckForAppLoadError(page);
+                throw new PowerPlaywrightException("The app page did not finish loading before the page type could be determined.");
+            }
 
             IModelDrivenAppPage homePage;
 
@@ -117,6 +126,11 @@ namespace PowerPlaywright
             }
             else
             {
+                if (currentPage is null)
+                {
+                    throw new PowerPlaywrightException("The app page could not be created after the app load check completed.");
+                }
+
                 homePage = (IModelDrivenAppPage)currentPage;
             }
 
@@ -133,16 +147,21 @@ namespace PowerPlaywright
             await homePage.Page.WaitForDomStableAsync(TimeSpan.FromSeconds(1));
             await homePage.Page.WaitForAppIdleAsync();
 
-            var errorDialog = homePage.Page.GetByRole(AriaRole.Alertdialog, new PageGetByRoleOptions { Name = "Error: Error" });
+            await CheckForAppLoadError(homePage.Page);
+
+            await Task.WhenAll(this.initializables.Select(i => i.InitializeAsync(homePage.Page)));
+
+            return homePage;
+        }
+
+        private static async Task CheckForAppLoadError(IPage page)
+        {
+            var errorDialog = page.GetByRole(AriaRole.Alertdialog, new PageGetByRoleOptions { Name = "Error: Error" });
             if (await errorDialog.IsVisibleAsync())
             {
                 await errorDialog.GetByRole(AriaRole.Button, new LocatorGetByRoleOptions { Name = "Show details" }).ClickAsync();
                 throw new PowerPlaywrightException($"Failed to load app: {await errorDialog.InnerTextAsync()}");
             }
-
-            await Task.WhenAll(this.initializables.Select(i => i.InitializeAsync(homePage.Page)));
-
-            return homePage;
         }
 
         private static string GetCacheKey(Uri environmentUrl, string appUniqueName)
