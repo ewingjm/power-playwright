@@ -126,6 +126,7 @@
             if (!await this.flyout.IsVisibleAsync())
             {
                 await this.activeStage.ClickAndWaitForAppIdleAsync();
+                await this.flyout.WaitForAsync(new LocatorWaitForOptions() { State = WaitForSelectorState.Visible });
             }
 
             var fieldLocators = await this.flyout.Locator("div[data-id*='MscrmControls.Containers.ProcessStageControl-fieldSectionItemContainer'] [data-lp-id*='MscrmControls.Containers.FieldSectionItem']").AllAsync();
@@ -172,7 +173,7 @@
 
             return currentStage != newStage;
         }
- 
+
         private async Task CollapseFlyoutAsync()
         {
             if (await this.flyout.IsVisibleAsync())
