@@ -24,6 +24,7 @@
 
             try
             {
+                await page.WaitForDomStableAsync(TimeSpan.FromMilliseconds(500));
                 await page.WaitForFunctionAsync("typeof window.UCWorkBlockTracker?.isAppIdle === 'function' && window.UCWorkBlockTracker.isAppIdle() === true", options: new PageWaitForFunctionOptions { Timeout = (int)timeout.TotalMilliseconds });
             }
             catch (TimeoutException)
