@@ -236,7 +236,7 @@ public class ModelDrivenAppTests
     {
         await this.modelDrivepApp.LoginAsync(Username, Password);
 
-        await this.page.Received(1).WaitForFunctionAsync("typeof window.UCWorkBlockTracker?.isAppIdle === 'function' && window.UCWorkBlockTracker.isAppIdle() === true", Arg.Any<object>(), Arg.Any<PageWaitForFunctionOptions>());
+        await this.page.Received(1).EvaluateAsync<bool>(Arg.Is<string>(script => script.Contains("tracker.isAppIdle() === true")), Arg.Any<object>());
     }
 
     /// <summary>

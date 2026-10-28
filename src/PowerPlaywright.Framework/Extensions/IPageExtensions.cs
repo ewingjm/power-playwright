@@ -10,8 +10,13 @@
     public static class IPageExtensions
     {
         /// <summary>
-        /// Waits for the app to be idle.
+        /// Waits for the DOM and app to remain idle together for 300 milliseconds.
         /// </summary>
+        /// <remarks>
+        /// Samples the app idle tracker every 50 milliseconds, requiring at least seven consecutive
+        /// idle readings with no DOM mutations. A busy reading or unavailable tracker restarts the quiet period.
+        /// If the timeout expires, logs a warning and continues to wait for any active save to finish.
+        /// </remarks>
         /// <param name="page">The page.</param>
         /// <param name="timeout">The timeout.</param>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
@@ -22,15 +27,43 @@
                 timeout = TimeSpan.FromSeconds(30);
             }
 
-            try
-            {
-                await page.WaitForDomStableAsync(TimeSpan.FromMilliseconds(500));
-                await page.WaitForFunctionAsync("typeof window.UCWorkBlockTracker?.isAppIdle === 'function' && window.UCWorkBlockTracker.isAppIdle() === true", options: new PageWaitForFunctionOptions { Timeout = (int)timeout.TotalMilliseconds });
-            }
-            catch (TimeoutException)
-            {
-                // App still not idle after timeout which appears to occasionally happens to due certain assets not being loaded - swallow and attempt to continue.
-            }
+            const string script = @"async ({ quiet, interval, minimumSamples, timeout }) => {
+                let idleSince = null;
+                let samples = 0;
+                const reset = () => {
+                    idleSince = null;
+                    samples = 0;
+                };
+                const observer = new MutationObserver(reset);
+                const deadline = performance.now() + timeout;
+                observer.observe(document, { childList: true, subtree: true, attributes: true, characterData: true });
+                try {
+                    while (performance.now() < deadline) {
+                        const tracker = window.UCWorkBlockTracker;
+                        if (typeof tracker?.isAppIdle === 'function' && tracker.isAppIdle() === true) {
+                            const now = performance.now();
+                            if (idleSince === null) {
+                                idleSince = now;
+                            }
+                            samples++;
+                            if (samples >= minimumSamples && now - idleSince >= quiet) {
+                                if (observer.takeRecords().length === 0) {
+                                    return true;
+                                }
+                                reset();
+                            }
+                        } else {
+                            reset();
+                        }
+                        await new Promise(resolve => setTimeout(resolve, Math.min(interval, Math.max(0, deadline - performance.now()))));
+                    }
+                    return false;
+                } finally {
+                    observer.disconnect();
+                }
+            }";
+
+            await page.EvaluateAsync<bool>(script, new { quiet = 300, interval = 50, minimumSamples = 7, timeout = timeout.TotalMilliseconds });
 
             await WaitForSaveAsync(page, timeout);
         }
