@@ -116,7 +116,7 @@
         /// <inheritdoc/>
         public async Task OpenTabAsync(string label)
         {
-            await this.tabList.GetByRole(AriaRole.Tab, new LocatorGetByRoleOptions { Name = label }).ClickAsync();
+            await this.tabList.GetByRole(AriaRole.Tab, new LocatorGetByRoleOptions { Name = label, Exact = true }).ClickAsync();
             await this.Page.WaitForAppIdleAsync();
         }
 
