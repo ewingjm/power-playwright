@@ -24,6 +24,10 @@ on:
       AZURE_STORAGE_ACCOUNTNAME:
         required: true
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   test:
     name: Integration tests (${{ inputs.environment-label }})
