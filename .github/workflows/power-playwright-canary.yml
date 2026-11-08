@@ -1,0 +1,37 @@
+name: Power Playwright Canary
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test (early release cycle)
+    if: ${{ github.ref == 'refs/heads/main' }}
+    uses: ./.github/workflows/integration-tests.yml
+    secrets:
+      ENVIRONMENT_URL: ${{ secrets.TEST_ENVIRONMENT_EARLY_URL }}
+      KEYVAULT_URL: ${{ secrets.TEST_KEYVAULT_URL }}
+      KEYVAULT_TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID }}
+      KEYVAULT_CLIENTID: ${{ secrets.TEST_KEYVAULT_CLIENTID }}
+      KEYVAULT_CLIENTSECRET: ${{ secrets.TEST_KEYVAULT_CLIENTSECRET }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      AZURE_STORAGE_ACCOUNTNAME: ${{ secrets.AZURE_STORAGE_ACCOUNTNAME }}
+    with:
+      environment-label: early
+  notify:
+    name: Raise issue on failure
+    needs: test
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Create issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create canary --repo "$GITHUB_REPOSITORY" --description "Canary run failures" --force
+          gh issue create --repo "$GITHUB_REPOSITORY" --label canary --title "Canary failed against early release cycle ($(date -u +%F))" --body "The canary integration tests failed against the early release cycle environment at ${GITHUB_SHA}. See ${RUN_URL}."
