@@ -12,7 +12,7 @@
   <Playwright>
     <BrowserName>chromium</BrowserName>
     <LaunchOptions>
-      <Channel>chromium</Channel>
+      <Channel>msedge</Channel>
     </LaunchOptions>
   </Playwright>
   <DataCollectionRunSettings>
