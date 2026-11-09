@@ -60,7 +60,7 @@ jobs:
   test:
     name: Test (standard release cycle)
     needs: build
-    if: ${{ success() && (github.event_name != 'workflow_dispatch' || inputs.run-test-job) }}
+    if: ${{ success() && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.run-test-job)) }}
     uses: ./.github/workflows/integration-tests.yml
     secrets:
       ENVIRONMENT_URL: ${{ secrets.TEST_ENVIRONMENT_STANDARD_URL }}
@@ -74,7 +74,7 @@ jobs:
       environment-label: standard
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ success() && (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.run-deploy-job) }}
+    if: ${{ always() && needs.build.result == 'success' && contains(fromJSON('["success", "skipped"]'), needs.test.result) && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.run-deploy-job)) }}
     needs: [ build, test ]
     steps:
       - name: Download NuGet package
