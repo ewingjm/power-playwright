@@ -11,7 +11,6 @@
     using PowerPlaywright.Framework.Controls;
     using PowerPlaywright.Framework.Controls.Pcf;
     using PowerPlaywright.Framework.Controls.Pcf.Attributes;
-    using PowerPlaywright.Framework.Controls.Platform;
     using PowerPlaywright.Framework.Extensions;
     using PowerPlaywright.Framework.Model;
     using PowerPlaywright.Framework.Pages;
@@ -325,7 +324,7 @@
                 {
                     var column = this.Container.Locator("[role='columnheader']:focus");
 
-                    if (await column.Filter(new LocatorFilterOptions { Has = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { Name = "Navigate", Exact = true }) }).First.IsVisibleAsync())
+                    if (await column.Filter(new LocatorFilterOptions { Has = this.Page.GetByRole(AriaRole.Img, new PageGetByRoleOptions { NameRegex = new Regex("(Navigate)|(Go to record)"), Exact = true }) }).First.IsVisibleAsync())
                     {
                         break;
                     }
