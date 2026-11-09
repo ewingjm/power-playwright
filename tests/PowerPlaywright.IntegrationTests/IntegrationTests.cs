@@ -10,6 +10,7 @@
     using Microsoft.PowerPlatform.Dataverse.Client;
     using Microsoft.Xrm.Sdk;
     using Microsoft.Xrm.Sdk.Messages;
+    using Microsoft.Xrm.Sdk.Query;
     using NuGet.Protocol;
     using NuGet.Protocol.Core.Types;
     using NUnit.Framework.Interfaces;
@@ -34,10 +35,10 @@
 
         private static readonly object UserEnumeratorLock = new();
         private static readonly IEnumerator<UserConfiguration> UserEnumerator;
+        private static IPowerPlaywright powerPlaywright;
 
         private bool isTracing;
         private UserConfiguration? user;
-        private IPowerPlaywright powerPlaywright;
 
         static IntegrationTests()
         {
@@ -65,21 +66,61 @@
         /// <summary>
         /// Gets the Power Playwright instance.
         /// </summary>
-        protected IPowerPlaywright PowerPlaywright => this.powerPlaywright;
+        protected IPowerPlaywright PowerPlaywright => powerPlaywright;
+
+        /// <summary>
+        /// Sets up the user locales.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+        [OneTimeSetUp]
+        public static async Task SetUpUserLocalesAsync()
+        {
+            var users = Configuration.Users.Where(u => u.Username != null).Select(u => u.Username).Distinct();
+            var userQueryExpression = new QueryExpression("systemuser")
+            {
+                ColumnSet = new ColumnSet("systemuserid"),
+                Criteria = new FilterExpression
+                {
+                    Conditions =
+                    {
+                        new ConditionExpression("domainname", ConditionOperator.In, [.. users]),
+                    },
+                },
+            };
+
+            using var serviceClient = GetServiceClient();
+            var userQueryResponse = await serviceClient.RetrieveMultipleAsync(userQueryExpression);
+            var userSettings = userQueryResponse.Entities.Select(e => new Entity("usersettings")
+            {
+                Id = e.Id,
+                ["localeid"] = 2057,
+            });
+
+            var updateSettingsResponse = (ExecuteMultipleResponse)await serviceClient.ExecuteAsync(new ExecuteMultipleRequest
+            {
+                Settings = new ExecuteMultipleSettings { ContinueOnError = false, ReturnResponses = true },
+                Requests = [.. userSettings.Select(us => new UpdateRequest { Target = us }).ToArray()],
+            });
+
+            if (updateSettingsResponse.IsFaulted)
+            {
+                throw new InvalidOperationException($"Failed to update user locales: {updateSettingsResponse.Responses.Where(r => r.Fault != null).Select(r => r.Fault.Message).First()}");
+            }
+        }
 
         /// <summary>
         /// Sets up the Power Playwright instance.
         /// </summary>
         /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-        [SetUp]
-        public async Task SetUpPowerPlaywrightAsync()
+        [OneTimeSetUp]
+        public static async Task SetUpPowerPlaywrightAsync()
         {
             var packageSource = Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "packages");
             var findPackageByIdResource = await Repository.Factory
                 .GetCoreV3(packageSource)
                 .GetResourceAsync<FindPackageByIdResource>();
 
-            this.powerPlaywright = await Api.PowerPlaywright.CreateInternalAsync(
+            powerPlaywright = await Api.PowerPlaywright.CreateInternalAsync(
                 new NuGetPackageInstaller(findPackageByIdResource, packageSource),
                 new PowerPlaywrightConfiguration
                 {
@@ -152,12 +193,21 @@
         }
 
         /// <summary>
+        /// Gets a service client instance authenticated as the application user.
+        /// </summary>
+        /// <returns>A service client instance.</returns>
+        protected static ServiceClient GetServiceClient()
+        {
+            return new ServiceClient(Configuration.Url, Configuration.ClientId, Configuration.ClientSecret, true);
+        }
+
+        /// <summary>
         /// Logs a test user into the test app.
         /// </summary>
         /// <returns>The home page.</returns>
         protected Task<IModelDrivenAppPage> LoginAsync()
         {
-            return this.powerPlaywright.LaunchAppAsync(
+            return powerPlaywright.LaunchAppAsync(
                 this.Context, Configuration.Url, TestAppUniqueName, this.User.Username, this.User.Password, this.User.TOTPSecret);
         }
 
@@ -194,7 +244,7 @@
         /// <returns>The record ID.</returns>
         protected async Task<EntityReference> CreateRecordAsync(Entity record)
         {
-            using var client = this.GetServiceClient();
+            using var client = GetServiceClient();
 
             var deactivateOnCreate = record.GetAttributeValue<OptionSetValue>(nameof(pp_Record.statecode))?.Value == 1;
 
@@ -228,7 +278,7 @@
         /// <returns>An array of entity references.</returns>
         protected async Task<EntityReference[]> UpsertRecordsAsync(params Entity[] records)
         {
-            using var client = this.GetServiceClient();
+            using var client = GetServiceClient();
 
             var requests = records.Select(r => new UpsertRequest
             {
@@ -246,15 +296,6 @@
             });
 
             return [.. response.Responses.Select(r => r.Response).Cast<UpsertResponse>().Select(r => r.Target)];
-        }
-
-        /// <summary>
-        /// Gets a service client instance authenticated as the application user.
-        /// </summary>
-        /// <returns>A service client instance.</returns>
-        protected ServiceClient GetServiceClient()
-        {
-            return new ServiceClient(Configuration.Url, Configuration.ClientId, Configuration.ClientSecret, true);
         }
 
         /// <summary>

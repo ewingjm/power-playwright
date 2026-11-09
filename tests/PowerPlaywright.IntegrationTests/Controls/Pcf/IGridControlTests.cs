@@ -122,7 +122,7 @@
 
             if (withRelatableRecords != null)
             {
-                using var client = this.GetServiceClient();
+                using var client = GetServiceClient();
 
                 await client.ExecuteAsync(
                     new CreateMultipleRequest
@@ -147,7 +147,7 @@
 
             if (withRelatableRecords != null)
             {
-                using var client = this.GetServiceClient();
+                using var client = GetServiceClient();
 
                 await client.ExecuteAsync(
                     new CreateMultipleRequest

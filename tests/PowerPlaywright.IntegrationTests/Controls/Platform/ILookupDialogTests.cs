@@ -91,7 +91,7 @@
         {
             if (withRelatableRecord != null)
             {
-                using var client = this.GetServiceClient();
+                using var client = GetServiceClient();
 
                 await client.CreateAsync(withRelatableRecord.Generate());
             }

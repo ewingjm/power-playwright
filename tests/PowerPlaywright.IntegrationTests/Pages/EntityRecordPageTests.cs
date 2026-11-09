@@ -20,7 +20,7 @@
         {
             var record = new RecordFaker().Generate();
 
-            using (var client = this.GetServiceClient())
+            using (var client = GetServiceClient())
             {
                 await client.CreateAsync(record);
             }

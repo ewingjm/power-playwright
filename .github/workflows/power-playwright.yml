@@ -17,11 +17,11 @@ on:
       - '**/*.md'
   workflow_dispatch: 
     inputs:
-      runTestJob:
+      run-test-job:
         default: true
         type: boolean
         description: Run test job
-      runDeployJob:
+      run-deploy-job:
         default: false
         type: boolean
         description: Run deploy job
@@ -58,72 +58,23 @@ jobs:
           name: nupkg
           path: nupkg
   test:
-    runs-on: ubuntu-latest
+    name: Test (standard release cycle)
     needs: build
-    if: ${{ success() && (github.event_name != 'workflow_dispatch' || inputs.runTestJob) }}
-    strategy:
-      fail-fast: false
-      matrix:
-        environment:
-          - new-look
-          - old-look
-        include:
-          - environment: new-look
-            secret: TEST_ENVIRONMENT_NEWLOOK_URL
-          - environment: old-look
-            secret: TEST_ENVIRONMENT_OLDLOOK_URL
-    concurrency: 
-      group: test-${{ matrix.environment }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-      - name: Restore integration test dependencies
-        run: dotnet restore tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj
-      - name: Build integration test
-        run: dotnet build tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj -c Release --no-restore
-      - name: Setup Playwright
-        run: |
-          chmod +x tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0/.playwright/node/linux-x64/node
-          tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0/playwright.ps1 install chromium --with-deps
-        shell: pwsh
-      - name: Run integration tests
-        id: runTests
-        run: dotnet test tests/PowerPlaywright.IntegrationTests/PowerPlaywright.IntegrationTests.csproj -c Release --logger console --logger html --results-directory TestResults --collect:"XPlat code coverage" --no-build -- NUnit.NumberOfTestWorkers=${{ vars.TEST_NUMBEROFTESTWORKERS }} Playwright.LaunchOptions.Headless=true
-        env:
-          POWERPLAYWRIGHT__TEST__URL:  ${{ secrets[matrix.secret] }}
-          POWERPLAYWRIGHT__TEST__KEYVAULT__URL: ${{ secrets.TEST_KEYVAULT_URL}}
-          POWERPLAYWRIGHT__TEST__KEYVAULT__TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID}}
-          POWERPLAYWRIGHT__TEST__KEYVAULT__CLIENTID: ${{ secrets.TEST_KEYVAULT_CLIENTID}} 
-          POWERPLAYWRIGHT__TEST__KEYVAULT__CLIENTSECRET: ${{ secrets.TEST_KEYVAULT_CLIENTSECRET}} 
-        if: ${{ always() }}
-      - name: Upload integration test results
-        uses: actions/upload-artifact@v4
-        with:
-          name: integration-test-results-${{ matrix.environment }}
-          path: TestResults
-        if: ${{ always() }}
-      - name: Login to Azure
-        id: azureLogin
-        if: ${{ failure() && steps.runTests.outcome == 'failure' }}
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }} 
-      - name: Upload traces to Blob Storage
-        if: ${{ failure() && steps.azureLogin.conclusion == 'success' }}
-        uses: azure/CLI@v2
-        with:
-          inlineScript: az storage blob upload-batch --account-name '${{ secrets.AZURE_STORAGE_ACCOUNTNAME }}' --auth-mode login -d 'playwright-traces' -s 'tests/PowerPlaywright.IntegrationTests/bin/Release/net8.0/playwright-traces' --destination-path '${{ github.workflow }}/${{ github.run_number }}_${{ github.run_attempt }}_${{ matrix.name }}' --overwrite
-      - name: Logout of Azure
-        if: ${{ failure() && steps.azureLogin.conclusion == 'success' }}
-        run: az logout
+    if: ${{ success() && (github.event_name == 'pull_request' || (github.event_name == 'workflow_dispatch' && inputs.run-test-job)) }}
+    uses: ./.github/workflows/integration-tests.yml
+    secrets:
+      ENVIRONMENT_URL: ${{ secrets.TEST_ENVIRONMENT_STANDARD_URL }}
+      KEYVAULT_URL: ${{ secrets.TEST_KEYVAULT_URL }}
+      KEYVAULT_TENANTID: ${{ secrets.TEST_KEYVAULT_TENANTID }}
+      KEYVAULT_CLIENTID: ${{ secrets.TEST_KEYVAULT_CLIENTID }}
+      KEYVAULT_CLIENTSECRET: ${{ secrets.TEST_KEYVAULT_CLIENTSECRET }}
+      AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+      AZURE_STORAGE_ACCOUNTNAME: ${{ secrets.AZURE_STORAGE_ACCOUNTNAME }}
+    with:
+      environment-label: standard
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ success() && (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.runDeployJob) }}
+    if: ${{ always() && needs.build.result == 'success' && contains(fromJSON('["success", "skipped"]'), needs.test.result) && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.run-deploy-job)) }}
     needs: [ build, test ]
     steps:
       - name: Download NuGet package
