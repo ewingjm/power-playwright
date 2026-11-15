@@ -29,7 +29,7 @@ Please first discuss the change you wish to make via an issue before making a ch
 
 ## Overview
 
-Power Playwright is comprised of three separate assemblies.
+Power Playwright is comprised of three separate assemblies shipped together in the single **PowerPlaywright** NuGet package. Build, test, and release them together. **PowerPlaywright.Framework** is the authoritative contract assembly; do not ship a second copy through a separate strategy or extension package.
 
 ### PowerPlaywright
 
@@ -45,9 +45,9 @@ The public interfaces that describe the API used by consumers and anything that 
 
 The implementations of the interfaces described in **PowerPlaywright.Framework**. Anything that might be impacted by platform updates (e.g., control implementations) will be located here. 
 
-It is planned that, in future, the latest version of this assembly will be dynamically fetched and loaded at runtime before tests execute. This will ensure that tests can be kept in sync with changes in the platform without needing to be recompiled against a later version of Power Playwright.
+Strategies are loaded through normal assembly resolution from the installed application output. The versioned `platform-reference.json` asset is embedded in this assembly. There is no runtime package discovery, download, or installation. Platform fixes are delivered through ordinary package releases and consumers restore and rebuild to use them. See [Updating and reproducible runs](README.md#updating-and-reproducible-runs) for floating references, exact versions, and locked restores.
 
-Any changes here **must** be non-breaking.
+Normal public API and implementer compatibility rules still apply. Additive Framework types or members must ship with their matching implementations. Adding a required member to an existing public interface or abstract base can break consumer-defined controls and requires a breaking release. Continue supporting local assemblies registered through `PowerPlaywrightConfiguration.PageObjectAssemblies` and compile extensions against the main package.
 
 ## How to
 
@@ -284,9 +284,9 @@ Xrm.Utility.getGlobalContext().getVersion();
 
 We are using a [GitHub Flow](https://githubflow.github.io/) workflow. In short:
 
-- Create a topic branch from master
+- Create a topic branch from main
 - Implement changes on your topic branch
-- Create a pull request into master
+- Create a pull request into main
 - Address review comments or validation pipeline issues
 
 A new package version will be published when the pull request is merged. 
@@ -300,6 +300,14 @@ GitVersion has been configured to version by commit messages based on the [Conve
 ## Testing
 
 All changes should be covered by automated unit and integration tests. Please ensure that you either update existing tests or write additional tests if required.
+
+Run the credential-free package-consumer regression before releasing:
+
+```shell
+python3 tests/PowerPlaywright.PackageTests/run.py
+```
+
+It packs real releases into a temporary local feed, verifies floating, exact, and locked restores, and runs built-in and consumer-defined controls with an empty runtime package cache and a rejecting network proxy. It also checks an additive contract/type change and its matching strategy implementation. The runner uses the installed .NET SDK (`--framework net10.0` can target a newer consumer runtime); build tooling dependencies are restored normally before the isolated checks. Production packages must contain all three assemblies and the embedded strategy assets, with no runtime NuGet dependency. CI runs this regression before packaging the main project for publication.
 
 Refer to the [README.md](./tests/PowerPlaywright.IntegrationTests/README.md) within the integration test project for information on how to run these tests.
 

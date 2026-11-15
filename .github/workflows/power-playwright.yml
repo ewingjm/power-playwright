@@ -50,8 +50,10 @@ jobs:
           name: unit-test-results
           path: TestResults
         if: ${{ always() }}
+      - name: Test package consumers and restore policy
+        run: python3 tests/PowerPlaywright.PackageTests/run.py
       - name: Pack
-        run: dotnet pack --no-restore --output nupkg -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
+        run: dotnet pack src/PowerPlaywright/PowerPlaywright.csproj -c Release --no-build --no-restore --output nupkg -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:

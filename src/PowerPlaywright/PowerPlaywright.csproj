@@ -5,6 +5,7 @@
     <IsPackable>true</IsPackable>
     <EnablePackageValidation>true</EnablePackageValidation>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeProjectReferenceDlls</TargetsForTfmSpecificBuildOutput>
+    <BuildProjectReferences Condition="'$(NoBuild)' == 'true'">false</BuildProjectReferences>
     <DebugType>portable</DebugType>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -23,12 +24,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="Microsoft.Playwright" Version="1.49.0" />
-    <PackageReference Include="NuGet.Protocol" Version="6.11.0" />
     <PackageReference Include="Otp.NET" Version="1.4.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.6" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -37,6 +39,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PowerPlaywright.Framework\PowerPlaywright.Framework.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\PowerPlaywright.Strategies\PowerPlaywright.Strategies.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

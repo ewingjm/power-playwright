@@ -12,7 +12,7 @@
     using PowerPlaywright.Resolvers;
 
     /// <summary>
-    /// A control factory that dynamically discovers controls at runtime from a remote source.
+    /// A control factory that dynamically discovers controls at runtime from the installed and registered assemblies.
     /// </summary>
     internal class ControlFactory : IControlFactory
     {

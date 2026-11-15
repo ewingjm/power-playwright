@@ -13,6 +13,7 @@ Power Playwright makes test automation for Power Apps easier by providing a [pag
   - [Table of Contents](#table-of-contents)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+    - [Updating and reproducible runs](#updating-and-reproducible-runs)
   - [Usage](#usage)
     - [Pages](#pages)
       - [Custom pages](#custom-pages)
@@ -32,6 +33,34 @@ Install the NuGet package in your test project:
 ```shell
 dotnet add package PowerPlaywright
 ```
+
+The main package includes the API, Framework, built-in strategies, and their assets as one tested release. Initialization and execution use the installed application output and make no requests to NuGet. Install Playwright browsers separately as described in the Playwright documentation.
+
+### Updating and reproducible runs
+
+To accept stable updates within major version 1 at restore time, use:
+
+```xml
+<PackageReference Include="PowerPlaywright" Version="1.*" />
+```
+
+When explicitly checking for updates, reevaluate the dependency graph and bypass the HTTP cache, then build and run with that same resolution:
+
+```shell
+dotnet restore --force-evaluate --no-http-cache
+dotnet build --configuration Release --no-restore
+dotnet test --configuration Release --no-build --no-restore
+```
+
+On .NET 8, use `--no-cache` in place of `--no-http-cache`.
+
+An ordinary build can use incremental restore and skip feed checks when project inputs have not changed. A floating reference alone does not guarantee that every build contacts the feed. `1.*` selects stable releases; prerelease updates require an explicit prerelease version or floating pattern such as `1.*-*`.
+
+For controlled updates, use an exact reference such as `Version="[1.2.3]"`, or enable `RestorePackagesWithLockFile`, commit `packages.lock.json`, and restore with `--locked-mode` in CI. A locked restore retains the recorded resolution and fails if project dependencies require a lock-file change. To update a floating dependency deliberately, run the refresh command above **without** `--locked-mode`, review the lock-file changes, then rebuild. For an exact reference, also change the reference before refreshing.
+
+Record the resolved versions from `obj/project.assets.json` with your test results, and retain `packages.lock.json` when used. Package fixes take effect after restore and rebuild; publishing a new release does not replace code in an already running or previously built suite.
+
+When migrating from runtime strategy acquisition, keep referencing only `PowerPlaywright`, remove explicit references to the old `PowerPlaywright.Strategies` package, and clean/rebuild the test output. `CreateAsync` and `PageObjectAssemblies` registration are unchanged. Runtime access to package feeds, feed credentials, and the global NuGet cache is no longer needed after restore/build; access to the target Power Apps environment is still required for live tests.
 
 ## Usage
 
