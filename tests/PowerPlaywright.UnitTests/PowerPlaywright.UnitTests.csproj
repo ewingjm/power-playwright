@@ -34,12 +34,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="Resources/**/*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  
-  <ItemGroup>
     <None Update=".runsettings">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

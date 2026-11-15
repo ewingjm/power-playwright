@@ -1,11 +1,6 @@
 namespace PowerPlaywright.Api
 {
     using System;
-    using System.Diagnostics;
-    using System.Linq;
-    using System.Reflection;
-    using System.Text.RegularExpressions;
-    using System.Threading;
     using System.Threading.Tasks;
     using global::PowerPlaywright.Config;
     using global::PowerPlaywright.Extensions;
@@ -14,23 +9,12 @@ namespace PowerPlaywright.Api
     using global::PowerPlaywright.Resolvers;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Playwright;
-    using NuGet.Configuration;
-    using NuGet.Packaging.Core;
-    using NuGet.Protocol;
-    using NuGet.Protocol.Core.Types;
 
     /// <summary>
     /// The entry point for Power Playwright.
     /// </summary>
     public class PowerPlaywright : IPowerPlaywright
     {
-        private const string StrategiesPackageId = "PowerPlaywright.Strategies";
-        private const string NuGetV3Source = "https://api.nuget.org/v3/index.json";
-        private static readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1, 1);
-
-        private static PackageIdentity installedStrategiesPackage;
-        private static INuGetPackageInstaller packageInstaller;
-
         private readonly PowerPlaywrightConfiguration configuration;
 
         /// <summary>
@@ -48,9 +32,9 @@ namespace PowerPlaywright.Api
         /// </summary>
         /// <param name="configuration">The configuration.</param>
         /// <returns>A Power Playwright instance.</returns>
-        public static async Task<IPowerPlaywright> CreateAsync(PowerPlaywrightConfiguration configuration = null)
+        public static Task<IPowerPlaywright> CreateAsync(PowerPlaywrightConfiguration configuration = null)
         {
-            return await CreateInternalAsync(await GetNuGetPackageInstaller(), configuration);
+            return Task.FromResult<IPowerPlaywright>(new PowerPlaywright(configuration ?? new PowerPlaywrightConfiguration()));
         }
 
         /// <inheritdoc/>
@@ -109,25 +93,6 @@ namespace PowerPlaywright.Api
         }
 
         /// <summary>
-        /// Creates an instance of Power Playwright.
-        /// </summary>
-        /// <param name="packageInstaller">The NuGet package installer.</param>
-        /// <param name="configuration">The configuration.</param>
-        /// <returns>A Power Playwright instance.</returns>
-        internal static async Task<IPowerPlaywright> CreateInternalAsync(INuGetPackageInstaller packageInstaller, PowerPlaywrightConfiguration configuration = null)
-        {
-            if (packageInstaller is null)
-            {
-                throw new ArgumentNullException(nameof(packageInstaller));
-            }
-
-            configuration = configuration ?? new PowerPlaywrightConfiguration();
-            configuration.PackageIdentity = installedStrategiesPackage ?? await InstallStrategiesAsync(packageInstaller);
-
-            return new PowerPlaywright(configuration);
-        }
-
-        /// <summary>
         /// Launches a model-driven app and logs in.
         /// </summary>
         /// <typeparam name="TModelDrivenAppPage">The type of the model-driven app page to return after login.</typeparam>
@@ -146,60 +111,6 @@ namespace PowerPlaywright.Api
                 .LoginAsync<TModelDrivenAppPage>(username, password, totpSecret);
         }
 
-        private static async Task<INuGetPackageInstaller> GetNuGetPackageInstaller()
-        {
-            if (packageInstaller is null)
-            {
-                var findPackageByIdResource = await Repository.Factory
-                    .GetCoreV3(NuGetV3Source)
-                    .GetResourceAsync<FindPackageByIdResource>();
-
-                packageInstaller = new NuGetPackageInstaller(findPackageByIdResource, NuGetV3Source);
-            }
-
-            return packageInstaller;
-        }
-
-        private static async Task<PackageIdentity> InstallStrategiesAsync(INuGetPackageInstaller packageInstaller)
-        {
-            await Semaphore.WaitAsync();
-
-            try
-            {
-                if (installedStrategiesPackage is null)
-                {
-                    var identity = await FindBestStrategiesPackageVersionAsync(packageInstaller);
-
-                    await packageInstaller.InstallPackageAsync(identity);
-
-                    installedStrategiesPackage = identity;
-                }
-            }
-            finally
-            {
-                Semaphore.Release();
-            }
-
-            return installedStrategiesPackage;
-        }
-
-        private static async Task<PackageIdentity> FindBestStrategiesPackageVersionAsync(INuGetPackageInstaller nuGetPackageInstaller)
-        {
-            var powerPlaywrightAssembly = Assembly.GetExecutingAssembly();
-            var assemblyVersion = powerPlaywrightAssembly.GetName().Version;
-            var productVersion = FileVersionInfo.GetVersionInfo(powerPlaywrightAssembly.Location).ProductVersion;
-            var match = Regex.Match(productVersion ?? string.Empty, "-(.+?)\\+");
-            var release = match.Success ? match.Groups[1].Value : string.Empty;
-
-            var versions = await nuGetPackageInstaller.GetAllVersionsAsync(StrategiesPackageId);
-
-            var strategiesVersion = versions.Count() == 1 ? versions.First() : versions.FirstOrDefault(v => v.Major == assemblyVersion.Major && v.Minor == assemblyVersion.Minor && v.Patch == assemblyVersion.Build && v.Release == release);
-
-            return strategiesVersion is null
-                ? throw new PowerPlaywrightException($"Unable to find strategies version matching '{assemblyVersion.Major}.{assemblyVersion.Minor}.{assemblyVersion.Build}{(string.IsNullOrEmpty(release) ? string.Empty : $"-{release}")}'.")
-                : new PackageIdentity(StrategiesPackageId, strategiesVersion);
-        }
-
         private IModelDrivenApp GetModelDrivenApp(IBrowserContext browserContext, Uri environmentUrl, string uniqueName)
         {
             return this
@@ -214,15 +125,13 @@ namespace PowerPlaywright.Api
                 .AddOptions()
                 .AddControlRedirectionInfoProvider()
                 .AddSingleton(browserContext)
-                .AddSingleton(this.configuration.PackageIdentity)
-                .AddSingleton(sp => Settings.LoadDefaultSettings(null))
                 .Configure<ModelDrivenAppOptions>(opts =>
                 {
                     opts.EnvironmentUrl = environmentUrl;
                     opts.AppUniqueName = appUniqueName;
                 })
                 .AddSingleton<IModelDrivenApp, ModelDrivenApp>()
-                .AddSingleton<IAssemblyProvider, GlobalPackagesAssemblyProvider>()
+                .AddSingleton<IAssemblyProvider, InstalledStrategiesAssemblyProvider>()
                 .AddAdditionalPageObjectAssemblies(this.configuration.PageObjectAssemblies)
                 .AddSingleton<IControlFactory, ControlFactory>()
                 .AddSingleton<IPageFactory, PageFactory>()

@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.Playwright;
 using NSubstitute;
 using NSubstitute.Exceptions;
-using NuGet.Packaging;
 using PowerPlaywright;
 using PowerPlaywright.Framework;
 using PowerPlaywright.Framework.Pages;
@@ -247,15 +246,14 @@ public class ModelDrivenAppTests
     public async Task LoginAsync_InitializablesPassedToConstructor_WaitsForAllToInitialize()
     {
         var tasks = Enumerable.Range(0, 5).Select(i => Task.Delay(500)).ToArray();
-        this.initializables.AddRange(
-            tasks.Select(t =>
-            {
-                var initializable = Substitute.For<IAppLoadInitializable>();
-                initializable.InitializeAsync(Arg.Any<IPage>())
-                    .Returns(t);
+        foreach (var task in tasks)
+        {
+            var initializable = Substitute.For<IAppLoadInitializable>();
+            initializable.InitializeAsync(Arg.Any<IPage>())
+                .Returns(task);
 
-                return initializable;
-            }));
+            this.initializables.Add(initializable);
+        }
 
         await this.modelDrivepApp.LoginAsync(Username, Password);
 

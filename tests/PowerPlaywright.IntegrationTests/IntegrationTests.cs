@@ -11,8 +11,6 @@
     using Microsoft.Xrm.Sdk;
     using Microsoft.Xrm.Sdk.Messages;
     using Microsoft.Xrm.Sdk.Query;
-    using NuGet.Protocol;
-    using NuGet.Protocol.Core.Types;
     using NUnit.Framework.Interfaces;
     using PowerPlaywright.Api;
     using PowerPlaywright.Config;
@@ -115,13 +113,7 @@
         [OneTimeSetUp]
         public static async Task SetUpPowerPlaywrightAsync()
         {
-            var packageSource = Path.Join(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "packages");
-            var findPackageByIdResource = await Repository.Factory
-                .GetCoreV3(packageSource)
-                .GetResourceAsync<FindPackageByIdResource>();
-
-            powerPlaywright = await Api.PowerPlaywright.CreateInternalAsync(
-                new NuGetPackageInstaller(findPackageByIdResource, packageSource),
+            powerPlaywright = await Api.PowerPlaywright.CreateAsync(
                 new PowerPlaywrightConfiguration
                 {
                     PageObjectAssemblies = [new() { Path = "PowerPlaywright.TestApp.PageObjects.dll" }],

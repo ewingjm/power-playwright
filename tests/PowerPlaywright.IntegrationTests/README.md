@@ -4,6 +4,8 @@ Integration tests should be written to cover all logic unless it is explicitly s
 
 As the platform is constantly updated, all Playwright logic (i.e, most of what is in the _PowerPlaywright.Strategies_ library) considered liable to break at any time. The only way to ensure this project is robust is to ensure full automated test coverage and regular execution of these tests against canary environments.
 
+The integration project uses the API, Framework, and strategies built together through project references and the public `PowerPlaywright.CreateAsync` entry point. It no longer creates a separate strategies package or runtime feed. Coverlet instruments the assemblies in the test output directly; `platform-reference.json` travels inside the strategies assembly. Package consumption and restore/update policy are checked separately, without environment credentials, by `python3 tests/PowerPlaywright.PackageTests/run.py`. The release workflow publishes only the main `PowerPlaywright` package containing all three assemblies.
+
 ## Table of Contents
 
 - [PowerPlaywright.IntegrationTests](#powerplaywrightintegrationtests)
