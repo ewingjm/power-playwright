@@ -7,7 +7,7 @@
     /// An interface for the PowerApps.CoreControls.OptionSetControl control.
     /// </summary>
     [PcfControl("PowerApps.CoreControls.OptionSetControl")]
-    public interface IOptionSetControl : IChoice, IYesNo
+    public interface IOptionSetControl : IChoice, IYesNo, IWholeNumberTimezone
     {
     }
 }
